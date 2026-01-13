@@ -1,0 +1,79 @@
+# Dependencies
+/node_modules
+/.pnp
+.pnp.js
+
+# Build outputs
+/dist
+/build
+/tmp
+/out-tsc
+
+# Angular cache
+/.angular
+
+# Testing
+/coverage
+/.nyc_output
+/playwright-report
+/playwright/.cache
+
+# IDE
+/.idea
+/.vscode/*
+!/.vscode/settings.json
+!/.vscode/tasks.json
+!/.vscode/launch.json
+!/.vscode/extensions.json
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# Environment files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+/src/environments/environment.ts
+/src/environments/environment.prod.ts
+
+# Temporary files
+*.tmp
+*.temp
+
+# Editor directories and files
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# System files
+.sass-cache/
+connect.lock
+
+# Profiling files
+chrome-profiler-events*.json
+speed-measure-plugin*.json
+
+# Misc
+.eslintcache
+.stylelintcache
+
+# TypeScript
+*.tsbuildinfo
