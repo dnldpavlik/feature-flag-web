@@ -1,5 +1,6 @@
 import { Component, signal } from '@angular/core';
 import { RouterOutlet, RouterLink } from '@angular/router';
+import { StatCard } from './shared/ui/stat-card/stat-card';
 
 interface NavItem {
   label: string;
@@ -16,7 +17,7 @@ interface Environment {
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, RouterLink],
+  imports: [RouterOutlet, RouterLink, StatCard],
   templateUrl: './app.html',
   styleUrl: './app.scss'
 })

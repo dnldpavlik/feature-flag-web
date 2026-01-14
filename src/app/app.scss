@@ -309,26 +309,6 @@
   margin-bottom: 2rem;
 }
 
-.stat-card {
-  background: var(--bg-card);
-  border: 1px solid var(--border-primary);
-  border-radius: var(--border-radius-lg);
-  padding: 1.25rem;
-
-  .stat-value {
-    font-size: 2rem;
-    font-weight: 600;
-    color: var(--text-primary);
-    line-height: 1;
-    margin-bottom: 0.5rem;
-  }
-
-  .stat-label {
-    font-size: 0.875rem;
-    color: var(--text-muted);
-  }
-}
-
 // Empty State
 .empty-state {
   display: flex;
