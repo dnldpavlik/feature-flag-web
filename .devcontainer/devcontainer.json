@@ -1,37 +1,27 @@
 {
   "name": "Feature Flag UI - Angular 20",
-  "build": {
-    "dockerfile": "Dockerfile",
-    "context": ".."
-  },
-  "features": {
-    "ghcr.io/devcontainers/features/node:1": {
-      "version": "20"
-    },
-    "ghcr.io/devcontainers/features/git:1": {},
-    "ghcr.io/devcontainers/features/github-cli:1": {}
-  },
+  // Use the compose file one level up from /frontend
+  "dockerComposeFile": ["../docker-compose.yml"],
+  // This must match the compose service name
+  "service": "frontend-dev",
+  // Map the open folder to the container's mounted workspace
+  "workspaceFolder": "/home/angular/workspace",
+
+  // Let VS Code control the start command so the container stays alive for the editor
+  "overrideCommand": true,
+
+  // Your app listens on 4200 (compose maps 4200:4200)
+  "forwardPorts": [4200],
+
+  // Run once after the container is ready, ensures types are available
+  "postCreateCommand": "npm run start -- --host 0.0.0.0 --port 4200",
+
   "customizations": {
     "vscode": {
-      "extensions": [
-        "angular.ng-template",
-        "bradlc.vscode-tailwindcss",
-        "dbaeumer.vscode-eslint",
-        "esbenp.prettier-vscode",
-        "firsttris.vscode-jest-runner",
-        "ms-playwright.playwright",
-        "streetsidesoftware.code-spell-checker",
-        "formulahendry.auto-rename-tag",
-        "christian-kohler.path-intellisense",
-        "mikestead.dotenv",
-        "EditorConfig.EditorConfig",
-        "usernamehw.errorlens",
-        "pflannery.vscode-versionlens",
-        "wayou.vscode-todo-highlight",
-        "gruntfuggly.todo-tree",
-        "eamodio.gitlens"
-      ],
       "settings": {
+        "typescript.tsdk": "node_modules/typescript/lib",
+        "typescript.enablePromptUseWorkspaceTsdk": true,
+        "eslint.workingDirectories": [{ "mode": "auto" }],
         "editor.defaultFormatter": "esbenp.prettier-vscode",
         "editor.formatOnSave": true,
         "editor.codeActionsOnSave": {
@@ -41,15 +31,7 @@
         "typescript.preferences.importModuleSpecifier": "relative",
         "typescript.updateImportsOnFileMove.enabled": "always",
         "typescript.suggest.autoImports": true,
-        "eslint.validate": [
-          "javascript",
-          "javascriptreact",
-          "typescript",
-          "typescriptreact"
-        ],
-        "files.associations": {
-          "*.html": "html"
-        },
+        "eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact"],
         "[html]": {
           "editor.defaultFormatter": "esbenp.prettier-vscode"
         },
@@ -64,28 +46,27 @@
         "editor.rulers": [100],
         "files.trimTrailingWhitespace": true,
         "files.insertFinalNewline": true
-      }
+      },
+      "extensions": [
+        "angular.ng-template",
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode",
+        "firsttris.vscode-jest-runner",
+        "ms-playwright.playwright",
+        "streetsidesoftware.code-spell-checker",
+        "formulahendry.auto-rename-tag",
+        "christian-kohler.path-intellisense",
+        "mikestead.dotenv",
+        "EditorConfig.EditorConfig",
+        "usernamehw.errorlens",
+        "pflannery.vscode-versionlens",
+        "wayou.vscode-todo-highlight",
+        "gruntfuggly.todo-tree",
+        "eamodio.gitlens"
+      ]
     }
   },
-  "forwardPorts": [4200, 9876],
-  "portsAttributes": {
-    "4200": {
-      "label": "Angular Dev Server",
-      "onAutoForward": "notify"
-    },
-    "9876": {
-      "label": "Karma Test Runner",
-      "onAutoForward": "silent"
-    }
-  },
-  "postCreateCommand": "npm install",
-  "postStartCommand": "echo '🚀 Feature Flag UI DevContainer is ready!'",
-  "remoteUser": "node",
   "containerEnv": {
     "NODE_ENV": "development"
-  },
-  "mounts": [
-    "source=${localWorkspaceFolder}/node_modules,target=${containerWorkspaceFolder}/node_modules,type=volume"
-  ],
-  "runArgs": ["--init"]
+  }
 }

@@ -1,51 +1,53 @@
-# DevContainer Dockerfile for Feature Flag UI
-FROM mcr.microsoft.com/devcontainers/typescript-node:1-20-bullseye
+# Angular 20 dev image - Use specific version for reproducibility
+FROM node:20.19.0-alpine3.21
 
-# Install additional OS packages
-RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
-    && apt-get -y install --no-install-recommends \
-    # Playwright dependencies
-    libnss3 \
-    libnspr4 \
-    libatk1.0-0 \
-    libatk-bridge2.0-0 \
-    libcups2 \
-    libdrm2 \
-    libdbus-1-3 \
-    libxkbcommon0 \
-    libatspi2.0-0 \
-    libxcomposite1 \
-    libxdamage1 \
-    libxfixes3 \
-    libxrandr2 \
-    libgbm1 \
-    libasound2 \
-    # Clean up
-    && apt-get autoremove -y \
-    && apt-get clean -y \
-    && rm -rf /var/lib/apt/lists/*
+# Define build arguments early for better caching
+ARG GIT_USER_NAME
+ARG GIT_USER_EMAIL
 
-# Install Angular CLI globally
-RUN su node -c "npm install -g @angular/cli@20"
+# Set environment variables
+ENV NG_CLI_ANALYTICS=ci \
+    CHOKIDAR_USEPOLLING=true \
+    WATCHPACK_POLLING=true \
+    NODE_ENV=development \
+    NPM_CONFIG_UPDATE_NOTIFIER=false \
+    NPM_CONFIG_FUND=false
 
-# Install additional global npm packages
-RUN su node -c "npm install -g \
-    npm-check-updates \
-    typescript \
-    eslint \
-    prettier"
+# Create non-root user early (security best practice)
+RUN addgroup -g 1001 -S nodejs && \
+    adduser -S angular -u 1001 -G nodejs
 
-# Set up npm global packages for node user
-ENV NPM_CONFIG_PREFIX=/home/node/.npm-global
-ENV PATH=$PATH:/home/node/.npm-global/bin
+# Update packages and install dependencies in single layer
+RUN apk update && apk upgrade --no-cache && \
+    apk add --no-cache \
+    git \
+    dumb-init && \
+    rm -rf /var/cache/apk/*
 
-# Create workspace directory
-WORKDIR /workspaces/feature-flag-ui
+# Install Angular CLI globally with specific version
+RUN npm install -g @angular/cli@20 && \
+    npm cache clean --force
 
-# Expose ports
-# 4200 - Angular dev server
-# 9876 - Karma test runner
-EXPOSE 4200 9876
+# Configure Git as root before switching users
+RUN git config --system user.name "${GIT_USER_NAME}" && \
+    git config --system user.email "${GIT_USER_EMAIL}" && \
+    git config --system init.defaultBranch main
 
-# Default command
-CMD ["sleep", "infinity"]
+# Set working directory and change ownership
+WORKDIR /home/angular/workspace
+
+# Copy package files and install dependencies as root
+COPY --chown=angular:nodejs package*.json ./
+RUN npm ci --only=development
+
+# Switch to non-root user for runtime operations
+# USER angular
+
+# Health check for development server
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+    CMD wget --no-verbose --tries=1 --spider http://localhost:4200 || exit 1
+
+EXPOSE 4200
+
+# Use dumb-init to handle signals properly
+ENTRYPOINT ["dumb-init", "--"]

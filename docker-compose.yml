@@ -1,0 +1,16 @@
+services:
+  frontend-dev:
+    build:
+      context: .
+      dockerfile: ./.devcontainer/Dockerfile
+      args:
+        GIT_USER_NAME: ${GIT_USER_NAME}
+        GIT_USER_EMAIL: ${GIT_USER_EMAIL}
+    container_name: feature-flags-frontend-dev
+    ports:
+      - '4200:4200'
+    volumes:
+      - .:/home/angular/workspace # mount your code
+      - /home/angular/workspace/node_modules # keep container’s node_modules isolated
+    stdin_open: true # allow interactive terminal
+    tty: true # allocate a TTY
