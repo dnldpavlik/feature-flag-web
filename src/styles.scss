@@ -1,1 +1,319 @@
-/* You can add global styles to this file, and also import other style files */
+// =============================================================================
+// Global Styles - Feature Flag UI (LaunchDarkly-inspired Dark Theme)
+// =============================================================================
+
+// -----------------------------------------------------------------------------
+// CSS Variables - Dark Theme
+// -----------------------------------------------------------------------------
+:root {
+  // Background colors
+  --bg-primary: #0f1218;
+  --bg-secondary: #161b22;
+  --bg-tertiary: #1c2128;
+  --bg-sidebar: #0d1117;
+  --bg-header: #161b22;
+  --bg-card: #1c2128;
+  --bg-hover: #262c36;
+  --bg-active: #2d333b;
+
+  // Text colors
+  --text-primary: #e6edf3;
+  --text-secondary: #8b949e;
+  --text-muted: #6e7681;
+  --text-link: #58a6ff;
+
+  // Border colors
+  --border-primary: #30363d;
+  --border-secondary: #21262d;
+
+  // Accent colors (LaunchDarkly-inspired purple/blue)
+  --accent-primary: #405bff;
+  --accent-secondary: #6366f1;
+  --accent-hover: #5865f2;
+  --accent-gradient: linear-gradient(135deg, #405bff 0%, #6366f1 100%);
+
+  // Status colors
+  --color-success: #3fb950;
+  --color-warning: #d29922;
+  --color-error: #f85149;
+  --color-info: #58a6ff;
+
+  // Sizing
+  --sidebar-width: 240px;
+  --header-height: 56px;
+  --border-radius: 6px;
+  --border-radius-lg: 8px;
+
+  // Shadows
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 10px 20px rgba(0, 0, 0, 0.5);
+
+  // Transitions
+  --transition-fast: 150ms ease;
+  --transition-normal: 250ms ease;
+}
+
+// -----------------------------------------------------------------------------
+// Reset & Base Styles
+// -----------------------------------------------------------------------------
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: var(--text-primary);
+  background-color: var(--bg-primary);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+// -----------------------------------------------------------------------------
+// Typography
+// -----------------------------------------------------------------------------
+h1, h2, h3, h4, h5, h6 {
+  color: var(--text-primary);
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+h1 { font-size: 1.75rem; }
+h2 { font-size: 1.5rem; }
+h3 { font-size: 1.25rem; }
+h4 { font-size: 1.125rem; }
+h5 { font-size: 1rem; }
+h6 { font-size: 0.875rem; }
+
+p {
+  color: var(--text-secondary);
+  margin-bottom: 1rem;
+}
+
+a {
+  color: var(--text-link);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+// -----------------------------------------------------------------------------
+// Utility Classes
+// -----------------------------------------------------------------------------
+.text-primary { color: var(--text-primary); }
+.text-secondary { color: var(--text-secondary); }
+.text-muted { color: var(--text-muted); }
+.text-success { color: var(--color-success); }
+.text-warning { color: var(--color-warning); }
+.text-error { color: var(--color-error); }
+
+.bg-primary { background-color: var(--bg-primary); }
+.bg-secondary { background-color: var(--bg-secondary); }
+.bg-card { background-color: var(--bg-card); }
+
+// -----------------------------------------------------------------------------
+// Buttons
+// -----------------------------------------------------------------------------
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1.5;
+  border-radius: var(--border-radius);
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.btn-primary {
+  background: var(--accent-primary);
+  color: white;
+  border-color: var(--accent-primary);
+
+  &:hover:not(:disabled) {
+    background: var(--accent-hover);
+    border-color: var(--accent-hover);
+  }
+}
+
+.btn-secondary {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  border-color: var(--border-primary);
+
+  &:hover:not(:disabled) {
+    background: var(--bg-hover);
+    border-color: var(--border-primary);
+  }
+}
+
+.btn-ghost {
+  background: transparent;
+  color: var(--text-secondary);
+  border-color: transparent;
+
+  &:hover:not(:disabled) {
+    background: var(--bg-hover);
+    color: var(--text-primary);
+  }
+}
+
+// -----------------------------------------------------------------------------
+// Cards
+// -----------------------------------------------------------------------------
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--border-radius-lg);
+  padding: 1.5rem;
+}
+
+// -----------------------------------------------------------------------------
+// Forms
+// -----------------------------------------------------------------------------
+.form-input {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.875rem;
+  color: var(--text-primary);
+  background: var(--bg-primary);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--border-radius);
+  transition: border-color var(--transition-fast);
+
+  &:focus {
+    outline: none;
+    border-color: var(--accent-primary);
+    box-shadow: 0 0 0 3px rgba(64, 91, 255, 0.2);
+  }
+
+  &::placeholder {
+    color: var(--text-muted);
+  }
+}
+
+// -----------------------------------------------------------------------------
+// Toggle Switch (Feature Flag style)
+// -----------------------------------------------------------------------------
+.toggle {
+  position: relative;
+  display: inline-block;
+  width: 44px;
+  height: 24px;
+
+  input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+
+    &:checked + .toggle__slider {
+      background-color: var(--color-success);
+    }
+
+    &:checked + .toggle__slider::before {
+      transform: translateX(20px);
+    }
+
+    &:focus + .toggle__slider {
+      box-shadow: 0 0 0 3px rgba(63, 185, 80, 0.3);
+    }
+  }
+
+  &__slider {
+    position: absolute;
+    cursor: pointer;
+    inset: 0;
+    background-color: var(--bg-active);
+    border-radius: 24px;
+    transition: background-color var(--transition-fast);
+
+    &::before {
+      position: absolute;
+      content: '';
+      height: 18px;
+      width: 18px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      border-radius: 50%;
+      transition: transform var(--transition-fast);
+    }
+  }
+}
+
+// -----------------------------------------------------------------------------
+// Badge/Tag
+// -----------------------------------------------------------------------------
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.125rem 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  border-radius: 9999px;
+  
+  &--success {
+    background: rgba(63, 185, 80, 0.15);
+    color: var(--color-success);
+  }
+  
+  &--warning {
+    background: rgba(210, 153, 34, 0.15);
+    color: var(--color-warning);
+  }
+  
+  &--error {
+    background: rgba(248, 81, 73, 0.15);
+    color: var(--color-error);
+  }
+  
+  &--info {
+    background: rgba(88, 166, 255, 0.15);
+    color: var(--color-info);
+  }
+}
+
+// -----------------------------------------------------------------------------
+// Scrollbar
+// -----------------------------------------------------------------------------
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-secondary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-primary);
+  border-radius: 4px;
+
+  &:hover {
+    background: var(--text-muted);
+  }
+}
