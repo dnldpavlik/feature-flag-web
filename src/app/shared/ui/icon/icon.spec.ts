@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 
-import { Icon } from './icon';
+import { IconComponent } from './icon';
 
 describe('Icon', () => {
-  let component: Icon;
-  let fixture: ComponentFixture<Icon>;
+  let component: IconComponent;
+  let fixture: ComponentFixture<IconComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [Icon]
+      imports: [IconComponent],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(Icon);
+    fixture = TestBed.createComponent(IconComponent);
     component = fixture.componentInstance;
   });
 
@@ -128,10 +128,10 @@ describe('Icon', () => {
       'folder',
       'users',
       'list',
-      'settings'
+      'settings',
     ];
 
-    iconNames.forEach(iconName => {
+    iconNames.forEach((iconName) => {
       it(`should render "${iconName}" icon without error`, () => {
         fixture.componentRef.setInput('name', iconName);
         fixture.detectChanges();
