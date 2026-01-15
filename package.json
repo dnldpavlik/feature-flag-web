@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
+    "start": "ng serve --host 0.0.0.0 --port 4200",
     "build": "ng build",
     "build:prod": "ng build --configuration production",
     "watch": "ng build --watch --configuration development",
@@ -14,11 +14,33 @@
     "e2e:ui": "playwright test --ui",
     "e2e:debug": "playwright test --debug",
     "e2e:report": "playwright show-report",
-    "lint": "eslint src --ext .ts,.html",
+    "lint": "npm run lint:ts && npm run lint:scss",
+    "lint:ts": "eslint \"src/**/*.{ts,html}\"",
+    "lint:scss": "stylelint \"src/**/*.scss\"",
     "lint:fix": "eslint src --ext .ts,.html --fix",
     "format": "prettier --write \"src/**/*.{ts,html,scss}\"",
     "format:check": "prettier --check \"src/**/*.{ts,html,scss}\"",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "ci:local": "npm ci && npm run lint && npm run test:coverage && npm run build",
+    "check-updates": "npm outdated",
+    "check-updates:major": "ncu",
+    "update-deps": "ncu -u && npm install",
+    "update-deps:minor": "ncu -u --target minor && npm install",
+    "update-deps:patch": "ncu -u --target patch && npm install",
+    "audit": "npm audit",
+    "audit:fix": "npm audit fix"
+  },
+  "prettier": {
+    "printWidth": 100,
+    "singleQuote": true,
+    "overrides": [
+      {
+        "files": "*.html",
+        "options": {
+          "parser": "angular"
+        }
+      }
+    ]
   },
   "private": true,
   "dependencies": {
