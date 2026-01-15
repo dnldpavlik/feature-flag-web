@@ -52,9 +52,29 @@ Development task tracker organized by phase and priority.
 - [ ] Create logged-in user state
 - [ ] Implement logout functionality
 
+### Layout Components 🔴
+
+Components extracted from `app.html` shell:
+
+- [ ] **Sidebar** - Full sidebar with logo, navigation, environments, user menu
+- [ ] **Header** - Top bar with menu toggle, breadcrumb, search, actions
+
 ### Shared UI Components 🔴
 
-- [ ] Button component (primary, secondary, danger, ghost)
+Components extracted from `app.html`:
+
+- [x] **StatCard** - Stats display card with value and label
+- [x] **Icon** - Centralized icon component to replace inline SVGs
+- [ ] **Button** - Button component with optional leading icon
+- [ ] **EmptyState** - Placeholder with icon, title, message, and action button
+- [ ] **SearchInput** - Search field with icon and keyboard shortcut hint
+- [ ] **Breadcrumb** - Breadcrumb path with separator icons
+- [ ] **UserMenu** - Avatar with user name/email dropdown trigger
+- [ ] **NavItem** - Navigation link with icon, label, and active state
+- [ ] **NavSection** - Grouped nav section with title header
+
+Additional shared components:
+
 - [ ] Input component with validation states
 - [ ] Select/dropdown component
 - [ ] Checkbox component
@@ -63,11 +83,9 @@ Development task tracker organized by phase and priority.
 - [ ] Modal/dialog component
 - [ ] Toast notification component
 - [ ] Loading spinner component
-- [ ] Empty state component
 - [ ] Error state component
 - [ ] Skeleton loader component
 - [ ] Badge/tag component
-- [ ] Avatar component
 - [ ] Tooltip directive
 
 ---
@@ -320,4 +338,4 @@ Development task tracker organized by phase and priority.
 
 ---
 
-*Last updated: 2025-01-12*
+*Last updated: 2026-01-14*

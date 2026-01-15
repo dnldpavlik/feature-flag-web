@@ -22,7 +22,7 @@
         @for (item of navItems(); track item.label) {
           <li class="nav-item" [class.nav-item--active]="item.active">
             <a class="nav-link" [routerLink]="item.route">
-              <span class="nav-icon" [innerHTML]="item.icon"></span>
+              <app-icon [name]="item.icon" class="nav-icon" />
               <span class="nav-label">{{ item.label }}</span>
             </a>
           </li>
@@ -63,31 +63,23 @@
     <header class="header">
       <div class="header__left">
         <button class="btn btn-ghost header__menu-btn" (click)="toggleSidebar()">
-          <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
-            <path fill-rule="evenodd" d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd"/>
-          </svg>
+          <app-icon name="menu" />
         </button>
         <div class="header__breadcrumb">
           <span>Default Project</span>
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" class="breadcrumb-separator">
-            <path d="M6.22 4.22a.75.75 0 011.06 0l3.25 3.25a.75.75 0 010 1.06l-3.25 3.25a.75.75 0 01-1.06-1.06L8.94 8 6.22 5.28a.75.75 0 010-1.06z"/>
-          </svg>
+          <app-icon name="chevron-right" [size]="16" class="breadcrumb-separator" />
           <span class="breadcrumb-current">Feature Flags</span>
         </div>
       </div>
 
       <div class="header__right">
         <div class="header__search">
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" class="search-icon">
-            <path fill-rule="evenodd" d="M11.5 7a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0zm-.82 4.74a6 6 0 111.06-1.06l2.79 2.79a.75.75 0 11-1.06 1.06l-2.79-2.79z" clip-rule="evenodd"/>
-          </svg>
+          <app-icon name="search" [size]="16" class="search-icon" />
           <input type="text" placeholder="Search flags..." class="search-input">
           <kbd class="search-shortcut">/</kbd>
         </div>
         <button class="btn btn-primary">
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
-            <path d="M8 2a.75.75 0 01.75.75v4.5h4.5a.75.75 0 010 1.5h-4.5v4.5a.75.75 0 01-1.5 0v-4.5h-4.5a.75.75 0 010-1.5h4.5v-4.5A.75.75 0 018 2z"/>
-          </svg>
+          <app-icon name="plus" [size]="16" />
           Create Flag
         </button>
       </div>
@@ -121,9 +113,7 @@
           <h3>No feature flags yet</h3>
           <p>Create your first feature flag to start controlling your application's features.</p>
           <button class="btn btn-primary">
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
-              <path d="M8 2a.75.75 0 01.75.75v4.5h4.5a.75.75 0 010 1.5h-4.5v4.5a.75.75 0 01-1.5 0v-4.5h-4.5a.75.75 0 010-1.5h4.5v-4.5A.75.75 0 018 2z"/>
-            </svg>
+            <app-icon name="plus" [size]="16" />
             Create Your First Flag
           </button>
         </div>
