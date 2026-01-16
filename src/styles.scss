@@ -45,9 +45,9 @@
   --border-radius-lg: 8px;
 
   // Shadows
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
-  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.4);
-  --shadow-lg: 0 10px 20px rgba(0, 0, 0, 0.5);
+  --shadow-sm: 0 1px 2px rgb(0 0 0 / 30%);
+  --shadow-md: 0 4px 6px rgb(0 0 0 / 40%);
+  --shadow-lg: 0 10px 20px rgb(0 0 0 / 50%);
 
   // Transitions
   --transition-fast: 150ms ease;
@@ -208,7 +208,7 @@ a {
   &:focus {
     outline: none;
     border-color: var(--accent-primary);
-    box-shadow: 0 0 0 3px rgba(64, 91, 255, 0.2);
+    box-shadow: 0 0 0 3px rgb(64 91 255 / 20%);
   }
 
   &::placeholder {
@@ -239,7 +239,7 @@ a {
     }
 
     &:focus + .toggle__slider {
-      box-shadow: 0 0 0 3px rgba(63, 185, 80, 0.3);
+      box-shadow: 0 0 0 3px rgb(63 185 80 / 30%);
     }
   }
 
@@ -277,22 +277,22 @@ a {
   border-radius: 9999px;
   
   &--success {
-    background: rgba(63, 185, 80, 0.15);
+    background: rgb(63 185 80 / 15%);
     color: var(--color-success);
   }
   
   &--warning {
-    background: rgba(210, 153, 34, 0.15);
+    background: rgb(210 153 34 / 15%);
     color: var(--color-warning);
   }
   
   &--error {
-    background: rgba(248, 81, 73, 0.15);
+    background: rgb(248 81 73 / 15%);
     color: var(--color-error);
   }
   
   &--info {
-    background: rgba(88, 166, 255, 0.15);
+    background: rgb(88 166 255 / 15%);
     color: var(--color-info);
   }
 }

@@ -213,7 +213,7 @@
   &__menu-btn {
     display: none;
     
-    @media (max-width: 768px) {
+    @media (width <= 768px) {
       display: flex;
     }
   }
@@ -262,7 +262,7 @@
   &:focus {
     outline: none;
     border-color: var(--accent-primary);
-    box-shadow: 0 0 0 3px rgba(64, 91, 255, 0.2);
+    box-shadow: 0 0 0 3px rgb(64 91 255 / 20%);
   }
 
   &::placeholder {
@@ -341,7 +341,7 @@
 // -----------------------------------------------------------------------------
 // Responsive
 // -----------------------------------------------------------------------------
-@media (max-width: 768px) {
+@media (width <= 768px) {
   .sidebar {
     transform: translateX(-100%);
     transition: transform var(--transition-normal);
