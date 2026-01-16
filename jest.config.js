@@ -22,7 +22,14 @@ module.exports = {
     '.*.module.ts$',
     '<rootDir>/src/main.ts'
   ],
-  coverageReporters: ['html', 'text', 'text-summary', 'lcov'],
+  coverageReporters: ['html', 'text', 'text-summary', 'lcov', 'cobertura'],
+  reporters: [
+    'default',
+    ['jest-junit', {
+      outputDirectory: '.',
+      outputName: 'junit.xml'
+    }]
+  ],
   coverageThreshold: {
     global: {
       branches: 80,
