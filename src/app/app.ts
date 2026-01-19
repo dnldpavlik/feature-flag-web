@@ -6,6 +6,7 @@ import { EmptyStateComponent } from './shared/ui/empty-state/empty-state';
 import { IconComponent, IconName } from './shared/ui/icon/icon';
 import { SearchInputComponent } from './shared/ui/search-input/search-input';
 import { StatCardComponent } from './shared/ui/stat-card/stat-card';
+import { UserMenuComponent } from './shared/ui/user-menu/user-menu';
 
 interface NavItem {
   label: string;
@@ -22,12 +23,17 @@ interface Environment {
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, RouterLink, BreadcrumbComponent, ButtonComponent, EmptyStateComponent, IconComponent, SearchInputComponent, StatCardComponent],
+  imports: [RouterOutlet, RouterLink, BreadcrumbComponent, ButtonComponent, EmptyStateComponent, IconComponent, SearchInputComponent, StatCardComponent, UserMenuComponent],
   templateUrl: './app.html',
   styleUrl: './app.scss',
 })
 export class AppComponent {
   protected readonly sidebarOpen = signal(true);
+
+  protected readonly currentUser = signal({
+    name: 'John Doe',
+    email: 'john@example.com',
+  });
 
   protected readonly breadcrumbs = signal<BreadcrumbItem[]>([
     { label: 'Default Project', route: '/projects/default' },

@@ -1,0 +1,25 @@
+<button
+  type="button"
+  [class]="containerClasses()"
+  [attr.aria-label]="'User menu for ' + name()"
+  aria-haspopup="true"
+  (click)="onClick()"
+>
+  <div class="user-menu__avatar">
+    @if (avatarUrl()) {
+      <img
+        class="user-menu__avatar-img"
+        [src]="avatarUrl()"
+        [alt]="name()"
+      />
+    } @else {
+      <span class="user-menu__initials">{{ initials() }}</span>
+    }
+  </div>
+  @if (!compact()) {
+    <div class="user-menu__info">
+      <span class="user-menu__name">{{ name() }}</span>
+      <span class="user-menu__email">{{ email() }}</span>
+    </div>
+  }
+</button>

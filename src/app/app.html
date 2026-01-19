@@ -45,15 +45,10 @@
     </nav>
 
     <div class="sidebar__footer">
-      <div class="user-menu">
-        <div class="user-avatar">
-          <span>U</span>
-        </div>
-        <div class="user-info">
-          <span class="user-name">User</span>
-          <span class="user-email">user&#64;example.com</span>
-        </div>
-      </div>
+      <app-user-menu
+        [name]="currentUser().name"
+        [email]="currentUser().email"
+      />
     </div>
   </aside>
 
