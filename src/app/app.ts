@@ -3,6 +3,7 @@ import { RouterLink, RouterOutlet } from '@angular/router';
 import { ButtonComponent } from './shared/ui/button/button';
 import { EmptyStateComponent } from './shared/ui/empty-state/empty-state';
 import { IconComponent, IconName } from './shared/ui/icon/icon';
+import { SearchInputComponent } from './shared/ui/search-input/search-input';
 import { StatCardComponent } from './shared/ui/stat-card/stat-card';
 
 interface NavItem {
@@ -20,7 +21,7 @@ interface Environment {
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, RouterLink, ButtonComponent, EmptyStateComponent, StatCardComponent, IconComponent],
+  imports: [RouterOutlet, RouterLink, ButtonComponent, EmptyStateComponent, IconComponent, SearchInputComponent, StatCardComponent],
   templateUrl: './app.html',
   styleUrl: './app.scss',
 })

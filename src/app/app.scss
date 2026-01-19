@@ -235,51 +235,6 @@
     }
   }
 
-  &__search {
-    position: relative;
-    display: flex;
-    align-items: center;
-  }
-}
-
-.search-icon {
-  position: absolute;
-  left: 0.75rem;
-  color: var(--text-muted);
-  pointer-events: none;
-}
-
-.search-input {
-  width: 280px;
-  padding: 0.5rem 0.75rem 0.5rem 2.25rem;
-  font-size: 0.875rem;
-  color: var(--text-primary);
-  background: var(--bg-primary);
-  border: 1px solid var(--border-primary);
-  border-radius: var(--border-radius);
-  transition: all var(--transition-fast);
-
-  &:focus {
-    outline: none;
-    border-color: var(--accent-primary);
-    box-shadow: 0 0 0 3px rgb(64 91 255 / 20%);
-  }
-
-  &::placeholder {
-    color: var(--text-muted);
-  }
-}
-
-.search-shortcut {
-  position: absolute;
-  right: 0.5rem;
-  padding: 0.125rem 0.375rem;
-  font-size: 0.75rem;
-  font-family: inherit;
-  color: var(--text-muted);
-  background: var(--bg-tertiary);
-  border: 1px solid var(--border-primary);
-  border-radius: 4px;
 }
 
 // -----------------------------------------------------------------------------
