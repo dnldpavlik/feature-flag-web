@@ -70,7 +70,7 @@ Components extracted from `app.html`:
 - [x] **SearchInput** - Search field with icon and keyboard shortcut hint
 - [x] **Breadcrumb** - Breadcrumb path with separator icons
 - [x] **UserMenu** - Avatar with user name/email dropdown trigger
-- [ ] **NavItem** - Navigation link with icon, label, and active state
+- [x] **NavItem** - Navigation link with icon, label, and active state
 - [ ] **NavSection** - Grouped nav section with title header
 
 Additional shared components:

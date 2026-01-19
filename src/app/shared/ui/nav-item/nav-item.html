@@ -1,0 +1,14 @@
+<li [class]="itemClasses()">
+  <a
+    class="nav-item__link"
+    [routerLink]="route()"
+    [attr.aria-current]="active() ? 'page' : null"
+  >
+    @if (showIndicator()) {
+      <span class="nav-item__indicator" [style.background-color]="indicatorColor()"></span>
+    } @else if (showIcon()) {
+      <app-icon [name]="icon()!" class="nav-item__icon" />
+    }
+    <span class="nav-item__label">{{ label() }}</span>
+  </a>
+</li>

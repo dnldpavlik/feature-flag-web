@@ -20,12 +20,12 @@
     <nav class="sidebar__nav">
       <ul class="nav-list">
         @for (item of navItems(); track item.label) {
-          <li class="nav-item" [class.nav-item--active]="item.active">
-            <a class="nav-link" [routerLink]="item.route">
-              <app-icon [name]="item.icon" class="nav-icon" />
-              <span class="nav-label">{{ item.label }}</span>
-            </a>
-          </li>
+          <app-nav-item
+            [label]="item.label"
+            [route]="item.route"
+            [icon]="item.icon"
+            [active]="item.active"
+          />
         }
       </ul>
 
@@ -33,12 +33,11 @@
         <span class="nav-section__title">Environments</span>
         <ul class="nav-list">
           @for (env of environments(); track env.name) {
-            <li class="nav-item">
-              <a class="nav-link">
-                <span class="env-indicator" [style.background-color]="env.color"></span>
-                <span class="nav-label">{{ env.name }}</span>
-              </a>
-            </li>
+            <app-nav-item
+              [label]="env.name"
+              [route]="env.route"
+              [indicatorColor]="env.color"
+            />
           }
         </ul>
       </div>
