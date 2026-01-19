@@ -65,7 +65,7 @@ Components extracted from `app.html`:
 
 - [x] **StatCard** - Stats display card with value and label
 - [x] **Icon** - Centralized icon component to replace inline SVGs
-- [ ] **Button** - Button component with optional leading icon
+- [x] **Button** - Button component with optional leading icon
 - [ ] **EmptyState** - Placeholder with icon, title, message, and action button
 - [ ] **SearchInput** - Search field with icon and keyboard shortcut hint
 - [ ] **Breadcrumb** - Breadcrumb path with separator icons

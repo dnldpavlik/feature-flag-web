@@ -1,5 +1,6 @@
 import { Component, signal } from '@angular/core';
 import { RouterLink, RouterOutlet } from '@angular/router';
+import { ButtonComponent } from './shared/ui/button/button';
 import { IconComponent, IconName } from './shared/ui/icon/icon';
 import { StatCardComponent } from './shared/ui/stat-card/stat-card';
 
@@ -18,7 +19,7 @@ interface Environment {
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, RouterLink, StatCardComponent, IconComponent],
+  imports: [RouterOutlet, RouterLink, ButtonComponent, StatCardComponent, IconComponent],
   templateUrl: './app.html',
   styleUrl: './app.scss',
 })

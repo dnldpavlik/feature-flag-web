@@ -62,9 +62,7 @@
     <!-- Header -->
     <header class="header">
       <div class="header__left">
-        <button class="btn btn-ghost header__menu-btn" (click)="toggleSidebar()">
-          <app-icon name="menu" />
-        </button>
+        <app-button variant="ghost" icon="menu" class="header__menu-btn" (click)="toggleSidebar()"></app-button>
         <div class="header__breadcrumb">
           <span>Default Project</span>
           <app-icon name="chevron-right" [size]="16" class="breadcrumb-separator" />
@@ -78,10 +76,7 @@
           <input type="text" placeholder="Search flags..." class="search-input">
           <kbd class="search-shortcut">/</kbd>
         </div>
-        <button class="btn btn-primary">
-          <app-icon name="plus" [size]="16" />
-          Create Flag
-        </button>
+        <app-button variant="primary" icon="plus">Create Flag</app-button>
       </div>
     </header>
 
@@ -112,10 +107,7 @@
           </div>
           <h3>No feature flags yet</h3>
           <p>Create your first feature flag to start controlling your application's features.</p>
-          <button class="btn btn-primary">
-            <app-icon name="plus" [size]="16" />
-            Create Your First Flag
-          </button>
+          <app-button variant="primary" icon="plus">Create Your First Flag</app-button>
         </div>
       </div>
 

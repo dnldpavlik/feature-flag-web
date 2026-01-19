@@ -1,0 +1,14 @@
+<button
+  [type]="type()"
+  [class]="buttonClasses()"
+  [disabled]="isDisabled()"
+  [attr.aria-disabled]="isDisabled() ? 'true' : null"
+  [attr.aria-busy]="loading() ? 'true' : null"
+>
+  @if (loading()) {
+    <span class="btn__spinner"></span>
+  } @else if (icon()) {
+    <app-icon [name]="icon()!" [size]="iconSize()" />
+  }
+  <ng-content />
+</button>
