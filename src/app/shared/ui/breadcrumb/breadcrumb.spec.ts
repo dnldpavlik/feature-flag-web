@@ -147,6 +147,18 @@ describe('Breadcrumb', () => {
     });
   });
 
+  describe('isLast', () => {
+    it('should return true only for the last index', () => {
+      fixture.componentRef.setInput('items', mockItems);
+      fixture.detectChanges();
+
+      const isLast = (component as unknown as { isLast: (index: number) => boolean }).isLast;
+      expect(isLast.call(component, 0)).toBe(false);
+      expect(isLast.call(component, 1)).toBe(false);
+      expect(isLast.call(component, 2)).toBe(true);
+    });
+  });
+
   describe('accessibility', () => {
     it('should have nav element with aria-label', () => {
       fixture.componentRef.setInput('items', mockItems);
