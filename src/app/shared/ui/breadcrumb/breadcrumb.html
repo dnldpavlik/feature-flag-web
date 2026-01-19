@@ -1,0 +1,16 @@
+<nav class="breadcrumb" aria-label="Breadcrumb">
+  @for (item of items(); track item.label; let i = $index; let last = $last) {
+    <span class="breadcrumb__item" [class.breadcrumb__item--current]="last">
+      @if (item.route && !last) {
+        <a class="breadcrumb__link" [routerLink]="item.route">{{ item.label }}</a>
+      } @else {
+        <span class="breadcrumb__current" [attr.aria-current]="last ? 'page' : null">{{ item.label }}</span>
+      }
+    </span>
+    @if (!last) {
+      <span class="breadcrumb__separator" aria-hidden="true">
+        <app-icon name="chevron-right" [size]="16" />
+      </span>
+    }
+  }
+</nav>

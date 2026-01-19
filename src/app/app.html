@@ -63,11 +63,7 @@
     <header class="header">
       <div class="header__left">
         <app-button variant="ghost" icon="menu" class="header__menu-btn" (click)="toggleSidebar()"></app-button>
-        <div class="header__breadcrumb">
-          <span>Default Project</span>
-          <app-icon name="chevron-right" [size]="16" class="breadcrumb-separator" />
-          <span class="breadcrumb-current">Feature Flags</span>
-        </div>
+        <app-breadcrumb [items]="breadcrumbs()" />
       </div>
 
       <div class="header__right">

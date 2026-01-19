@@ -218,23 +218,6 @@
     }
   }
 
-  &__breadcrumb {
-    display: flex;
-    align-items: center;
-    gap: 0.25rem;
-    font-size: 0.875rem;
-    color: var(--text-muted);
-
-    .breadcrumb-separator {
-      opacity: 0.5;
-    }
-
-    .breadcrumb-current {
-      color: var(--text-primary);
-      font-weight: 500;
-    }
-  }
-
 }
 
 // -----------------------------------------------------------------------------

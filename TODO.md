@@ -68,7 +68,7 @@ Components extracted from `app.html`:
 - [x] **Button** - Button component with optional leading icon
 - [x] **EmptyState** - Placeholder with icon, title, message, and action button
 - [x] **SearchInput** - Search field with icon and keyboard shortcut hint
-- [ ] **Breadcrumb** - Breadcrumb path with separator icons
+- [x] **Breadcrumb** - Breadcrumb path with separator icons
 - [ ] **UserMenu** - Avatar with user name/email dropdown trigger
 - [ ] **NavItem** - Navigation link with icon, label, and active state
 - [ ] **NavSection** - Grouped nav section with title header

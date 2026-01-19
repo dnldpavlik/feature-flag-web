@@ -1,5 +1,6 @@
 import { Component, signal } from '@angular/core';
 import { RouterLink, RouterOutlet } from '@angular/router';
+import { BreadcrumbComponent, BreadcrumbItem } from './shared/ui/breadcrumb/breadcrumb';
 import { ButtonComponent } from './shared/ui/button/button';
 import { EmptyStateComponent } from './shared/ui/empty-state/empty-state';
 import { IconComponent, IconName } from './shared/ui/icon/icon';
@@ -21,12 +22,17 @@ interface Environment {
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, RouterLink, ButtonComponent, EmptyStateComponent, IconComponent, SearchInputComponent, StatCardComponent],
+  imports: [RouterOutlet, RouterLink, BreadcrumbComponent, ButtonComponent, EmptyStateComponent, IconComponent, SearchInputComponent, StatCardComponent],
   templateUrl: './app.html',
   styleUrl: './app.scss',
 })
 export class AppComponent {
   protected readonly sidebarOpen = signal(true);
+
+  protected readonly breadcrumbs = signal<BreadcrumbItem[]>([
+    { label: 'Default Project', route: '/projects/default' },
+    { label: 'Feature Flags' },
+  ]);
 
   protected readonly navItems = signal<NavItem[]>([
     {
