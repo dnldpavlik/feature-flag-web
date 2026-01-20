@@ -1,3 +1,4 @@
+import { Location } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, effect, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -30,6 +31,7 @@ export class FlagDetailComponent {
   private readonly environmentStore = inject(EnvironmentStore);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
+  private readonly location = inject(Location);
 
   protected readonly flagId = signal(this.route.snapshot.paramMap.get('flagId') ?? '');
   protected readonly flag = computed(() => this.store.getFlagById(this.flagId()));
@@ -124,6 +126,18 @@ export class FlagDetailComponent {
 
   protected backToList(): void {
     void this.router.navigate(['/flags']);
+  }
+
+  protected cancelChanges(): void {
+    const current = this.flag();
+    if (current) {
+      this.name = current.name;
+      this.description = current.description;
+      this.tags = current.tags.join(', ');
+      this.setDefaultValueFields(current);
+      this.jsonError.set(null);
+    }
+    this.location.back();
   }
 
   private setDefaultValueFields(flag: Flag): void {

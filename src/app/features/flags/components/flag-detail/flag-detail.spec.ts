@@ -1,3 +1,4 @@
+import { Location } from '@angular/common';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router, convertToParamMap, provideRouter } from '@angular/router';
 import { By } from '@angular/platform-browser';
@@ -22,6 +23,7 @@ describe('FlagDetail', () => {
   let fixture: ComponentFixture<FlagDetailComponent>;
   let store: FlagStore;
   let router: Router;
+  let location: Location;
 
   const build = async (flagId?: string) => {
     TestBed.resetTestingModule();
@@ -31,6 +33,10 @@ describe('FlagDetail', () => {
         FlagStore,
         EnvironmentStore,
         provideRouter([]),
+        {
+          provide: Location,
+          useValue: { back: jest.fn() },
+        },
         {
           provide: ActivatedRoute,
           useValue: {
@@ -45,6 +51,7 @@ describe('FlagDetail', () => {
     fixture = TestBed.createComponent(FlagDetailComponent);
     store = TestBed.inject(FlagStore);
     router = TestBed.inject(Router);
+    location = TestBed.inject(Location);
     fixture.detectChanges();
   };
 
@@ -352,6 +359,30 @@ describe('FlagDetail', () => {
     await build();
 
     expect((fixture.componentInstance as FlagDetailInternals).flagId()).toBe('');
+  });
+
+  it('should discard edits and navigate back on cancel', async () => {
+    await build('flag_beta_theme');
+
+    fixture.componentInstance.name = 'Changed Name';
+    fixture.componentInstance.tags = 'one, two';
+    fixture.componentInstance.stringValue = 'temporary';
+
+    fixture.componentInstance.cancelChanges();
+
+    const current = store.getFlagById('flag_beta_theme');
+    expect(fixture.componentInstance.name).toBe(current?.name);
+    expect(fixture.componentInstance.tags).toBe(current?.tags.join(', '));
+    expect(fixture.componentInstance.stringValue).toBe(current?.defaultValue);
+    expect(location.back).toHaveBeenCalled();
+  });
+
+  it('should navigate back on cancel when flag is missing', async () => {
+    await build('missing_flag');
+
+    fixture.componentInstance.cancelChanges();
+
+    expect(location.back).toHaveBeenCalled();
   });
 
   it('should navigate back to list', async () => {
