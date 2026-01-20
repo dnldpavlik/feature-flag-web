@@ -26,7 +26,7 @@ default:
 install:
   stage: install
   script:
-    - npm ci
+    - npm install
   cache:
     key:
       files:
