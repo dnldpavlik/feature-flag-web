@@ -1,0 +1,49 @@
+<aside class="sidebar">
+  <div class="sidebar__header">
+    <div class="sidebar__logo">
+      <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="32" height="32" rx="8" fill="url(#logo-gradient)"/>
+        <path d="M9 16.5L13.5 21L23 11" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <defs>
+          <linearGradient id="logo-gradient" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse">
+            <stop stop-color="#405bff"/>
+            <stop offset="1" stop-color="#6366f1"/>
+          </linearGradient>
+        </defs>
+      </svg>
+      <span class="sidebar__title">Feature Flags</span>
+    </div>
+  </div>
+
+  <nav class="sidebar__nav">
+    <ul class="nav-list">
+      @for (item of navItems(); track item.label) {
+        <app-nav-item
+          [label]="item.label"
+          [route]="item.route"
+          [icon]="item.icon"
+          [active]="item.active"
+        />
+      }
+    </ul>
+
+    <app-nav-section title="Environments">
+      <ul class="nav-list">
+        @for (env of environments(); track env.name) {
+          <app-nav-item
+            [label]="env.name"
+            [route]="env.route"
+            [indicatorColor]="env.color"
+          />
+        }
+      </ul>
+    </app-nav-section>
+  </nav>
+
+  <div class="sidebar__footer">
+    <app-user-menu
+      [name]="currentUser().name"
+      [email]="currentUser().email"
+    />
+  </div>
+</aside>
