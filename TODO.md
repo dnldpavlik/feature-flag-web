@@ -26,9 +26,9 @@ Development task tracker organized by phase and priority.
 - [x] Configure ESLint with strict rules
 - [x] Configure Prettier
 - [ ] Set up Husky pre-commit hooks
-- [ ] Configure path aliases (@ for src)
+- [x] Configure path aliases (@ for src)
 - [x] Set up environment configuration system
-- [ ] Create initial CI/CD pipeline configuration
+- [x] Create initial CI/CD pipeline configuration
 
 ### Core Infrastructure 🔴
 
@@ -95,6 +95,7 @@ Additional shared components:
 ### Flag Management 🔴
 
 #### Flag Store
+
 - [ ] Create Flag interface/types
 - [ ] Implement FlagStore with signals
 - [ ] Add flag loading action
@@ -104,6 +105,7 @@ Additional shared components:
 - [ ] Write store unit tests
 
 #### Flag List View
+
 - [ ] Create flag list container component
 - [ ] Create flag list item component
 - [ ] Implement search functionality
@@ -115,6 +117,7 @@ Additional shared components:
 - [ ] Write component tests
 
 #### Flag Detail View
+
 - [ ] Create flag detail container component
 - [ ] Create flag header component
 - [ ] Create flag overview tab
@@ -124,6 +127,7 @@ Additional shared components:
 - [ ] Write component tests
 
 #### Flag Creation
+
 - [ ] Create flag creation wizard component
 - [ ] Step 1: Basic info form
 - [ ] Step 2: Type and variations form
@@ -135,12 +139,14 @@ Additional shared components:
 ### Environment Management 🔴
 
 #### Environment Store
+
 - [ ] Create Environment interface/types
 - [ ] Implement EnvironmentStore with signals
 - [ ] Add environment CRUD actions
 - [ ] Write store unit tests
 
 #### Environment UI
+
 - [ ] Create environment list component
 - [ ] Create environment card component
 - [ ] Create environment creation dialog
@@ -153,12 +159,14 @@ Additional shared components:
 ### Project Management 🔴
 
 #### Project Store
+
 - [ ] Create Project interface/types
 - [ ] Implement ProjectStore with signals
 - [ ] Add project CRUD actions
 - [ ] Write store unit tests
 
 #### Project UI
+
 - [ ] Create project list view
 - [ ] Create project card component
 - [ ] Create project creation dialog
@@ -188,11 +196,13 @@ Additional shared components:
 ### Segments 🟡
 
 #### Segment Store
+
 - [ ] Create Segment interface/types
 - [ ] Implement SegmentStore with signals
 - [ ] Write store unit tests
 
 #### Segment UI
+
 - [ ] Create segment list view
 - [ ] Create segment detail/edit view
 - [ ] Create segment builder (similar to rules)
@@ -338,4 +348,4 @@ Additional shared components:
 
 ---
 
-*Last updated: 2026-01-14*
+_Last updated: 2026-01-14_
