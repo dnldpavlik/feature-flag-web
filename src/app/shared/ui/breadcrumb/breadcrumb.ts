@@ -20,7 +20,7 @@ export interface BreadcrumbItem {
 })
 export class BreadcrumbComponent {
   /** Array of breadcrumb items to display */
-  readonly items = input.required<BreadcrumbItem[]>();
+  readonly items = input.required<readonly BreadcrumbItem[]>();
 
   /** Check if an item is the last (current) item */
   protected isLast(index: number): boolean {
