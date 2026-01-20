@@ -14,7 +14,7 @@ import { SearchInputComponent } from '../../ui/search-input/search-input';
 })
 export class HeaderComponent {
   /** Breadcrumb items for the current page */
-  readonly breadcrumbs = input.required<ReadonlyArray<BreadcrumbItem>>();
+  readonly breadcrumbs = input.required<readonly BreadcrumbItem[]>();
 
   /** Emits when the menu toggle button is pressed */
   readonly menuToggle = output<void>();

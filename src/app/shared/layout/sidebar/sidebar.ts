@@ -33,10 +33,10 @@ export interface SidebarUser {
 })
 export class SidebarComponent {
   /** Primary navigation items */
-  readonly navItems = input.required<ReadonlyArray<SidebarNavItem>>();
+  readonly navItems = input.required<readonly SidebarNavItem[]>();
 
   /** Environment links shown in the section list */
-  readonly environments = input.required<ReadonlyArray<SidebarEnvironment>>();
+  readonly environments = input.required<readonly SidebarEnvironment[]>();
 
   /** User identity for the footer menu */
   readonly currentUser = input.required<SidebarUser>();
