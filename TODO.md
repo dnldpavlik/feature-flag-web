@@ -71,7 +71,7 @@ Components extracted from `app.html`:
 - [x] **Breadcrumb** - Breadcrumb path with separator icons
 - [x] **UserMenu** - Avatar with user name/email dropdown trigger
 - [x] **NavItem** - Navigation link with icon, label, and active state
-- [ ] **NavSection** - Grouped nav section with title header
+- [x] **NavSection** - Grouped nav section with title header
 
 Additional shared components:
 

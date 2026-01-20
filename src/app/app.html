@@ -29,8 +29,7 @@
         }
       </ul>
 
-      <div class="nav-section">
-        <span class="nav-section__title">Environments</span>
+      <app-nav-section title="Environments">
         <ul class="nav-list">
           @for (env of environments(); track env.name) {
             <app-nav-item
@@ -40,7 +39,7 @@
             />
           }
         </ul>
-      </div>
+      </app-nav-section>
     </nav>
 
     <div class="sidebar__footer">

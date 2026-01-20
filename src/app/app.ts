@@ -5,6 +5,7 @@ import { ButtonComponent } from './shared/ui/button/button';
 import { EmptyStateComponent } from './shared/ui/empty-state/empty-state';
 import { IconComponent, IconName } from './shared/ui/icon/icon';
 import { NavItemComponent } from './shared/ui/nav-item/nav-item';
+import { NavSectionComponent } from './shared/ui/nav-section/nav-section';
 import { SearchInputComponent } from './shared/ui/search-input/search-input';
 import { StatCardComponent } from './shared/ui/stat-card/stat-card';
 import { UserMenuComponent } from './shared/ui/user-menu/user-menu';
@@ -25,7 +26,7 @@ interface Environment {
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, RouterLink, BreadcrumbComponent, ButtonComponent, EmptyStateComponent, IconComponent, NavItemComponent, SearchInputComponent, StatCardComponent, UserMenuComponent],
+  imports: [RouterOutlet, RouterLink, BreadcrumbComponent, ButtonComponent, EmptyStateComponent, IconComponent, NavItemComponent, NavSectionComponent, SearchInputComponent, StatCardComponent, UserMenuComponent],
   templateUrl: './app.html',
   styleUrl: './app.scss',
 })
