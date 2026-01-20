@@ -1,0 +1,84 @@
+<section class="flags-page">
+  <header class="flags-page__header">
+    <div>
+      <h1>Feature Flags</h1>
+      <p class="text-secondary">Ship safely with targeted rollouts and instant kill switches.</p>
+    </div>
+  </header>
+
+  <div class="flags-toolbar">
+    <div class="flags-toolbar__filters">
+      <label class="flags-toolbar__label">
+        Status
+        <select class="flags-select" (change)="onStatusChange($event)">
+          <option value="all">All</option>
+          <option value="enabled">Enabled</option>
+          <option value="disabled">Disabled</option>
+        </select>
+      </label>
+      <label class="flags-toolbar__label">
+        Type
+        <select class="flags-select" (change)="onTypeChange($event)">
+          <option value="all">All</option>
+          <option value="boolean">Boolean</option>
+          <option value="string">String</option>
+          <option value="number">Number</option>
+          <option value="json">JSON</option>
+        </select>
+      </label>
+    </div>
+    <div class="flags-toolbar__meta">
+      <span class="flags-toolbar__count text-muted">
+        {{ filteredCount() }} of {{ totalCount() }} flags
+      </span>
+      <app-button variant="ghost">Export</app-button>
+    </div>
+  </div>
+
+  @if (filteredFlags().length === 0) {
+    <app-empty-state
+      title="No flags found"
+      message="Try adjusting your filters or create a new flag to get started."
+    >
+    </app-empty-state>
+  } @else {
+    <div class="flags-table">
+      <div class="flags-table__header">
+        <span>Flag</span>
+        <span>Status</span>
+        <span>Type</span>
+        <span>Tags</span>
+        <span>Updated</span>
+      </div>
+      @for (flag of filteredFlags(); track flag.key) {
+        <div class="flags-table__row">
+          <div class="flag-cell flag-cell--name">
+            <div class="flag-cell__title">{{ flag.name }}</div>
+            <div class="flag-cell__meta text-muted">{{ flag.key }}</div>
+            <div class="flag-cell__description text-secondary">{{ flag.description }}</div>
+          </div>
+          <div class="flag-cell">
+            <div class="flag-status">
+              <label class="toggle">
+                <input type="checkbox" [checked]="flag.enabled" />
+                <span class="toggle__slider"></span>
+              </label>
+              <span class="flag-status__label">
+                {{ flag.enabled ? 'Enabled' : 'Disabled' }}
+              </span>
+            </div>
+          </div>
+          <div class="flag-cell">
+            <span class="badge badge--info">{{ flag.type }}</span>
+          </div>
+          <div class="flag-cell flag-cell--tags">
+            @for (tag of flag.tags; track tag) {
+              <span class="badge badge--success">{{ tag }}</span>
+            }
+          </div>
+          <div class="flag-cell text-muted">{{ flag.updatedAt }}</div>
+        </div>
+      }
+    </div>
+  }
+</section>
