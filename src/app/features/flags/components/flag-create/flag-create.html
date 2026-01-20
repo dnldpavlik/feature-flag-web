@@ -43,7 +43,7 @@
     <div class="flag-create__row">
       <label class="flag-create__field">
         <span class="flag-create__label">Type</span>
-        <select class="form-input" name="type" [(ngModel)]="type">
+        <select class="form-input" name="type" [ngModel]="type()" (ngModelChange)="onTypeChange($event)">
           <option value="boolean">Boolean</option>
           <option value="string">String</option>
           <option value="number">Number</option>
@@ -62,10 +62,73 @@
       </label>
     </div>
 
-    <label class="flag-create__toggle">
-      <input type="checkbox" name="enabled" [(ngModel)]="enabled" />
-      <span>Enable flag on creation</span>
-    </label>
+    <div class="flag-create__field">
+      <span class="flag-create__label">Default Value</span>
+      <span class="flag-create__help text-muted">This value will be used as the initial value in all environments.</span>
+
+      @if (type() === 'boolean') {
+        <label class="flag-create__toggle">
+          <input type="checkbox" name="booleanValue" [(ngModel)]="booleanValue" />
+          <span>{{ booleanValue ? 'True' : 'False' }}</span>
+        </label>
+      }
+
+      @if (type() === 'string') {
+        <input
+          class="form-input"
+          name="stringValue"
+          [(ngModel)]="stringValue"
+          placeholder="Enter default string value"
+        />
+      }
+
+      @if (type() === 'number') {
+        <input
+          class="form-input"
+          name="numberValue"
+          type="number"
+          [(ngModel)]="numberValue"
+          placeholder="0"
+        />
+      }
+
+      @if (type() === 'json') {
+        <textarea
+          class="form-input flag-create__textarea flag-create__json"
+          name="jsonValue"
+          rows="4"
+          [(ngModel)]="jsonValue"
+          (blur)="validateJson()"
+          placeholder='{"key": "value"}'
+        ></textarea>
+        @if (jsonError()) {
+          <span class="flag-create__error">{{ jsonError() }}</span>
+        }
+      }
+    </div>
+
+    <div class="flag-create__field">
+      <span class="flag-create__label">Enable in Environments</span>
+      <span class="flag-create__help text-muted">Choose which environments this flag should be enabled in.</span>
+
+      <div class="flag-create__environments">
+        @for (env of environmentsWithEnabled(); track env.id) {
+          <label class="flag-create__env-toggle">
+            <input
+              type="checkbox"
+              [checked]="env.enabled"
+              (change)="toggleEnvironment(env.id, $any($event.target).checked)"
+            />
+            <span
+              class="flag-create__env-badge"
+              [style.--env-color]="env.color"
+            >
+              {{ env.name }}
+            </span>
+          </label>
+        }
+      </div>
+    </div>
 
     <div class="flag-create__actions">
       <app-button variant="ghost" type="button" (click)="cancel()">Cancel</app-button>

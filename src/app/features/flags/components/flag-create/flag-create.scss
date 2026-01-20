@@ -62,3 +62,45 @@
   justify-content: flex-end;
   gap: 0.75rem;
 }
+
+.flag-create__error {
+  color: var(--color-error, #ef4444);
+  font-size: 0.75rem;
+}
+
+.flag-create__json {
+  font-family: var(--font-mono, monospace);
+  font-size: 0.875rem;
+}
+
+.flag-create__environments {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.flag-create__env-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+
+  input[type='checkbox'] {
+    width: 1rem;
+    height: 1rem;
+    cursor: pointer;
+  }
+}
+
+.flag-create__env-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  border-radius: var(--border-radius-sm, 4px);
+  background-color: color-mix(in srgb, var(--env-color, #6b7280) 15%, transparent);
+  color: var(--env-color, #6b7280);
+  border: 1px solid color-mix(in srgb, var(--env-color, #6b7280) 30%, transparent);
+}

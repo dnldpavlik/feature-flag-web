@@ -9,6 +9,16 @@
   <div class="flags-toolbar">
     <div class="flags-toolbar__filters">
       <label class="flags-toolbar__label">
+        Environment
+        <select class="flags-select flags-select--environment" (change)="onEnvironmentChange($event)">
+          @for (env of environments(); track env.id) {
+            <option [value]="env.id" [selected]="env.id === selectedEnvironment()?.id">
+              {{ env.name }}
+            </option>
+          }
+        </select>
+      </label>
+      <label class="flags-toolbar__label">
         Status
         <select class="flags-select" (change)="onStatusChange($event)">
           <option value="all">All</option>
@@ -46,6 +56,7 @@
       <div class="flags-table__header">
         <span>Flag</span>
         <span>Status</span>
+        <span>Value</span>
         <span>Type</span>
         <span>Tags</span>
         <span>Updated</span>
@@ -60,13 +71,20 @@
           <div class="flag-cell">
             <div class="flag-status">
               <label class="toggle">
-                <input type="checkbox" [checked]="flag.enabled" />
+                <input
+                  type="checkbox"
+                  [checked]="flag.currentEnabled"
+                  (change)="onToggleFlag(flag.id, $event)"
+                />
                 <span class="toggle__slider"></span>
               </label>
               <span class="flag-status__label">
-                {{ flag.enabled ? 'Enabled' : 'Disabled' }}
+                {{ flag.currentEnabled ? 'Enabled' : 'Disabled' }}
               </span>
             </div>
+          </div>
+          <div class="flag-cell flag-cell--value">
+            <code class="flag-value">{{ formatValue(flag) }}</code>
           </div>
           <div class="flag-cell">
             <span class="badge badge--info">{{ flag.type }}</span>
