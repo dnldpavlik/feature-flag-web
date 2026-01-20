@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
 import { By } from '@angular/platform-browser';
 
 import { EnvironmentStore } from '../../store/environment.store';
@@ -14,7 +15,7 @@ describe('FlagList', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [FlagListComponent],
-      providers: [FlagStore, EnvironmentStore],
+      providers: [FlagStore, EnvironmentStore, provideRouter([])],
     }).compileComponents();
 
     fixture = TestBed.createComponent(FlagListComponent);

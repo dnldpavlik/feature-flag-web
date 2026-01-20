@@ -64,7 +64,9 @@
       @for (flag of filteredFlags(); track flag.key) {
         <div class="flags-table__row">
           <div class="flag-cell flag-cell--name">
-            <div class="flag-cell__title">{{ flag.name }}</div>
+            <a class="flag-cell__title flag-cell__link" [routerLink]="['/flags', flag.id]">
+              {{ flag.name }}
+            </a>
             <div class="flag-cell__meta text-muted">{{ flag.key }}</div>
             <div class="flag-cell__description text-secondary">{{ flag.description }}</div>
           </div>

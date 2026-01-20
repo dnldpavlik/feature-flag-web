@@ -1,0 +1,139 @@
+.flag-detail {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.flag-detail__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+
+  h1 {
+    margin-bottom: 0.25rem;
+  }
+}
+
+.flag-detail__back {
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  padding: 0;
+  font-size: 0.875rem;
+  cursor: pointer;
+  margin-bottom: 0.5rem;
+
+  &:hover {
+    color: var(--text-primary);
+  }
+}
+
+.flag-detail__actions {
+  flex-shrink: 0;
+}
+
+.flag-detail__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1.5rem;
+}
+
+.flag-detail__card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--border-radius-lg);
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+
+  h2 {
+    font-size: 1rem;
+  }
+}
+
+.flag-detail__field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.flag-detail__label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+}
+
+.flag-detail__textarea {
+  min-height: 96px;
+  resize: vertical;
+}
+
+.flag-detail__toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--text-secondary);
+}
+
+.flag-detail__help {
+  margin: 0;
+  font-size: 0.875rem;
+}
+
+.flag-detail__error {
+  color: var(--color-error);
+  font-size: 0.75rem;
+}
+
+.flag-detail__env-table {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.flag-detail__env-header,
+.flag-detail__env-row {
+  display: grid;
+  grid-template-columns: 1.2fr 0.6fr 1fr;
+  gap: 1rem;
+  align-items: center;
+}
+
+.flag-detail__env-header {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+}
+
+.flag-detail__env-row {
+  padding: 0.5rem 0;
+  border-top: 1px solid var(--border-secondary);
+}
+
+.flag-detail__env-name {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.flag-detail__env-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--env-color, var(--text-muted));
+}
+
+@media (width <= 768px) {
+  .flag-detail__env-header {
+    display: none;
+  }
+
+  .flag-detail__env-row {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+  }
+}

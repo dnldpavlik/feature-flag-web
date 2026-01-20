@@ -124,6 +124,14 @@
   font-size: 0.95rem;
 }
 
+.flag-cell__link {
+  color: var(--text-primary);
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
 .flag-cell__meta {
   font-size: 0.75rem;
 }

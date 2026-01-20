@@ -155,6 +155,24 @@ export class FlagStore {
     return this._flags().find((f) => f.id === id);
   }
 
+  updateFlagDetails(
+    flagId: string,
+    updates: Partial<Pick<Flag, 'name' | 'description' | 'tags' | 'defaultValue'>>
+  ): void {
+    const stamp = nowStamp();
+
+    this._flags.update((flags) =>
+      flags.map((flag) => {
+        if (flag.id !== flagId) return flag;
+        return {
+          ...flag,
+          ...updates,
+          updatedAt: stamp,
+        };
+      })
+    );
+  }
+
   updateEnvironmentValue(input: UpdateEnvironmentValueInput): void {
     this._flags.update((flags) =>
       flags.map((flag) => {

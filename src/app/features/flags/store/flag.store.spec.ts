@@ -144,6 +144,25 @@ describe('FlagStore', () => {
     });
   });
 
+  describe('updateFlagDetails', () => {
+    it('should update name, description, tags, and default value', () => {
+      const flag = store.flags()[0];
+
+      store.updateFlagDetails(flag.id, {
+        name: 'Renamed Flag',
+        description: 'Updated description',
+        tags: ['alpha', 'beta'],
+        defaultValue: false,
+      });
+
+      const updated = store.getFlagById(flag.id);
+      expect(updated?.name).toBe('Renamed Flag');
+      expect(updated?.description).toBe('Updated description');
+      expect(updated?.tags).toEqual(['alpha', 'beta']);
+      expect(updated?.defaultValue).toBe(false);
+    });
+  });
+
   describe('updateEnvironmentValue', () => {
     it('should update value in specific environment', () => {
       const flag = store.flags()[0];

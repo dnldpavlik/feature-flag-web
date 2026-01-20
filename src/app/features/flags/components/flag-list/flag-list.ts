@@ -1,5 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 
+import { RouterLink } from '@angular/router';
+
 import { ButtonComponent } from '../../../../shared/ui/button/button';
 import { EmptyStateComponent } from '../../../../shared/ui/empty-state/empty-state';
 import { Flag, FlagType } from '../../models/flag.model';
@@ -21,7 +23,7 @@ interface FlagWithEnvironmentStatus extends Flag {
 
 @Component({
   selector: 'app-flag-list',
-  imports: [ButtonComponent, EmptyStateComponent],
+  imports: [ButtonComponent, EmptyStateComponent, RouterLink],
   templateUrl: './flag-list.html',
   styleUrl: './flag-list.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
