@@ -1,34 +1,61 @@
+import { Component } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { provideRouter } from '@angular/router';
+import { Router, Routes, provideRouter } from '@angular/router';
 import { By } from '@angular/platform-browser';
 
 import { NavItemComponent } from './nav-item';
 
+@Component({
+  selector: 'app-nav-item-host',
+  template: `
+    <app-nav-item
+      [label]="label"
+      [route]="route"
+      [icon]="icon"
+      [indicatorColor]="indicatorColor"
+    />
+  `,
+  imports: [NavItemComponent],
+})
+class NavItemHostComponent {
+  label = 'Dashboard';
+  route = '/dashboard';
+  icon: 'home' | undefined = 'home';
+  indicatorColor: string | undefined;
+}
+
+@Component({
+  selector: 'app-nav-item-route-dummy',
+  template: '',
+  standalone: true,
+})
+class NavItemRouteDummyComponent {}
+
 describe('NavItem', () => {
-  let component: NavItemComponent;
-  let fixture: ComponentFixture<NavItemComponent>;
+  let fixture: ComponentFixture<NavItemHostComponent>;
+  let router: Router;
+  const routes: Routes = [
+    { path: 'dashboard', component: NavItemRouteDummyComponent },
+    { path: 'settings', component: NavItemRouteDummyComponent },
+  ];
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [NavItemComponent],
-      providers: [provideRouter([])],
+      imports: [NavItemHostComponent],
+      providers: [provideRouter(routes)],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(NavItemComponent);
-    component = fixture.componentInstance;
+    fixture = TestBed.createComponent(NavItemHostComponent);
+    router = TestBed.inject(Router);
   });
 
   it('should create', () => {
-    fixture.componentRef.setInput('label', 'Dashboard');
-    fixture.componentRef.setInput('route', '/dashboard');
     fixture.detectChanges();
-    expect(component).toBeTruthy();
+    expect(fixture.componentInstance).toBeTruthy();
   });
 
   describe('rendering', () => {
     it('should render as a list item', () => {
-      fixture.componentRef.setInput('label', 'Dashboard');
-      fixture.componentRef.setInput('route', '/dashboard');
       fixture.detectChanges();
 
       const li = fixture.debugElement.query(By.css('li'));
@@ -36,8 +63,6 @@ describe('NavItem', () => {
     });
 
     it('should render a link element', () => {
-      fixture.componentRef.setInput('label', 'Dashboard');
-      fixture.componentRef.setInput('route', '/dashboard');
       fixture.detectChanges();
 
       const link = fixture.debugElement.query(By.css('a.nav-item__link'));
@@ -45,8 +70,8 @@ describe('NavItem', () => {
     });
 
     it('should render the label', () => {
-      fixture.componentRef.setInput('label', 'Feature Flags');
-      fixture.componentRef.setInput('route', '/flags');
+      fixture.componentInstance.label = 'Feature Flags';
+      fixture.componentInstance.route = '/flags';
       fixture.detectChanges();
 
       const label = fixture.debugElement.query(By.css('.nav-item__label'));
@@ -57,9 +82,7 @@ describe('NavItem', () => {
 
   describe('icon', () => {
     it('should render icon when provided', () => {
-      fixture.componentRef.setInput('label', 'Dashboard');
-      fixture.componentRef.setInput('route', '/dashboard');
-      fixture.componentRef.setInput('icon', 'home');
+      fixture.componentInstance.icon = 'home';
       fixture.detectChanges();
 
       const icon = fixture.debugElement.query(By.css('app-icon'));
@@ -67,8 +90,7 @@ describe('NavItem', () => {
     });
 
     it('should not render icon when not provided', () => {
-      fixture.componentRef.setInput('label', 'Dashboard');
-      fixture.componentRef.setInput('route', '/dashboard');
+      fixture.componentInstance.icon = undefined;
       fixture.detectChanges();
 
       const icon = fixture.debugElement.query(By.css('app-icon'));
@@ -78,9 +100,9 @@ describe('NavItem', () => {
 
   describe('indicator', () => {
     it('should render indicator when indicatorColor is provided', () => {
-      fixture.componentRef.setInput('label', 'Production');
-      fixture.componentRef.setInput('route', '/env/prod');
-      fixture.componentRef.setInput('indicatorColor', '#f85149');
+      fixture.componentInstance.label = 'Production';
+      fixture.componentInstance.route = '/env/prod';
+      fixture.componentInstance.indicatorColor = '#f85149';
       fixture.detectChanges();
 
       const indicator = fixture.debugElement.query(By.css('.nav-item__indicator'));
@@ -88,9 +110,9 @@ describe('NavItem', () => {
     });
 
     it('should apply indicator color as background', () => {
-      fixture.componentRef.setInput('label', 'Production');
-      fixture.componentRef.setInput('route', '/env/prod');
-      fixture.componentRef.setInput('indicatorColor', '#f85149');
+      fixture.componentInstance.label = 'Production';
+      fixture.componentInstance.route = '/env/prod';
+      fixture.componentInstance.indicatorColor = '#f85149';
       fixture.detectChanges();
 
       const indicator = fixture.debugElement.query(By.css('.nav-item__indicator'));
@@ -98,8 +120,7 @@ describe('NavItem', () => {
     });
 
     it('should not render indicator when not provided', () => {
-      fixture.componentRef.setInput('label', 'Dashboard');
-      fixture.componentRef.setInput('route', '/dashboard');
+      fixture.componentInstance.indicatorColor = undefined;
       fixture.detectChanges();
 
       const indicator = fixture.debugElement.query(By.css('.nav-item__indicator'));
@@ -107,10 +128,10 @@ describe('NavItem', () => {
     });
 
     it('should not render icon when indicator is shown', () => {
-      fixture.componentRef.setInput('label', 'Production');
-      fixture.componentRef.setInput('route', '/env/prod');
-      fixture.componentRef.setInput('icon', 'flag');
-      fixture.componentRef.setInput('indicatorColor', '#f85149');
+      fixture.componentInstance.label = 'Production';
+      fixture.componentInstance.route = '/env/prod';
+      fixture.componentInstance.icon = 'flag';
+      fixture.componentInstance.indicatorColor = '#f85149';
       fixture.detectChanges();
 
       const icon = fixture.debugElement.query(By.css('app-icon'));
@@ -119,19 +140,22 @@ describe('NavItem', () => {
   });
 
   describe('active state', () => {
-    it('should not be active by default', () => {
-      fixture.componentRef.setInput('label', 'Dashboard');
-      fixture.componentRef.setInput('route', '/dashboard');
+    it('should not be active when route does not match', async () => {
+      fixture.componentInstance.route = '/settings';
+      await router.navigateByUrl('/dashboard');
+      fixture.detectChanges();
+      await fixture.whenStable();
       fixture.detectChanges();
 
       const li = fixture.debugElement.query(By.css('li'));
       expect(li.nativeElement.classList.contains('nav-item--active')).toBe(false);
     });
 
-    it('should apply active class when active is true', () => {
-      fixture.componentRef.setInput('label', 'Dashboard');
-      fixture.componentRef.setInput('route', '/dashboard');
-      fixture.componentRef.setInput('active', true);
+    it('should apply active class when route matches', async () => {
+      fixture.componentInstance.route = '/dashboard';
+      await router.navigateByUrl('/dashboard');
+      fixture.detectChanges();
+      await fixture.whenStable();
       fixture.detectChanges();
 
       const li = fixture.debugElement.query(By.css('li'));
@@ -141,8 +165,8 @@ describe('NavItem', () => {
 
   describe('routing', () => {
     it('should have routerLink directive on link', () => {
-      fixture.componentRef.setInput('label', 'Settings');
-      fixture.componentRef.setInput('route', '/settings');
+      fixture.componentInstance.label = 'Settings';
+      fixture.componentInstance.route = '/settings';
       fixture.detectChanges();
 
       const link = fixture.debugElement.query(By.css('a'));
@@ -153,20 +177,22 @@ describe('NavItem', () => {
   });
 
   describe('accessibility', () => {
-    it('should have aria-current when active', () => {
-      fixture.componentRef.setInput('label', 'Dashboard');
-      fixture.componentRef.setInput('route', '/dashboard');
-      fixture.componentRef.setInput('active', true);
+    it('should have aria-current when active', async () => {
+      fixture.componentInstance.route = '/dashboard';
+      await router.navigateByUrl('/dashboard');
+      fixture.detectChanges();
+      await fixture.whenStable();
       fixture.detectChanges();
 
       const link = fixture.debugElement.query(By.css('a'));
       expect(link.nativeElement.getAttribute('aria-current')).toBe('page');
     });
 
-    it('should not have aria-current when not active', () => {
-      fixture.componentRef.setInput('label', 'Dashboard');
-      fixture.componentRef.setInput('route', '/dashboard');
-      fixture.componentRef.setInput('active', false);
+    it('should not have aria-current when not active', async () => {
+      fixture.componentInstance.route = '/settings';
+      await router.navigateByUrl('/dashboard');
+      fixture.detectChanges();
+      await fixture.whenStable();
       fixture.detectChanges();
 
       const link = fixture.debugElement.query(By.css('a'));

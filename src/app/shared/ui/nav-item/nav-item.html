@@ -1,8 +1,13 @@
-<li [class]="itemClasses()">
+<li
+  class="nav-item"
+  routerLinkActive="nav-item--active"
+  [routerLinkActiveOptions]="{ exact: true }"
+  #activeState="routerLinkActive"
+>
   <a
     class="nav-item__link"
     [routerLink]="route()"
-    [attr.aria-current]="active() ? 'page' : null"
+    [attr.aria-current]="activeState.isActive ? 'page' : null"
   >
     @if (showIndicator()) {
       <span class="nav-item__indicator" [style.background-color]="indicatorColor()"></span>

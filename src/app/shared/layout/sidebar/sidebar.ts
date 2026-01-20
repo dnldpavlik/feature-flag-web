@@ -9,7 +9,6 @@ export interface SidebarNavItem {
   label: string;
   route: string;
   icon: IconName;
-  active: boolean;
 }
 
 export interface SidebarEnvironment {

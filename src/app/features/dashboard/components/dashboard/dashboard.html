@@ -1,0 +1,26 @@
+<div class="welcome-section">
+  <h1>Feature Flags</h1>
+  <p class="text-secondary">Manage your feature flags across all environments</p>
+
+  <div class="stats-grid">
+    <app-stat-card value="0" label="Total Flags" />
+    <app-stat-card value="0" label="Active" />
+    <app-stat-card value="0" label="Inactive" />
+    <app-stat-card value="3" label="Environments" />
+  </div>
+
+  <app-empty-state
+    title="No feature flags yet"
+    message="Create your first feature flag to start controlling your application's features."
+  >
+    <svg empty-state-icon width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="4" y="8" width="40" height="32" rx="4" stroke="currentColor" stroke-width="2"/>
+      <path d="M4 16h40" stroke="currentColor" stroke-width="2"/>
+      <circle cx="10" cy="12" r="2" fill="currentColor"/>
+      <circle cx="16" cy="12" r="2" fill="currentColor"/>
+      <circle cx="22" cy="12" r="2" fill="currentColor"/>
+      <path d="M16 28h16M16 34h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+    </svg>
+    <app-button empty-state-action variant="primary" icon="plus">Create Your First Flag</app-button>
+  </app-empty-state>
+</div>

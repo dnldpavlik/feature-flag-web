@@ -18,7 +18,7 @@ import { SidebarComponent, SidebarEnvironment, SidebarNavItem, SidebarUser } fro
 })
 class SidebarHostComponent {
   navItems: SidebarNavItem[] = [
-    { label: 'Dashboard', route: '/dashboard', icon: 'home', active: true },
+    { label: 'Dashboard', route: '/dashboard', icon: 'home' },
   ];
   environments: SidebarEnvironment[] = [
     { name: 'Production', color: '#f85149', route: '/env/production' },

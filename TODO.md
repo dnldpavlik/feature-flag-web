@@ -33,7 +33,7 @@ Development task tracker organized by phase and priority.
 ### Core Infrastructure 🔴
 
 - [x] Implement app shell (header, sidebar, main content area)
-- [ ] Set up routing structure with lazy loading
+- [x] Set up routing structure with lazy loading
 - [ ] Create base API client service with error handling
 - [ ] Implement HTTP interceptor for auth tokens
 - [ ] Implement HTTP interceptor for error handling

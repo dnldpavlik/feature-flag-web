@@ -27,24 +27,6 @@
   background: var(--bg-primary);
 }
 
-.welcome-section {
-  h1 {
-    margin-bottom: 0.5rem;
-  }
-
-  > p {
-    margin-bottom: 2rem;
-  }
-}
-
-// Stats Grid
-.stats-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: 1rem;
-  margin-bottom: 2rem;
-}
-
 // -----------------------------------------------------------------------------
 // Responsive
 // -----------------------------------------------------------------------------

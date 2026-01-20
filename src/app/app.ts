@@ -1,18 +1,14 @@
 import { Component, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { BreadcrumbItem } from './shared/ui/breadcrumb/breadcrumb';
-import { ButtonComponent } from './shared/ui/button/button';
-import { EmptyStateComponent } from './shared/ui/empty-state/empty-state';
 import { IconName } from './shared/ui/icon/icon';
 import { HeaderComponent } from './shared/layout/header/header';
 import { SidebarComponent } from './shared/layout/sidebar/sidebar';
-import { StatCardComponent } from './shared/ui/stat-card/stat-card';
 
 interface NavItem {
   label: string;
   route: string;
   icon: IconName;
-  active: boolean;
 }
 
 interface Environment {
@@ -24,7 +20,7 @@ interface Environment {
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, ButtonComponent, EmptyStateComponent, HeaderComponent, SidebarComponent, StatCardComponent],
+  imports: [RouterOutlet, HeaderComponent, SidebarComponent],
   templateUrl: './app.html',
   styleUrl: './app.scss',
 })
@@ -46,37 +42,31 @@ export class AppComponent {
       label: 'Dashboard',
       route: '/dashboard',
       icon: 'home',
-      active: true,
     },
     {
       label: 'Feature Flags',
       route: '/flags',
       icon: 'flag',
-      active: false,
     },
     {
       label: 'Projects',
       route: '/projects',
       icon: 'folder',
-      active: false,
     },
     {
       label: 'Segments',
       route: '/segments',
       icon: 'users',
-      active: false,
     },
     {
       label: 'Audit Log',
       route: '/audit',
       icon: 'list',
-      active: false,
     },
     {
       label: 'Settings',
       route: '/settings',
       icon: 'settings',
-      active: false,
     },
   ]);
 
