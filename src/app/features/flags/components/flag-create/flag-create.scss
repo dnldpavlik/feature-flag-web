@@ -1,0 +1,64 @@
+.flag-create {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  max-width: 720px;
+}
+
+.flag-create__header {
+  h1 {
+    margin-bottom: 0.4rem;
+  }
+}
+
+.flag-create__form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--border-radius-lg);
+  padding: 1.5rem;
+}
+
+.flag-create__field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.flag-create__label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+}
+
+.flag-create__help {
+  font-size: 0.75rem;
+}
+
+.flag-create__textarea {
+  min-height: 96px;
+  resize: vertical;
+}
+
+.flag-create__row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+}
+
+.flag-create__toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+}
+
+.flag-create__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+}

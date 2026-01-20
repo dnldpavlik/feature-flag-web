@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { provideRouter } from '@angular/router';
+import { Router, provideRouter } from '@angular/router';
 import { By } from '@angular/platform-browser';
 
 import { BreadcrumbItem } from '../../ui/breadcrumb/breadcrumb';
@@ -30,6 +30,7 @@ class HeaderHostComponent {
 
 describe('Header', () => {
   let fixture: ComponentFixture<HeaderHostComponent>;
+  let router: Router;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -38,6 +39,7 @@ describe('Header', () => {
     }).compileComponents();
 
     fixture = TestBed.createComponent(HeaderHostComponent);
+    router = TestBed.inject(Router);
     fixture.detectChanges();
   });
 
@@ -55,5 +57,12 @@ describe('Header', () => {
     const menuButton = fixture.debugElement.query(By.css('.header__menu-btn'));
     menuButton.triggerEventHandler('click');
     expect(fixture.componentInstance.menuToggles).toBe(1);
+  });
+
+  it('should navigate to create flag on action click', () => {
+    const navigateSpy = jest.spyOn(router, 'navigate').mockResolvedValue(true);
+    const createButton = fixture.debugElement.query(By.css('.header__right app-button'));
+    createButton.triggerEventHandler('click');
+    expect(navigateSpy).toHaveBeenCalledWith(['/flags/new']);
   });
 });

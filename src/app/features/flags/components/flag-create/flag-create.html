@@ -1,0 +1,75 @@
+<section class="flag-create">
+  <header class="flag-create__header">
+    <div>
+      <h1>Create Feature Flag</h1>
+      <p class="text-secondary">Define the flag details before you target audiences.</p>
+    </div>
+  </header>
+
+  <form class="flag-create__form" (ngSubmit)="createFlag()">
+    <label class="flag-create__field">
+      <span class="flag-create__label">Name</span>
+      <input
+        class="form-input"
+        name="name"
+        required
+        [(ngModel)]="name"
+        placeholder="Checkout Experience"
+      />
+    </label>
+
+    <label class="flag-create__field">
+      <span class="flag-create__label">Key</span>
+      <input
+        class="form-input"
+        name="key"
+        [(ngModel)]="key"
+        placeholder="checkout-experience"
+      />
+      <span class="flag-create__help text-muted">Leave blank to auto-generate from the name.</span>
+    </label>
+
+    <label class="flag-create__field">
+      <span class="flag-create__label">Description</span>
+      <textarea
+        class="form-input flag-create__textarea"
+        name="description"
+        rows="3"
+        [(ngModel)]="description"
+        placeholder="Briefly describe what this flag controls."
+      ></textarea>
+    </label>
+
+    <div class="flag-create__row">
+      <label class="flag-create__field">
+        <span class="flag-create__label">Type</span>
+        <select class="form-input" name="type" [(ngModel)]="type">
+          <option value="boolean">Boolean</option>
+          <option value="string">String</option>
+          <option value="number">Number</option>
+          <option value="json">JSON</option>
+        </select>
+      </label>
+
+      <label class="flag-create__field">
+        <span class="flag-create__label">Tags</span>
+        <input
+          class="form-input"
+          name="tags"
+          [(ngModel)]="tags"
+          placeholder="checkout, web"
+        />
+      </label>
+    </div>
+
+    <label class="flag-create__toggle">
+      <input type="checkbox" name="enabled" [(ngModel)]="enabled" />
+      <span>Enable flag on creation</span>
+    </label>
+
+    <div class="flag-create__actions">
+      <app-button variant="ghost" type="button" (click)="cancel()">Cancel</app-button>
+      <app-button variant="primary" type="submit">Create Flag</app-button>
+    </div>
+  </form>
+</section>

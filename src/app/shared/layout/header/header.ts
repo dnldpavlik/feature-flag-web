@@ -1,4 +1,5 @@
-import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, output, inject } from '@angular/core';
+import { Router } from '@angular/router';
 
 import { BreadcrumbComponent, BreadcrumbItem } from '../../ui/breadcrumb/breadcrumb';
 import { ButtonComponent } from '../../ui/button/button';
@@ -13,9 +14,15 @@ import { SearchInputComponent } from '../../ui/search-input/search-input';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HeaderComponent {
+  private readonly router = inject(Router);
+
   /** Breadcrumb items for the current page */
   readonly breadcrumbs = input.required<readonly BreadcrumbItem[]>();
 
   /** Emits when the menu toggle button is pressed */
   readonly menuToggle = output<void>();
+
+  protected createFlag(): void {
+    void this.router.navigate(['/flags/new']);
+  }
 }
