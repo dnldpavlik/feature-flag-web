@@ -9,17 +9,10 @@
   <!-- Main Content Area -->
   <div class="main-wrapper">
     <!-- Header -->
-    <header class="header">
-      <div class="header__left">
-        <app-button variant="ghost" icon="menu" class="header__menu-btn" (click)="toggleSidebar()"></app-button>
-        <app-breadcrumb [items]="breadcrumbs()" />
-      </div>
-
-      <div class="header__right">
-        <app-search-input placeholder="Search flags..." shortcutHint="/" />
-        <app-button variant="primary" icon="plus">Create Flag</app-button>
-      </div>
-    </header>
+    <app-header
+      [breadcrumbs]="breadcrumbs()"
+      (menuToggle)="toggleSidebar()"
+    />
 
     <!-- Main Content -->
     <main class="main-content">

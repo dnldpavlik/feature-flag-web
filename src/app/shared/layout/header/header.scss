@@ -1,0 +1,38 @@
+.header {
+  position: sticky;
+  top: 0;
+  height: var(--header-height);
+  background: var(--bg-header);
+  border-bottom: 1px solid var(--border-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1.5rem;
+  z-index: 50;
+
+  &__left {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  &__right {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  &__menu-btn {
+    display: none;
+
+    @media (width <= 768px) {
+      display: flex;
+    }
+  }
+
+  &__search {
+    @media (width <= 768px) {
+      display: none;
+    }
+  }
+}

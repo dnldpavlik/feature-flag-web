@@ -1,11 +1,11 @@
 import { Component, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { BreadcrumbComponent, BreadcrumbItem } from './shared/ui/breadcrumb/breadcrumb';
+import { BreadcrumbItem } from './shared/ui/breadcrumb/breadcrumb';
 import { ButtonComponent } from './shared/ui/button/button';
 import { EmptyStateComponent } from './shared/ui/empty-state/empty-state';
 import { IconName } from './shared/ui/icon/icon';
+import { HeaderComponent } from './shared/layout/header/header';
 import { SidebarComponent } from './shared/layout/sidebar/sidebar';
-import { SearchInputComponent } from './shared/ui/search-input/search-input';
 import { StatCardComponent } from './shared/ui/stat-card/stat-card';
 
 interface NavItem {
@@ -24,7 +24,7 @@ interface Environment {
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, BreadcrumbComponent, ButtonComponent, EmptyStateComponent, SearchInputComponent, SidebarComponent, StatCardComponent],
+  imports: [RouterOutlet, ButtonComponent, EmptyStateComponent, HeaderComponent, SidebarComponent, StatCardComponent],
   templateUrl: './app.html',
   styleUrl: './app.scss',
 })

@@ -57,7 +57,7 @@ Development task tracker organized by phase and priority.
 Components extracted from `app.html` shell:
 
 - [x] **Sidebar** - Full sidebar with logo, navigation, environments, user menu
-- [ ] **Header** - Top bar with menu toggle, breadcrumb, search, actions
+- [x] **Header** - Top bar with menu toggle, breadcrumb, search, actions
 
 ### Shared UI Components 🔴
 
