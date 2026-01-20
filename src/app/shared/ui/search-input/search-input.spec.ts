@@ -129,6 +129,18 @@ describe('SearchInput', () => {
 
       expect(spy).toHaveBeenCalledWith('search term');
     });
+
+    it('should not emit searchSubmit for other keys', () => {
+      fixture.componentRef.setInput('value', 'search term');
+      fixture.detectChanges();
+      const spy = jest.fn();
+      component.searchSubmit.subscribe(spy);
+
+      const input = fixture.debugElement.query(By.css('input'));
+      input.nativeElement.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
+
+      expect(spy).not.toHaveBeenCalled();
+    });
   });
 
   describe('focus method', () => {

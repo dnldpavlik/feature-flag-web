@@ -7,7 +7,7 @@
  * npm install --save-dev jest @types/jest jest-preset-angular @testing-library/angular @testing-library/jest-dom
  */
 
-module.exports = {
+export default {
   preset: 'jest-preset-angular',
   setupFilesAfterEnv: ['<rootDir>/setup-jest.ts'],
   testPathIgnorePatterns: [
