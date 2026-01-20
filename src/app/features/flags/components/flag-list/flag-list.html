@@ -96,7 +96,7 @@
               <span class="badge badge--success">{{ tag }}</span>
             }
           </div>
-          <div class="flag-cell text-muted">{{ flag.updatedAt }}</div>
+          <div class="flag-cell text-muted">{{ flag.updatedAt | date: 'mediumDate' }}</div>
         </div>
       }
     </div>
