@@ -19,6 +19,13 @@ export const routes: Routes = [
       import('./features/flags/flags.routes').then((m) => m.FLAG_ROUTES),
   },
   {
+    path: 'environments',
+    loadChildren: () =>
+      import('./features/environments/environments.routes').then(
+        (m) => m.ENVIRONMENT_ROUTES
+      ),
+  },
+  {
     path: '**',
     redirectTo: 'dashboard',
   },

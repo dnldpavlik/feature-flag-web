@@ -1,0 +1,97 @@
+<section class="environments-page">
+  <header class="environments-page__header">
+    <div>
+      <h1>Environments</h1>
+      <p class="text-secondary">Manage environments and API keys for each release stage.</p>
+    </div>
+  </header>
+
+  @if (environments().length === 0) {
+    <app-empty-state
+      title="No environments yet"
+      message="Create your first environment to start shipping safely."
+    >
+    </app-empty-state>
+  } @else {
+    <div class="environments-table">
+      <div class="environments-table__row environments-table__row--header">
+        <span>Environment</span>
+        <span>Key</span>
+        <span>Status</span>
+        <span>Updated</span>
+        <span>Actions</span>
+      </div>
+      @for (env of environments(); track env.id) {
+        <div class="environments-table__row">
+          <div class="env-cell env-cell--name">
+            <span class="env-dot" [style.--env-color]="env.color"></span>
+            <a class="env-link" [routerLink]="['/environments', env.id]">
+              {{ env.name }}
+            </a>
+          </div>
+          <span class="text-muted">{{ env.key }}</span>
+          <div class="env-cell env-cell--badges">
+            @if (env.isDefault) {
+              <span class="badge badge--info">Default</span>
+            }
+            @if (selectedEnvironmentId() === env.id) {
+              <span class="badge badge--success">Selected</span>
+            }
+          </div>
+          <span class="text-muted">{{ env.updatedAt | date: 'mediumDate' }}</span>
+          <div class="env-cell env-cell--actions">
+            @if (selectedEnvironmentId() !== env.id) {
+              <app-button variant="ghost" type="button" (click)="selectEnvironment(env.id)">
+                Select
+              </app-button>
+            }
+            @if (!env.isDefault) {
+              <app-button variant="ghost" type="button" (click)="setDefaultEnvironment(env.id)">
+                Make Default
+              </app-button>
+            }
+          </div>
+        </div>
+      }
+    </div>
+  }
+
+  <div class="env-form card">
+    <div class="env-form__header">
+      <h2>New Environment</h2>
+      <p class="text-secondary">Add a new release stage for your feature flags.</p>
+    </div>
+    <div class="env-form__grid">
+      <label class="env-form__field">
+        <span class="env-form__label">Name</span>
+        <input
+          class="form-input"
+          [(ngModel)]="name"
+          placeholder="Production"
+          (keydown.enter)="$event.preventDefault()"
+        />
+      </label>
+      <label class="env-form__field">
+        <span class="env-form__label">Key</span>
+        <input
+          class="form-input"
+          [(ngModel)]="key"
+          placeholder="production"
+          (keydown.enter)="$event.preventDefault()"
+        />
+      </label>
+      <label class="env-form__field">
+        <span class="env-form__label">Color</span>
+        <input
+          class="form-input env-form__color"
+          type="color"
+          [(ngModel)]="color"
+          (keydown.enter)="$event.preventDefault()"
+        />
+      </label>
+    </div>
+    <app-button variant="primary" type="button" [disabled]="!canAdd()" (click)="addEnvironment()">
+      Add Environment
+    </app-button>
+  </div>
+</section>

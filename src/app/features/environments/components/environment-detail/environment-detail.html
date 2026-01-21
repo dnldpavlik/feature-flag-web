@@ -1,0 +1,105 @@
+@if (environment(); as env) {
+  <section class="environment-detail">
+    <header class="environment-detail__header">
+      <div>
+        <button class="environment-detail__back" type="button" (click)="backToList()">
+          Back to Environments
+        </button>
+        <h1>{{ env.name }}</h1>
+        <p class="text-secondary">Key: {{ env.key }}</p>
+      </div>
+      <div class="environment-detail__actions">
+        <app-button variant="ghost" type="button" (click)="selectEnvironment()">
+          Select
+        </app-button>
+        @if (!env.isDefault) {
+          <app-button variant="ghost" type="button" (click)="makeDefault()">
+            Make Default
+          </app-button>
+        }
+      </div>
+    </header>
+
+    <div class="environment-detail__grid">
+      <div class="environment-detail__card">
+        <h2>Overview</h2>
+        <div class="environment-detail__row">
+          <span class="text-muted">Status</span>
+          <div class="environment-detail__badges">
+            @if (env.isDefault) {
+              <span class="badge badge--info">Default</span>
+            }
+            @if (selectedEnvironmentId() === env.id) {
+              <span class="badge badge--success">Selected</span>
+            }
+          </div>
+        </div>
+        <div class="environment-detail__row">
+          <span class="text-muted">Color</span>
+          <div class="environment-detail__color">
+            <span class="environment-detail__dot" [style.--env-color]="env.color"></span>
+            <span>{{ env.color }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="environment-detail__card">
+        <h2>Details</h2>
+        <div class="environment-detail__row">
+          <span class="text-muted">Created</span>
+          <span>{{ env.createdAt | date: 'mediumDate' }}</span>
+        </div>
+        <div class="environment-detail__row">
+          <span class="text-muted">Last updated</span>
+          <span>{{ env.updatedAt | date: 'mediumDate' }}</span>
+        </div>
+      </div>
+    </div>
+
+    <section class="environment-detail__flags">
+      <div class="environment-detail__flags-header">
+        <div>
+          <h2>Flags in {{ env.name }}</h2>
+          <p class="text-secondary">Current values and status for this environment.</p>
+        </div>
+        <app-button variant="ghost" [routerLink]="['/flags']">View All Flags</app-button>
+      </div>
+      <div class="environment-detail__table">
+        <div class="environment-detail__row environment-detail__row--header">
+          <span>Flag</span>
+          <span>Status</span>
+          <span>Value</span>
+          <span>Type</span>
+        </div>
+        @for (flag of flags(); track flag.id) {
+          <div class="environment-detail__row environment-detail__row--data">
+            <div class="environment-detail__flag">
+              <a class="environment-detail__link" [routerLink]="['/flags', flag.id]">
+                {{ flag.name }}
+              </a>
+              <span class="text-muted">{{ flag.key }}</span>
+            </div>
+            <span
+              class="badge"
+              [class.badge--success]="flag.currentEnabled"
+              [class.badge--error]="!flag.currentEnabled"
+            >
+              {{ flag.currentEnabled ? 'Enabled' : 'Disabled' }}
+            </span>
+            <code class="environment-detail__value">{{ formatValue(flag.currentValue) }}</code>
+            <span class="badge badge--info">{{ flag.type }}</span>
+          </div>
+        }
+      </div>
+    </section>
+  </section>
+} @else {
+  <app-empty-state
+    title="Environment not found"
+    message="We couldn't find that environment. Return to the list to continue."
+  >
+    <app-button empty-state-action variant="primary" type="button" (click)="backToList()">
+      Back to Environments
+    </app-button>
+  </app-empty-state>
+}

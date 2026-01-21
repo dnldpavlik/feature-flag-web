@@ -1,9 +1,10 @@
-import { Component, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { BreadcrumbItem } from './shared/ui/breadcrumb/breadcrumb';
 import { IconName } from './shared/ui/icon/icon';
 import { HeaderComponent } from './shared/layout/header/header';
 import { SidebarComponent } from './shared/layout/sidebar/sidebar';
+import { EnvironmentStore } from './features/flags/store/environment.store';
 
 interface NavItem {
   label: string;
@@ -25,6 +26,8 @@ interface Environment {
   styleUrl: './app.scss',
 })
 export class AppComponent {
+  private readonly environmentStore = inject(EnvironmentStore);
+
   protected readonly sidebarOpen = signal(true);
 
   protected readonly currentUser = signal({
@@ -49,6 +52,11 @@ export class AppComponent {
       icon: 'flag',
     },
     {
+      label: 'Environments',
+      route: '/environments',
+      icon: 'list',
+    },
+    {
       label: 'Projects',
       route: '/projects',
       icon: 'folder',
@@ -70,11 +78,13 @@ export class AppComponent {
     },
   ]);
 
-  protected readonly environments = signal<Environment[]>([
-    { name: 'Production', color: '#f85149', route: '/env/production' },
-    { name: 'Staging', color: '#d29922', route: '/env/staging' },
-    { name: 'Development', color: '#3fb950', route: '/env/development' },
-  ]);
+  protected readonly environments = computed<Environment[]>(() =>
+    this.environmentStore.sortedEnvironments().map((env) => ({
+      name: env.name,
+      color: env.color,
+      route: `/environments/${env.id}`,
+    }))
+  );
 
   toggleSidebar(): void {
     this.sidebarOpen.update((open) => !open);

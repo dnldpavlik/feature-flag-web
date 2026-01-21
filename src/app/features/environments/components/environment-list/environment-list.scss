@@ -1,0 +1,137 @@
+.environments-page {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.environments-page__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+
+  h1 {
+    margin-bottom: 0.25rem;
+  }
+
+  p {
+    margin-bottom: 0;
+  }
+}
+
+.environments-table {
+  border: 1px solid var(--border-primary);
+  border-radius: var(--border-radius-lg);
+  overflow: hidden;
+  background: var(--bg-card);
+}
+
+.environments-table__row {
+  display: grid;
+  grid-template-columns: 1.6fr 1fr 1fr 1fr 1.4fr;
+  gap: 1rem;
+  padding: 0.75rem 1rem;
+  place-items: center start;
+  border-bottom: 1px solid var(--border-secondary);
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.environments-table__row--header {
+  background: var(--bg-tertiary);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+}
+
+.env-cell {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.env-cell--name {
+  font-weight: 600;
+}
+
+.env-cell--badges {
+  gap: 0.4rem;
+}
+
+.env-cell--actions {
+  gap: 0.5rem;
+}
+
+.env-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--env-color, var(--text-muted));
+}
+
+.env-link {
+  color: var(--text-primary);
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.env-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.env-form__header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+
+  h2 {
+    font-size: 1.1rem;
+  }
+
+  p {
+    margin: 0;
+  }
+}
+
+.env-form__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1rem;
+}
+
+.env-form__field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.env-form__label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+}
+
+.env-form__color {
+  padding: 0.25rem;
+  height: 42px;
+}
+
+@media (width <= 960px) {
+  .environments-table__row {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+  }
+
+  .environments-table__row--header {
+    display: none;
+  }
+}

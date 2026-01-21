@@ -74,6 +74,16 @@ describe('EnvironmentStore', () => {
     });
   });
 
+  describe('setDefaultEnvironment', () => {
+    it('should set the default environment and clear others', () => {
+      store.setDefaultEnvironment('env_staging');
+
+      const defaults = store.environments().filter((env) => env.isDefault);
+      expect(defaults.length).toBe(1);
+      expect(defaults[0].id).toBe('env_staging');
+    });
+  });
+
   describe('addEnvironment', () => {
     it('should add a new environment', () => {
       const initialCount = store.environments().length;

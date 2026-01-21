@@ -61,6 +61,17 @@ export class EnvironmentStore {
     this._selectedEnvironmentId.set(environmentId);
   }
 
+  setDefaultEnvironment(environmentId: string): void {
+    const stamp = nowStamp();
+    this._environments.update((envs) =>
+      envs.map((env) => ({
+        ...env,
+        isDefault: env.id === environmentId,
+        updatedAt: env.id === environmentId || env.isDefault ? stamp : env.updatedAt,
+      }))
+    );
+  }
+
   addEnvironment(input: CreateEnvironmentInput): void {
     const stamp = nowStamp();
     const newEnv: Environment = {
