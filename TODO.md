@@ -234,6 +234,7 @@ Additional shared components:
 ### Analytics Dashboard 🟡
 
 - [ ] Create analytics container component
+- [ ] Add performance metrics data source (API ingestion + storage)
 - [ ] Implement evaluation volume chart
 - [ ] Implement variation distribution pie chart
 - [ ] Implement unique users metric

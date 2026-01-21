@@ -1,3 +1,4 @@
+import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 
 import { ButtonComponent } from '../../../../shared/ui/button/button';
@@ -5,11 +6,13 @@ import { EmptyStateComponent } from '../../../../shared/ui/empty-state/empty-sta
 import { StatCardComponent } from '../../../../shared/ui/stat-card/stat-card';
 import { EnvironmentStore } from '../../../flags/store/environment.store';
 import { FlagStore } from '../../../flags/store/flag.store';
+import { isEnabledInEnvironment } from '../../../flags/utils/flag-value.utils';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [ButtonComponent, EmptyStateComponent, StatCardComponent],
+  imports: [CommonModule, ButtonComponent, EmptyStateComponent, RouterLink, StatCardComponent],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -27,6 +30,16 @@ export class DashboardComponent {
   );
   protected readonly inactiveFlags = computed(() => this.totalFlags() - this.activeFlags());
   protected readonly totalEnvironments = computed(() => this.environmentStore.environments().length);
+  protected readonly recentFlags = computed(() => {
+    const envId = this.environmentStore.selectedEnvironmentId();
+    return [...this.flagStore.flags()]
+      .map((flag) => ({
+        ...flag,
+        currentEnabled: isEnabledInEnvironment(flag, envId),
+      }))
+      .sort((a, b) => new Date(b.updatedAt).valueOf() - new Date(a.updatedAt).valueOf())
+      .slice(0, 5);
+  });
 
   protected onEnvironmentChange(event: Event): void {
     const value = (event.target as HTMLSelectElement).value;

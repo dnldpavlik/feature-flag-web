@@ -23,6 +23,41 @@
     <app-stat-card [value]="totalEnvironments()" label="Environments" />
   </div>
 
+  @if (totalFlags() > 0) {
+    <section class="recent-flags">
+      <div class="recent-flags__header">
+        <div>
+          <h2>Recently Updated Flags</h2>
+          <p class="text-secondary">
+            Latest updates in {{ selectedEnvironment()?.name ?? 'All environments' }}
+          </p>
+        </div>
+        <app-button variant="ghost" [routerLink]="['/flags']">View All</app-button>
+      </div>
+      <div class="recent-flags__table">
+        <div class="recent-flags__row recent-flags__row--header">
+          <span>Flag</span>
+          <span>Status</span>
+          <span>Updated</span>
+        </div>
+        @for (flag of recentFlags(); track flag.id) {
+          <div class="recent-flags__row">
+            <div class="recent-flags__flag">
+              <a class="recent-flags__link" [routerLink]="['/flags', flag.id]">
+                {{ flag.name }}
+              </a>
+              <span class="text-muted">{{ flag.key }}</span>
+            </div>
+            <span class="badge" [class.badge--success]="flag.currentEnabled" [class.badge--error]="!flag.currentEnabled">
+              {{ flag.currentEnabled ? 'Enabled' : 'Disabled' }}
+            </span>
+            <span class="text-muted">{{ flag.updatedAt | date: 'mediumDate' }}</span>
+          </div>
+        }
+      </div>
+    </section>
+  }
+
   @if (totalFlags() === 0) {
     <app-empty-state
       title="No feature flags yet"

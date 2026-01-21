@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 
+import { provideRouter } from '@angular/router';
 import { EnvironmentStore } from '../../../flags/store/environment.store';
 import { FlagStore } from '../../../flags/store/flag.store';
 import { DashboardComponent } from './dashboard';
@@ -13,6 +14,7 @@ describe('Dashboard', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [DashboardComponent],
+      providers: [provideRouter([])],
     }).compileComponents();
 
     fixture = TestBed.createComponent(DashboardComponent);
@@ -48,6 +50,15 @@ describe('Dashboard', () => {
     expect(stats).toContainEqual({ value: String(activeFlags), label: 'Active' });
     expect(stats).toContainEqual({ value: String(inactiveFlags), label: 'Inactive' });
     expect(stats).toContainEqual({ value: String(totalEnvironments), label: 'Environments' });
+  });
+
+  it('should render recently updated flags', () => {
+    const rows = fixture.debugElement.queryAll(By.css('.recent-flags__row'));
+    expect(rows.length).toBeGreaterThan(1);
+
+    const firstRow = rows[1];
+    const link = firstRow.query(By.css('.recent-flags__link'));
+    expect(link).toBeTruthy();
   });
 
   it('should update active flags when environment changes', () => {
