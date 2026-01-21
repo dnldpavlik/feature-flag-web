@@ -10,7 +10,10 @@
     <div class="flags-toolbar__filters">
       <label class="flags-toolbar__label">
         Environment
-        <select class="flags-select flags-select--environment" (change)="onEnvironmentChange($event)">
+        <select
+          class="flags-select flags-select--environment"
+          (change)="onEnvironmentChange($event)"
+        >
           @for (env of environments(); track env.id) {
             <option [value]="env.id" [selected]="env.id === selectedEnvironment()?.id">
               {{ env.name }}
@@ -88,7 +91,7 @@
           <div class="flag-cell flag-cell--value">
             <code class="flag-value">{{ formatValue(flag) }}</code>
           </div>
-          <div class="flag-cell">
+          <div class="flag-cell flag-cell--tags">
             <span class="badge badge--info">{{ flag.type }}</span>
           </div>
           <div class="flag-cell flag-cell--tags">
