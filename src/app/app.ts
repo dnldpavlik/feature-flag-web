@@ -1,10 +1,13 @@
 import { Component, computed, inject, signal } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
+import { filter, map } from 'rxjs';
 import { BreadcrumbItem } from './shared/ui/breadcrumb/breadcrumb';
 import { IconName } from './shared/ui/icon/icon';
 import { HeaderComponent } from './shared/layout/header/header';
 import { SidebarComponent } from './shared/layout/sidebar/sidebar';
 import { EnvironmentStore } from './features/flags/store/environment.store';
+import { ProjectStore } from './features/projects/store/project.store';
 
 interface NavItem {
   label: string;
@@ -27,6 +30,16 @@ interface Environment {
 })
 export class AppComponent {
   private readonly environmentStore = inject(EnvironmentStore);
+  private readonly projectStore = inject(ProjectStore);
+  private readonly router = inject(Router);
+
+  private readonly currentUrl = toSignal(
+    this.router.events.pipe(
+      filter((event): event is NavigationEnd => event instanceof NavigationEnd),
+      map((event) => event.urlAfterRedirects)
+    ),
+    { initialValue: this.router.url }
+  );
 
   protected readonly sidebarOpen = signal(true);
 
@@ -35,9 +48,18 @@ export class AppComponent {
     email: 'john@example.com',
   });
 
-  protected readonly breadcrumbs = signal<BreadcrumbItem[]>([
-    { label: 'Default Project', route: '/projects/default' },
-    { label: 'Feature Flags' },
+  protected readonly breadcrumbs = computed<BreadcrumbItem[]>(() => [
+    {
+      label: 'Project',
+      key: 'project',
+      route: '/projects',
+      selectOptions: this.projectStore.projects().map((project) => ({
+        id: project.id,
+        label: project.name,
+      })),
+      selectedId: this.projectStore.selectedProjectId(),
+    },
+    { label: this.getSectionLabel(this.currentUrl()) },
   ]);
 
   protected readonly navItems = signal<NavItem[]>([
@@ -85,6 +107,34 @@ export class AppComponent {
       route: `/environments/${env.id}`,
     }))
   );
+
+  private getSectionLabel(url: string): string {
+    const segment =
+      url
+        .split('?')[0]
+        .split('#')[0]
+        .split('/')
+        .filter(Boolean)[0] ?? 'dashboard';
+
+    switch (segment) {
+      case 'dashboard':
+        return 'Dashboard';
+      case 'flags':
+        return 'Feature Flags';
+      case 'environments':
+        return 'Environments';
+      case 'projects':
+        return 'Projects';
+      case 'segments':
+        return 'Segments';
+      case 'audit':
+        return 'Audit Log';
+      case 'settings':
+        return 'Settings';
+      default:
+        return 'Dashboard';
+    }
+  }
 
   toggleSidebar(): void {
     this.sidebarOpen.update((open) => !open);

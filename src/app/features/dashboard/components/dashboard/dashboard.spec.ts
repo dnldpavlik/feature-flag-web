@@ -4,12 +4,14 @@ import { By } from '@angular/platform-browser';
 import { provideRouter } from '@angular/router';
 import { EnvironmentStore } from '../../../flags/store/environment.store';
 import { FlagStore } from '../../../flags/store/flag.store';
+import { ProjectStore } from '../../../projects/store/project.store';
 import { DashboardComponent } from './dashboard';
 
 describe('Dashboard', () => {
   let fixture: ComponentFixture<DashboardComponent>;
   let environmentStore: EnvironmentStore;
   let flagStore: FlagStore;
+  let projectStore: ProjectStore;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -20,6 +22,7 @@ describe('Dashboard', () => {
     fixture = TestBed.createComponent(DashboardComponent);
     environmentStore = TestBed.inject(EnvironmentStore);
     flagStore = TestBed.inject(FlagStore);
+    projectStore = TestBed.inject(ProjectStore);
     fixture.detectChanges();
   });
 
@@ -87,15 +90,31 @@ describe('Dashboard', () => {
     environmentStore.selectEnvironment('env_production');
     fixture.detectChanges();
 
-    const envText = fixture.debugElement.query(By.css('.dashboard-env'));
-    expect(envText.nativeElement.textContent).toContain('Production');
+    const envText = fixture.debugElement.queryAll(By.css('.dashboard-env'));
+    expect(envText[1].nativeElement.textContent).toContain('Production');
   });
 
   it('should fall back to all environments when selection is missing', () => {
     environmentStore.selectEnvironment('env_missing');
     fixture.detectChanges();
 
-    const envText = fixture.debugElement.query(By.css('.dashboard-env'));
-    expect(envText.nativeElement.textContent).toContain('All Environments');
+    const envText = fixture.debugElement.queryAll(By.css('.dashboard-env'));
+    expect(envText[1].nativeElement.textContent).toContain('All Environments');
+  });
+
+  it('should render selected project name in the header', () => {
+    projectStore.selectProject('proj_growth');
+    fixture.detectChanges();
+
+    const envText = fixture.debugElement.queryAll(By.css('.dashboard-env'));
+    expect(envText[0].nativeElement.textContent).toContain('Growth Experiments');
+  });
+
+  it('should fall back to all projects when selection is missing', () => {
+    projectStore.selectProject('proj_missing');
+    fixture.detectChanges();
+
+    const envText = fixture.debugElement.queryAll(By.css('.dashboard-env'));
+    expect(envText[0].nativeElement.textContent).toContain('All Projects');
   });
 });

@@ -3,6 +3,8 @@
     <div>
       <h1>Feature Flags</h1>
       <p class="text-secondary">
+        Project: <span class="dashboard-env">{{ selectedProjectName() }}</span>
+        <span class="dashboard-divider">·</span>
         Environment: <span class="dashboard-env">{{ selectedEnvironmentName() }}</span>
       </p>
     </div>
@@ -21,7 +23,7 @@
         <div>
           <h2>Recently Updated Flags</h2>
           <p class="text-secondary">
-            Latest updates in {{ selectedEnvironmentName() }}
+            Latest updates in {{ selectedProjectName() }} · {{ selectedEnvironmentName() }}
           </p>
         </div>
         <app-button variant="ghost" [routerLink]="['/flags']">View All</app-button>

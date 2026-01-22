@@ -1,7 +1,18 @@
 <nav class="breadcrumb" aria-label="Breadcrumb">
   @for (item of items(); track item.label; let i = $index; let last = $last) {
     <span class="breadcrumb__item" [class.breadcrumb__item--current]="last">
-      @if (item.route && !last) {
+      @if (item.selectOptions?.length) {
+        <select
+          class="breadcrumb__select"
+          [value]="item.selectedId ?? ''"
+          (change)="onSelect(item, $event)"
+          [attr.aria-label]="item.label"
+        >
+          @for (option of item.selectOptions; track option.id) {
+            <option [value]="option.id">{{ option.label }}</option>
+          }
+        </select>
+      } @else if (item.route && !last) {
         <a class="breadcrumb__link" [routerLink]="item.route">{{ item.label }}</a>
       } @else {
         <span class="breadcrumb__current" [attr.aria-current]="last ? 'page' : null">{{ item.label }}</span>

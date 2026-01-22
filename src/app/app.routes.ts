@@ -26,6 +26,13 @@ export const routes: Routes = [
       ),
   },
   {
+    path: 'projects',
+    loadChildren: () =>
+      import('./features/projects/projects.routes').then(
+        (m) => m.PROJECT_ROUTES
+      ),
+  },
+  {
     path: '**',
     redirectTo: 'dashboard',
   },

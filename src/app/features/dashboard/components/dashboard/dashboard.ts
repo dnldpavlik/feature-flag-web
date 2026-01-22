@@ -7,6 +7,7 @@ import { StatCardComponent } from '../../../../shared/ui/stat-card/stat-card';
 import { EnvironmentStore } from '../../../flags/store/environment.store';
 import { FlagStore } from '../../../flags/store/flag.store';
 import { isEnabledInEnvironment } from '../../../flags/utils/flag-value.utils';
+import { ProjectStore } from '../../../projects/store/project.store';
 import { RouterLink } from '@angular/router';
 
 @Component({
@@ -20,6 +21,7 @@ import { RouterLink } from '@angular/router';
 export class DashboardComponent {
   private readonly environmentStore = inject(EnvironmentStore);
   private readonly flagStore = inject(FlagStore);
+  private readonly projectStore = inject(ProjectStore);
 
   protected readonly environments = this.environmentStore.sortedEnvironments;
   protected readonly selectedEnvironment = this.environmentStore.selectedEnvironment;
@@ -43,5 +45,8 @@ export class DashboardComponent {
 
   protected readonly selectedEnvironmentName = computed(
     () => this.selectedEnvironment()?.name ?? 'All Environments'
+  );
+  protected readonly selectedProjectName = computed(
+    () => this.projectStore.selectedProject()?.name ?? 'All Projects'
   );
 }

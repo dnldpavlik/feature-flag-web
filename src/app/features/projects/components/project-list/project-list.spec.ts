@@ -1,0 +1,69 @@
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
+import { By } from '@angular/platform-browser';
+
+import { ProjectStore } from '../../store/project.store';
+import { ProjectListComponent } from './project-list';
+
+describe('ProjectList', () => {
+  let fixture: ComponentFixture<ProjectListComponent>;
+  let store: ProjectStore;
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [ProjectListComponent],
+      providers: [ProjectStore, provideRouter([])],
+    }).compileComponents();
+
+    fixture = TestBed.createComponent(ProjectListComponent);
+    store = TestBed.inject(ProjectStore);
+    fixture.detectChanges();
+  });
+
+  it('should render the project heading', () => {
+    const heading = fixture.debugElement.query(By.css('h1'));
+    expect(heading.nativeElement.textContent).toContain('Projects');
+  });
+
+  it('should render project rows', () => {
+    const rows = fixture.debugElement.queryAll(By.css('.projects-table__row'));
+    expect(rows.length).toBe(store.projects().length + 1);
+  });
+
+  it('should add a project', () => {
+    fixture.componentInstance.name = 'Pricing App';
+    fixture.componentInstance.key = 'pricing';
+    fixture.componentInstance.description = 'Pricing tests';
+    fixture.componentInstance.addProject();
+    fixture.detectChanges();
+
+    const rows = fixture.debugElement.queryAll(By.css('.projects-table__row'));
+    expect(rows.length).toBe(store.projects().length + 1);
+  });
+
+  it('should not add a project when required fields are missing', () => {
+    const initialCount = store.projects().length;
+    fixture.componentInstance.name = '';
+    fixture.componentInstance.key = '';
+    fixture.componentInstance.addProject();
+    expect(store.projects().length).toBe(initialCount);
+  });
+
+  it('should select a project', () => {
+    const selectSpy = jest.spyOn(store, 'selectProject');
+    fixture.componentInstance.selectProject('proj_growth');
+    expect(selectSpy).toHaveBeenCalledWith('proj_growth');
+  });
+
+  it('should set the default project', () => {
+    const defaultSpy = jest.spyOn(store, 'setDefaultProject');
+    fixture.componentInstance.setDefaultProject('proj_growth');
+    expect(defaultSpy).toHaveBeenCalledWith('proj_growth');
+  });
+
+  it('should delete a project', () => {
+    const deleteSpy = jest.spyOn(store, 'deleteProject');
+    fixture.componentInstance.deleteProject('proj_growth');
+    expect(deleteSpy).toHaveBeenCalledWith('proj_growth');
+  });
+});

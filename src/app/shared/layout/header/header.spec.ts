@@ -4,6 +4,7 @@ import { Router, provideRouter } from '@angular/router';
 import { By } from '@angular/platform-browser';
 
 import { BreadcrumbItem } from '../../ui/breadcrumb/breadcrumb';
+import { ProjectStore } from '../../../features/projects/store/project.store';
 import { HeaderComponent } from './header';
 
 @Component({
@@ -18,7 +19,15 @@ import { HeaderComponent } from './header';
 })
 class HeaderHostComponent {
   breadcrumbs: BreadcrumbItem[] = [
-    { label: 'Home', route: '/' },
+    {
+      label: 'Project',
+      key: 'project',
+      selectOptions: [
+        { id: 'proj_default', label: 'Default Project' },
+        { id: 'proj_growth', label: 'Growth Experiments' },
+      ],
+      selectedId: 'proj_default',
+    },
     { label: 'Feature Flags' },
   ];
   menuToggles = 0;
@@ -31,15 +40,17 @@ class HeaderHostComponent {
 describe('Header', () => {
   let fixture: ComponentFixture<HeaderHostComponent>;
   let router: Router;
+  let projectStore: ProjectStore;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [HeaderHostComponent],
-      providers: [provideRouter([])],
+      providers: [provideRouter([]), ProjectStore],
     }).compileComponents();
 
     fixture = TestBed.createComponent(HeaderHostComponent);
     router = TestBed.inject(Router);
+    projectStore = TestBed.inject(ProjectStore);
     fixture.detectChanges();
   });
 
@@ -64,5 +75,22 @@ describe('Header', () => {
     const createButton = fixture.debugElement.query(By.css('.header__right app-button'));
     createButton.triggerEventHandler('click');
     expect(navigateSpy).toHaveBeenCalledWith(['/flags/new']);
+  });
+
+  it('should select a project from the breadcrumb dropdown', () => {
+    const selectSpy = jest.spyOn(projectStore, 'selectProject');
+    const select = fixture.debugElement.query(By.css('.breadcrumb__select'));
+    select.triggerEventHandler('change', { target: { value: 'proj_growth' } });
+    expect(selectSpy).toHaveBeenCalledWith('proj_growth');
+  });
+
+  it('should ignore non-project breadcrumb selections', () => {
+    const selectSpy = jest.spyOn(projectStore, 'selectProject');
+    const header = fixture.debugElement.query(By.directive(HeaderComponent));
+    const instance = header.componentInstance as HeaderComponent & {
+      handleBreadcrumbSelection: (payload: { key: string; value: string }) => void;
+    };
+    instance.handleBreadcrumbSelection({ key: 'section', value: 'flags' });
+    expect(selectSpy).not.toHaveBeenCalled();
   });
 });

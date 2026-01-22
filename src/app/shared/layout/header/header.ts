@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { BreadcrumbComponent, BreadcrumbItem } from '../../ui/breadcrumb/breadcrumb';
 import { ButtonComponent } from '../../ui/button/button';
 import { SearchInputComponent } from '../../ui/search-input/search-input';
+import { ProjectStore } from '../../../features/projects/store/project.store';
 
 @Component({
   selector: 'app-header',
@@ -15,6 +16,7 @@ import { SearchInputComponent } from '../../ui/search-input/search-input';
 })
 export class HeaderComponent {
   private readonly router = inject(Router);
+  private readonly projectStore = inject(ProjectStore);
 
   /** Breadcrumb items for the current page */
   readonly breadcrumbs = input.required<readonly BreadcrumbItem[]>();
@@ -24,5 +26,11 @@ export class HeaderComponent {
 
   protected createFlag(): void {
     void this.router.navigate(['/flags/new']);
+  }
+
+  protected handleBreadcrumbSelection(payload: { key: string; value: string }): void {
+    if (payload.key === 'project') {
+      this.projectStore.selectProject(payload.value);
+    }
   }
 }

@@ -44,4 +44,20 @@
     opacity: 0.5;
     color: var(--text-muted, #484f58);
   }
+
+  &__select {
+    min-width: 160px;
+    padding: 0.35rem 0.6rem;
+    border-radius: var(--border-radius, 6px);
+    border: 1px solid var(--border-primary, #30363d);
+    background: var(--bg-secondary, #161b22);
+    color: var(--text-primary, #e6edf3);
+    font-size: 0.875rem;
+
+    &:focus {
+      outline: none;
+      border-color: var(--accent-primary, #405bff);
+      box-shadow: 0 0 0 3px rgb(64 91 255 / 20%);
+    }
+  }
 }

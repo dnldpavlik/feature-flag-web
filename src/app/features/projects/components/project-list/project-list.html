@@ -1,0 +1,105 @@
+<section class="projects-page">
+  <header class="projects-page__header">
+    <div>
+      <h1>Projects</h1>
+      <p class="text-secondary">Create and manage workspaces for each product.</p>
+    </div>
+  </header>
+
+  @if (projects().length === 0) {
+    <app-empty-state
+      title="No projects yet"
+      message="Create your first project to organize environments and flags."
+    >
+    </app-empty-state>
+  } @else {
+    <div class="projects-table">
+      <div class="projects-table__row projects-table__row--header">
+        <span>Project</span>
+        <span>Key</span>
+        <span>Status</span>
+        <span>Updated</span>
+        <span>Actions</span>
+      </div>
+      @for (project of projects(); track project.id) {
+        <div class="projects-table__row">
+          <div class="project-cell project-cell--name">
+            <div>
+              <a class="project-link" [routerLink]="['/projects', project.id]">
+                {{ project.name }}
+              </a>
+              <span class="text-muted">{{ project.description }}</span>
+            </div>
+          </div>
+          <span class="text-muted">{{ project.key }}</span>
+          <div class="project-cell project-cell--badges">
+            @if (project.isDefault) {
+              <span class="badge badge--info">Default</span>
+            }
+            @if (selectedProjectId() === project.id) {
+              <span class="badge badge--success">Selected</span>
+            }
+          </div>
+          <span class="text-muted">{{ project.updatedAt | date: 'mediumDate' }}</span>
+          <div class="project-cell project-cell--actions">
+            @if (selectedProjectId() !== project.id) {
+              <app-button variant="ghost" type="button" (click)="selectProject(project.id)">
+                Select
+              </app-button>
+            }
+            @if (!project.isDefault) {
+              <app-button variant="ghost" type="button" (click)="setDefaultProject(project.id)">
+                Make Default
+              </app-button>
+            }
+            @if (projects().length > 1) {
+              <app-button variant="ghost" type="button" (click)="deleteProject(project.id)">
+                Delete
+              </app-button>
+            }
+          </div>
+        </div>
+      }
+    </div>
+  }
+
+  <div class="project-form card">
+    <div class="project-form__header">
+      <h2>New Project</h2>
+      <p class="text-secondary">Spin up a new workspace for an app or product.</p>
+    </div>
+    <div class="project-form__grid">
+      <label class="project-form__field">
+        <span class="project-form__label">Name</span>
+        <input
+          class="form-input"
+          [(ngModel)]="name"
+          placeholder="Accounting App"
+          (keydown.enter)="$event.preventDefault()"
+        />
+      </label>
+      <label class="project-form__field">
+        <span class="project-form__label">Key</span>
+        <input
+          class="form-input"
+          [(ngModel)]="key"
+          placeholder="accounting"
+          (keydown.enter)="$event.preventDefault()"
+        />
+      </label>
+      <label class="project-form__field project-form__field--full">
+        <span class="project-form__label">Description</span>
+        <textarea
+          class="form-input project-form__textarea"
+          rows="3"
+          [(ngModel)]="description"
+          placeholder="Flags for the accounting product surface."
+          (keydown.enter)="$event.preventDefault()"
+        ></textarea>
+      </label>
+    </div>
+    <app-button variant="primary" type="button" [disabled]="!canAdd()" (click)="addProject()">
+      Add Project
+    </app-button>
+  </div>
+</section>

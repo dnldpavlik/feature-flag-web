@@ -9,7 +9,15 @@ describe('Breadcrumb', () => {
   let fixture: ComponentFixture<BreadcrumbComponent>;
 
   const mockItems: BreadcrumbItem[] = [
-    { label: 'Home', route: '/' },
+    {
+      label: 'Project',
+      key: 'project',
+      selectOptions: [
+        { id: 'proj_default', label: 'Default Project' },
+        { id: 'proj_growth', label: 'Growth Experiments' },
+      ],
+      selectedId: 'proj_default',
+    },
     { label: 'Projects', route: '/projects' },
     { label: 'Feature Flags' },
   ];
@@ -52,7 +60,7 @@ describe('Breadcrumb', () => {
       fixture.detectChanges();
 
       const items = fixture.debugElement.queryAll(By.css('.breadcrumb__item'));
-      expect(items[0].nativeElement.textContent).toContain('Home');
+      expect(items[0].nativeElement.textContent).toContain('Default Project');
       expect(items[1].nativeElement.textContent).toContain('Projects');
       expect(items[2].nativeElement.textContent).toContain('Feature Flags');
     });
@@ -82,7 +90,7 @@ describe('Breadcrumb', () => {
       fixture.detectChanges();
 
       const links = fixture.debugElement.queryAll(By.css('.breadcrumb__link'));
-      expect(links.length).toBe(2); // First two items have routes
+      expect(links.length).toBe(1);
     });
 
     it('should not render link for item without route', () => {
@@ -137,6 +145,48 @@ describe('Breadcrumb', () => {
     });
   });
 
+  describe('select items', () => {
+    it('should render a select control', () => {
+      fixture.componentRef.setInput('items', mockItems);
+      fixture.detectChanges();
+
+      const select = fixture.debugElement.query(By.css('.breadcrumb__select'));
+      expect(select).toBeTruthy();
+    });
+
+    it('should emit when selection changes', () => {
+      const spy = jest.fn();
+      component.selectionChange.subscribe(spy);
+      fixture.componentRef.setInput('items', mockItems);
+      fixture.detectChanges();
+
+      const select = fixture.debugElement.query(By.css('.breadcrumb__select'));
+      select.triggerEventHandler('change', { target: { value: 'proj_growth' } });
+
+      expect(spy).toHaveBeenCalledWith({ key: 'project', value: 'proj_growth' });
+    });
+
+    it('should fall back to label when key is missing', () => {
+      const spy = jest.fn();
+      component.selectionChange.subscribe(spy);
+      fixture.componentRef.setInput('items', [
+        {
+          label: 'Workspace',
+          selectOptions: [
+            { id: 'proj_default', label: 'Default Project' },
+            { id: 'proj_growth', label: 'Growth Experiments' },
+          ],
+          selectedId: 'proj_default',
+        },
+      ]);
+      fixture.detectChanges();
+
+      const select = fixture.debugElement.query(By.css('.breadcrumb__select'));
+      select.triggerEventHandler('change', { target: { value: 'proj_growth' } });
+
+      expect(spy).toHaveBeenCalledWith({ key: 'Workspace', value: 'proj_growth' });
+    });
+  });
   describe('empty items', () => {
     it('should handle empty items array', () => {
       fixture.componentRef.setInput('items', []);

@@ -1,0 +1,66 @@
+@if (project(); as project) {
+  <section class="project-detail">
+    <header class="project-detail__header">
+      <div>
+        <button class="project-detail__back" type="button" (click)="backToList()">
+          Back to Projects
+        </button>
+        <h1>{{ project.name }}</h1>
+        <p class="text-secondary">Key: {{ project.key }}</p>
+      </div>
+      <div class="project-detail__actions">
+        <app-button variant="ghost" type="button" (click)="selectProject()">Select</app-button>
+        @if (!project.isDefault) {
+          <app-button variant="ghost" type="button" (click)="makeDefault()">
+            Make Default
+          </app-button>
+        }
+        @if (project.id && project.id !== 'proj_default' && project.id !== selectedProjectId()) {
+          <app-button variant="ghost" type="button" (click)="deleteProject()">Delete</app-button>
+        }
+      </div>
+    </header>
+
+    <div class="project-detail__grid">
+      <div class="project-detail__card">
+        <h2>Overview</h2>
+        <div class="project-detail__row">
+          <span class="text-muted">Status</span>
+          <div class="project-detail__badges">
+            @if (project.isDefault) {
+              <span class="badge badge--info">Default</span>
+            }
+            @if (selectedProjectId() === project.id) {
+              <span class="badge badge--success">Selected</span>
+            }
+          </div>
+        </div>
+        <div class="project-detail__row">
+          <span class="text-muted">Description</span>
+          <span>{{ project.description || '—' }}</span>
+        </div>
+      </div>
+
+      <div class="project-detail__card">
+        <h2>Details</h2>
+        <div class="project-detail__row">
+          <span class="text-muted">Created</span>
+          <span>{{ project.createdAt | date: 'mediumDate' }}</span>
+        </div>
+        <div class="project-detail__row">
+          <span class="text-muted">Last updated</span>
+          <span>{{ project.updatedAt | date: 'mediumDate' }}</span>
+        </div>
+      </div>
+    </div>
+  </section>
+} @else {
+  <app-empty-state
+    title="Project not found"
+    message="We couldn't find that project. Return to the list to continue."
+  >
+    <app-button empty-state-action variant="primary" type="button" (click)="backToList()">
+      Back to Projects
+    </app-button>
+  </app-empty-state>
+}
