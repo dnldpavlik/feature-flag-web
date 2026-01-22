@@ -3,22 +3,25 @@ import { Router, provideRouter } from '@angular/router';
 import { By } from '@angular/platform-browser';
 
 import { EnvironmentStore } from '../../../flags/store/environment.store';
+import { SearchStore } from '../../../../shared/store/search.store';
 import { EnvironmentListComponent } from './environment-list';
 
 describe('EnvironmentList', () => {
   let fixture: ComponentFixture<EnvironmentListComponent>;
   let store: EnvironmentStore;
   let router: Router;
+  let searchStore: SearchStore;
 
   const build = async () => {
     await TestBed.configureTestingModule({
       imports: [EnvironmentListComponent],
-      providers: [EnvironmentStore, provideRouter([])],
+      providers: [EnvironmentStore, SearchStore, provideRouter([])],
     }).compileComponents();
 
     fixture = TestBed.createComponent(EnvironmentListComponent);
     store = TestBed.inject(EnvironmentStore);
     router = TestBed.inject(Router);
+    searchStore = TestBed.inject(SearchStore);
     fixture.detectChanges();
   };
 
@@ -91,5 +94,16 @@ describe('EnvironmentList', () => {
     fixture.componentInstance.addEnvironment();
 
     expect(store.environments().length).toBe(3);
+  });
+
+  it('should filter environments by the search query', async () => {
+    await build();
+    searchStore.setQuery('zzzz-no-match');
+    fixture.detectChanges();
+
+    const rows = fixture.debugElement.queryAll(By.css('.environments-table__row'));
+    expect(rows.length).toBe(0);
+    const emptyState = fixture.debugElement.query(By.css('app-empty-state'));
+    expect(emptyState).toBeTruthy();
   });
 });

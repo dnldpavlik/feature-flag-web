@@ -5,6 +5,7 @@ import { provideRouter } from '@angular/router';
 import { EnvironmentStore } from '../../../flags/store/environment.store';
 import { FlagStore } from '../../../flags/store/flag.store';
 import { ProjectStore } from '../../../projects/store/project.store';
+import { SearchStore } from '../../../../shared/store/search.store';
 import { DashboardComponent } from './dashboard';
 
 describe('Dashboard', () => {
@@ -12,6 +13,7 @@ describe('Dashboard', () => {
   let environmentStore: EnvironmentStore;
   let flagStore: FlagStore;
   let projectStore: ProjectStore;
+  let searchStore: SearchStore;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -23,6 +25,7 @@ describe('Dashboard', () => {
     environmentStore = TestBed.inject(EnvironmentStore);
     flagStore = TestBed.inject(FlagStore);
     projectStore = TestBed.inject(ProjectStore);
+    searchStore = TestBed.inject(SearchStore);
     fixture.detectChanges();
   });
 
@@ -62,6 +65,31 @@ describe('Dashboard', () => {
     const firstRow = rows[1];
     const link = firstRow.query(By.css('.recent-flags__link'));
     expect(link).toBeTruthy();
+    const description = firstRow.query(By.css('.recent-flags__description'));
+    expect(description).toBeTruthy();
+  });
+
+  it('should filter recent flags by search query', () => {
+    searchStore.setQuery('zzzz-no-match');
+    fixture.detectChanges();
+
+    const emptyState = fixture.debugElement.query(By.css('app-empty-state'));
+    expect(emptyState).toBeTruthy();
+    const rows = fixture.debugElement.queryAll(By.css('.recent-flags__row'));
+    expect(rows.length).toBe(0);
+  });
+
+  it('should highlight matching text in recent flags', () => {
+    searchStore.setQuery('pri');
+    fixture.detectChanges();
+
+    const highlights = fixture.debugElement.queryAll(By.css('.recent-flags__highlight'));
+    expect(highlights.length).toBeGreaterThan(0);
+  });
+
+  it('should return no parts when highlight text is empty', () => {
+    const parts = (fixture.componentInstance as DashboardComponent).highlightParts('');
+    expect(parts).toEqual([]);
   });
 
   it('should update active flags when environment changes', () => {

@@ -12,6 +12,12 @@
       message="Create your first environment to start shipping safely."
     >
     </app-empty-state>
+  } @else if (filteredEnvironments().length === 0) {
+    <app-empty-state
+      title="No environments found"
+      message="Try a different search term or clear the filter."
+    >
+    </app-empty-state>
   } @else {
     <div class="environments-table">
       <div class="environments-table__row environments-table__row--header">
@@ -21,7 +27,7 @@
         <span>Updated</span>
         <span>Actions</span>
       </div>
-      @for (env of environments(); track env.id) {
+      @for (env of filteredEnvironments(); track env.id) {
         <div class="environments-table__row">
           <div class="env-cell env-cell--name">
             <span class="env-dot" [style.--env-color]="env.color"></span>

@@ -5,6 +5,7 @@ import { BreadcrumbComponent, BreadcrumbItem } from '../../ui/breadcrumb/breadcr
 import { ButtonComponent } from '../../ui/button/button';
 import { SearchInputComponent } from '../../ui/search-input/search-input';
 import { ProjectStore } from '../../../features/projects/store/project.store';
+import { SearchStore } from '../../store/search.store';
 
 @Component({
   selector: 'app-header',
@@ -17,6 +18,7 @@ import { ProjectStore } from '../../../features/projects/store/project.store';
 export class HeaderComponent {
   private readonly router = inject(Router);
   private readonly projectStore = inject(ProjectStore);
+  private readonly searchStore = inject(SearchStore);
 
   /** Breadcrumb items for the current page */
   readonly breadcrumbs = input.required<readonly BreadcrumbItem[]>();
@@ -24,8 +26,14 @@ export class HeaderComponent {
   /** Emits when the menu toggle button is pressed */
   readonly menuToggle = output<void>();
 
+  protected readonly searchValue = this.searchStore.query;
+
   protected createFlag(): void {
     void this.router.navigate(['/flags/new']);
+  }
+
+  protected updateSearch(value: string): void {
+    this.searchStore.setQuery(value);
   }
 
   protected handleBreadcrumbSelection(payload: { key: string; value: string }): void {

@@ -28,27 +28,62 @@
         </div>
         <app-button variant="ghost" [routerLink]="['/flags']">View All</app-button>
       </div>
-      <div class="recent-flags__table">
-        <div class="recent-flags__row recent-flags__row--header">
-          <span>Flag</span>
-          <span>Status</span>
-          <span>Updated</span>
-        </div>
-        @for (flag of recentFlags(); track flag.id) {
-          <div class="recent-flags__row">
-            <div class="recent-flags__flag">
-              <a class="recent-flags__link" [routerLink]="['/flags', flag.id]">
-                {{ flag.name }}
-              </a>
-              <span class="text-muted">{{ flag.key }}</span>
-            </div>
-            <span class="badge" [class.badge--success]="flag.currentEnabled" [class.badge--error]="!flag.currentEnabled">
-              {{ flag.currentEnabled ? 'Enabled' : 'Disabled' }}
-            </span>
-            <span class="text-muted">{{ flag.updatedAt | date: 'mediumDate' }}</span>
+      @if (filteredRecentFlags().length === 0) {
+        <app-empty-state
+          title="No flags match your search"
+          message="Try a different term to find recently updated flags."
+        >
+        </app-empty-state>
+      } @else {
+        <div class="recent-flags__table">
+          <div class="recent-flags__row recent-flags__row--header">
+            <span>Flag</span>
+            <span>Status</span>
+            <span>Updated</span>
           </div>
-        }
-      </div>
+          @for (flag of filteredRecentFlags(); track flag.id) {
+            <div class="recent-flags__row">
+              <div class="recent-flags__flag">
+                <a class="recent-flags__link" [routerLink]="['/flags', flag.id]">
+                  @for (part of highlightParts(flag.name); track $index) {
+                    @if (part.match) {
+                      <mark class="recent-flags__highlight">{{ part.text }}</mark>
+                    } @else {
+                      <span>{{ part.text }}</span>
+                    }
+                  }
+                </a>
+                <span class="text-muted">
+                  @for (part of highlightParts(flag.key); track $index) {
+                    @if (part.match) {
+                      <mark class="recent-flags__highlight">{{ part.text }}</mark>
+                    } @else {
+                      <span>{{ part.text }}</span>
+                    }
+                  }
+                </span>
+                <span class="recent-flags__description text-secondary">
+                  @for (part of highlightParts(flag.description); track $index) {
+                    @if (part.match) {
+                      <mark class="recent-flags__highlight">{{ part.text }}</mark>
+                    } @else {
+                      <span>{{ part.text }}</span>
+                    }
+                  }
+                </span>
+              </div>
+              <span
+                class="badge"
+                [class.badge--success]="flag.currentEnabled"
+                [class.badge--error]="!flag.currentEnabled"
+              >
+                {{ flag.currentEnabled ? 'Enabled' : 'Disabled' }}
+              </span>
+              <span class="text-muted">{{ flag.updatedAt | date: 'mediumDate' }}</span>
+            </div>
+          }
+        </div>
+      }
     </section>
   }
 

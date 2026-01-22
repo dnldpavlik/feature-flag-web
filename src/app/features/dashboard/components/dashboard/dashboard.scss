@@ -93,6 +93,17 @@
   gap: 0.2rem;
 }
 
+.recent-flags__description {
+  font-size: 0.85rem;
+}
+
+.recent-flags__highlight {
+  padding: 0 0.15rem;
+  border-radius: 4px;
+  background: color-mix(in srgb, var(--accent-primary, #405bff) 25%, transparent);
+  color: var(--text-primary, #e6edf3);
+}
+
 .recent-flags__link {
   color: var(--text-primary);
   font-weight: 600;

@@ -1,10 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { Component, computed, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 
 import { ButtonComponent } from '../../../../shared/ui/button/button';
 import { EmptyStateComponent } from '../../../../shared/ui/empty-state/empty-state';
+import { SearchStore } from '../../../../shared/store/search.store';
 import { EnvironmentStore } from '../../../flags/store/environment.store';
 
 @Component({
@@ -17,9 +18,19 @@ import { EnvironmentStore } from '../../../flags/store/environment.store';
 export class EnvironmentListComponent {
   private readonly environmentStore = inject(EnvironmentStore);
   private readonly router = inject(Router);
+  private readonly searchStore = inject(SearchStore);
 
   protected readonly environments = this.environmentStore.sortedEnvironments;
   protected readonly selectedEnvironmentId = this.environmentStore.selectedEnvironmentId;
+  protected readonly searchQuery = computed(() => this.searchStore.query().trim().toLowerCase());
+  protected readonly filteredEnvironments = computed(() => {
+    const query = this.searchQuery();
+    if (!query) return this.environments();
+
+    return this.environments().filter((env) =>
+      `${env.name} ${env.key}`.toLowerCase().includes(query)
+    );
+  });
 
   protected name = '';
   protected key = '';

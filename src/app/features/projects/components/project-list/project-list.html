@@ -12,6 +12,12 @@
       message="Create your first project to organize environments and flags."
     >
     </app-empty-state>
+  } @else if (filteredProjects().length === 0) {
+    <app-empty-state
+      title="No projects found"
+      message="Try a different search term or clear the filter."
+    >
+    </app-empty-state>
   } @else {
     <div class="projects-table">
       <div class="projects-table__row projects-table__row--header">
@@ -21,7 +27,7 @@
         <span>Updated</span>
         <span>Actions</span>
       </div>
-      @for (project of projects(); track project.id) {
+      @for (project of filteredProjects(); track project.id) {
         <div class="projects-table__row">
           <div class="project-cell project-cell--name">
             <div>

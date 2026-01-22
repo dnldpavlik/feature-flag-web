@@ -1,10 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { Component, computed, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 
 import { ButtonComponent } from '../../../../shared/ui/button/button';
 import { EmptyStateComponent } from '../../../../shared/ui/empty-state/empty-state';
+import { SearchStore } from '../../../../shared/store/search.store';
 import { ProjectStore } from '../../store/project.store';
 
 @Component({
@@ -16,9 +17,19 @@ import { ProjectStore } from '../../store/project.store';
 })
 export class ProjectListComponent {
   private readonly projectStore = inject(ProjectStore);
+  private readonly searchStore = inject(SearchStore);
 
   protected readonly projects = this.projectStore.projects;
   protected readonly selectedProjectId = this.projectStore.selectedProjectId;
+  protected readonly searchQuery = computed(() => this.searchStore.query().trim().toLowerCase());
+  protected readonly filteredProjects = computed(() => {
+    const query = this.searchQuery();
+    if (!query) return this.projects();
+
+    return this.projects().filter((project) =>
+      `${project.name} ${project.key} ${project.description}`.toLowerCase().includes(query)
+    );
+  });
 
   protected name = '';
   protected key = '';

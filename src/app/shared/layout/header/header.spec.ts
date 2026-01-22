@@ -4,7 +4,9 @@ import { Router, provideRouter } from '@angular/router';
 import { By } from '@angular/platform-browser';
 
 import { BreadcrumbItem } from '../../ui/breadcrumb/breadcrumb';
+import { SearchInputComponent } from '../../ui/search-input/search-input';
 import { ProjectStore } from '../../../features/projects/store/project.store';
+import { SearchStore } from '../../store/search.store';
 import { HeaderComponent } from './header';
 
 @Component({
@@ -41,6 +43,7 @@ describe('Header', () => {
   let fixture: ComponentFixture<HeaderHostComponent>;
   let router: Router;
   let projectStore: ProjectStore;
+  let searchStore: SearchStore;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -51,6 +54,7 @@ describe('Header', () => {
     fixture = TestBed.createComponent(HeaderHostComponent);
     router = TestBed.inject(Router);
     projectStore = TestBed.inject(ProjectStore);
+    searchStore = TestBed.inject(SearchStore);
     fixture.detectChanges();
   });
 
@@ -82,6 +86,15 @@ describe('Header', () => {
     const select = fixture.debugElement.query(By.css('.breadcrumb__select'));
     select.triggerEventHandler('change', { target: { value: 'proj_growth' } });
     expect(selectSpy).toHaveBeenCalledWith('proj_growth');
+  });
+
+  it('should update the search store when the input changes', () => {
+    const input = fixture.debugElement.query(By.directive(SearchInputComponent));
+    const searchInput = input.componentInstance as SearchInputComponent;
+
+    searchInput.valueChange.emit('flags');
+
+    expect(searchStore.query()).toBe('flags');
   });
 
   it('should ignore non-project breadcrumb selections', () => {

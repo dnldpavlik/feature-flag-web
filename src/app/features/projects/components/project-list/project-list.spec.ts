@@ -3,20 +3,23 @@ import { provideRouter } from '@angular/router';
 import { By } from '@angular/platform-browser';
 
 import { ProjectStore } from '../../store/project.store';
+import { SearchStore } from '../../../../shared/store/search.store';
 import { ProjectListComponent } from './project-list';
 
 describe('ProjectList', () => {
   let fixture: ComponentFixture<ProjectListComponent>;
   let store: ProjectStore;
+  let searchStore: SearchStore;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [ProjectListComponent],
-      providers: [ProjectStore, provideRouter([])],
+      providers: [ProjectStore, SearchStore, provideRouter([])],
     }).compileComponents();
 
     fixture = TestBed.createComponent(ProjectListComponent);
     store = TestBed.inject(ProjectStore);
+    searchStore = TestBed.inject(SearchStore);
     fixture.detectChanges();
   });
 
@@ -65,5 +68,15 @@ describe('ProjectList', () => {
     const deleteSpy = jest.spyOn(store, 'deleteProject');
     fixture.componentInstance.deleteProject('proj_growth');
     expect(deleteSpy).toHaveBeenCalledWith('proj_growth');
+  });
+
+  it('should filter projects by the search query', () => {
+    searchStore.setQuery('zzzz-no-match');
+    fixture.detectChanges();
+
+    const rows = fixture.debugElement.queryAll(By.css('.projects-table__row'));
+    expect(rows.length).toBe(0);
+    const emptyState = fixture.debugElement.query(By.css('app-empty-state'));
+    expect(emptyState).toBeTruthy();
   });
 });

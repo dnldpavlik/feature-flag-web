@@ -5,6 +5,7 @@ import { RouterLink } from '@angular/router';
 
 import { ButtonComponent } from '../../../../shared/ui/button/button';
 import { EmptyStateComponent } from '../../../../shared/ui/empty-state/empty-state';
+import { SearchStore } from '../../../../shared/store/search.store';
 import { Flag, FlagType } from '../../models/flag.model';
 import { FlagTypeMap } from '../../models/flag-value.model';
 import { EnvironmentStore } from '../../store/environment.store';
@@ -32,12 +33,14 @@ interface FlagWithEnvironmentStatus extends Flag {
 export class FlagListComponent {
   private readonly flagStore = inject(FlagStore);
   private readonly environmentStore = inject(EnvironmentStore);
+  private readonly searchStore = inject(SearchStore);
 
   protected readonly statusFilter = signal<StatusFilter>('all');
   protected readonly typeFilter = signal<TypeFilter>('all');
 
   protected readonly environments = this.environmentStore.sortedEnvironments;
   protected readonly selectedEnvironment = this.environmentStore.selectedEnvironment;
+  protected readonly searchQuery = computed(() => this.searchStore.query().trim().toLowerCase());
 
   protected readonly flagsWithStatus = computed<FlagWithEnvironmentStatus[]>(() => {
     const envId = this.environmentStore.selectedEnvironmentId();
@@ -51,6 +54,7 @@ export class FlagListComponent {
   protected readonly filteredFlags = computed(() => {
     const status = this.statusFilter();
     const type = this.typeFilter();
+    const query = this.searchQuery();
 
     return this.flagsWithStatus().filter((flag) => {
       const matchesStatus =
@@ -58,7 +62,7 @@ export class FlagListComponent {
         (status === 'enabled' && flag.currentEnabled) ||
         (status === 'disabled' && !flag.currentEnabled);
       const matchesType = type === 'all' || flag.type === type;
-      return matchesStatus && matchesType;
+      return matchesStatus && matchesType && this.matchesSearch(flag, query);
     });
   });
 
@@ -94,5 +98,21 @@ export class FlagListComponent {
       return JSON.stringify(flag.currentValue);
     }
     return String(flag.currentValue);
+  }
+
+  private matchesSearch(flag: FlagWithEnvironmentStatus, query: string): boolean {
+    if (!query) return true;
+
+    const haystack = [
+      flag.name,
+      flag.key,
+      flag.description,
+      flag.type,
+      ...flag.tags,
+    ]
+      .join(' ')
+      .toLowerCase();
+
+    return haystack.includes(query);
   }
 }

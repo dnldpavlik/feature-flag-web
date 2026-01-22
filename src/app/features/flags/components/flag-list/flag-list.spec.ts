@@ -4,6 +4,7 @@ import { By } from '@angular/platform-browser';
 
 import { EnvironmentStore } from '../../store/environment.store';
 import { FlagStore } from '../../store/flag.store';
+import { SearchStore } from '../../../../shared/store/search.store';
 
 import { FlagListComponent } from './flag-list';
 
@@ -11,16 +12,18 @@ describe('FlagList', () => {
   let fixture: ComponentFixture<FlagListComponent>;
   let component: FlagListComponent;
   let flagStore: FlagStore;
+  let searchStore: SearchStore;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [FlagListComponent],
-      providers: [FlagStore, EnvironmentStore, provideRouter([])],
+      providers: [FlagStore, EnvironmentStore, SearchStore, provideRouter([])],
     }).compileComponents();
 
     fixture = TestBed.createComponent(FlagListComponent);
     component = fixture.componentInstance;
     flagStore = TestBed.inject(FlagStore);
+    searchStore = TestBed.inject(SearchStore);
     fixture.detectChanges();
   });
 
@@ -107,6 +110,18 @@ describe('FlagList', () => {
 
       const rows = fixture.debugElement.queryAll(By.css('.flags-table__row'));
       expect(rows.length).toBe(booleanCount);
+    });
+  });
+
+  describe('search filtering', () => {
+    it('should filter flags by the search query', () => {
+      searchStore.setQuery('zzzz-no-match');
+      fixture.detectChanges();
+
+      const rows = fixture.debugElement.queryAll(By.css('.flags-table__row'));
+      expect(rows.length).toBe(0);
+      const emptyState = fixture.debugElement.query(By.css('app-empty-state'));
+      expect(emptyState).toBeTruthy();
     });
   });
 

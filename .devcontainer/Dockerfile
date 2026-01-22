@@ -38,7 +38,7 @@ WORKDIR /home/angular/workspace
 
 # Copy package files and install dependencies as root
 COPY --chown=angular:nodejs package*.json ./
-RUN npm ci --only=development
+RUN npm install --no-audit --no-fund
 
 # Switch to non-root user for runtime operations
 # USER angular

@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, effect, inject, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { filter, map } from 'rxjs';
@@ -6,6 +6,7 @@ import { BreadcrumbItem } from './shared/ui/breadcrumb/breadcrumb';
 import { IconName } from './shared/ui/icon/icon';
 import { HeaderComponent } from './shared/layout/header/header';
 import { SidebarComponent } from './shared/layout/sidebar/sidebar';
+import { SearchStore } from './shared/store/search.store';
 import { EnvironmentStore } from './features/flags/store/environment.store';
 import { ProjectStore } from './features/projects/store/project.store';
 
@@ -31,6 +32,7 @@ interface Environment {
 export class AppComponent {
   private readonly environmentStore = inject(EnvironmentStore);
   private readonly projectStore = inject(ProjectStore);
+  private readonly searchStore = inject(SearchStore);
   private readonly router = inject(Router);
 
   private readonly currentUrl = toSignal(
@@ -107,6 +109,13 @@ export class AppComponent {
       route: `/environments/${env.id}`,
     }))
   );
+
+  constructor() {
+    effect(() => {
+      this.currentUrl();
+      this.searchStore.clear();
+    });
+  }
 
   private getSectionLabel(url: string): string {
     const segment =
