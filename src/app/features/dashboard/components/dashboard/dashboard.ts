@@ -41,8 +41,7 @@ export class DashboardComponent {
       .slice(0, 5);
   });
 
-  protected onEnvironmentChange(event: Event): void {
-    const value = (event.target as HTMLSelectElement).value;
-    this.environmentStore.selectEnvironment(value);
-  }
+  protected readonly selectedEnvironmentName = computed(
+    () => this.selectedEnvironment()?.name ?? 'All Environments'
+  );
 }

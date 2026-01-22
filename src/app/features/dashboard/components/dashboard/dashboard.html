@@ -2,18 +2,10 @@
   <div class="dashboard-header">
     <div>
       <h1>Feature Flags</h1>
-      <p class="text-secondary">Manage your feature flags across all environments</p>
+      <p class="text-secondary">
+        Environment: <span class="dashboard-env">{{ selectedEnvironmentName() }}</span>
+      </p>
     </div>
-    <label class="dashboard-filter">
-      Environment
-      <select class="dashboard-select" (change)="onEnvironmentChange($event)">
-        @for (env of environments(); track env.id) {
-          <option [value]="env.id" [selected]="env.id === selectedEnvironment()?.id">
-            {{ env.name }}
-          </option>
-        }
-      </select>
-    </label>
   </div>
 
   <div class="stats-grid">
@@ -29,7 +21,7 @@
         <div>
           <h2>Recently Updated Flags</h2>
           <p class="text-secondary">
-            Latest updates in {{ selectedEnvironment()?.name ?? 'All environments' }}
+            Latest updates in {{ selectedEnvironmentName() }}
           </p>
         </div>
         <app-button variant="ghost" [routerLink]="['/flags']">View All</app-button>

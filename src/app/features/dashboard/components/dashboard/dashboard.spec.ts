@@ -78,18 +78,24 @@ describe('Dashboard', () => {
     );
   });
 
-  it('should update store when environment selector changes', () => {
-    const selectSpy = jest.spyOn(environmentStore, 'selectEnvironment');
-
-    fixture.componentInstance.onEnvironmentChange({
-      target: { value: 'env_production' },
-    } as unknown as Event);
-
-    expect(selectSpy).toHaveBeenCalledWith('env_production');
-  });
-
   it('should hide empty state when flags exist', () => {
     const emptyState = fixture.debugElement.query(By.css('app-empty-state'));
     expect(emptyState).toBeNull();
+  });
+
+  it('should render selected environment name in the header', () => {
+    environmentStore.selectEnvironment('env_production');
+    fixture.detectChanges();
+
+    const envText = fixture.debugElement.query(By.css('.dashboard-env'));
+    expect(envText.nativeElement.textContent).toContain('Production');
+  });
+
+  it('should fall back to all environments when selection is missing', () => {
+    environmentStore.selectEnvironment('env_missing');
+    fixture.detectChanges();
+
+    const envText = fixture.debugElement.query(By.css('.dashboard-env'));
+    expect(envText.nativeElement.textContent).toContain('All Environments');
   });
 });
