@@ -53,52 +53,105 @@ describe('Header', () => {
     fixture.detectChanges();
   });
 
-  it('should render the header container', () => {
-    const header = fixture.debugElement.query(By.css('.header'));
-    expect(header).toBeTruthy();
+  describe('rendering', () => {
+    it('should render the header container element', () => {
+      const header = fixture.debugElement.query(By.css('.header'));
+      expect(header).toBeTruthy();
+    });
+
+    it('should render the breadcrumb navigation trail', () => {
+      const breadcrumb = fixture.debugElement.query(By.css('app-breadcrumb'));
+      expect(breadcrumb).toBeTruthy();
+    });
+
+    it('should render the search input component', () => {
+      const searchInput = fixture.debugElement.query(By.directive(SearchInputComponent));
+      expect(searchInput).toBeTruthy();
+    });
+
+    it('should render the create flag action button', () => {
+      const createButton = fixture.debugElement.query(By.css('.header__right app-button'));
+      expect(createButton).toBeTruthy();
+    });
+
+    it('should render the mobile menu toggle button', () => {
+      const menuButton = fixture.debugElement.query(By.css('.header__menu-btn'));
+      expect(menuButton).toBeTruthy();
+    });
   });
 
-  it('should render a breadcrumb trail', () => {
-    const breadcrumb = fixture.debugElement.query(By.css('app-breadcrumb'));
-    expect(breadcrumb).toBeTruthy();
+  describe('mobile menu interaction', () => {
+    it('should emit menuToggle event when menu button is clicked', () => {
+      const menuButton = fixture.debugElement.query(By.css('.header__menu-btn'));
+      menuButton.triggerEventHandler('click');
+      expect(fixture.componentInstance.menuToggles).toBe(1);
+    });
+
+    it('should emit multiple times on multiple clicks', () => {
+      const menuButton = fixture.debugElement.query(By.css('.header__menu-btn'));
+      menuButton.triggerEventHandler('click');
+      menuButton.triggerEventHandler('click');
+      menuButton.triggerEventHandler('click');
+      expect(fixture.componentInstance.menuToggles).toBe(3);
+    });
   });
 
-  it('should emit when the menu button is clicked', () => {
-    const menuButton = fixture.debugElement.query(By.css('.header__menu-btn'));
-    menuButton.triggerEventHandler('click');
-    expect(fixture.componentInstance.menuToggles).toBe(1);
+  describe('create flag navigation', () => {
+    it('should navigate to /flags/new when create button is clicked', () => {
+      const navigateSpy = jest.spyOn(router, 'navigate').mockResolvedValue(true);
+      const createButton = fixture.debugElement.query(By.css('.header__right app-button'));
+      createButton.triggerEventHandler('click');
+      expect(navigateSpy).toHaveBeenCalledWith(['/flags/new']);
+    });
   });
 
-  it('should navigate to create flag on action click', () => {
-    const navigateSpy = jest.spyOn(router, 'navigate').mockResolvedValue(true);
-    const createButton = fixture.debugElement.query(By.css('.header__right app-button'));
-    createButton.triggerEventHandler('click');
-    expect(navigateSpy).toHaveBeenCalledWith(['/flags/new']);
+  describe('project selection via breadcrumb', () => {
+    it('should select project when breadcrumb dropdown value changes', () => {
+      const selectSpy = jest.spyOn(projectStore, 'selectProject');
+      const select = fixture.debugElement.query(By.css('.breadcrumb__select'));
+      select.triggerEventHandler('change', { target: { value: 'proj_growth' } });
+      expect(selectSpy).toHaveBeenCalledWith('proj_growth');
+    });
+
+    it('should not call selectProject for non-project breadcrumb keys', () => {
+      const selectSpy = jest.spyOn(projectStore, 'selectProject');
+      const header = fixture.debugElement.query(By.directive(HeaderComponent));
+      const instance = header.componentInstance as HeaderComponent & {
+        handleBreadcrumbSelection: (payload: { key: string; value: string }) => void;
+      };
+      instance.handleBreadcrumbSelection({ key: 'section', value: 'flags' });
+      expect(selectSpy).not.toHaveBeenCalled();
+    });
+
+    it('should only respond to project key selections', () => {
+      const selectSpy = jest.spyOn(projectStore, 'selectProject');
+      const header = fixture.debugElement.query(By.directive(HeaderComponent));
+      const instance = header.componentInstance as HeaderComponent & {
+        handleBreadcrumbSelection: (payload: { key: string; value: string }) => void;
+      };
+      instance.handleBreadcrumbSelection({ key: 'environment', value: 'env_staging' });
+      expect(selectSpy).not.toHaveBeenCalled();
+    });
   });
 
-  it('should select a project from the breadcrumb dropdown', () => {
-    const selectSpy = jest.spyOn(projectStore, 'selectProject');
-    const select = fixture.debugElement.query(By.css('.breadcrumb__select'));
-    select.triggerEventHandler('change', { target: { value: 'proj_growth' } });
-    expect(selectSpy).toHaveBeenCalledWith('proj_growth');
-  });
+  describe('search functionality', () => {
+    it('should update search store when search input value changes', () => {
+      const input = fixture.debugElement.query(By.directive(SearchInputComponent));
+      const searchInput = input.componentInstance as SearchInputComponent;
 
-  it('should update the search store when the input changes', () => {
-    const input = fixture.debugElement.query(By.directive(SearchInputComponent));
-    const searchInput = input.componentInstance as SearchInputComponent;
+      searchInput.valueChange.emit('flags');
 
-    searchInput.valueChange.emit('flags');
+      expect(searchStore.query()).toBe('flags');
+    });
 
-    expect(searchStore.query()).toBe('flags');
-  });
+    it('should clear search store when empty value is emitted', () => {
+      const input = fixture.debugElement.query(By.directive(SearchInputComponent));
+      const searchInput = input.componentInstance as SearchInputComponent;
 
-  it('should ignore non-project breadcrumb selections', () => {
-    const selectSpy = jest.spyOn(projectStore, 'selectProject');
-    const header = fixture.debugElement.query(By.directive(HeaderComponent));
-    const instance = header.componentInstance as HeaderComponent & {
-      handleBreadcrumbSelection: (payload: { key: string; value: string }) => void;
-    };
-    instance.handleBreadcrumbSelection({ key: 'section', value: 'flags' });
-    expect(selectSpy).not.toHaveBeenCalled();
+      searchInput.valueChange.emit('initial');
+      searchInput.valueChange.emit('');
+
+      expect(searchStore.query()).toBe('');
+    });
   });
 });

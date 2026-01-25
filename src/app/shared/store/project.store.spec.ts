@@ -13,95 +13,182 @@ describe('ProjectStore', () => {
     store = TestBed.inject(ProjectStore);
   });
 
-  it('should seed initial projects', () => {
-    expect(store.projects().length).toBeGreaterThan(0);
-  });
-
-  it('should select a project', () => {
-    store.selectProject('proj_growth');
-    expect(store.selectedProjectId()).toBe('proj_growth');
-  });
-
-  it('should set the default project', () => {
-    store.setDefaultProject('proj_growth');
-    const defaults = store.projects().filter((project) => project.isDefault);
-    expect(defaults.length).toBe(1);
-    expect(defaults[0].id).toBe('proj_growth');
-  });
-
-  it('should add a project', () => {
-    const initialCount = store.projects().length;
-
-    store.addProject({
-      key: 'pricing',
-      name: 'Pricing Optimization',
-      description: 'Pricing and packaging experiments.',
+  describe('initial state', () => {
+    it('should seed with pre-configured projects', () => {
+      expect(store.projects().length).toBeGreaterThan(0);
     });
 
-    expect(store.projects().length).toBe(initialCount + 1);
-  });
-
-  it('should respect default flag when adding a project', () => {
-    store.addProject({
-      key: 'ops',
-      name: 'Operations',
-      description: 'Internal ops tooling.',
-      isDefault: true,
+    it('should include a default project', () => {
+      const defaultProject = store.projects().find((p) => p.isDefault);
+      expect(defaultProject).toBeDefined();
     });
 
-    const project = store.projects().find((item) => item.key === 'ops');
-    expect(project?.isDefault).toBe(true);
+    it('should provide readonly projects signal', () => {
+      expect(typeof store.projects).toBe('function');
+    });
   });
 
-  it('should find projects by id', () => {
-    const project = store.getProjectById('proj_default');
-    expect(project?.key).toBe('default');
-  });
-
-  it('should return undefined when project is missing', () => {
-    expect(store.getProjectById('proj_missing')).toBeUndefined();
-  });
-
-  it('should not update timestamps for unrelated projects when changing default', () => {
-    store.addProject({
-      key: 'labs',
-      name: 'Labs',
-      description: 'R&D experiments.',
+  describe('selectProject', () => {
+    it('should update selectedProjectId when valid project is selected', () => {
+      store.selectProject('proj_growth');
+      expect(store.selectedProjectId()).toBe('proj_growth');
     });
 
-    const labsBefore = store.projects().find((item) => item.key === 'labs');
-    store.setDefaultProject('proj_growth');
-    const labsAfter = store.projects().find((item) => item.key === 'labs');
-
-    expect(labsAfter?.updatedAt).toBe(labsBefore?.updatedAt);
+    it('should allow selecting different projects sequentially', () => {
+      store.selectProject('proj_growth');
+      store.selectProject('proj_default');
+      expect(store.selectedProjectId()).toBe('proj_default');
+    });
   });
 
-  it('should ignore delete when only one project remains', () => {
-    store.deleteProject('proj_growth');
-    store.deleteProject('proj_default');
-
-    expect(store.projects().length).toBe(1);
-  });
-
-  it('should fall back to default project when selected is deleted', () => {
-    store.addProject({
-      key: 'ops',
-      name: 'Operations',
-      description: 'Ops tooling.',
-      isDefault: true,
+  describe('setDefaultProject', () => {
+    it('should mark the specified project as default', () => {
+      store.setDefaultProject('proj_growth');
+      const defaults = store.projects().filter((project) => project.isDefault);
+      expect(defaults.length).toBe(1);
+      expect(defaults[0].id).toBe('proj_growth');
     });
 
-    store.selectProject('proj_growth');
-    store.deleteProject('proj_growth');
+    it('should remove default status from previous default project', () => {
+      store.setDefaultProject('proj_growth');
+      const previousDefault = store.projects().find((p) => p.id === 'proj_default');
+      expect(previousDefault?.isDefault).toBe(false);
+    });
 
-    expect(store.selectedProjectId()).toBe('proj_default');
+    it('should not update timestamps for unrelated projects', () => {
+      store.addProject({
+        key: 'labs',
+        name: 'Labs',
+        description: 'R&D experiments.',
+      });
+
+      const labsBefore = store.projects().find((item) => item.key === 'labs');
+      store.setDefaultProject('proj_growth');
+      const labsAfter = store.projects().find((item) => item.key === 'labs');
+
+      expect(labsAfter?.updatedAt).toBe(labsBefore?.updatedAt);
+    });
   });
 
-  it('should fall back to first project when no default exists', () => {
-    store.setDefaultProject('proj_missing');
-    store.selectProject('proj_growth');
-    store.deleteProject('proj_growth');
+  describe('addProject', () => {
+    it('should add a new project to the store', () => {
+      const initialCount = store.projects().length;
 
-    expect(store.selectedProjectId()).toBe('proj_default');
+      store.addProject({
+        key: 'pricing',
+        name: 'Pricing Optimization',
+        description: 'Pricing and packaging experiments.',
+      });
+
+      expect(store.projects().length).toBe(initialCount + 1);
+    });
+
+    it('should create project with provided key', () => {
+      store.addProject({
+        key: 'unique-key',
+        name: 'Test Project',
+        description: 'Description',
+      });
+
+      const project = store.projects().find((p) => p.key === 'unique-key');
+      expect(project?.key).toBe('unique-key');
+    });
+
+    it('should respect isDefault flag when adding a project', () => {
+      store.addProject({
+        key: 'ops',
+        name: 'Operations',
+        description: 'Internal ops tooling.',
+        isDefault: true,
+      });
+
+      const project = store.projects().find((item) => item.key === 'ops');
+      expect(project?.isDefault).toBe(true);
+    });
+
+    it('should generate unique id for new project', () => {
+      store.addProject({
+        key: 'new-proj',
+        name: 'New Project',
+        description: 'Test',
+      });
+
+      const project = store.projects().find((p) => p.key === 'new-proj');
+      expect(project?.id).toMatch(/^proj_/);
+    });
+  });
+
+  describe('getProjectById', () => {
+    it('should return project when id exists', () => {
+      const project = store.getProjectById('proj_default');
+      expect(project?.key).toBe('default');
+    });
+
+    it('should return undefined when project id does not exist', () => {
+      expect(store.getProjectById('proj_missing')).toBeUndefined();
+    });
+
+    it('should return newly added project by id', () => {
+      store.addProject({
+        key: 'findable',
+        name: 'Findable Project',
+        description: 'Test',
+      });
+
+      const added = store.projects().find((p) => p.key === 'findable');
+      const found = store.getProjectById(added!.id);
+      expect(found?.name).toBe('Findable Project');
+    });
+  });
+
+  describe('deleteProject', () => {
+    it('should remove project from store', () => {
+      const initialCount = store.projects().length;
+      store.addProject({
+        key: 'deletable',
+        name: 'Deletable',
+        description: 'Will be deleted',
+      });
+      const project = store.projects().find((p) => p.key === 'deletable');
+
+      store.deleteProject(project!.id);
+
+      expect(store.projects().length).toBe(initialCount);
+    });
+
+    it('should not delete when only one project remains', () => {
+      store.deleteProject('proj_growth');
+      store.deleteProject('proj_default');
+
+      expect(store.projects().length).toBe(1);
+    });
+
+    it('should fall back to default project when selected project is deleted', () => {
+      store.addProject({
+        key: 'ops',
+        name: 'Operations',
+        description: 'Ops tooling.',
+        isDefault: true,
+      });
+
+      store.selectProject('proj_growth');
+      store.deleteProject('proj_growth');
+
+      expect(store.selectedProjectId()).toBe('proj_default');
+    });
+
+    it('should fall back to first project when no default exists after deletion', () => {
+      store.setDefaultProject('proj_missing');
+      store.selectProject('proj_growth');
+      store.deleteProject('proj_growth');
+
+      expect(store.selectedProjectId()).toBe('proj_default');
+    });
+
+    it('should ignore deletion of non-existent project id', () => {
+      const initialCount = store.projects().length;
+      store.deleteProject('proj_nonexistent');
+      expect(store.projects().length).toBe(initialCount);
+    });
   });
 });
