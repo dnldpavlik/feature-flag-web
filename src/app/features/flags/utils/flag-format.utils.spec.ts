@@ -1,9 +1,8 @@
 import {
-  validateJsonObject,
-  parseValueForType,
-  formatFlagValue,
   formatDisplayValue,
-  JsonValidationResult,
+  formatFlagValue,
+  parseValueForType,
+  validateJsonObject,
 } from './flag-format.utils';
 
 describe('flag-format.utils', () => {

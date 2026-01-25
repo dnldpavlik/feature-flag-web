@@ -22,7 +22,7 @@
     "format": "prettier --write \"src/**/*.{ts,html,scss}\"",
     "format:check": "prettier --check \"src/**/*.{ts,html,scss}\"",
     "typecheck": "tsc --noEmit",
-    "ci:local": "npm ci && npm run lint && npm run test:coverage && npm run build",
+    "ci:local": "npm run lint && npm run test:coverage && npm run build",
     "check-updates": "npm outdated",
     "check-updates:major": "ncu",
     "update-deps": "ncu -u && npm install",
