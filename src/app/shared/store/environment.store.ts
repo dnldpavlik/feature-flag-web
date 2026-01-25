@@ -1,6 +1,6 @@
 import { Injectable, computed, signal } from '@angular/core';
 
-import { CreateEnvironmentInput, Environment } from '../models/environment.model';
+import { CreateEnvironmentInput, Environment } from '../../features/flags/models/environment.model';
 
 const nowStamp = () => new Date().toISOString();
 const createId = () => `env_${Math.random().toString(36).slice(2, 10)}`;

@@ -3,7 +3,7 @@ import { ActivatedRoute, Router, convertToParamMap, provideRouter } from '@angul
 import { By } from '@angular/platform-browser';
 import { BehaviorSubject } from 'rxjs';
 
-import { EnvironmentStore } from '../../../flags/store/environment.store';
+import { EnvironmentStore } from '../../../../shared/store/environment.store';
 import { FlagStore } from '../../../flags/store/flag.store';
 import { EnvironmentDetailComponent } from './environment-detail';
 

@@ -1,5 +1,5 @@
-import { CommonModule } from '@angular/common';
-import { Component, computed, inject } from '@angular/core';
+import { DatePipe } from '@angular/common';
+import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
 import { ButtonComponent } from '../../../../shared/ui/button/button';
@@ -9,10 +9,10 @@ import { SegmentStore } from '../../store/segment.store';
 
 @Component({
   selector: 'app-segment-list',
-  standalone: true,
-  imports: [CommonModule, FormsModule, ButtonComponent, EmptyStateComponent],
+  imports: [DatePipe, FormsModule, ButtonComponent, EmptyStateComponent],
   templateUrl: './segment-list.html',
   styleUrl: './segment-list.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SegmentListComponent {
   private readonly segmentStore = inject(SegmentStore);

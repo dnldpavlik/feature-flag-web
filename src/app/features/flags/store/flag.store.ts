@@ -3,7 +3,7 @@ import { Injectable, computed, inject, signal } from '@angular/core';
 import { CreateFlagInput, Flag, FlagType, UpdateEnvironmentValueInput } from '../models/flag.model';
 import { EnvironmentFlagValue, FlagTypeMap } from '../models/flag-value.model';
 import { getEffectiveValue, isEnabledInEnvironment } from '../utils/flag-value.utils';
-import { EnvironmentStore } from './environment.store';
+import { EnvironmentStore } from '../../../shared/store/environment.store';
 
 const nowStamp = () => new Date().toISOString();
 const createId = () => `flag_${Math.random().toString(36).slice(2, 10)}`;

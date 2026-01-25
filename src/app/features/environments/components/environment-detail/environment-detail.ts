@@ -1,20 +1,20 @@
-import { CommonModule } from '@angular/common';
-import { Component, computed, inject } from '@angular/core';
+import { DatePipe } from '@angular/common';
+import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { ButtonComponent } from '../../../../shared/ui/button/button';
 import { EmptyStateComponent } from '../../../../shared/ui/empty-state/empty-state';
-import { EnvironmentStore } from '../../../flags/store/environment.store';
+import { EnvironmentStore } from '../../../../shared/store/environment.store';
 import { FlagStore } from '../../../flags/store/flag.store';
 import { getEffectiveValue, isEnabledInEnvironment } from '../../../flags/utils/flag-value.utils';
 
 @Component({
   selector: 'app-environment-detail',
-  standalone: true,
-  imports: [CommonModule, ButtonComponent, EmptyStateComponent, RouterLink],
+  imports: [DatePipe, ButtonComponent, EmptyStateComponent, RouterLink],
   templateUrl: './environment-detail.html',
   styleUrl: './environment-detail.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EnvironmentDetailComponent {
   private readonly environmentStore = inject(EnvironmentStore);

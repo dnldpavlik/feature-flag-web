@@ -51,7 +51,6 @@ const ICON_CLIP_RULES: Partial<Record<IconName, 'evenodd' | 'nonzero'>> = {
 
 @Component({
   selector: 'app-icon',
-  standalone: true,
   imports: [],
   templateUrl: './icon.html',
   styleUrl: './icon.scss',

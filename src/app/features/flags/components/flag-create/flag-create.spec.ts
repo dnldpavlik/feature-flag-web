@@ -4,7 +4,7 @@ import { By } from '@angular/platform-browser';
 
 import { FlagCreateComponent } from './flag-create';
 import { FlagStore } from '../../store/flag.store';
-import { EnvironmentStore } from '../../store/environment.store';
+import { EnvironmentStore } from '../../../../shared/store/environment.store';
 
 describe('FlagCreate', () => {
   let fixture: ComponentFixture<FlagCreateComponent>;

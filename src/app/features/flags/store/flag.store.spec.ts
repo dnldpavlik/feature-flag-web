@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 
-import { EnvironmentStore } from './environment.store';
+import { EnvironmentStore } from '../../../shared/store/environment.store';
 import { FlagStore } from './flag.store';
 
 describe('FlagStore', () => {

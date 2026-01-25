@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { DatePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 
 import { RouterLink } from '@angular/router';
@@ -8,7 +8,7 @@ import { EmptyStateComponent } from '../../../../shared/ui/empty-state/empty-sta
 import { SearchStore } from '../../../../shared/store/search.store';
 import { Flag, FlagType } from '../../models/flag.model';
 import { FlagTypeMap } from '../../models/flag-value.model';
-import { EnvironmentStore } from '../../store/environment.store';
+import { EnvironmentStore } from '../../../../shared/store/environment.store';
 import { FlagStore } from '../../store/flag.store';
 import { getEffectiveValue, isEnabledInEnvironment } from '../../utils/flag-value.utils';
 
@@ -25,7 +25,7 @@ interface FlagWithEnvironmentStatus extends Flag {
 
 @Component({
   selector: 'app-flag-list',
-  imports: [CommonModule, ButtonComponent, EmptyStateComponent, RouterLink],
+  imports: [DatePipe, ButtonComponent, EmptyStateComponent, RouterLink],
   templateUrl: './flag-list.html',
   styleUrl: './flag-list.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

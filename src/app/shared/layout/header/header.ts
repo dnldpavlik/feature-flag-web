@@ -4,12 +4,11 @@ import { Router } from '@angular/router';
 import { BreadcrumbComponent, BreadcrumbItem } from '../../ui/breadcrumb/breadcrumb';
 import { ButtonComponent } from '../../ui/button/button';
 import { SearchInputComponent } from '../../ui/search-input/search-input';
-import { ProjectStore } from '../../../features/projects/store/project.store';
+import { ProjectStore } from '../../store/project.store';
 import { SearchStore } from '../../store/search.store';
 
 @Component({
   selector: 'app-header',
-  standalone: true,
   imports: [BreadcrumbComponent, ButtonComponent, SearchInputComponent],
   templateUrl: './header.html',
   styleUrl: './header.scss',

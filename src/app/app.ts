@@ -1,4 +1,4 @@
-import { Component, computed, effect, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, inject, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { filter, map } from 'rxjs';
@@ -7,8 +7,8 @@ import { IconName } from './shared/ui/icon/icon';
 import { HeaderComponent } from './shared/layout/header/header';
 import { SidebarComponent } from './shared/layout/sidebar/sidebar';
 import { SearchStore } from './shared/store/search.store';
-import { EnvironmentStore } from './features/flags/store/environment.store';
-import { ProjectStore } from './features/projects/store/project.store';
+import { EnvironmentStore } from './shared/store/environment.store';
+import { ProjectStore } from './shared/store/project.store';
 
 interface NavItem {
   label: string;
@@ -24,10 +24,10 @@ interface Environment {
 
 @Component({
   selector: 'app-root',
-  standalone: true,
   imports: [RouterOutlet, HeaderComponent, SidebarComponent],
   templateUrl: './app.html',
   styleUrl: './app.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AppComponent {
   private readonly environmentStore = inject(EnvironmentStore);

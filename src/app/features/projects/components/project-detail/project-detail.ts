@@ -1,18 +1,18 @@
-import { CommonModule } from '@angular/common';
-import { Component, computed, inject } from '@angular/core';
+import { DatePipe } from '@angular/common';
+import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { ButtonComponent } from '../../../../shared/ui/button/button';
 import { EmptyStateComponent } from '../../../../shared/ui/empty-state/empty-state';
-import { ProjectStore } from '../../store/project.store';
+import { ProjectStore } from '../../../../shared/store/project.store';
 
 @Component({
   selector: 'app-project-detail',
-  standalone: true,
-  imports: [CommonModule, ButtonComponent, EmptyStateComponent],
+  imports: [DatePipe, ButtonComponent, EmptyStateComponent],
   templateUrl: './project-detail.html',
   styleUrl: './project-detail.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProjectDetailComponent {
   private readonly projectStore = inject(ProjectStore);

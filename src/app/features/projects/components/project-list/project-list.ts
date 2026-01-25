@@ -1,19 +1,19 @@
-import { CommonModule } from '@angular/common';
-import { Component, computed, inject } from '@angular/core';
+import { DatePipe } from '@angular/common';
+import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 
 import { ButtonComponent } from '../../../../shared/ui/button/button';
 import { EmptyStateComponent } from '../../../../shared/ui/empty-state/empty-state';
 import { SearchStore } from '../../../../shared/store/search.store';
-import { ProjectStore } from '../../store/project.store';
+import { ProjectStore } from '../../../../shared/store/project.store';
 
 @Component({
   selector: 'app-project-list',
-  standalone: true,
-  imports: [CommonModule, FormsModule, ButtonComponent, EmptyStateComponent, RouterLink],
+  imports: [DatePipe, FormsModule, ButtonComponent, EmptyStateComponent, RouterLink],
   templateUrl: './project-list.html',
   styleUrl: './project-list.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProjectListComponent {
   private readonly projectStore = inject(ProjectStore);

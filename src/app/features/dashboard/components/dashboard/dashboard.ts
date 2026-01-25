@@ -1,14 +1,14 @@
-import { CommonModule } from '@angular/common';
+import { DatePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 
 import { ButtonComponent } from '../../../../shared/ui/button/button';
 import { EmptyStateComponent } from '../../../../shared/ui/empty-state/empty-state';
 import { StatCardComponent } from '../../../../shared/ui/stat-card/stat-card';
 import { Flag } from '../../../flags/models/flag.model';
-import { EnvironmentStore } from '../../../flags/store/environment.store';
+import { EnvironmentStore } from '../../../../shared/store/environment.store';
 import { FlagStore } from '../../../flags/store/flag.store';
 import { isEnabledInEnvironment } from '../../../flags/utils/flag-value.utils';
-import { ProjectStore } from '../../../projects/store/project.store';
+import { ProjectStore } from '../../../../shared/store/project.store';
 import { SearchStore } from '../../../../shared/store/search.store';
 import { RouterLink } from '@angular/router';
 
@@ -16,8 +16,7 @@ type RecentFlag = Flag & { currentEnabled: boolean };
 
 @Component({
   selector: 'app-dashboard',
-  standalone: true,
-  imports: [CommonModule, ButtonComponent, EmptyStateComponent, RouterLink, StatCardComponent],
+  imports: [DatePipe, ButtonComponent, EmptyStateComponent, RouterLink, StatCardComponent],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

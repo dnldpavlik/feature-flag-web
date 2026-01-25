@@ -5,7 +5,7 @@ import { By } from '@angular/platform-browser';
 
 import { BreadcrumbItem } from '../../ui/breadcrumb/breadcrumb';
 import { SearchInputComponent } from '../../ui/search-input/search-input';
-import { ProjectStore } from '../../../features/projects/store/project.store';
+import { ProjectStore } from '../../store/project.store';
 import { SearchStore } from '../../store/search.store';
 import { HeaderComponent } from './header';
 

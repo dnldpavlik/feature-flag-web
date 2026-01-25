@@ -3,7 +3,7 @@ import { ActivatedRoute, Router, convertToParamMap, provideRouter } from '@angul
 import { By } from '@angular/platform-browser';
 import { BehaviorSubject } from 'rxjs';
 
-import { ProjectStore } from '../../store/project.store';
+import { ProjectStore } from '../../../../shared/store/project.store';
 import { ProjectDetailComponent } from './project-detail';
 
 describe('ProjectDetail', () => {

@@ -7,7 +7,7 @@ import { ButtonComponent } from '../../../../shared/ui/button/button';
 import { EmptyStateComponent } from '../../../../shared/ui/empty-state/empty-state';
 import { Flag, FlagType } from '../../models/flag.model';
 import { FlagTypeMap } from '../../models/flag-value.model';
-import { EnvironmentStore } from '../../store/environment.store';
+import { EnvironmentStore } from '../../../../shared/store/environment.store';
 import { FlagStore } from '../../store/flag.store';
 
 interface FlagEnvironmentRow {
@@ -20,7 +20,6 @@ interface FlagEnvironmentRow {
 
 @Component({
   selector: 'app-flag-detail',
-  standalone: true,
   imports: [ButtonComponent, EmptyStateComponent, FormsModule],
   templateUrl: './flag-detail.html',
   styleUrl: './flag-detail.scss',

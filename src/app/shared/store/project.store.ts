@@ -1,6 +1,6 @@
 import { Injectable, computed, signal } from '@angular/core';
 
-import { CreateProjectInput, Project } from '../models/project.model';
+import { CreateProjectInput, Project } from '../../features/projects/models/project.model';
 
 const nowStamp = () => new Date().toISOString();
 const createId = () => `proj_${Math.random().toString(36).slice(2, 10)}`;

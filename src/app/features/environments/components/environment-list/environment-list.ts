@@ -1,19 +1,19 @@
-import { CommonModule } from '@angular/common';
-import { Component, computed, inject } from '@angular/core';
+import { DatePipe } from '@angular/common';
+import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 
 import { ButtonComponent } from '../../../../shared/ui/button/button';
 import { EmptyStateComponent } from '../../../../shared/ui/empty-state/empty-state';
 import { SearchStore } from '../../../../shared/store/search.store';
-import { EnvironmentStore } from '../../../flags/store/environment.store';
+import { EnvironmentStore } from '../../../../shared/store/environment.store';
 
 @Component({
   selector: 'app-environment-list',
-  standalone: true,
-  imports: [CommonModule, FormsModule, ButtonComponent, EmptyStateComponent, RouterLink],
+  imports: [DatePipe, FormsModule, ButtonComponent, EmptyStateComponent, RouterLink],
   templateUrl: './environment-list.html',
   styleUrl: './environment-list.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EnvironmentListComponent {
   private readonly environmentStore = inject(EnvironmentStore);

@@ -24,7 +24,6 @@ export interface SidebarUser {
 
 @Component({
   selector: 'app-sidebar',
-  standalone: true,
   imports: [NavItemComponent, NavSectionComponent, UserMenuComponent],
   templateUrl: './sidebar.html',
   styleUrl: './sidebar.scss',
