@@ -55,6 +55,11 @@ export class FlagCreateComponent {
     }));
   }
 
+  protected onEnvironmentToggle(envId: string, event: Event): void {
+    const checked = (event.target as HTMLInputElement).checked;
+    this.toggleEnvironment(envId, checked);
+  }
+
   protected onTypeChange(newType: FlagType): void {
     this.form.controls.type.setValue(newType);
   }

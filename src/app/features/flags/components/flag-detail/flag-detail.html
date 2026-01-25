@@ -81,7 +81,7 @@
               <input
                 type="checkbox"
                 [checked]="env.enabled"
-                (change)="toggleEnvironment(env.id, $any($event.target).checked)"
+                (change)="onEnvironmentToggle(env.id, $event)"
               />
               <span class="toggle__slider"></span>
             </label>
@@ -90,7 +90,7 @@
                 <select
                   class="form-input"
                   [value]="env.value ? 'true' : 'false'"
-                  (change)="updateEnvironmentValue(env.id, $any($event.target).value)"
+                  (change)="onEnvironmentValueChange(env.id, $event)"
                 >
                   <option value="true">true</option>
                   <option value="false">false</option>
@@ -101,7 +101,7 @@
                 <input
                   class="form-input"
                   [value]="env.value"
-                  (change)="updateEnvironmentValue(env.id, $any($event.target).value)"
+                  (change)="onEnvironmentValueChange(env.id, $event)"
                 />
               }
 
@@ -110,7 +110,7 @@
                   class="form-input"
                   type="number"
                   [value]="env.value"
-                  (change)="updateEnvironmentValue(env.id, $any($event.target).value)"
+                  (change)="onEnvironmentValueChange(env.id, $event)"
                 />
               }
 
@@ -119,7 +119,7 @@
                   class="form-input flag-detail__textarea"
                   rows="2"
                   [value]="formatJsonValue(env.value)"
-                  (change)="updateEnvironmentValue(env.id, $any($event.target).value)"
+                  (change)="onEnvironmentValueChange(env.id, $event)"
                 ></textarea>
               }
             </div>

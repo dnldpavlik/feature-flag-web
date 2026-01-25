@@ -109,7 +109,7 @@
             <input
               type="checkbox"
               [checked]="env.enabled"
-              (change)="toggleEnvironment(env.id, $any($event.target).checked)"
+              (change)="onEnvironmentToggle(env.id, $event)"
             />
             <span
               class="flag-create__env-badge"

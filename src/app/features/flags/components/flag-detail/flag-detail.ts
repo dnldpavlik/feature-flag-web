@@ -163,6 +163,11 @@ export class FlagDetailComponent {
     this.store.toggleFlagInEnvironment(current.id, envId, enabled);
   }
 
+  protected onEnvironmentToggle(envId: string, event: Event): void {
+    const checked = (event.target as HTMLInputElement).checked;
+    this.toggleEnvironment(envId, checked);
+  }
+
   protected updateEnvironmentValue(envId: string, value: string): void {
     const current = this.flag();
     if (!current) return;
@@ -177,6 +182,11 @@ export class FlagDetailComponent {
       environmentId: envId,
       value: parsed,
     });
+  }
+
+  protected onEnvironmentValueChange(envId: string, event: Event): void {
+    const value = (event.target as HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement).value;
+    this.updateEnvironmentValue(envId, value);
   }
 
   protected backToList(): void {
