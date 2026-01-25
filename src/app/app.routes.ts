@@ -33,6 +33,13 @@ export const routes: Routes = [
       ),
   },
   {
+    path: 'segments',
+    loadChildren: () =>
+      import('./features/segments/segments.routes').then(
+        (m) => m.SEGMENT_ROUTES
+      ),
+  },
+  {
     path: '**',
     redirectTo: 'dashboard',
   },

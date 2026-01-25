@@ -1,0 +1,92 @@
+<section class="segments-page">
+  <header class="segments-page__header">
+    <div>
+      <h1>Segments</h1>
+      <p class="text-secondary">Create reusable audiences for precise targeting.</p>
+    </div>
+  </header>
+
+  @if (segments().length === 0) {
+    <app-empty-state
+      title="No segments yet"
+      message="Create your first segment to group users for flag targeting."
+    >
+    </app-empty-state>
+  } @else if (filteredSegments().length === 0) {
+    <app-empty-state
+      title="No segments found"
+      message="Try a different search term or clear the filter."
+    >
+    </app-empty-state>
+  } @else {
+    <div class="segments-table">
+      <div class="segments-table__row segments-table__row--header">
+        <span>Segment</span>
+        <span>Key</span>
+        <span>Rules</span>
+        <span>Updated</span>
+        <span>Actions</span>
+      </div>
+      @for (segment of filteredSegments(); track segment.id) {
+        <div class="segments-table__row">
+          <div class="segment-cell segment-cell--name">
+            <div>
+              <span class="segment-name">{{ segment.name }}</span>
+              <span class="text-muted">{{ segment.description }}</span>
+            </div>
+          </div>
+          <span class="text-muted">{{ segment.key }}</span>
+          <span class="text-muted">{{ segment.ruleCount }}</span>
+          <span class="text-muted">{{ segment.updatedAt | date: 'mediumDate' }}</span>
+          <div class="segment-cell segment-cell--actions">
+            @if (segments().length > 1) {
+              <app-button variant="ghost" type="button" (click)="deleteSegment(segment.id)">
+                Delete
+              </app-button>
+            }
+          </div>
+        </div>
+      }
+    </div>
+  }
+
+  <div class="segment-form card">
+    <div class="segment-form__header">
+      <h2>New Segment</h2>
+      <p class="text-secondary">Build a reusable audience definition.</p>
+    </div>
+    <div class="segment-form__grid">
+      <label class="segment-form__field">
+        <span class="segment-form__label">Name</span>
+        <input
+          class="form-input"
+          [(ngModel)]="name"
+          placeholder="Beta Testers"
+          (keydown.enter)="$event.preventDefault()"
+        />
+      </label>
+      <label class="segment-form__field">
+        <span class="segment-form__label">Key</span>
+        <input
+          class="form-input"
+          [(ngModel)]="key"
+          placeholder="beta-testers"
+          (keydown.enter)="$event.preventDefault()"
+        />
+      </label>
+      <label class="segment-form__field segment-form__field--full">
+        <span class="segment-form__label">Description</span>
+        <textarea
+          class="form-input segment-form__textarea"
+          rows="3"
+          [(ngModel)]="description"
+          placeholder="Users enrolled in early access programs."
+          (keydown.enter)="$event.preventDefault()"
+        ></textarea>
+      </label>
+    </div>
+    <app-button variant="primary" type="button" [disabled]="!canAdd()" (click)="addSegment()">
+      Add Segment
+    </app-button>
+  </div>
+</section>
