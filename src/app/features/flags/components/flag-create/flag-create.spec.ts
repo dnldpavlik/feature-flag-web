@@ -281,5 +281,24 @@ describe('FlagCreate', () => {
         env_production: true,
       });
     });
+
+    it('should toggle environment via event handler', () => {
+      const event = { target: { checked: true } } as unknown as Event;
+      component.onEnvironmentToggle('env_development', event);
+
+      const envs = component.environmentsWithEnabled();
+      const devEnv = envs.find((e) => e.id === 'env_development');
+      expect(devEnv?.enabled).toBe(true);
+    });
+  });
+
+  describe('type change', () => {
+    it('should update type via onTypeChange', () => {
+      component.onTypeChange('string');
+      expect(component.form.controls.type.value).toBe('string');
+
+      component.onTypeChange('number');
+      expect(component.form.controls.type.value).toBe('number');
+    });
   });
 });

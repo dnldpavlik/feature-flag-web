@@ -106,4 +106,24 @@ describe('EnvironmentList', () => {
     const emptyState = fixture.debugElement.query(By.css('app-empty-state'));
     expect(emptyState).toBeTruthy();
   });
+
+  describe('form field accessors', () => {
+    it('should get and set name field', async () => {
+      await build();
+      fixture.componentInstance.name = 'Test Environment';
+      expect(fixture.componentInstance.name).toBe('Test Environment');
+    });
+
+    it('should get and set key field', async () => {
+      await build();
+      fixture.componentInstance.key = 'test-key';
+      expect(fixture.componentInstance.key).toBe('test-key');
+    });
+
+    it('should get and set color field', async () => {
+      await build();
+      fixture.componentInstance.color = '#ff0000';
+      expect(fixture.componentInstance.color).toBe('#ff0000');
+    });
+  });
 });

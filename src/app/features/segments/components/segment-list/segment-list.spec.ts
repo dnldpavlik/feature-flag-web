@@ -66,4 +66,21 @@ describe('SegmentList', () => {
     const emptyState = fixture.debugElement.query(By.css('app-empty-state'));
     expect(emptyState).toBeTruthy();
   });
+
+  describe('form field accessors', () => {
+    it('should get and set name field', () => {
+      fixture.componentInstance.name = 'Test Segment';
+      expect(fixture.componentInstance.name).toBe('Test Segment');
+    });
+
+    it('should get and set key field', () => {
+      fixture.componentInstance.key = 'test-key';
+      expect(fixture.componentInstance.key).toBe('test-key');
+    });
+
+    it('should get and set description field', () => {
+      fixture.componentInstance.description = 'Test description';
+      expect(fixture.componentInstance.description).toBe('Test description');
+    });
+  });
 });

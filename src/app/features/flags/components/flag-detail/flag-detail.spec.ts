@@ -400,4 +400,33 @@ describe('FlagDetail', () => {
     const formatted = fixture.componentInstance.formatJsonValue({ ready: true });
     expect(formatted).toBe(JSON.stringify({ ready: true }));
   });
+
+  it('should get description value', async () => {
+    await build('flag_new_checkout');
+
+    fixture.componentInstance.description = 'Test description';
+    expect(fixture.componentInstance.description).toBe('Test description');
+  });
+
+  it('should toggle environment via event handler', async () => {
+    await build('flag_new_checkout');
+
+    const envId = 'env_development';
+    const event = { target: { checked: false } } as unknown as Event;
+    fixture.componentInstance.onEnvironmentToggle(envId, event);
+
+    const updated = store.getFlagById('flag_new_checkout');
+    expect(updated?.environmentValues[envId].enabled).toBe(false);
+  });
+
+  it('should update environment value via event handler', async () => {
+    await build('flag_beta_theme');
+
+    const envId = 'env_development';
+    const event = { target: { value: 'new-value' } } as unknown as Event;
+    fixture.componentInstance.onEnvironmentValueChange(envId, event);
+
+    const updated = store.getFlagById('flag_beta_theme');
+    expect(updated?.environmentValues[envId].value).toBe('new-value');
+  });
 });
