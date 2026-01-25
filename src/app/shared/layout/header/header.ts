@@ -1,11 +1,12 @@
 import { ChangeDetectionStrategy, Component, input, output, inject } from '@angular/core';
 import { Router } from '@angular/router';
 
-import { BreadcrumbComponent, BreadcrumbItem } from '../../ui/breadcrumb/breadcrumb';
-import { ButtonComponent } from '../../ui/button/button';
-import { SearchInputComponent } from '../../ui/search-input/search-input';
-import { ProjectStore } from '../../store/project.store';
-import { SearchStore } from '../../store/search.store';
+import { BreadcrumbComponent } from '@/app/shared/ui/breadcrumb/breadcrumb';
+import { BreadcrumbItem } from '@/app/shared/ui/breadcrumb/breadcrumb.types';
+import { ButtonComponent } from '@/app/shared/ui/button/button';
+import { SearchInputComponent } from '@/app/shared/ui/search-input/search-input';
+import { ProjectStore } from '@/app/shared/store/project.store';
+import { SearchStore } from '@/app/shared/store/search.store';
 
 @Component({
   selector: 'app-header',

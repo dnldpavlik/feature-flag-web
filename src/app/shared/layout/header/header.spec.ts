@@ -3,20 +3,15 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router, provideRouter } from '@angular/router';
 import { By } from '@angular/platform-browser';
 
-import { BreadcrumbItem } from '../../ui/breadcrumb/breadcrumb';
-import { SearchInputComponent } from '../../ui/search-input/search-input';
-import { ProjectStore } from '../../store/project.store';
-import { SearchStore } from '../../store/search.store';
+import { BreadcrumbItem } from '@/app/shared/ui/breadcrumb/breadcrumb.types';
+import { SearchInputComponent } from '@/app/shared/ui/search-input/search-input';
+import { ProjectStore } from '@/app/shared/store/project.store';
+import { SearchStore } from '@/app/shared/store/search.store';
 import { HeaderComponent } from './header';
 
 @Component({
   selector: 'app-header-host',
-  template: `
-    <app-header
-      [breadcrumbs]="breadcrumbs"
-      (menuToggle)="handleMenuToggle()"
-    />
-  `,
+  template: ` <app-header [breadcrumbs]="breadcrumbs" (menuToggle)="handleMenuToggle()" /> `,
   imports: [HeaderComponent],
 })
 class HeaderHostComponent {

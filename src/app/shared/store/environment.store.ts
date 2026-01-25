@@ -1,7 +1,7 @@
 import { Injectable, computed, signal } from '@angular/core';
 
 import { CreateEnvironmentInput, Environment } from '@/app/features/flags/models/environment.model';
-import { createId, createTimestamp } from '../utils/id.utils';
+import { createId, createTimestamp } from '@/app/shared/utils/id.utils';
 
 @Injectable({ providedIn: 'root' })
 export class EnvironmentStore {
@@ -44,16 +44,14 @@ export class EnvironmentStore {
   readonly selectedEnvironmentId = this._selectedEnvironmentId.asReadonly();
 
   readonly sortedEnvironments = computed(() =>
-    [...this._environments()].sort((a, b) => a.order - b.order)
+    [...this._environments()].sort((a, b) => a.order - b.order),
   );
 
   readonly selectedEnvironment = computed(() =>
-    this._environments().find((e) => e.id === this._selectedEnvironmentId())
+    this._environments().find((e) => e.id === this._selectedEnvironmentId()),
   );
 
-  readonly defaultEnvironment = computed(() =>
-    this._environments().find((e) => e.isDefault)
-  );
+  readonly defaultEnvironment = computed(() => this._environments().find((e) => e.isDefault));
 
   selectEnvironment(environmentId: string): void {
     this._selectedEnvironmentId.set(environmentId);
@@ -66,7 +64,7 @@ export class EnvironmentStore {
         ...env,
         isDefault: env.id === environmentId,
         updatedAt: env.id === environmentId || env.isDefault ? stamp : env.updatedAt,
-      }))
+      })),
     );
   }
 

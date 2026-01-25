@@ -31,24 +31,19 @@ export interface EnvironmentFlagValue<T extends FlagType = FlagType> {
  */
 export const isBooleanFlagValue = (
   type: FlagType,
-  value: FlagTypeMap[FlagType]
+  value: FlagTypeMap[FlagType],
 ): value is boolean => type === 'boolean' && typeof value === 'boolean';
 
 /**
  * Type guard for string flag values
  */
-export const isStringFlagValue = (
-  type: FlagType,
-  value: FlagTypeMap[FlagType]
-): value is string => type === 'string' && typeof value === 'string';
+export const isStringFlagValue = (type: FlagType, value: FlagTypeMap[FlagType]): value is string =>
+  type === 'string' && typeof value === 'string';
 
 /**
  * Type guard for number flag values
  */
-export const isNumberFlagValue = (
-  type: FlagType,
-  value: FlagTypeMap[FlagType]
-): value is number =>
+export const isNumberFlagValue = (type: FlagType, value: FlagTypeMap[FlagType]): value is number =>
   type === 'number' && typeof value === 'number' && !Number.isNaN(value);
 
 /**
@@ -56,9 +51,6 @@ export const isNumberFlagValue = (
  */
 export const isJsonFlagValue = (
   type: FlagType,
-  value: FlagTypeMap[FlagType]
+  value: FlagTypeMap[FlagType],
 ): value is Record<string, unknown> =>
-  type === 'json' &&
-  typeof value === 'object' &&
-  value !== null &&
-  !Array.isArray(value);
+  type === 'json' && typeof value === 'object' && value !== null && !Array.isArray(value);

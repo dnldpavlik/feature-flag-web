@@ -1,15 +1,8 @@
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 
-import { IconComponent, IconName } from '../icon/icon';
-
-/** Button variant types */
-export type ButtonVariant = 'primary' | 'secondary' | 'ghost';
-
-/** Button size types */
-export type ButtonSize = 'sm' | 'md' | 'lg';
-
-/** Button type attribute */
-export type ButtonType = 'button' | 'submit' | 'reset';
+import { IconComponent } from '@/app/shared/ui/icon/icon';
+import { IconName } from '@/app/shared/ui/icon/icon.types';
+import { ButtonSize, ButtonType, ButtonVariant } from './button.types';
 
 @Component({
   selector: 'app-button',

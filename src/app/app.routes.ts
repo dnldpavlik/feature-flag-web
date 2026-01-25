@@ -9,35 +9,24 @@ export const routes: Routes = [
   {
     path: 'dashboard',
     loadChildren: () =>
-      import('./features/dashboard/dashboard.routes').then(
-        (m) => m.DASHBOARD_ROUTES
-      ),
+      import('./features/dashboard/dashboard.routes').then((m) => m.DASHBOARD_ROUTES),
   },
   {
     path: 'flags',
-    loadChildren: () =>
-      import('./features/flags/flags.routes').then((m) => m.FLAG_ROUTES),
+    loadChildren: () => import('./features/flags/flags.routes').then((m) => m.FLAG_ROUTES),
   },
   {
     path: 'environments',
     loadChildren: () =>
-      import('./features/environments/environments.routes').then(
-        (m) => m.ENVIRONMENT_ROUTES
-      ),
+      import('./features/environments/environments.routes').then((m) => m.ENVIRONMENT_ROUTES),
   },
   {
     path: 'projects',
-    loadChildren: () =>
-      import('./features/projects/projects.routes').then(
-        (m) => m.PROJECT_ROUTES
-      ),
+    loadChildren: () => import('./features/projects/projects.routes').then((m) => m.PROJECT_ROUTES),
   },
   {
     path: 'segments',
-    loadChildren: () =>
-      import('./features/segments/segments.routes').then(
-        (m) => m.SEGMENT_ROUTES
-      ),
+    loadChildren: () => import('./features/segments/segments.routes').then((m) => m.SEGMENT_ROUTES),
   },
   {
     path: '**',

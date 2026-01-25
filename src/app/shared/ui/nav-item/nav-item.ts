@@ -1,7 +1,8 @@
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 
-import { IconComponent, IconName } from '../icon/icon';
+import { IconComponent } from '@/app/shared/ui/icon/icon';
+import { IconName } from '@/app/shared/ui/icon/icon.types';
 
 @Component({
   selector: 'app-nav-item',

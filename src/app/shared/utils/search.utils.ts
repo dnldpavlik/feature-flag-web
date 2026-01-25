@@ -1,17 +1,4 @@
-/** Represents an item that can be searched */
-export interface Searchable {
-  name: string;
-  key: string;
-  description: string;
-  type?: string;
-  tags: string[];
-}
-
-/** Represents a part of text with highlight information */
-export interface HighlightPart {
-  text: string;
-  match: boolean;
-}
+import { HighlightPart, Searchable } from './search.types';
 
 /**
  * Checks if an item matches a search query.
@@ -24,13 +11,7 @@ export interface HighlightPart {
 export const matchesSearch = (item: Searchable, query: string): boolean => {
   if (!query) return true;
 
-  const searchableFields = [
-    item.name,
-    item.key,
-    item.description,
-    item.type ?? '',
-    ...item.tags,
-  ];
+  const searchableFields = [item.name, item.key, item.description, item.type ?? '', ...item.tags];
 
   const haystack = searchableFields.join(' ').toLowerCase();
   return haystack.includes(query.toLowerCase());

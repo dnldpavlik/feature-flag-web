@@ -7,11 +7,7 @@
 >
   <div class="user-menu__avatar">
     @if (avatarUrl()) {
-      <img
-        class="user-menu__avatar-img"
-        [src]="avatarUrl()"
-        [alt]="name()"
-      />
+      <img class="user-menu__avatar-img" [src]="avatarUrl()" [alt]="name()" />
     } @else {
       <span class="user-menu__initials">{{ initials() }}</span>
     }

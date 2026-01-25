@@ -3,11 +3,11 @@ import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angula
 import { Router } from '@angular/router';
 
 import { ButtonComponent } from '@/app/shared/ui/button/button';
-import { CreateFlagInput, FlagType } from '../../models/flag.model';
-import { FlagTypeMap } from '../../models/flag-value.model';
-import { getDefaultForType } from '../../utils/flag-value.utils';
 import { EnvironmentStore } from '@/app/shared/store/environment.store';
-import { FlagStore } from '../../store/flag.store';
+import { CreateFlagInput, FlagType } from '@/app/features/flags/models/flag.model';
+import { FlagTypeMap } from '@/app/features/flags/models/flag-value.model';
+import { getDefaultForType } from '@/app/features/flags/utils/flag-value.utils';
+import { FlagStore } from '@/app/features/flags/store/flag.store';
 
 @Component({
   selector: 'app-flag-create',
@@ -87,7 +87,7 @@ export class FlagCreateComponent {
       trimmedName,
       description.trim(),
       resolvedTags,
-      defaultValue
+      defaultValue,
     );
 
     this.store.addFlag(input, this._enabledEnvironments());
@@ -143,18 +143,46 @@ export class FlagCreateComponent {
     name: string,
     description: string,
     tags: string[],
-    defaultValue: FlagTypeMap[FlagType]
+    defaultValue: FlagTypeMap[FlagType],
   ): CreateFlagInput {
     const currentType = this.form.controls.type.value;
     switch (currentType) {
       case 'boolean':
-        return { key, name, description, tags, type: 'boolean', defaultValue: defaultValue as boolean };
+        return {
+          key,
+          name,
+          description,
+          tags,
+          type: 'boolean',
+          defaultValue: defaultValue as boolean,
+        };
       case 'string':
-        return { key, name, description, tags, type: 'string', defaultValue: defaultValue as string };
+        return {
+          key,
+          name,
+          description,
+          tags,
+          type: 'string',
+          defaultValue: defaultValue as string,
+        };
       case 'number':
-        return { key, name, description, tags, type: 'number', defaultValue: defaultValue as number };
+        return {
+          key,
+          name,
+          description,
+          tags,
+          type: 'number',
+          defaultValue: defaultValue as number,
+        };
       case 'json':
-        return { key, name, description, tags, type: 'json', defaultValue: defaultValue as Record<string, unknown> };
+        return {
+          key,
+          name,
+          description,
+          tags,
+          type: 'json',
+          defaultValue: defaultValue as Record<string, unknown>,
+        };
     }
   }
 

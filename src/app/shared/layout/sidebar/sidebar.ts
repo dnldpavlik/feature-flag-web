@@ -1,26 +1,9 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 
-import { IconName } from '../../ui/icon/icon';
-import { NavItemComponent } from '../../ui/nav-item/nav-item';
-import { NavSectionComponent } from '../../ui/nav-section/nav-section';
-import { UserMenuComponent } from '../../ui/user-menu/user-menu';
-
-export interface SidebarNavItem {
-  label: string;
-  route: string;
-  icon: IconName;
-}
-
-export interface SidebarEnvironment {
-  name: string;
-  color: string;
-  route: string;
-}
-
-export interface SidebarUser {
-  name: string;
-  email: string;
-}
+import { NavItemComponent } from '@/app/shared/ui/nav-item/nav-item';
+import { NavSectionComponent } from '@/app/shared/ui/nav-section/nav-section';
+import { UserMenuComponent } from '@/app/shared/ui/user-menu/user-menu';
+import { SidebarEnvironment, SidebarNavItem, SidebarUser } from './sidebar.types';
 
 @Component({
   selector: 'app-sidebar',

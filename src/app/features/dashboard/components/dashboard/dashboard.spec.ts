@@ -101,11 +101,11 @@ describe('Dashboard', () => {
       .queryAll(By.css('.stat-card'))
       .find(
         (card) =>
-          card.query(By.css('.stat-card__label')).nativeElement.textContent.trim() === 'Active'
+          card.query(By.css('.stat-card__label')).nativeElement.textContent.trim() === 'Active',
       );
 
     expect(activeCard?.query(By.css('.stat-card__value')).nativeElement.textContent.trim()).toBe(
-      String(activeFlags)
+      String(activeFlags),
     );
   });
 

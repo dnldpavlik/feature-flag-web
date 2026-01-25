@@ -1,7 +1,7 @@
 import { Injectable, computed, signal } from '@angular/core';
 
 import { CreateProjectInput, Project } from '@/app/features/projects/models/project.model';
-import { createId, createTimestamp } from '../utils/id.utils';
+import { createId, createTimestamp } from '@/app/shared/utils/id.utils';
 
 @Injectable({ providedIn: 'root' })
 export class ProjectStore {
@@ -32,7 +32,7 @@ export class ProjectStore {
   readonly selectedProjectId = this._selectedProjectId.asReadonly();
 
   readonly selectedProject = computed(() =>
-    this._projects().find((project) => project.id === this._selectedProjectId())
+    this._projects().find((project) => project.id === this._selectedProjectId()),
   );
 
   addProject(input: CreateProjectInput): void {
@@ -63,7 +63,7 @@ export class ProjectStore {
         ...project,
         isDefault: project.id === projectId,
         updatedAt: project.id === projectId || project.isDefault ? stamp : project.updatedAt,
-      }))
+      })),
     );
   }
 

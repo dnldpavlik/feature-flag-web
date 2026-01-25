@@ -29,7 +29,7 @@ export class EnvironmentListComponent {
     if (!query) return this.environments();
 
     return this.environments().filter((env) =>
-      `${env.name} ${env.key}`.toLowerCase().includes(query)
+      `${env.name} ${env.key}`.toLowerCase().includes(query),
     );
   });
 

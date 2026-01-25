@@ -1,10 +1,18 @@
 import { Injectable, computed, inject, signal } from '@angular/core';
 
-import { CreateFlagInput, Flag, FlagType, UpdateEnvironmentValueInput } from '../models/flag.model';
-import { EnvironmentFlagValue, FlagTypeMap } from '../models/flag-value.model';
-import { getEffectiveValue, isEnabledInEnvironment } from '../utils/flag-value.utils';
 import { EnvironmentStore } from '@/app/shared/store/environment.store';
 import { createId, createTimestamp } from '@/app/shared/utils/id.utils';
+import {
+  CreateFlagInput,
+  Flag,
+  FlagType,
+  UpdateEnvironmentValueInput,
+} from '@/app/features/flags/models/flag.model';
+import { EnvironmentFlagValue, FlagTypeMap } from '@/app/features/flags/models/flag-value.model';
+import {
+  getEffectiveValue,
+  isEnabledInEnvironment,
+} from '@/app/features/flags/utils/flag-value.utils';
 
 @Injectable({ providedIn: 'root' })
 export class FlagStore {
@@ -88,19 +96,19 @@ export class FlagStore {
           'flag_checkout_guardrails',
           'env_development',
           { maxAmount: 10000, requireVerification: false },
-          true
+          true,
         ),
         env_staging: createEnvValue(
           'flag_checkout_guardrails',
           'env_staging',
           { maxAmount: 5000, requireVerification: true },
-          true
+          true,
         ),
         env_production: createEnvValue(
           'flag_checkout_guardrails',
           'env_production',
           { maxAmount: 1000, requireVerification: true },
-          true
+          true,
         ),
       },
       createdAt: createTimestamp(),
@@ -114,7 +122,7 @@ export class FlagStore {
   readonly currentEnvironmentId = computed(() => this.environmentStore.selectedEnvironmentId());
 
   readonly enabledFlagsInCurrentEnvironment = computed(() =>
-    this._flags().filter((flag) => isEnabledInEnvironment(flag, this.currentEnvironmentId()))
+    this._flags().filter((flag) => isEnabledInEnvironment(flag, this.currentEnvironmentId())),
   );
 
   addFlag(input: CreateFlagInput, initialEnabledEnvironments?: Record<string, boolean>): void {
@@ -155,7 +163,7 @@ export class FlagStore {
 
   updateFlagDetails(
     flagId: string,
-    updates: Partial<Pick<Flag, 'name' | 'description' | 'tags' | 'defaultValue'>>
+    updates: Partial<Pick<Flag, 'name' | 'description' | 'tags' | 'defaultValue'>>,
   ): void {
     const stamp = createTimestamp();
 
@@ -167,7 +175,7 @@ export class FlagStore {
           ...updates,
           updatedAt: stamp,
         };
-      })
+      }),
     );
   }
 
@@ -193,7 +201,7 @@ export class FlagStore {
           },
           updatedAt: stamp,
         };
-      })
+      }),
     );
   }
 
@@ -219,13 +227,13 @@ export class FlagStore {
           },
           updatedAt: stamp,
         };
-      })
+      }),
     );
   }
 
   getValueInEnvironment<T extends FlagType>(
     flagId: string,
-    environmentId: string
+    environmentId: string,
   ): FlagTypeMap[T] | undefined {
     const flag = this.getFlagById(flagId);
     if (!flag) return undefined;
@@ -237,7 +245,7 @@ function createEnvValue<T>(
   flagId: string,
   environmentId: string,
   value: T,
-  enabled: boolean
+  enabled: boolean,
 ): EnvironmentFlagValue {
   return {
     flagId,

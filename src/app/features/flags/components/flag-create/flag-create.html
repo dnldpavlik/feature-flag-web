@@ -9,20 +9,12 @@
   <form class="flag-create__form" [formGroup]="form" (ngSubmit)="createFlag()">
     <label class="flag-create__field">
       <span class="flag-create__label">Name</span>
-      <input
-        class="form-input"
-        formControlName="name"
-        placeholder="Checkout Experience"
-      />
+      <input class="form-input" formControlName="name" placeholder="Checkout Experience" />
     </label>
 
     <label class="flag-create__field">
       <span class="flag-create__label">Key</span>
-      <input
-        class="form-input"
-        formControlName="key"
-        placeholder="checkout-experience"
-      />
+      <input class="form-input" formControlName="key" placeholder="checkout-experience" />
       <span class="flag-create__help text-muted">Leave blank to auto-generate from the name.</span>
     </label>
 
@@ -49,17 +41,15 @@
 
       <label class="flag-create__field">
         <span class="flag-create__label">Tags</span>
-        <input
-          class="form-input"
-          formControlName="tags"
-          placeholder="checkout, web"
-        />
+        <input class="form-input" formControlName="tags" placeholder="checkout, web" />
       </label>
     </div>
 
     <div class="flag-create__field">
       <span class="flag-create__label">Default Value</span>
-      <span class="flag-create__help text-muted">This value will be used as the initial value in all environments.</span>
+      <span class="flag-create__help text-muted"
+        >This value will be used as the initial value in all environments.</span
+      >
 
       @switch (form.controls.type.value) {
         @case ('boolean') {
@@ -76,12 +66,7 @@
           />
         }
         @case ('number') {
-          <input
-            class="form-input"
-            formControlName="numberValue"
-            type="number"
-            placeholder="0"
-          />
+          <input class="form-input" formControlName="numberValue" type="number" placeholder="0" />
         }
         @case ('json') {
           <textarea
@@ -100,7 +85,9 @@
 
     <div class="flag-create__field">
       <span class="flag-create__label">Enable in Environments</span>
-      <span class="flag-create__help text-muted">Choose which environments this flag should be enabled in.</span>
+      <span class="flag-create__help text-muted"
+        >Choose which environments this flag should be enabled in.</span
+      >
 
       <div class="flag-create__environments">
         @for (env of environmentsWithEnabled(); track env.id) {
@@ -110,10 +97,7 @@
               [checked]="env.enabled"
               (change)="onEnvironmentToggle(env.id, $event)"
             />
-            <span
-              class="flag-create__env-badge"
-              [style.--env-color]="env.color"
-            >
+            <span class="flag-create__env-badge" [style.--env-color]="env.color">
               {{ env.name }}
             </span>
           </label>

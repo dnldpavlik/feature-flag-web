@@ -8,18 +8,12 @@ import { SidebarComponent, SidebarEnvironment, SidebarNavItem, SidebarUser } fro
 @Component({
   selector: 'app-sidebar-host',
   template: `
-    <app-sidebar
-      [navItems]="navItems"
-      [environments]="environments"
-      [currentUser]="currentUser"
-    />
+    <app-sidebar [navItems]="navItems" [environments]="environments" [currentUser]="currentUser" />
   `,
   imports: [SidebarComponent],
 })
 class SidebarHostComponent {
-  navItems: SidebarNavItem[] = [
-    { label: 'Dashboard', route: '/dashboard', icon: 'home' },
-  ];
+  navItems: SidebarNavItem[] = [{ label: 'Dashboard', route: '/dashboard', icon: 'home' }];
   environments: SidebarEnvironment[] = [
     { name: 'Production', color: '#f85149', route: '/env/production' },
   ];

@@ -45,7 +45,7 @@ describe('EnvironmentList', () => {
     fixture.detectChanges();
 
     const selectedBadge = fixture.debugElement.query(
-      By.css('.environments-table__row .badge--success')
+      By.css('.environments-table__row .badge--success'),
     );
     expect(selectedBadge.nativeElement.textContent).toContain('Selected');
   });

@@ -2,9 +2,9 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router, provideRouter } from '@angular/router';
 import { By } from '@angular/platform-browser';
 
-import { FlagCreateComponent } from './flag-create';
-import { FlagStore } from '../../store/flag.store';
 import { EnvironmentStore } from '@/app/shared/store/environment.store';
+import { FlagStore } from '@/app/features/flags/store/flag.store';
+import { FlagCreateComponent } from './flag-create';
 
 describe('FlagCreate', () => {
   let fixture: ComponentFixture<FlagCreateComponent>;
@@ -17,11 +17,7 @@ describe('FlagCreate', () => {
 
     await TestBed.configureTestingModule({
       imports: [FlagCreateComponent],
-      providers: [
-        provideRouter([]),
-        { provide: FlagStore, useValue: store },
-        EnvironmentStore,
-      ],
+      providers: [provideRouter([]), { provide: FlagStore, useValue: store }, EnvironmentStore],
     }).compileComponents();
 
     fixture = TestBed.createComponent(FlagCreateComponent);
@@ -58,7 +54,7 @@ describe('FlagCreate', () => {
           defaultValue: true,
           tags: ['core', 'beta'],
         },
-        expect.any(Object)
+        expect.any(Object),
       );
       expect(navigateSpy).toHaveBeenCalledWith(['/flags']);
     });
@@ -74,7 +70,7 @@ describe('FlagCreate', () => {
 
       expect(store.addFlag).toHaveBeenCalledWith(
         expect.objectContaining({ defaultValue: false }),
-        expect.any(Object)
+        expect.any(Object),
       );
     });
   });
@@ -95,7 +91,7 @@ describe('FlagCreate', () => {
           type: 'string',
           defaultValue: 'hello world',
         }),
-        expect.any(Object)
+        expect.any(Object),
       );
     });
   });
@@ -116,7 +112,7 @@ describe('FlagCreate', () => {
           type: 'number',
           defaultValue: 42,
         }),
-        expect.any(Object)
+        expect.any(Object),
       );
     });
   });
@@ -137,7 +133,7 @@ describe('FlagCreate', () => {
           type: 'json',
           defaultValue: { key: 'value' },
         }),
-        expect.any(Object)
+        expect.any(Object),
       );
     });
 
@@ -216,7 +212,7 @@ describe('FlagCreate', () => {
 
     expect(store.addFlag).toHaveBeenCalledWith(
       expect.objectContaining({ key: 'my-flag' }),
-      expect.any(Object)
+      expect.any(Object),
     );
   });
 
@@ -238,7 +234,9 @@ describe('FlagCreate', () => {
     component.form.controls.type.setValue('boolean');
     fixture.detectChanges();
 
-    const booleanInput = fixture.debugElement.query(By.css('input[formControlName="booleanValue"]'));
+    const booleanInput = fixture.debugElement.query(
+      By.css('input[formControlName="booleanValue"]'),
+    );
     expect(booleanInput).toBeTruthy();
 
     component.form.controls.type.setValue('string');
@@ -278,10 +276,10 @@ describe('FlagCreate', () => {
 
       component.createFlag();
 
-      expect(store.addFlag).toHaveBeenCalledWith(
-        expect.any(Object),
-        { env_development: true, env_production: true }
-      );
+      expect(store.addFlag).toHaveBeenCalledWith(expect.any(Object), {
+        env_development: true,
+        env_production: true,
+      });
     });
   });
 });

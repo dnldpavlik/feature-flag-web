@@ -1,4 +1,4 @@
-import { Flag, FlagType } from '../models/flag.model';
+import { Flag, FlagType } from '@/app/features/flags/models/flag.model';
 
 import {
   createEnvironmentValue,

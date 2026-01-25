@@ -4,9 +4,9 @@ import { ActivatedRoute, Router, convertToParamMap, provideRouter } from '@angul
 import { By } from '@angular/platform-browser';
 
 import { EnvironmentStore } from '@/app/shared/store/environment.store';
-import { FlagStore } from '../../store/flag.store';
-import { Flag } from '../../models/flag.model';
-import { EnvironmentFlagValue } from '../../models/flag-value.model';
+import { FlagStore } from '@/app/features/flags/store/flag.store';
+import { Flag } from '@/app/features/flags/models/flag.model';
+import { EnvironmentFlagValue } from '@/app/features/flags/models/flag-value.model';
 import { FlagDetailComponent } from './flag-detail';
 
 type FlagDetailInternals = FlagDetailComponent & {
@@ -112,7 +112,9 @@ describe('FlagDetail', () => {
     await build('flag_checkout_guardrails');
 
     const initial = store.getFlagById('flag_checkout_guardrails');
-    expect(fixture.componentInstance.jsonValue).toBe(JSON.stringify(initial?.defaultValue ?? {}, null, 2));
+    expect(fixture.componentInstance.jsonValue).toBe(
+      JSON.stringify(initial?.defaultValue ?? {}, null, 2),
+    );
   });
 
   it('should set default values for all flag types', async () => {
@@ -134,7 +136,7 @@ describe('FlagDetail', () => {
 
     (fixture.componentInstance as FlagDetailInternals).setDefaultValueFields(jsonFlag as Flag);
     expect(fixture.componentInstance.jsonValue).toBe(
-      JSON.stringify(jsonFlag?.defaultValue ?? {}, null, 2)
+      JSON.stringify(jsonFlag?.defaultValue ?? {}, null, 2),
     );
   });
 
@@ -304,7 +306,7 @@ describe('FlagDetail', () => {
         const rest = { ...flag.environmentValues };
         delete rest.env_development;
         return { ...flag, environmentValues: rest };
-      })
+      }),
     );
 
     const rows = (fixture.componentInstance as FlagDetailInternals).environmentRows();
@@ -321,9 +323,7 @@ describe('FlagDetail', () => {
     fixture.componentInstance.updateEnvironmentValue(envId, 'not-a-number');
 
     const updated = store.getFlagById('flag_search_boost');
-    expect(updated?.environmentValues[envId].value).toBe(
-      original?.environmentValues[envId].value
-    );
+    expect(updated?.environmentValues[envId].value).toBe(original?.environmentValues[envId].value);
   });
 
   it('should ignore invalid json environment values', async () => {
@@ -335,7 +335,7 @@ describe('FlagDetail', () => {
 
     const updated = store.getFlagById('flag_checkout_guardrails');
     expect(updated?.environmentValues[envId].value).toEqual(
-      original?.environmentValues[envId].value
+      original?.environmentValues[envId].value,
     );
   });
 

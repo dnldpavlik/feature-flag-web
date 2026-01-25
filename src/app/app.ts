@@ -1,4 +1,11 @@
-import { ChangeDetectionStrategy, Component, computed, effect, inject, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  effect,
+  inject,
+  signal,
+} from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { filter, map } from 'rxjs';
@@ -38,9 +45,9 @@ export class AppComponent {
   private readonly currentUrl = toSignal(
     this.router.events.pipe(
       filter((event): event is NavigationEnd => event instanceof NavigationEnd),
-      map((event) => event.urlAfterRedirects)
+      map((event) => event.urlAfterRedirects),
     ),
-    { initialValue: this.router.url }
+    { initialValue: this.router.url },
   );
 
   protected readonly sidebarOpen = signal(true);
@@ -107,7 +114,7 @@ export class AppComponent {
       name: env.name,
       color: env.color,
       route: `/environments/${env.id}`,
-    }))
+    })),
   );
 
   constructor() {
@@ -118,12 +125,7 @@ export class AppComponent {
   }
 
   private getSectionLabel(url: string): string {
-    const segment =
-      url
-        .split('?')[0]
-        .split('#')[0]
-        .split('/')
-        .filter(Boolean)[0] ?? 'dashboard';
+    const segment = url.split('?')[0].split('#')[0].split('/').filter(Boolean)[0] ?? 'dashboard';
 
     switch (segment) {
       case 'dashboard':

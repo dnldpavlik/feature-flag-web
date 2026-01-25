@@ -64,9 +64,7 @@ describe('search.utils', () => {
     });
 
     it('should return single non-match part when query is empty', () => {
-      expect(highlightParts('hello world', '')).toEqual([
-        { text: 'hello world', match: false },
-      ]);
+      expect(highlightParts('hello world', '')).toEqual([{ text: 'hello world', match: false }]);
     });
 
     it('should highlight matching parts', () => {
@@ -99,15 +97,11 @@ describe('search.utils', () => {
     });
 
     it('should handle entire text match', () => {
-      expect(highlightParts('test', 'test')).toEqual([
-        { text: 'test', match: true },
-      ]);
+      expect(highlightParts('test', 'test')).toEqual([{ text: 'test', match: true }]);
     });
 
     it('should handle no match', () => {
-      expect(highlightParts('hello world', 'xyz')).toEqual([
-        { text: 'hello world', match: false },
-      ]);
+      expect(highlightParts('hello world', 'xyz')).toEqual([{ text: 'hello world', match: false }]);
     });
 
     it('should preserve original case in output', () => {

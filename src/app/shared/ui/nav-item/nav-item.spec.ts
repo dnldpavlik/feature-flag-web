@@ -8,12 +8,7 @@ import { NavItemComponent } from './nav-item';
 @Component({
   selector: 'app-nav-item-host',
   template: `
-    <app-nav-item
-      [label]="label"
-      [route]="route"
-      [icon]="icon"
-      [indicatorColor]="indicatorColor"
-    />
+    <app-nav-item [label]="label" [route]="route" [icon]="icon" [indicatorColor]="indicatorColor" />
   `,
   imports: [NavItemComponent],
 })
@@ -27,7 +22,6 @@ class NavItemHostComponent {
 @Component({
   selector: 'app-nav-item-route-dummy',
   template: '',
-  standalone: true,
 })
 class NavItemRouteDummyComponent {}
 

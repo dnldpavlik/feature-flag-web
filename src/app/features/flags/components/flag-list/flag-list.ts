@@ -7,21 +7,12 @@ import { EmptyStateComponent } from '@/app/shared/ui/empty-state/empty-state';
 import { EnvironmentStore } from '@/app/shared/store/environment.store';
 import { SearchStore } from '@/app/shared/store/search.store';
 import { matchesSearch } from '@/app/shared/utils/search.utils';
-import { Flag, FlagType } from '../../models/flag.model';
-import { FlagTypeMap } from '../../models/flag-value.model';
-import { FlagStore } from '../../store/flag.store';
-import { getEffectiveValue, isEnabledInEnvironment } from '../../utils/flag-value.utils';
-
-type StatusFilter = 'all' | 'enabled' | 'disabled';
-type TypeFilter = 'all' | FlagType;
-
-/**
- * Extended flag with computed environment-specific properties for display
- */
-interface FlagWithEnvironmentStatus extends Flag {
-  currentEnabled: boolean;
-  currentValue: FlagTypeMap[FlagType];
-}
+import { FlagStore } from '@/app/features/flags/store/flag.store';
+import {
+  getEffectiveValue,
+  isEnabledInEnvironment,
+} from '@/app/features/flags/utils/flag-value.utils';
+import { FlagWithEnvironmentStatus, StatusFilter, TypeFilter } from './flag-list.types';
 
 @Component({
   selector: 'app-flag-list',

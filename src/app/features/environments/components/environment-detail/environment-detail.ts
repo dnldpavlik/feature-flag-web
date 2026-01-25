@@ -7,7 +7,10 @@ import { ButtonComponent } from '@/app/shared/ui/button/button';
 import { EmptyStateComponent } from '@/app/shared/ui/empty-state/empty-state';
 import { EnvironmentStore } from '@/app/shared/store/environment.store';
 import { FlagStore } from '@/app/features/flags/store/flag.store';
-import { getEffectiveValue, isEnabledInEnvironment } from '@/app/features/flags/utils/flag-value.utils';
+import {
+  getEffectiveValue,
+  isEnabledInEnvironment,
+} from '@/app/features/flags/utils/flag-value.utils';
 
 @Component({
   selector: 'app-environment-detail',
@@ -27,7 +30,7 @@ export class EnvironmentDetailComponent {
 
   protected readonly environmentId = computed(() => this.paramMap().get('envId') ?? '');
   protected readonly environment = computed(() =>
-    this.environmentStore.getEnvironmentById(this.environmentId())
+    this.environmentStore.getEnvironmentById(this.environmentId()),
   );
   protected readonly selectedEnvironmentId = this.environmentStore.selectedEnvironmentId;
   protected readonly flags = computed(() => {

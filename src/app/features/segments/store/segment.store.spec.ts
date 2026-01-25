@@ -36,7 +36,8 @@ describe('SegmentStore', () => {
   });
 
   it('should not delete the last segment', () => {
-    store.segments()
+    store
+      .segments()
       .slice(1)
       .forEach((segment) => store.deleteSegment(segment.id));
 

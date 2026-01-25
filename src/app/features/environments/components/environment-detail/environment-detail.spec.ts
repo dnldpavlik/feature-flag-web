@@ -108,9 +108,11 @@ describe('EnvironmentDetail', () => {
     const empty = fixture.debugElement.query(By.css('app-empty-state'));
     expect(empty).toBeTruthy();
 
-    const flags = (fixture.componentInstance as EnvironmentDetailComponent & {
-      flags: () => unknown[];
-    }).flags();
+    const flags = (
+      fixture.componentInstance as EnvironmentDetailComponent & {
+        flags: () => unknown[];
+      }
+    ).flags();
     expect(flags).toEqual([]);
   });
 

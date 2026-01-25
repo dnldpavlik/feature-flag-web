@@ -28,7 +28,7 @@ export class ProjectListComponent {
     if (!query) return this.projects();
 
     return this.projects().filter((project) =>
-      `${project.name} ${project.key} ${project.description}`.toLowerCase().includes(query)
+      `${project.name} ${project.key} ${project.description}`.toLowerCase().includes(query),
     );
   });
 

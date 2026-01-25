@@ -15,7 +15,9 @@
       } @else if (item.route && !last) {
         <a class="breadcrumb__link" [routerLink]="item.route">{{ item.label }}</a>
       } @else {
-        <span class="breadcrumb__current" [attr.aria-current]="last ? 'page' : null">{{ item.label }}</span>
+        <span class="breadcrumb__current" [attr.aria-current]="last ? 'page' : null">{{
+          item.label
+        }}</span>
       }
     </span>
     @if (!last) {

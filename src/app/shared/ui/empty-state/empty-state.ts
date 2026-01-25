@@ -1,7 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 
-/** Empty state size variants */
-export type EmptyStateSize = 'sm' | 'md' | 'lg';
+import { EmptyStateSize } from './empty-state.types';
 
 @Component({
   selector: 'app-empty-state',

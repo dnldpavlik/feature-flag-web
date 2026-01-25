@@ -8,12 +8,11 @@ import { StatCardComponent } from '@/app/shared/ui/stat-card/stat-card';
 import { EnvironmentStore } from '@/app/shared/store/environment.store';
 import { ProjectStore } from '@/app/shared/store/project.store';
 import { SearchStore } from '@/app/shared/store/search.store';
-import { highlightParts, HighlightPart, matchesSearch } from '@/app/shared/utils/search.utils';
-import { Flag } from '@/app/features/flags/models/flag.model';
+import { highlightParts, matchesSearch } from '@/app/shared/utils/search.utils';
+import { HighlightPart } from '@/app/shared/utils/search.types';
 import { FlagStore } from '@/app/features/flags/store/flag.store';
 import { isEnabledInEnvironment } from '@/app/features/flags/utils/flag-value.utils';
-
-type RecentFlag = Flag & { currentEnabled: boolean };
+import { RecentFlag } from './dashboard.types';
 
 @Component({
   selector: 'app-dashboard',
@@ -33,10 +32,12 @@ export class DashboardComponent {
 
   protected readonly totalFlags = computed(() => this.flagStore.flags().length);
   protected readonly activeFlags = computed(
-    () => this.flagStore.enabledFlagsInCurrentEnvironment().length
+    () => this.flagStore.enabledFlagsInCurrentEnvironment().length,
   );
   protected readonly inactiveFlags = computed(() => this.totalFlags() - this.activeFlags());
-  protected readonly totalEnvironments = computed(() => this.environmentStore.environments().length);
+  protected readonly totalEnvironments = computed(
+    () => this.environmentStore.environments().length,
+  );
   protected readonly searchQuery = computed(() => this.searchStore.query().trim().toLowerCase());
   protected readonly recentFlags = computed<RecentFlag[]>(() => {
     const envId = this.environmentStore.selectedEnvironmentId();
@@ -56,10 +57,10 @@ export class DashboardComponent {
   });
 
   protected readonly selectedEnvironmentName = computed(
-    () => this.selectedEnvironment()?.name ?? 'All Environments'
+    () => this.selectedEnvironment()?.name ?? 'All Environments',
   );
   protected readonly selectedProjectName = computed(
-    () => this.projectStore.selectedProject()?.name ?? 'All Projects'
+    () => this.projectStore.selectedProject()?.name ?? 'All Projects',
   );
 
   protected highlightParts(text: string): HighlightPart[] {

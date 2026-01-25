@@ -5,7 +5,7 @@ import { NonNullableFormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { ButtonComponent } from '@/app/shared/ui/button/button';
 import { EmptyStateComponent } from '@/app/shared/ui/empty-state/empty-state';
 import { SearchStore } from '@/app/shared/store/search.store';
-import { SegmentStore } from '../../store/segment.store';
+import { SegmentStore } from '@/app/features/segments/store/segment.store';
 
 @Component({
   selector: 'app-segment-list',
@@ -26,7 +26,7 @@ export class SegmentListComponent {
     if (!query) return this.segments();
 
     return this.segments().filter((segment) =>
-      `${segment.name} ${segment.key} ${segment.description}`.toLowerCase().includes(query)
+      `${segment.name} ${segment.key} ${segment.description}`.toLowerCase().includes(query),
     );
   });
 

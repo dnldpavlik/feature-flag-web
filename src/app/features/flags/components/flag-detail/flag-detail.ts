@@ -1,22 +1,22 @@
 import { Location } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, effect, inject, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  effect,
+  inject,
+  signal,
+} from '@angular/core';
 import { NonNullableFormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { ButtonComponent } from '@/app/shared/ui/button/button';
 import { EmptyStateComponent } from '@/app/shared/ui/empty-state/empty-state';
-import { Flag, FlagType } from '../../models/flag.model';
-import { FlagTypeMap } from '../../models/flag-value.model';
 import { EnvironmentStore } from '@/app/shared/store/environment.store';
-import { FlagStore } from '../../store/flag.store';
-
-interface FlagEnvironmentRow {
-  id: string;
-  name: string;
-  color: string;
-  enabled: boolean;
-  value: FlagTypeMap[FlagType];
-}
+import { Flag, FlagType } from '@/app/features/flags/models/flag.model';
+import { FlagTypeMap } from '@/app/features/flags/models/flag-value.model';
+import { FlagStore } from '@/app/features/flags/store/flag.store';
+import { FlagEnvironmentRow } from './flag-detail.types';
 
 @Component({
   selector: 'app-flag-detail',
@@ -185,7 +185,8 @@ export class FlagDetailComponent {
   }
 
   protected onEnvironmentValueChange(envId: string, event: Event): void {
-    const value = (event.target as HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement).value;
+    const value = (event.target as HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement)
+      .value;
     this.updateEnvironmentValue(envId, value);
   }
 

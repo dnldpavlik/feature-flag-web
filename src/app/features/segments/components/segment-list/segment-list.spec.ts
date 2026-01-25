@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 
 import { SearchStore } from '@/app/shared/store/search.store';
-import { SegmentStore } from '../../store/segment.store';
+import { SegmentStore } from '@/app/features/segments/store/segment.store';
 import { SegmentListComponent } from './segment-list';
 
 describe('SegmentList', () => {

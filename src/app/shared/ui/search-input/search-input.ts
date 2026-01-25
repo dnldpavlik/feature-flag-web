@@ -8,7 +8,7 @@ import {
   viewChild,
 } from '@angular/core';
 
-import { IconComponent } from '../icon/icon';
+import { IconComponent } from '@/app/shared/ui/icon/icon';
 
 @Component({
   selector: 'app-search-input',
