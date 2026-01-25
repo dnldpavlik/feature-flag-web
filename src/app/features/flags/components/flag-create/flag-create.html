@@ -6,14 +6,12 @@
     </div>
   </header>
 
-  <form class="flag-create__form" (ngSubmit)="createFlag()">
+  <form class="flag-create__form" [formGroup]="form" (ngSubmit)="createFlag()">
     <label class="flag-create__field">
       <span class="flag-create__label">Name</span>
       <input
         class="form-input"
-        name="name"
-        required
-        [(ngModel)]="name"
+        formControlName="name"
         placeholder="Checkout Experience"
       />
     </label>
@@ -22,8 +20,7 @@
       <span class="flag-create__label">Key</span>
       <input
         class="form-input"
-        name="key"
-        [(ngModel)]="key"
+        formControlName="key"
         placeholder="checkout-experience"
       />
       <span class="flag-create__help text-muted">Leave blank to auto-generate from the name.</span>
@@ -33,9 +30,8 @@
       <span class="flag-create__label">Description</span>
       <textarea
         class="form-input flag-create__textarea"
-        name="description"
+        formControlName="description"
         rows="3"
-        [(ngModel)]="description"
         placeholder="Briefly describe what this flag controls."
       ></textarea>
     </label>
@@ -43,7 +39,7 @@
     <div class="flag-create__row">
       <label class="flag-create__field">
         <span class="flag-create__label">Type</span>
-        <select class="form-input" name="type" [ngModel]="type()" (ngModelChange)="onTypeChange($event)">
+        <select class="form-input" formControlName="type">
           <option value="boolean">Boolean</option>
           <option value="string">String</option>
           <option value="number">Number</option>
@@ -55,8 +51,7 @@
         <span class="flag-create__label">Tags</span>
         <input
           class="form-input"
-          name="tags"
-          [(ngModel)]="tags"
+          formControlName="tags"
           placeholder="checkout, web"
         />
       </label>
@@ -66,38 +61,35 @@
       <span class="flag-create__label">Default Value</span>
       <span class="flag-create__help text-muted">This value will be used as the initial value in all environments.</span>
 
-      @if (type() === 'boolean') {
+      @if (form.controls.type.value === 'boolean') {
         <label class="flag-create__toggle">
-          <input type="checkbox" name="booleanValue" [(ngModel)]="booleanValue" />
-          <span>{{ booleanValue ? 'True' : 'False' }}</span>
+          <input type="checkbox" formControlName="booleanValue" />
+          <span>{{ form.controls.booleanValue.value ? 'True' : 'False' }}</span>
         </label>
       }
 
-      @if (type() === 'string') {
+      @if (form.controls.type.value === 'string') {
         <input
           class="form-input"
-          name="stringValue"
-          [(ngModel)]="stringValue"
+          formControlName="stringValue"
           placeholder="Enter default string value"
         />
       }
 
-      @if (type() === 'number') {
+      @if (form.controls.type.value === 'number') {
         <input
           class="form-input"
-          name="numberValue"
+          formControlName="numberValue"
           type="number"
-          [(ngModel)]="numberValue"
           placeholder="0"
         />
       }
 
-      @if (type() === 'json') {
+      @if (form.controls.type.value === 'json') {
         <textarea
           class="form-input flag-create__textarea flag-create__json"
-          name="jsonValue"
+          formControlName="jsonValue"
           rows="4"
-          [(ngModel)]="jsonValue"
           (blur)="validateJson()"
           placeholder='{"key": "value"}'
         ></textarea>

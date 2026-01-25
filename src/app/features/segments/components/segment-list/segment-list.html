@@ -50,7 +50,7 @@
     </div>
   }
 
-  <div class="segment-form card">
+  <div class="segment-form card" [formGroup]="form">
     <div class="segment-form__header">
       <h2>New Segment</h2>
       <p class="text-secondary">Build a reusable audience definition.</p>
@@ -60,7 +60,7 @@
         <span class="segment-form__label">Name</span>
         <input
           class="form-input"
-          [(ngModel)]="name"
+          formControlName="name"
           placeholder="Beta Testers"
           (keydown.enter)="$event.preventDefault()"
         />
@@ -69,7 +69,7 @@
         <span class="segment-form__label">Key</span>
         <input
           class="form-input"
-          [(ngModel)]="key"
+          formControlName="key"
           placeholder="beta-testers"
           (keydown.enter)="$event.preventDefault()"
         />
@@ -79,7 +79,7 @@
         <textarea
           class="form-input segment-form__textarea"
           rows="3"
-          [(ngModel)]="description"
+          formControlName="description"
           placeholder="Users enrolled in early access programs."
           (keydown.enter)="$event.preventDefault()"
         ></textarea>

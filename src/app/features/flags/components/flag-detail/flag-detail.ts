@@ -1,6 +1,6 @@
 import { Location } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, effect, inject, signal } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { NonNullableFormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { ButtonComponent } from '@/app/shared/ui/button/button';
@@ -20,7 +20,7 @@ interface FlagEnvironmentRow {
 
 @Component({
   selector: 'app-flag-detail',
-  imports: [ButtonComponent, EmptyStateComponent, FormsModule],
+  imports: [ButtonComponent, EmptyStateComponent, ReactiveFormsModule],
   templateUrl: './flag-detail.html',
   styleUrl: './flag-detail.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -31,20 +31,23 @@ export class FlagDetailComponent {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly location = inject(Location);
+  private readonly fb = inject(NonNullableFormBuilder);
 
   protected readonly flagId = signal(this.route.snapshot.paramMap.get('flagId') ?? '');
   protected readonly flag = computed(() => this.store.getFlagById(this.flagId()));
   protected readonly environments = this.environmentStore.sortedEnvironments;
 
-  protected name = '';
-  protected description = '';
-  protected tags = '';
+  protected readonly form = this.fb.group({
+    name: [''],
+    description: [''],
+    tags: [''],
+    booleanValue: [false],
+    stringValue: [''],
+    numberValue: [0],
+    jsonValue: ['{}'],
+  });
 
-  protected booleanValue = false;
-  protected stringValue = '';
-  protected numberValue = 0;
-  protected jsonValue = '{}';
-  protected jsonError = signal<string | null>(null);
+  protected readonly jsonError = signal<string | null>(null);
 
   private readonly initialized = signal(false);
 
@@ -64,6 +67,56 @@ export class FlagDetailComponent {
     });
   });
 
+  // Getter/setters for backward compatibility with tests
+  get name(): string {
+    return this.form.controls.name.value;
+  }
+  set name(value: string) {
+    this.form.controls.name.setValue(value);
+  }
+
+  get description(): string {
+    return this.form.controls.description.value;
+  }
+  set description(value: string) {
+    this.form.controls.description.setValue(value);
+  }
+
+  get tags(): string {
+    return this.form.controls.tags.value;
+  }
+  set tags(value: string) {
+    this.form.controls.tags.setValue(value);
+  }
+
+  get booleanValue(): boolean {
+    return this.form.controls.booleanValue.value;
+  }
+  set booleanValue(value: boolean) {
+    this.form.controls.booleanValue.setValue(value);
+  }
+
+  get stringValue(): string {
+    return this.form.controls.stringValue.value;
+  }
+  set stringValue(value: string) {
+    this.form.controls.stringValue.setValue(value);
+  }
+
+  get numberValue(): number {
+    return this.form.controls.numberValue.value;
+  }
+  set numberValue(value: number) {
+    this.form.controls.numberValue.setValue(value);
+  }
+
+  get jsonValue(): string {
+    return this.form.controls.jsonValue.value;
+  }
+  set jsonValue(value: string) {
+    this.form.controls.jsonValue.setValue(value);
+  }
+
   constructor() {
     effect(() => {
       const current = this.flag();
@@ -71,9 +124,11 @@ export class FlagDetailComponent {
         return;
       }
 
-      this.name = current.name;
-      this.description = current.description;
-      this.tags = current.tags.join(', ');
+      this.form.patchValue({
+        name: current.name,
+        description: current.description,
+        tags: current.tags.join(', '),
+      });
       this.setDefaultValueFields(current);
       this.initialized.set(true);
     });
@@ -83,7 +138,8 @@ export class FlagDetailComponent {
     const current = this.flag();
     if (!current) return;
 
-    const resolvedTags = this.tags
+    const { name, description, tags } = this.form.getRawValue();
+    const resolvedTags = tags
       .split(',')
       .map((tag) => tag.trim())
       .filter((tag) => tag.length > 0);
@@ -94,8 +150,8 @@ export class FlagDetailComponent {
     }
 
     this.store.updateFlagDetails(current.id, {
-      name: this.name.trim() || current.name,
-      description: this.description.trim(),
+      name: name.trim() || current.name,
+      description: description.trim(),
       tags: resolvedTags,
       defaultValue,
     });
@@ -130,9 +186,11 @@ export class FlagDetailComponent {
   protected cancelChanges(): void {
     const current = this.flag();
     if (current) {
-      this.name = current.name;
-      this.description = current.description;
-      this.tags = current.tags.join(', ');
+      this.form.patchValue({
+        name: current.name,
+        description: current.description,
+        tags: current.tags.join(', '),
+      });
       this.setDefaultValueFields(current);
       this.jsonError.set(null);
     }
@@ -142,31 +200,32 @@ export class FlagDetailComponent {
   private setDefaultValueFields(flag: Flag): void {
     switch (flag.type) {
       case 'boolean':
-        this.booleanValue = Boolean(flag.defaultValue);
+        this.form.controls.booleanValue.setValue(Boolean(flag.defaultValue));
         break;
       case 'string':
-        this.stringValue = String(flag.defaultValue ?? '');
+        this.form.controls.stringValue.setValue(String(flag.defaultValue ?? ''));
         break;
       case 'number':
-        this.numberValue = Number(flag.defaultValue ?? 0);
+        this.form.controls.numberValue.setValue(Number(flag.defaultValue ?? 0));
         break;
       case 'json':
-        this.jsonValue = JSON.stringify(flag.defaultValue ?? {}, null, 2);
+        this.form.controls.jsonValue.setValue(JSON.stringify(flag.defaultValue ?? {}, null, 2));
         break;
     }
   }
 
   private resolveDefaultValue(type: FlagType): FlagTypeMap[FlagType] | null {
+    const { booleanValue, stringValue, numberValue, jsonValue } = this.form.getRawValue();
     switch (type) {
       case 'boolean':
-        return this.booleanValue;
+        return booleanValue;
       case 'string':
-        return this.stringValue;
+        return stringValue;
       case 'number':
-        return this.numberValue;
+        return numberValue;
       case 'json':
         try {
-          const parsed = JSON.parse(this.jsonValue);
+          const parsed = JSON.parse(jsonValue);
           if (typeof parsed !== 'object' || parsed === null || Array.isArray(parsed)) {
             this.jsonError.set('JSON must be an object');
             return null;

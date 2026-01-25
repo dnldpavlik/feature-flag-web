@@ -12,20 +12,20 @@
       </div>
     </header>
 
-    <div class="flag-detail__grid">
+    <div class="flag-detail__grid" [formGroup]="form">
       <div class="flag-detail__card">
         <h2>Details</h2>
         <label class="flag-detail__field">
           <span class="flag-detail__label">Name</span>
-          <input class="form-input" [(ngModel)]="name" />
+          <input class="form-input" formControlName="name" />
         </label>
         <label class="flag-detail__field">
           <span class="flag-detail__label">Description</span>
-          <textarea class="form-input flag-detail__textarea" rows="3" [(ngModel)]="description"></textarea>
+          <textarea class="form-input flag-detail__textarea" rows="3" formControlName="description"></textarea>
         </label>
         <label class="flag-detail__field">
           <span class="flag-detail__label">Tags</span>
-          <input class="form-input" [(ngModel)]="tags" placeholder="checkout, web" />
+          <input class="form-input" formControlName="tags" placeholder="checkout, web" />
         </label>
       </div>
 
@@ -37,24 +37,24 @@
 
         @if (current.type === 'boolean') {
           <label class="flag-detail__toggle">
-            <input type="checkbox" [(ngModel)]="booleanValue" />
-            <span>{{ booleanValue ? 'True' : 'False' }}</span>
+            <input type="checkbox" formControlName="booleanValue" />
+            <span>{{ form.controls.booleanValue.value ? 'True' : 'False' }}</span>
           </label>
         }
 
         @if (current.type === 'string') {
-          <input class="form-input" [(ngModel)]="stringValue" />
+          <input class="form-input" formControlName="stringValue" />
         }
 
         @if (current.type === 'number') {
-          <input class="form-input" type="number" [(ngModel)]="numberValue" />
+          <input class="form-input" type="number" formControlName="numberValue" />
         }
 
         @if (current.type === 'json') {
           <textarea
             class="form-input flag-detail__textarea"
             rows="4"
-            [(ngModel)]="jsonValue"
+            formControlName="jsonValue"
           ></textarea>
           @if (jsonError()) {
             <span class="flag-detail__error">{{ jsonError() }}</span>

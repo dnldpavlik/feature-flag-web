@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 
 import { ButtonComponent } from '@/app/shared/ui/button/button';
@@ -11,7 +11,7 @@ import { FlagStore } from '../../store/flag.store';
 
 @Component({
   selector: 'app-flag-create',
-  imports: [ButtonComponent, FormsModule],
+  imports: [ButtonComponent, ReactiveFormsModule],
   templateUrl: './flag-create.html',
   styleUrl: './flag-create.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -20,19 +20,21 @@ export class FlagCreateComponent {
   private readonly store = inject(FlagStore);
   private readonly environmentStore = inject(EnvironmentStore);
   private readonly router = inject(Router);
+  private readonly fb = inject(NonNullableFormBuilder);
 
-  protected name = '';
-  protected key = '';
-  protected description = '';
-  protected readonly type = signal<FlagType>('boolean');
-  protected tags = '';
+  protected readonly form = this.fb.group({
+    name: ['', Validators.required],
+    key: [''],
+    description: [''],
+    type: this.fb.control<FlagType>('boolean'),
+    tags: [''],
+    booleanValue: [false],
+    stringValue: [''],
+    numberValue: [0],
+    jsonValue: ['{}'],
+  });
 
-  // Default values for each type
-  protected booleanValue = false;
-  protected stringValue = '';
-  protected numberValue = 0;
-  protected jsonValue = '{}';
-  protected jsonError = signal<string | null>(null);
+  protected readonly jsonError = signal<string | null>(null);
 
   // Per-environment enabled state
   protected readonly environments = this.environmentStore.sortedEnvironments;
@@ -54,13 +56,14 @@ export class FlagCreateComponent {
   }
 
   protected onTypeChange(newType: FlagType): void {
-    this.type.set(newType);
+    this.form.controls.type.setValue(newType);
   }
 
   protected createFlag(): void {
-    const trimmedName = this.name.trim();
-    const resolvedKey = this.key.trim() || this.toKey(trimmedName);
-    const resolvedTags = this.tags
+    const { name, key, description, tags } = this.form.getRawValue();
+    const trimmedName = name.trim();
+    const resolvedKey = key.trim() || this.toKey(trimmedName);
+    const resolvedTags = tags
       .split(',')
       .map((tag) => tag.trim())
       .filter((tag) => tag.length > 0);
@@ -77,7 +80,7 @@ export class FlagCreateComponent {
     const input = this.buildCreateInput(
       resolvedKey,
       trimmedName,
-      this.description.trim(),
+      description.trim(),
       resolvedTags,
       defaultValue
     );
@@ -91,8 +94,9 @@ export class FlagCreateComponent {
   }
 
   protected validateJson(): void {
+    const jsonValue = this.form.controls.jsonValue.value;
     try {
-      const parsed = JSON.parse(this.jsonValue);
+      const parsed = JSON.parse(jsonValue);
       if (typeof parsed !== 'object' || parsed === null || Array.isArray(parsed)) {
         this.jsonError.set('JSON must be an object');
       } else {
@@ -104,16 +108,17 @@ export class FlagCreateComponent {
   }
 
   private getDefaultValue(): FlagTypeMap[FlagType] | null {
-    switch (this.type()) {
+    const { type, booleanValue, stringValue, numberValue, jsonValue } = this.form.getRawValue();
+    switch (type) {
       case 'boolean':
-        return this.booleanValue;
+        return booleanValue;
       case 'string':
-        return this.stringValue;
+        return stringValue;
       case 'number':
-        return this.numberValue;
+        return numberValue;
       case 'json':
         try {
-          const parsed = JSON.parse(this.jsonValue);
+          const parsed = JSON.parse(jsonValue);
           if (typeof parsed !== 'object' || parsed === null || Array.isArray(parsed)) {
             this.jsonError.set('JSON must be an object');
             return null;
@@ -124,7 +129,7 @@ export class FlagCreateComponent {
           return null;
         }
       default:
-        return getDefaultForType(this.type());
+        return getDefaultForType(type);
     }
   }
 
@@ -135,7 +140,7 @@ export class FlagCreateComponent {
     tags: string[],
     defaultValue: FlagTypeMap[FlagType]
   ): CreateFlagInput {
-    const currentType = this.type();
+    const currentType = this.form.controls.type.value;
     switch (currentType) {
       case 'boolean':
         return { key, name, description, tags, type: 'boolean', defaultValue: defaultValue as boolean };

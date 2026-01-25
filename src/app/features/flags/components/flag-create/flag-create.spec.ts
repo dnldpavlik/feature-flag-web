@@ -38,12 +38,14 @@ describe('FlagCreate', () => {
   describe('boolean flag creation', () => {
     it('should add a boolean flag with default value', () => {
       const navigateSpy = jest.spyOn(router, 'navigate').mockResolvedValue(true);
-      component.name = 'New Flag';
-      component.key = 'new-flag';
-      component.description = 'Description';
-      component.onTypeChange('boolean');
-      component.booleanValue = true;
-      component.tags = 'core, beta';
+      component.form.patchValue({
+        name: 'New Flag',
+        key: 'new-flag',
+        description: 'Description',
+        type: 'boolean',
+        booleanValue: true,
+        tags: 'core, beta',
+      });
 
       component.createFlag();
 
@@ -63,8 +65,10 @@ describe('FlagCreate', () => {
 
     it('should default boolean value to false', () => {
       jest.spyOn(router, 'navigate').mockResolvedValue(true);
-      component.name = 'Test Flag';
-      component.onTypeChange('boolean');
+      component.form.patchValue({
+        name: 'Test Flag',
+        type: 'boolean',
+      });
 
       component.createFlag();
 
@@ -78,9 +82,11 @@ describe('FlagCreate', () => {
   describe('string flag creation', () => {
     it('should add a string flag with default value', () => {
       jest.spyOn(router, 'navigate').mockResolvedValue(true);
-      component.name = 'String Flag';
-      component.onTypeChange('string');
-      component.stringValue = 'hello world';
+      component.form.patchValue({
+        name: 'String Flag',
+        type: 'string',
+        stringValue: 'hello world',
+      });
 
       component.createFlag();
 
@@ -97,9 +103,11 @@ describe('FlagCreate', () => {
   describe('number flag creation', () => {
     it('should add a number flag with default value', () => {
       jest.spyOn(router, 'navigate').mockResolvedValue(true);
-      component.name = 'Number Flag';
-      component.onTypeChange('number');
-      component.numberValue = 42;
+      component.form.patchValue({
+        name: 'Number Flag',
+        type: 'number',
+        numberValue: 42,
+      });
 
       component.createFlag();
 
@@ -116,9 +124,11 @@ describe('FlagCreate', () => {
   describe('json flag creation', () => {
     it('should add a json flag with default value', () => {
       jest.spyOn(router, 'navigate').mockResolvedValue(true);
-      component.name = 'JSON Flag';
-      component.onTypeChange('json');
-      component.jsonValue = '{"key": "value"}';
+      component.form.patchValue({
+        name: 'JSON Flag',
+        type: 'json',
+        jsonValue: '{"key": "value"}',
+      });
 
       component.createFlag();
 
@@ -133,9 +143,11 @@ describe('FlagCreate', () => {
 
     it('should not submit with invalid json', () => {
       jest.spyOn(router, 'navigate').mockResolvedValue(true);
-      component.name = 'JSON Flag';
-      component.onTypeChange('json');
-      component.jsonValue = 'invalid json';
+      component.form.patchValue({
+        name: 'JSON Flag',
+        type: 'json',
+        jsonValue: 'invalid json',
+      });
 
       component.createFlag();
 
@@ -145,9 +157,11 @@ describe('FlagCreate', () => {
 
     it('should not accept array as json', () => {
       jest.spyOn(router, 'navigate').mockResolvedValue(true);
-      component.name = 'JSON Flag';
-      component.onTypeChange('json');
-      component.jsonValue = '[1, 2, 3]';
+      component.form.patchValue({
+        name: 'JSON Flag',
+        type: 'json',
+        jsonValue: '[1, 2, 3]',
+      });
 
       component.createFlag();
 
@@ -156,23 +170,23 @@ describe('FlagCreate', () => {
     });
 
     it('should validate json on blur', () => {
-      component.jsonValue = 'not valid';
+      component.form.controls.jsonValue.setValue('not valid');
       component.validateJson();
       expect(component.jsonError()).toBe('Invalid JSON syntax');
 
-      component.jsonValue = '{"valid": true}';
+      component.form.controls.jsonValue.setValue('{"valid": true}');
       component.validateJson();
       expect(component.jsonError()).toBeNull();
     });
 
     it('should reject array in validateJson', () => {
-      component.jsonValue = '[1, 2, 3]';
+      component.form.controls.jsonValue.setValue('[1, 2, 3]');
       component.validateJson();
       expect(component.jsonError()).toBe('JSON must be an object');
     });
 
     it('should reject null in validateJson', () => {
-      component.jsonValue = 'null';
+      component.form.controls.jsonValue.setValue('null');
       component.validateJson();
       expect(component.jsonError()).toBe('JSON must be an object');
     });
@@ -180,8 +194,10 @@ describe('FlagCreate', () => {
 
   it('should not submit when name is missing', () => {
     const navigateSpy = jest.spyOn(router, 'navigate').mockResolvedValue(true);
-    component.name = ' ';
-    component.key = '';
+    component.form.patchValue({
+      name: ' ',
+      key: '',
+    });
 
     component.createFlag();
 
@@ -191,8 +207,10 @@ describe('FlagCreate', () => {
 
   it('should derive a key when none is provided', () => {
     jest.spyOn(router, 'navigate').mockResolvedValue(true);
-    component.name = 'My Flag';
-    component.key = '';
+    component.form.patchValue({
+      name: 'My Flag',
+      key: '',
+    });
 
     component.createFlag();
 
@@ -209,24 +227,24 @@ describe('FlagCreate', () => {
   });
 
   it('should fall back to default handling for unknown type', () => {
-    (component as { type: { set: (value: unknown) => void } }).type.set('unknown');
+    component.form.controls.type.setValue('unknown' as 'boolean');
 
-    const result = (component as { getDefaultValue: () => unknown }).getDefaultValue();
+    const result = (component as unknown as { getDefaultValue: () => unknown }).getDefaultValue();
 
     expect(result).toBeUndefined();
   });
 
   it('should show default value input based on type', () => {
-    component.onTypeChange('boolean');
+    component.form.controls.type.setValue('boolean');
     fixture.detectChanges();
 
-    const booleanInput = fixture.debugElement.query(By.css('input[name="booleanValue"]'));
+    const booleanInput = fixture.debugElement.query(By.css('input[formControlName="booleanValue"]'));
     expect(booleanInput).toBeTruthy();
 
-    component.onTypeChange('string');
+    component.form.controls.type.setValue('string');
     fixture.detectChanges();
 
-    const stringInput = fixture.debugElement.query(By.css('input[name="stringValue"]'));
+    const stringInput = fixture.debugElement.query(By.css('input[formControlName="stringValue"]'));
     expect(stringInput).toBeTruthy();
   });
 
@@ -254,7 +272,7 @@ describe('FlagCreate', () => {
 
     it('should pass enabled environments to store', () => {
       jest.spyOn(router, 'navigate').mockResolvedValue(true);
-      component.name = 'Test Flag';
+      component.form.controls.name.setValue('Test Flag');
       component.toggleEnvironment('env_development', true);
       component.toggleEnvironment('env_production', true);
 

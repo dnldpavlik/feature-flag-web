@@ -62,7 +62,7 @@
     </div>
   }
 
-  <div class="env-form card">
+  <div class="env-form card" [formGroup]="form">
     <div class="env-form__header">
       <h2>New Environment</h2>
       <p class="text-secondary">Add a new release stage for your feature flags.</p>
@@ -72,7 +72,7 @@
         <span class="env-form__label">Name</span>
         <input
           class="form-input"
-          [(ngModel)]="name"
+          formControlName="name"
           placeholder="Production"
           (keydown.enter)="$event.preventDefault()"
         />
@@ -81,7 +81,7 @@
         <span class="env-form__label">Key</span>
         <input
           class="form-input"
-          [(ngModel)]="key"
+          formControlName="key"
           placeholder="production"
           (keydown.enter)="$event.preventDefault()"
         />
@@ -91,7 +91,7 @@
         <input
           class="form-input env-form__color"
           type="color"
-          [(ngModel)]="color"
+          formControlName="color"
           (keydown.enter)="$event.preventDefault()"
         />
       </label>

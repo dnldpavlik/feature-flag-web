@@ -1,6 +1,6 @@
 import { DatePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { NonNullableFormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 
 import { ButtonComponent } from '@/app/shared/ui/button/button';
@@ -10,7 +10,7 @@ import { EnvironmentStore } from '@/app/shared/store/environment.store';
 
 @Component({
   selector: 'app-environment-list',
-  imports: [DatePipe, FormsModule, ButtonComponent, EmptyStateComponent, RouterLink],
+  imports: [DatePipe, ReactiveFormsModule, ButtonComponent, EmptyStateComponent, RouterLink],
   templateUrl: './environment-list.html',
   styleUrl: './environment-list.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -19,6 +19,7 @@ export class EnvironmentListComponent {
   private readonly environmentStore = inject(EnvironmentStore);
   private readonly router = inject(Router);
   private readonly searchStore = inject(SearchStore);
+  private readonly fb = inject(NonNullableFormBuilder);
 
   protected readonly environments = this.environmentStore.sortedEnvironments;
   protected readonly selectedEnvironmentId = this.environmentStore.selectedEnvironmentId;
@@ -32,28 +33,52 @@ export class EnvironmentListComponent {
     );
   });
 
-  protected name = '';
-  protected key = '';
-  protected color = '#3b82f6';
+  protected readonly form = this.fb.group({
+    name: [''],
+    key: [''],
+    color: ['#3b82f6'],
+  });
+
+  // Backward compatibility getters/setters for tests
+  get name(): string {
+    return this.form.controls.name.value;
+  }
+  set name(value: string) {
+    this.form.controls.name.setValue(value);
+  }
+
+  get key(): string {
+    return this.form.controls.key.value;
+  }
+  set key(value: string) {
+    this.form.controls.key.setValue(value);
+  }
+
+  get color(): string {
+    return this.form.controls.color.value;
+  }
+  set color(value: string) {
+    this.form.controls.color.setValue(value);
+  }
 
   protected canAdd(): boolean {
-    return this.name.trim().length > 0 && this.key.trim().length > 0;
+    const { name, key } = this.form.getRawValue();
+    return name.trim().length > 0 && key.trim().length > 0;
   }
 
   protected addEnvironment(): void {
     if (!this.canAdd()) return;
 
+    const { name, key, color } = this.form.getRawValue();
     const order = this.environmentStore.environments().length;
     this.environmentStore.addEnvironment({
-      name: this.name.trim(),
-      key: this.key.trim(),
-      color: this.color,
+      name: name.trim(),
+      key: key.trim(),
+      color,
       order,
     });
 
-    this.name = '';
-    this.key = '';
-    this.color = '#3b82f6';
+    this.form.reset({ name: '', key: '', color: '#3b82f6' });
   }
 
   protected selectEnvironment(envId: string): void {
