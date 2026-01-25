@@ -1,9 +1,7 @@
 import { Injectable, computed, signal } from '@angular/core';
 
 import { CreateSegmentInput, Segment } from '../models/segment.model';
-
-const nowStamp = () => new Date().toISOString();
-const createId = () => `seg_${Math.random().toString(36).slice(2, 10)}`;
+import { createId, createTimestamp } from '../../../shared/utils/id.utils';
 
 @Injectable({ providedIn: 'root' })
 export class SegmentStore {
@@ -14,8 +12,8 @@ export class SegmentStore {
       name: 'Beta Testers',
       description: 'Internal and external testers for early feature access.',
       ruleCount: 3,
-      createdAt: nowStamp(),
-      updatedAt: nowStamp(),
+      createdAt: createTimestamp(),
+      updatedAt: createTimestamp(),
     },
     {
       id: 'seg_internal',
@@ -23,8 +21,8 @@ export class SegmentStore {
       name: 'Internal Users',
       description: 'Employees and trusted partners.',
       ruleCount: 2,
-      createdAt: nowStamp(),
-      updatedAt: nowStamp(),
+      createdAt: createTimestamp(),
+      updatedAt: createTimestamp(),
     },
   ]);
 
@@ -33,8 +31,8 @@ export class SegmentStore {
   readonly segmentCount = computed(() => this._segments().length);
 
   addSegment(input: CreateSegmentInput): void {
-    const stamp = nowStamp();
-    const segmentId = createId();
+    const stamp = createTimestamp();
+    const segmentId = createId('seg');
 
     const newSegment: Segment = {
       id: segmentId,

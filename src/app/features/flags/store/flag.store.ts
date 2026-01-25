@@ -4,9 +4,7 @@ import { CreateFlagInput, Flag, FlagType, UpdateEnvironmentValueInput } from '..
 import { EnvironmentFlagValue, FlagTypeMap } from '../models/flag-value.model';
 import { getEffectiveValue, isEnabledInEnvironment } from '../utils/flag-value.utils';
 import { EnvironmentStore } from '../../../shared/store/environment.store';
-
-const nowStamp = () => new Date().toISOString();
-const createId = () => `flag_${Math.random().toString(36).slice(2, 10)}`;
+import { createId, createTimestamp } from '../../../shared/utils/id.utils';
 
 @Injectable({ providedIn: 'root' })
 export class FlagStore {
@@ -26,8 +24,8 @@ export class FlagStore {
         env_staging: createEnvValue('flag_new_checkout', 'env_staging', true, true),
         env_production: createEnvValue('flag_new_checkout', 'env_production', false, false),
       },
-      createdAt: nowStamp(),
-      updatedAt: nowStamp(),
+      createdAt: createTimestamp(),
+      updatedAt: createTimestamp(),
     },
     {
       id: 'flag_pricing_banner',
@@ -42,8 +40,8 @@ export class FlagStore {
         env_staging: createEnvValue('flag_pricing_banner', 'env_staging', false, false),
         env_production: createEnvValue('flag_pricing_banner', 'env_production', false, false),
       },
-      createdAt: nowStamp(),
-      updatedAt: nowStamp(),
+      createdAt: createTimestamp(),
+      updatedAt: createTimestamp(),
     },
     {
       id: 'flag_beta_theme',
@@ -58,8 +56,8 @@ export class FlagStore {
         env_staging: createEnvValue('flag_beta_theme', 'env_staging', 'light', true),
         env_production: createEnvValue('flag_beta_theme', 'env_production', 'default', false),
       },
-      createdAt: nowStamp(),
-      updatedAt: nowStamp(),
+      createdAt: createTimestamp(),
+      updatedAt: createTimestamp(),
     },
     {
       id: 'flag_search_boost',
@@ -74,8 +72,8 @@ export class FlagStore {
         env_staging: createEnvValue('flag_search_boost', 'env_staging', 1.2, false),
         env_production: createEnvValue('flag_search_boost', 'env_production', 1.0, false),
       },
-      createdAt: nowStamp(),
-      updatedAt: nowStamp(),
+      createdAt: createTimestamp(),
+      updatedAt: createTimestamp(),
     },
     {
       id: 'flag_checkout_guardrails',
@@ -105,8 +103,8 @@ export class FlagStore {
           true
         ),
       },
-      createdAt: nowStamp(),
-      updatedAt: nowStamp(),
+      createdAt: createTimestamp(),
+      updatedAt: createTimestamp(),
     },
   ]);
 
@@ -120,8 +118,8 @@ export class FlagStore {
   );
 
   addFlag(input: CreateFlagInput, initialEnabledEnvironments?: Record<string, boolean>): void {
-    const stamp = nowStamp();
-    const flagId = createId();
+    const stamp = createTimestamp();
+    const flagId = createId('flag');
     const environments = this.environmentStore.environments();
 
     const environmentValues: Record<string, EnvironmentFlagValue> = {};
@@ -159,7 +157,7 @@ export class FlagStore {
     flagId: string,
     updates: Partial<Pick<Flag, 'name' | 'description' | 'tags' | 'defaultValue'>>
   ): void {
-    const stamp = nowStamp();
+    const stamp = createTimestamp();
 
     this._flags.update((flags) =>
       flags.map((flag) => {
@@ -178,7 +176,7 @@ export class FlagStore {
       flags.map((flag) => {
         if (flag.id !== input.flagId) return flag;
 
-        const stamp = nowStamp();
+        const stamp = createTimestamp();
         const existingEnvValue = flag.environmentValues[input.environmentId];
 
         return {
@@ -204,7 +202,7 @@ export class FlagStore {
       flags.map((flag) => {
         if (flag.id !== flagId) return flag;
 
-        const stamp = nowStamp();
+        const stamp = createTimestamp();
         const existingEnvValue = flag.environmentValues[environmentId];
 
         return {
@@ -246,6 +244,6 @@ function createEnvValue<T>(
     environmentId,
     value: value as FlagTypeMap[FlagType],
     enabled,
-    updatedAt: nowStamp(),
+    updatedAt: createTimestamp(),
   };
 }

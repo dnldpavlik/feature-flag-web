@@ -1,16 +1,17 @@
 import { DatePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
+import { RouterLink } from '@angular/router';
 
 import { ButtonComponent } from '../../../../shared/ui/button/button';
 import { EmptyStateComponent } from '../../../../shared/ui/empty-state/empty-state';
 import { StatCardComponent } from '../../../../shared/ui/stat-card/stat-card';
-import { Flag } from '../../../flags/models/flag.model';
 import { EnvironmentStore } from '../../../../shared/store/environment.store';
-import { FlagStore } from '../../../flags/store/flag.store';
-import { isEnabledInEnvironment } from '../../../flags/utils/flag-value.utils';
 import { ProjectStore } from '../../../../shared/store/project.store';
 import { SearchStore } from '../../../../shared/store/search.store';
-import { RouterLink } from '@angular/router';
+import { highlightParts, HighlightPart, matchesSearch } from '../../../../shared/utils/search.utils';
+import { Flag } from '../../../flags/models/flag.model';
+import { FlagStore } from '../../../flags/store/flag.store';
+import { isEnabledInEnvironment } from '../../../flags/utils/flag-value.utils';
 
 type RecentFlag = Flag & { currentEnabled: boolean };
 
@@ -51,7 +52,7 @@ export class DashboardComponent {
     const query = this.searchQuery();
     if (!query) return this.recentFlags();
 
-    return this.recentFlags().filter((flag) => this.matchesSearch(flag, query));
+    return this.recentFlags().filter((flag) => matchesSearch(flag, query));
   });
 
   protected readonly selectedEnvironmentName = computed(
@@ -61,40 +62,7 @@ export class DashboardComponent {
     () => this.projectStore.selectedProject()?.name ?? 'All Projects'
   );
 
-  protected highlightParts(text: string): { text: string; match: boolean }[] {
-    const query = this.searchQuery();
-    if (!text) {
-      return [];
-    }
-    if (!query) {
-      return [{ text, match: false }];
-    }
-
-    const parts: { text: string; match: boolean }[] = [];
-    const lowerText = text.toLowerCase();
-    let start = 0;
-    let index = lowerText.indexOf(query, start);
-
-    while (index !== -1) {
-      if (index > start) {
-        parts.push({ text: text.slice(start, index), match: false });
-      }
-      parts.push({ text: text.slice(index, index + query.length), match: true });
-      start = index + query.length;
-      index = lowerText.indexOf(query, start);
-    }
-
-    if (start < text.length) {
-      parts.push({ text: text.slice(start), match: false });
-    }
-
-    return parts;
-  }
-
-  private matchesSearch(flag: RecentFlag, query: string): boolean {
-    const haystack = [flag.name, flag.key, flag.description, flag.type, ...flag.tags]
-      .join(' ')
-      .toLowerCase();
-    return haystack.includes(query);
+  protected highlightParts(text: string): HighlightPart[] {
+    return highlightParts(text, this.searchQuery());
   }
 }

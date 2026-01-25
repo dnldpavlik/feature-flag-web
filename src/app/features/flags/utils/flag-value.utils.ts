@@ -1,5 +1,6 @@
 import { Flag, FlagType } from '../models/flag.model';
 import { EnvironmentFlagValue, FlagTypeMap } from '../models/flag-value.model';
+import { createTimestamp } from '../../../shared/utils/id.utils';
 
 /**
  * Get the default value for a given flag type
@@ -65,7 +66,7 @@ export const createEnvironmentValue = <T extends FlagType>(
   flagId,
   value: value ?? getDefaultForType(type),
   enabled: false,
-  updatedAt: new Date().toISOString(),
+  updatedAt: createTimestamp(),
 });
 
 /**
@@ -78,7 +79,7 @@ export const updateFlagEnvironmentValue = <T extends FlagType>(
   enabled?: boolean
 ): Flag => {
   const existingEnvValue = flag.environmentValues[environmentId];
-  const nowStamp = new Date().toISOString();
+  const stamp = createTimestamp();
 
   return {
     ...flag,
@@ -89,9 +90,9 @@ export const updateFlagEnvironmentValue = <T extends FlagType>(
         flagId: flag.id,
         value,
         enabled: enabled ?? existingEnvValue?.enabled ?? false,
-        updatedAt: nowStamp,
+        updatedAt: stamp,
       },
     },
-    updatedAt: nowStamp,
+    updatedAt: stamp,
   };
 };

@@ -1,9 +1,7 @@
 import { Injectable, computed, signal } from '@angular/core';
 
 import { CreateEnvironmentInput, Environment } from '../../features/flags/models/environment.model';
-
-const nowStamp = () => new Date().toISOString();
-const createId = () => `env_${Math.random().toString(36).slice(2, 10)}`;
+import { createId, createTimestamp } from '../utils/id.utils';
 
 @Injectable({ providedIn: 'root' })
 export class EnvironmentStore {
@@ -15,8 +13,8 @@ export class EnvironmentStore {
       color: '#10B981',
       order: 0,
       isDefault: true,
-      createdAt: nowStamp(),
-      updatedAt: nowStamp(),
+      createdAt: createTimestamp(),
+      updatedAt: createTimestamp(),
     },
     {
       id: 'env_staging',
@@ -25,8 +23,8 @@ export class EnvironmentStore {
       color: '#F59E0B',
       order: 1,
       isDefault: false,
-      createdAt: nowStamp(),
-      updatedAt: nowStamp(),
+      createdAt: createTimestamp(),
+      updatedAt: createTimestamp(),
     },
     {
       id: 'env_production',
@@ -35,8 +33,8 @@ export class EnvironmentStore {
       color: '#EF4444',
       order: 2,
       isDefault: false,
-      createdAt: nowStamp(),
-      updatedAt: nowStamp(),
+      createdAt: createTimestamp(),
+      updatedAt: createTimestamp(),
     },
   ]);
 
@@ -62,7 +60,7 @@ export class EnvironmentStore {
   }
 
   setDefaultEnvironment(environmentId: string): void {
-    const stamp = nowStamp();
+    const stamp = createTimestamp();
     this._environments.update((envs) =>
       envs.map((env) => ({
         ...env,
@@ -73,9 +71,9 @@ export class EnvironmentStore {
   }
 
   addEnvironment(input: CreateEnvironmentInput): void {
-    const stamp = nowStamp();
+    const stamp = createTimestamp();
     const newEnv: Environment = {
-      id: createId(),
+      id: createId('env'),
       key: input.key,
       name: input.name,
       color: input.color,

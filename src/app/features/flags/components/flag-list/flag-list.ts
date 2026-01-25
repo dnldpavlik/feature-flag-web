@@ -1,14 +1,14 @@
 import { DatePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
-
 import { RouterLink } from '@angular/router';
 
 import { ButtonComponent } from '../../../../shared/ui/button/button';
 import { EmptyStateComponent } from '../../../../shared/ui/empty-state/empty-state';
+import { EnvironmentStore } from '../../../../shared/store/environment.store';
 import { SearchStore } from '../../../../shared/store/search.store';
+import { matchesSearch } from '../../../../shared/utils/search.utils';
 import { Flag, FlagType } from '../../models/flag.model';
 import { FlagTypeMap } from '../../models/flag-value.model';
-import { EnvironmentStore } from '../../../../shared/store/environment.store';
 import { FlagStore } from '../../store/flag.store';
 import { getEffectiveValue, isEnabledInEnvironment } from '../../utils/flag-value.utils';
 
@@ -62,7 +62,7 @@ export class FlagListComponent {
         (status === 'enabled' && flag.currentEnabled) ||
         (status === 'disabled' && !flag.currentEnabled);
       const matchesType = type === 'all' || flag.type === type;
-      return matchesStatus && matchesType && this.matchesSearch(flag, query);
+      return matchesStatus && matchesType && matchesSearch(flag, query);
     });
   });
 
@@ -98,21 +98,5 @@ export class FlagListComponent {
       return JSON.stringify(flag.currentValue);
     }
     return String(flag.currentValue);
-  }
-
-  private matchesSearch(flag: FlagWithEnvironmentStatus, query: string): boolean {
-    if (!query) return true;
-
-    const haystack = [
-      flag.name,
-      flag.key,
-      flag.description,
-      flag.type,
-      ...flag.tags,
-    ]
-      .join(' ')
-      .toLowerCase();
-
-    return haystack.includes(query);
   }
 }

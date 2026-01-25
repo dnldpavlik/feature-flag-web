@@ -1,9 +1,7 @@
 import { Injectable, computed, signal } from '@angular/core';
 
 import { CreateProjectInput, Project } from '../../features/projects/models/project.model';
-
-const nowStamp = () => new Date().toISOString();
-const createId = () => `proj_${Math.random().toString(36).slice(2, 10)}`;
+import { createId, createTimestamp } from '../utils/id.utils';
 
 @Injectable({ providedIn: 'root' })
 export class ProjectStore {
@@ -14,8 +12,8 @@ export class ProjectStore {
       name: 'Default Project',
       description: 'Primary feature flag workspace.',
       isDefault: true,
-      createdAt: nowStamp(),
-      updatedAt: nowStamp(),
+      createdAt: createTimestamp(),
+      updatedAt: createTimestamp(),
     },
     {
       id: 'proj_growth',
@@ -23,8 +21,8 @@ export class ProjectStore {
       name: 'Growth Experiments',
       description: 'Revenue, onboarding, and conversion tests.',
       isDefault: false,
-      createdAt: nowStamp(),
-      updatedAt: nowStamp(),
+      createdAt: createTimestamp(),
+      updatedAt: createTimestamp(),
     },
   ]);
 
@@ -38,8 +36,8 @@ export class ProjectStore {
   );
 
   addProject(input: CreateProjectInput): void {
-    const stamp = nowStamp();
-    const projectId = createId();
+    const stamp = createTimestamp();
+    const projectId = createId('proj');
 
     const newProject: Project = {
       id: projectId,
@@ -59,7 +57,7 @@ export class ProjectStore {
   }
 
   setDefaultProject(projectId: string): void {
-    const stamp = nowStamp();
+    const stamp = createTimestamp();
     this._projects.update((projects) =>
       projects.map((project) => ({
         ...project,
