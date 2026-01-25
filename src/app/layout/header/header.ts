@@ -26,9 +26,12 @@ export class HeaderComponent {
   /** Emits when the menu toggle button is pressed */
   readonly menuToggle = output<void>();
 
+  /** Emits when the create flag button is clicked */
+  readonly createFlagClick = output<void>();
+
   protected readonly searchValue = this.searchStore.query;
 
-  protected createFlag(): void {
+  protected onCreateFlagClick(): void {
     void this.router.navigate(['/flags/new']);
   }
 

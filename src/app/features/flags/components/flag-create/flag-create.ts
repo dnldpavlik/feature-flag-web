@@ -4,9 +4,11 @@ import { Router } from '@angular/router';
 
 import { ButtonComponent } from '@/app/shared/ui/button/button';
 import { EnvironmentStore } from '@/app/shared/store/environment.store';
+import { toKey } from '@/app/shared/utils/url.utils';
 import { CreateFlagInput, FlagType } from '@/app/features/flags/models/flag.model';
 import { FlagTypeMap } from '@/app/features/flags/models/flag-value.model';
 import { getDefaultForType } from '@/app/features/flags/utils/flag-value.utils';
+import { validateJsonObject } from '@/app/features/flags/utils/flag-format.utils';
 import { FlagStore } from '@/app/features/flags/store/flag.store';
 
 @Component({
@@ -67,7 +69,7 @@ export class FlagCreateComponent {
   protected createFlag(): void {
     const { name, key, description, tags } = this.form.getRawValue();
     const trimmedName = name.trim();
-    const resolvedKey = key.trim() || this.toKey(trimmedName);
+    const resolvedKey = key.trim() || toKey(trimmedName);
     const resolvedTags = tags
       .split(',')
       .map((tag) => tag.trim())
@@ -100,16 +102,8 @@ export class FlagCreateComponent {
 
   protected validateJson(): void {
     const jsonValue = this.form.controls.jsonValue.value;
-    try {
-      const parsed = JSON.parse(jsonValue);
-      if (typeof parsed !== 'object' || parsed === null || Array.isArray(parsed)) {
-        this.jsonError.set('JSON must be an object');
-      } else {
-        this.jsonError.set(null);
-      }
-    } catch {
-      this.jsonError.set('Invalid JSON syntax');
-    }
+    const result = validateJsonObject(jsonValue);
+    this.jsonError.set(result.valid ? null : result.error!);
   }
 
   private getDefaultValue(): FlagTypeMap[FlagType] | null {
@@ -121,18 +115,14 @@ export class FlagCreateComponent {
         return stringValue;
       case 'number':
         return numberValue;
-      case 'json':
-        try {
-          const parsed = JSON.parse(jsonValue);
-          if (typeof parsed !== 'object' || parsed === null || Array.isArray(parsed)) {
-            this.jsonError.set('JSON must be an object');
-            return null;
-          }
-          return parsed;
-        } catch {
-          this.jsonError.set('Invalid JSON syntax');
+      case 'json': {
+        const result = validateJsonObject(jsonValue);
+        if (!result.valid) {
+          this.jsonError.set(result.error!);
           return null;
         }
+        return result.value as FlagTypeMap[FlagType];
+      }
       default:
         return getDefaultForType(type);
     }
@@ -186,11 +176,4 @@ export class FlagCreateComponent {
     }
   }
 
-  private toKey(value: string): string {
-    return value
-      .trim()
-      .toLowerCase()
-      .replace(/[^a-z0-9]+/g, '-')
-      .replace(/(^-|-$)+/g, '');
-  }
 }

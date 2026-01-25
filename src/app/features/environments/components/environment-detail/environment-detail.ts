@@ -11,6 +11,7 @@ import {
   getEffectiveValue,
   isEnabledInEnvironment,
 } from '@/app/features/flags/utils/flag-value.utils';
+import { formatDisplayValue } from '@/app/features/flags/utils/flag-format.utils';
 
 @Component({
   selector: 'app-environment-detail',
@@ -60,12 +61,6 @@ export class EnvironmentDetailComponent {
   }
 
   protected formatValue(value: unknown): string {
-    if (typeof value === 'boolean') {
-      return value ? 'true' : 'false';
-    }
-    if (typeof value === 'object') {
-      return JSON.stringify(value);
-    }
-    return String(value);
+    return formatDisplayValue(value);
   }
 }

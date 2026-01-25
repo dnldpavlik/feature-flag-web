@@ -16,6 +16,7 @@ import { EnvironmentStore } from '@/app/shared/store/environment.store';
 import { Flag, FlagType } from '@/app/features/flags/models/flag.model';
 import { FlagTypeMap } from '@/app/features/flags/models/flag-value.model';
 import { FlagStore } from '@/app/features/flags/store/flag.store';
+import { parseValueForType, validateJsonObject } from '@/app/features/flags/utils/flag-format.utils';
 import { FlagEnvironmentRow } from './flag-detail.types';
 
 @Component({
@@ -234,39 +235,20 @@ export class FlagDetailComponent {
         return stringValue;
       case 'number':
         return numberValue;
-      case 'json':
-        try {
-          const parsed = JSON.parse(jsonValue);
-          if (typeof parsed !== 'object' || parsed === null || Array.isArray(parsed)) {
-            this.jsonError.set('JSON must be an object');
-            return null;
-          }
-          this.jsonError.set(null);
-          return parsed as FlagTypeMap[FlagType];
-        } catch {
-          this.jsonError.set('Invalid JSON syntax');
+      case 'json': {
+        const result = validateJsonObject(jsonValue);
+        if (!result.valid) {
+          this.jsonError.set(result.error!);
           return null;
         }
+        this.jsonError.set(null);
+        return result.value as FlagTypeMap[FlagType];
+      }
     }
   }
 
   private parseValue(type: FlagType, rawValue: string): FlagTypeMap[FlagType] | null {
-    switch (type) {
-      case 'boolean':
-        return rawValue === 'true';
-      case 'string':
-        return rawValue;
-      case 'number': {
-        const parsed = Number(rawValue);
-        return Number.isNaN(parsed) ? null : parsed;
-      }
-      case 'json':
-        try {
-          return JSON.parse(rawValue) as FlagTypeMap[FlagType];
-        } catch {
-          return null;
-        }
-    }
+    return parseValueForType(type, rawValue);
   }
 
   protected formatJsonValue(value: unknown): string {

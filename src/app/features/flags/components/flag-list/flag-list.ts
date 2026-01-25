@@ -12,6 +12,7 @@ import {
   getEffectiveValue,
   isEnabledInEnvironment,
 } from '@/app/features/flags/utils/flag-value.utils';
+import { formatFlagValue } from '@/app/features/flags/utils/flag-format.utils';
 import { FlagWithEnvironmentStatus, StatusFilter, TypeFilter } from './flag-list.types';
 
 @Component({
@@ -82,12 +83,6 @@ export class FlagListComponent {
   }
 
   protected formatValue(flag: FlagWithEnvironmentStatus): string {
-    if (flag.type === 'boolean') {
-      return flag.currentValue ? 'true' : 'false';
-    }
-    if (flag.type === 'json') {
-      return JSON.stringify(flag.currentValue);
-    }
-    return String(flag.currentValue);
+    return formatFlagValue(flag.type, flag.currentValue);
   }
 }

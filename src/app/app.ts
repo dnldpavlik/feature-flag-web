@@ -1,29 +1,18 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  computed,
-  effect,
-  inject,
-  signal,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, inject, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { filter, map } from 'rxjs';
+
 import { BreadcrumbItem } from './shared/ui/breadcrumb/breadcrumb';
-import { IconName } from './shared/ui/icon/icon';
 import { HeaderComponent } from './layout/header/header';
 import { SidebarComponent } from './layout/sidebar/sidebar';
+import { NAV_ITEMS } from './layout/nav.config';
 import { SearchStore } from './shared/store/search.store';
 import { EnvironmentStore } from './shared/store/environment.store';
 import { ProjectStore } from './shared/store/project.store';
+import { getSectionLabel } from './shared/utils/url.utils';
 
-interface NavItem {
-  label: string;
-  route: string;
-  icon: IconName;
-}
-
-interface Environment {
+interface SidebarEnvironment {
   name: string;
   color: string;
   route: string;
@@ -52,10 +41,10 @@ export class AppComponent {
 
   protected readonly sidebarOpen = signal(true);
 
-  protected readonly currentUser = signal({
+  protected readonly currentUser = {
     name: 'John Doe',
     email: 'john@example.com',
-  });
+  };
 
   protected readonly breadcrumbs = computed<BreadcrumbItem[]>(() => [
     {
@@ -68,48 +57,12 @@ export class AppComponent {
       })),
       selectedId: this.projectStore.selectedProjectId(),
     },
-    { label: this.getSectionLabel(this.currentUrl()) },
+    { label: getSectionLabel(this.currentUrl()) },
   ]);
 
-  protected readonly navItems = signal<NavItem[]>([
-    {
-      label: 'Dashboard',
-      route: '/dashboard',
-      icon: 'home',
-    },
-    {
-      label: 'Feature Flags',
-      route: '/flags',
-      icon: 'flag',
-    },
-    {
-      label: 'Environments',
-      route: '/environments',
-      icon: 'list',
-    },
-    {
-      label: 'Projects',
-      route: '/projects',
-      icon: 'folder',
-    },
-    {
-      label: 'Segments',
-      route: '/segments',
-      icon: 'users',
-    },
-    {
-      label: 'Audit Log',
-      route: '/audit',
-      icon: 'list',
-    },
-    {
-      label: 'Settings',
-      route: '/settings',
-      icon: 'settings',
-    },
-  ]);
+  protected readonly navItems = NAV_ITEMS;
 
-  protected readonly environments = computed<Environment[]>(() =>
+  protected readonly environments = computed<SidebarEnvironment[]>(() =>
     this.environmentStore.sortedEnvironments().map((env) => ({
       name: env.name,
       color: env.color,
@@ -122,29 +75,6 @@ export class AppComponent {
       this.currentUrl();
       this.searchStore.clear();
     });
-  }
-
-  private getSectionLabel(url: string): string {
-    const segment = url.split('?')[0].split('#')[0].split('/').filter(Boolean)[0] ?? 'dashboard';
-
-    switch (segment) {
-      case 'dashboard':
-        return 'Dashboard';
-      case 'flags':
-        return 'Feature Flags';
-      case 'environments':
-        return 'Environments';
-      case 'projects':
-        return 'Projects';
-      case 'segments':
-        return 'Segments';
-      case 'audit':
-        return 'Audit Log';
-      case 'settings':
-        return 'Settings';
-      default:
-        return 'Dashboard';
-    }
   }
 
   toggleSidebar(): void {

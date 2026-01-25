@@ -13,11 +13,10 @@ class DummyComponent {}
 
 type AppComponentInternals = AppComponent & {
   sidebarOpen: { (): boolean; update: (fn: (v: boolean) => boolean) => void };
-  currentUser: () => { name: string; email: string };
-  navItems: () => { label: string; route: string; icon: string }[];
+  currentUser: { name: string; email: string };
+  navItems: readonly { label: string; route: string; icon: string }[];
   breadcrumbs: () => { label: string; key?: string; route?: string }[];
   environments: () => { name: string; color: string; route: string }[];
-  getSectionLabel: (url: string) => string;
 };
 
 describe('AppComponent', () => {
@@ -69,7 +68,7 @@ describe('AppComponent', () => {
     });
 
     it('should have current user with name and email', () => {
-      const user = (component as AppComponentInternals).currentUser();
+      const user = (component as AppComponentInternals).currentUser;
       expect(user.name).toBe('John Doe');
       expect(user.email).toBe('john@example.com');
     });
@@ -104,12 +103,12 @@ describe('AppComponent', () => {
 
   describe('navigation items', () => {
     it('should provide navigation items to sidebar', () => {
-      const navItems = (component as AppComponentInternals).navItems();
+      const navItems = (component as AppComponentInternals).navItems;
       expect(navItems.length).toBeGreaterThan(0);
     });
 
     it('should include Dashboard nav item', () => {
-      const navItems = (component as AppComponentInternals).navItems();
+      const navItems = (component as AppComponentInternals).navItems;
       const dashboard = navItems.find((item) => item.label === 'Dashboard');
       expect(dashboard).toBeDefined();
       expect(dashboard?.route).toBe('/dashboard');
@@ -117,7 +116,7 @@ describe('AppComponent', () => {
     });
 
     it('should include Feature Flags nav item', () => {
-      const navItems = (component as AppComponentInternals).navItems();
+      const navItems = (component as AppComponentInternals).navItems;
       const flags = navItems.find((item) => item.label === 'Feature Flags');
       expect(flags).toBeDefined();
       expect(flags?.route).toBe('/flags');
@@ -125,35 +124,35 @@ describe('AppComponent', () => {
     });
 
     it('should include Environments nav item', () => {
-      const navItems = (component as AppComponentInternals).navItems();
+      const navItems = (component as AppComponentInternals).navItems;
       const environments = navItems.find((item) => item.label === 'Environments');
       expect(environments).toBeDefined();
       expect(environments?.route).toBe('/environments');
     });
 
     it('should include Projects nav item', () => {
-      const navItems = (component as AppComponentInternals).navItems();
+      const navItems = (component as AppComponentInternals).navItems;
       const projects = navItems.find((item) => item.label === 'Projects');
       expect(projects).toBeDefined();
       expect(projects?.route).toBe('/projects');
     });
 
     it('should include Segments nav item', () => {
-      const navItems = (component as AppComponentInternals).navItems();
+      const navItems = (component as AppComponentInternals).navItems;
       const segments = navItems.find((item) => item.label === 'Segments');
       expect(segments).toBeDefined();
       expect(segments?.route).toBe('/segments');
     });
 
     it('should include Audit Log nav item', () => {
-      const navItems = (component as AppComponentInternals).navItems();
+      const navItems = (component as AppComponentInternals).navItems;
       const audit = navItems.find((item) => item.label === 'Audit Log');
       expect(audit).toBeDefined();
       expect(audit?.route).toBe('/audit');
     });
 
     it('should include Settings nav item', () => {
-      const navItems = (component as AppComponentInternals).navItems();
+      const navItems = (component as AppComponentInternals).navItems;
       const settings = navItems.find((item) => item.label === 'Settings');
       expect(settings).toBeDefined();
       expect(settings?.route).toBe('/settings');
@@ -247,68 +246,6 @@ describe('AppComponent', () => {
       const sectionCrumb = breadcrumbs[1];
       expect(sectionCrumb.label).toBe('Settings');
     }));
-  });
-
-  describe('getSectionLabel', () => {
-    it('should return Dashboard for dashboard URL', () => {
-      const label = (component as AppComponentInternals).getSectionLabel('/dashboard');
-      expect(label).toBe('Dashboard');
-    });
-
-    it('should return Feature Flags for flags URL', () => {
-      const label = (component as AppComponentInternals).getSectionLabel('/flags');
-      expect(label).toBe('Feature Flags');
-    });
-
-    it('should return Environments for environments URL', () => {
-      const label = (component as AppComponentInternals).getSectionLabel('/environments');
-      expect(label).toBe('Environments');
-    });
-
-    it('should return Projects for projects URL', () => {
-      const label = (component as AppComponentInternals).getSectionLabel('/projects');
-      expect(label).toBe('Projects');
-    });
-
-    it('should return Segments for segments URL', () => {
-      const label = (component as AppComponentInternals).getSectionLabel('/segments');
-      expect(label).toBe('Segments');
-    });
-
-    it('should return Audit Log for audit URL', () => {
-      const label = (component as AppComponentInternals).getSectionLabel('/audit');
-      expect(label).toBe('Audit Log');
-    });
-
-    it('should return Settings for settings URL', () => {
-      const label = (component as AppComponentInternals).getSectionLabel('/settings');
-      expect(label).toBe('Settings');
-    });
-
-    it('should return Dashboard for unknown URLs', () => {
-      const label = (component as AppComponentInternals).getSectionLabel('/unknown-route');
-      expect(label).toBe('Dashboard');
-    });
-
-    it('should return Dashboard for empty URL', () => {
-      const label = (component as AppComponentInternals).getSectionLabel('/');
-      expect(label).toBe('Dashboard');
-    });
-
-    it('should handle URLs with query parameters', () => {
-      const label = (component as AppComponentInternals).getSectionLabel('/flags?filter=active');
-      expect(label).toBe('Feature Flags');
-    });
-
-    it('should handle URLs with hash fragments', () => {
-      const label = (component as AppComponentInternals).getSectionLabel('/flags#section');
-      expect(label).toBe('Feature Flags');
-    });
-
-    it('should handle nested URLs', () => {
-      const label = (component as AppComponentInternals).getSectionLabel('/flags/new');
-      expect(label).toBe('Feature Flags');
-    });
   });
 
   describe('toggleSidebar', () => {

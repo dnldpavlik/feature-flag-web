@@ -4,6 +4,8 @@ import { RouterLink } from '@angular/router';
 import { IconComponent } from '@/app/shared/ui/icon/icon';
 import { BreadcrumbItem } from './breadcrumb.types';
 
+export type { BreadcrumbItem } from './breadcrumb.types';
+
 @Component({
   selector: 'app-breadcrumb',
   imports: [RouterLink, IconComponent],
