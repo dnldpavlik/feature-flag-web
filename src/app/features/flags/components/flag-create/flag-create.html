@@ -61,40 +61,39 @@
       <span class="flag-create__label">Default Value</span>
       <span class="flag-create__help text-muted">This value will be used as the initial value in all environments.</span>
 
-      @if (form.controls.type.value === 'boolean') {
-        <label class="flag-create__toggle">
-          <input type="checkbox" formControlName="booleanValue" />
-          <span>{{ form.controls.booleanValue.value ? 'True' : 'False' }}</span>
-        </label>
-      }
-
-      @if (form.controls.type.value === 'string') {
-        <input
-          class="form-input"
-          formControlName="stringValue"
-          placeholder="Enter default string value"
-        />
-      }
-
-      @if (form.controls.type.value === 'number') {
-        <input
-          class="form-input"
-          formControlName="numberValue"
-          type="number"
-          placeholder="0"
-        />
-      }
-
-      @if (form.controls.type.value === 'json') {
-        <textarea
-          class="form-input flag-create__textarea flag-create__json"
-          formControlName="jsonValue"
-          rows="4"
-          (blur)="validateJson()"
-          placeholder='{"key": "value"}'
-        ></textarea>
-        @if (jsonError()) {
-          <span class="flag-create__error">{{ jsonError() }}</span>
+      @switch (form.controls.type.value) {
+        @case ('boolean') {
+          <label class="flag-create__toggle">
+            <input type="checkbox" formControlName="booleanValue" />
+            <span>{{ form.controls.booleanValue.value ? 'True' : 'False' }}</span>
+          </label>
+        }
+        @case ('string') {
+          <input
+            class="form-input"
+            formControlName="stringValue"
+            placeholder="Enter default string value"
+          />
+        }
+        @case ('number') {
+          <input
+            class="form-input"
+            formControlName="numberValue"
+            type="number"
+            placeholder="0"
+          />
+        }
+        @case ('json') {
+          <textarea
+            class="form-input flag-create__textarea flag-create__json"
+            formControlName="jsonValue"
+            rows="4"
+            (blur)="validateJson()"
+            placeholder='{"key": "value"}'
+          ></textarea>
+          @if (jsonError()) {
+            <span class="flag-create__error">{{ jsonError() }}</span>
+          }
         }
       }
     </div>

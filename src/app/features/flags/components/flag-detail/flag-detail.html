@@ -35,29 +35,28 @@
           Used when an environment does not have an override.
         </p>
 
-        @if (current.type === 'boolean') {
-          <label class="flag-detail__toggle">
-            <input type="checkbox" formControlName="booleanValue" />
-            <span>{{ form.controls.booleanValue.value ? 'True' : 'False' }}</span>
-          </label>
-        }
-
-        @if (current.type === 'string') {
-          <input class="form-input" formControlName="stringValue" />
-        }
-
-        @if (current.type === 'number') {
-          <input class="form-input" type="number" formControlName="numberValue" />
-        }
-
-        @if (current.type === 'json') {
-          <textarea
-            class="form-input flag-detail__textarea"
-            rows="4"
-            formControlName="jsonValue"
-          ></textarea>
-          @if (jsonError()) {
-            <span class="flag-detail__error">{{ jsonError() }}</span>
+        @switch (current.type) {
+          @case ('boolean') {
+            <label class="flag-detail__toggle">
+              <input type="checkbox" formControlName="booleanValue" />
+              <span>{{ form.controls.booleanValue.value ? 'True' : 'False' }}</span>
+            </label>
+          }
+          @case ('string') {
+            <input class="form-input" formControlName="stringValue" />
+          }
+          @case ('number') {
+            <input class="form-input" type="number" formControlName="numberValue" />
+          }
+          @case ('json') {
+            <textarea
+              class="form-input flag-detail__textarea"
+              rows="4"
+              formControlName="jsonValue"
+            ></textarea>
+            @if (jsonError()) {
+              <span class="flag-detail__error">{{ jsonError() }}</span>
+            }
           }
         }
       </div>
@@ -86,41 +85,40 @@
               <span class="toggle__slider"></span>
             </label>
             <div>
-              @if (current.type === 'boolean') {
-                <select
-                  class="form-input"
-                  [value]="env.value ? 'true' : 'false'"
-                  (change)="onEnvironmentValueChange(env.id, $event)"
-                >
-                  <option value="true">true</option>
-                  <option value="false">false</option>
-                </select>
-              }
-
-              @if (current.type === 'string') {
-                <input
-                  class="form-input"
-                  [value]="env.value"
-                  (change)="onEnvironmentValueChange(env.id, $event)"
-                />
-              }
-
-              @if (current.type === 'number') {
-                <input
-                  class="form-input"
-                  type="number"
-                  [value]="env.value"
-                  (change)="onEnvironmentValueChange(env.id, $event)"
-                />
-              }
-
-              @if (current.type === 'json') {
-                <textarea
-                  class="form-input flag-detail__textarea"
-                  rows="2"
-                  [value]="formatJsonValue(env.value)"
-                  (change)="onEnvironmentValueChange(env.id, $event)"
-                ></textarea>
+              @switch (current.type) {
+                @case ('boolean') {
+                  <select
+                    class="form-input"
+                    [value]="env.value ? 'true' : 'false'"
+                    (change)="onEnvironmentValueChange(env.id, $event)"
+                  >
+                    <option value="true">true</option>
+                    <option value="false">false</option>
+                  </select>
+                }
+                @case ('string') {
+                  <input
+                    class="form-input"
+                    [value]="env.value"
+                    (change)="onEnvironmentValueChange(env.id, $event)"
+                  />
+                }
+                @case ('number') {
+                  <input
+                    class="form-input"
+                    type="number"
+                    [value]="env.value"
+                    (change)="onEnvironmentValueChange(env.id, $event)"
+                  />
+                }
+                @case ('json') {
+                  <textarea
+                    class="form-input flag-detail__textarea"
+                    rows="2"
+                    [value]="formatJsonValue(env.value)"
+                    (change)="onEnvironmentValueChange(env.id, $event)"
+                  ></textarea>
+                }
               }
             </div>
           </div>
