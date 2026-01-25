@@ -3,9 +3,9 @@ import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/c
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { ButtonComponent } from '../../../../shared/ui/button/button';
-import { EmptyStateComponent } from '../../../../shared/ui/empty-state/empty-state';
-import { ProjectStore } from '../../../../shared/store/project.store';
+import { ButtonComponent } from '@/app/shared/ui/button/button';
+import { EmptyStateComponent } from '@/app/shared/ui/empty-state/empty-state';
+import { ProjectStore } from '@/app/shared/store/project.store';
 
 @Component({
   selector: 'app-project-detail',

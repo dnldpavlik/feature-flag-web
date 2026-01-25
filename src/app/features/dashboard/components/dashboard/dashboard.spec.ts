@@ -2,10 +2,10 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 
 import { provideRouter } from '@angular/router';
-import { EnvironmentStore } from '../../../../shared/store/environment.store';
-import { FlagStore } from '../../../flags/store/flag.store';
-import { ProjectStore } from '../../../../shared/store/project.store';
-import { SearchStore } from '../../../../shared/store/search.store';
+import { EnvironmentStore } from '@/app/shared/store/environment.store';
+import { FlagStore } from '@/app/features/flags/store/flag.store';
+import { ProjectStore } from '@/app/shared/store/project.store';
+import { SearchStore } from '@/app/shared/store/search.store';
 import { DashboardComponent } from './dashboard';
 
 describe('Dashboard', () => {

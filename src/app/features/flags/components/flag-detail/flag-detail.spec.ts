@@ -3,7 +3,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router, convertToParamMap, provideRouter } from '@angular/router';
 import { By } from '@angular/platform-browser';
 
-import { EnvironmentStore } from '../../../../shared/store/environment.store';
+import { EnvironmentStore } from '@/app/shared/store/environment.store';
 import { FlagStore } from '../../store/flag.store';
 import { Flag } from '../../models/flag.model';
 import { EnvironmentFlagValue } from '../../models/flag-value.model';

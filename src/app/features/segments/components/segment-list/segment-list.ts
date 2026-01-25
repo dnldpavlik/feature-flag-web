@@ -2,9 +2,9 @@ import { DatePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
-import { ButtonComponent } from '../../../../shared/ui/button/button';
-import { EmptyStateComponent } from '../../../../shared/ui/empty-state/empty-state';
-import { SearchStore } from '../../../../shared/store/search.store';
+import { ButtonComponent } from '@/app/shared/ui/button/button';
+import { EmptyStateComponent } from '@/app/shared/ui/empty-state/empty-state';
+import { SearchStore } from '@/app/shared/store/search.store';
 import { SegmentStore } from '../../store/segment.store';
 
 @Component({

@@ -1,6 +1,6 @@
 import { Injectable, computed, signal } from '@angular/core';
 
-import { CreateProjectInput, Project } from '../../features/projects/models/project.model';
+import { CreateProjectInput, Project } from '@/app/features/projects/models/project.model';
 import { createId, createTimestamp } from '../utils/id.utils';
 
 @Injectable({ providedIn: 'root' })

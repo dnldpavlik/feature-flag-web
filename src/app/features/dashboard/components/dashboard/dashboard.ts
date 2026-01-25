@@ -2,16 +2,16 @@ import { DatePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
-import { ButtonComponent } from '../../../../shared/ui/button/button';
-import { EmptyStateComponent } from '../../../../shared/ui/empty-state/empty-state';
-import { StatCardComponent } from '../../../../shared/ui/stat-card/stat-card';
-import { EnvironmentStore } from '../../../../shared/store/environment.store';
-import { ProjectStore } from '../../../../shared/store/project.store';
-import { SearchStore } from '../../../../shared/store/search.store';
-import { highlightParts, HighlightPart, matchesSearch } from '../../../../shared/utils/search.utils';
-import { Flag } from '../../../flags/models/flag.model';
-import { FlagStore } from '../../../flags/store/flag.store';
-import { isEnabledInEnvironment } from '../../../flags/utils/flag-value.utils';
+import { ButtonComponent } from '@/app/shared/ui/button/button';
+import { EmptyStateComponent } from '@/app/shared/ui/empty-state/empty-state';
+import { StatCardComponent } from '@/app/shared/ui/stat-card/stat-card';
+import { EnvironmentStore } from '@/app/shared/store/environment.store';
+import { ProjectStore } from '@/app/shared/store/project.store';
+import { SearchStore } from '@/app/shared/store/search.store';
+import { highlightParts, HighlightPart, matchesSearch } from '@/app/shared/utils/search.utils';
+import { Flag } from '@/app/features/flags/models/flag.model';
+import { FlagStore } from '@/app/features/flags/store/flag.store';
+import { isEnabledInEnvironment } from '@/app/features/flags/utils/flag-value.utils';
 
 type RecentFlag = Flag & { currentEnabled: boolean };
 

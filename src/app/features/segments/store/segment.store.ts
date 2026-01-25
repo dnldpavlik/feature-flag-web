@@ -1,7 +1,7 @@
 import { Injectable, computed, signal } from '@angular/core';
 
 import { CreateSegmentInput, Segment } from '../models/segment.model';
-import { createId, createTimestamp } from '../../../shared/utils/id.utils';
+import { createId, createTimestamp } from '@/app/shared/utils/id.utils';
 
 @Injectable({ providedIn: 'root' })
 export class SegmentStore {

@@ -1,6 +1,6 @@
 import { Flag, FlagType } from '../models/flag.model';
 import { EnvironmentFlagValue, FlagTypeMap } from '../models/flag-value.model';
-import { createTimestamp } from '../../../shared/utils/id.utils';
+import { createTimestamp } from '@/app/shared/utils/id.utils';
 
 /**
  * Get the default value for a given flag type

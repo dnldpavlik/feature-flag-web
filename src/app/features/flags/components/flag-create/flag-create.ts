@@ -2,11 +2,11 @@ import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@a
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 
-import { ButtonComponent } from '../../../../shared/ui/button/button';
+import { ButtonComponent } from '@/app/shared/ui/button/button';
 import { CreateFlagInput, FlagType } from '../../models/flag.model';
 import { FlagTypeMap } from '../../models/flag-value.model';
 import { getDefaultForType } from '../../utils/flag-value.utils';
-import { EnvironmentStore } from '../../../../shared/store/environment.store';
+import { EnvironmentStore } from '@/app/shared/store/environment.store';
 import { FlagStore } from '../../store/flag.store';
 
 @Component({

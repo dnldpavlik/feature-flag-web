@@ -3,11 +3,11 @@ import { ChangeDetectionStrategy, Component, computed, effect, inject, signal } 
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { ButtonComponent } from '../../../../shared/ui/button/button';
-import { EmptyStateComponent } from '../../../../shared/ui/empty-state/empty-state';
+import { ButtonComponent } from '@/app/shared/ui/button/button';
+import { EmptyStateComponent } from '@/app/shared/ui/empty-state/empty-state';
 import { Flag, FlagType } from '../../models/flag.model';
 import { FlagTypeMap } from '../../models/flag-value.model';
-import { EnvironmentStore } from '../../../../shared/store/environment.store';
+import { EnvironmentStore } from '@/app/shared/store/environment.store';
 import { FlagStore } from '../../store/flag.store';
 
 interface FlagEnvironmentRow {

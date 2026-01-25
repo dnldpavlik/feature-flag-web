@@ -3,10 +3,10 @@ import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/c
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 
-import { ButtonComponent } from '../../../../shared/ui/button/button';
-import { EmptyStateComponent } from '../../../../shared/ui/empty-state/empty-state';
-import { SearchStore } from '../../../../shared/store/search.store';
-import { EnvironmentStore } from '../../../../shared/store/environment.store';
+import { ButtonComponent } from '@/app/shared/ui/button/button';
+import { EmptyStateComponent } from '@/app/shared/ui/empty-state/empty-state';
+import { SearchStore } from '@/app/shared/store/search.store';
+import { EnvironmentStore } from '@/app/shared/store/environment.store';
 
 @Component({
   selector: 'app-environment-list',

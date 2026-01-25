@@ -2,9 +2,9 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { By } from '@angular/platform-browser';
 
-import { EnvironmentStore } from '../../../../shared/store/environment.store';
+import { EnvironmentStore } from '@/app/shared/store/environment.store';
 import { FlagStore } from '../../store/flag.store';
-import { SearchStore } from '../../../../shared/store/search.store';
+import { SearchStore } from '@/app/shared/store/search.store';
 
 import { FlagListComponent } from './flag-list';
 

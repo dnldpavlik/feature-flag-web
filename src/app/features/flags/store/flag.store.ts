@@ -3,8 +3,8 @@ import { Injectable, computed, inject, signal } from '@angular/core';
 import { CreateFlagInput, Flag, FlagType, UpdateEnvironmentValueInput } from '../models/flag.model';
 import { EnvironmentFlagValue, FlagTypeMap } from '../models/flag-value.model';
 import { getEffectiveValue, isEnabledInEnvironment } from '../utils/flag-value.utils';
-import { EnvironmentStore } from '../../../shared/store/environment.store';
-import { createId, createTimestamp } from '../../../shared/utils/id.utils';
+import { EnvironmentStore } from '@/app/shared/store/environment.store';
+import { createId, createTimestamp } from '@/app/shared/utils/id.utils';
 
 @Injectable({ providedIn: 'root' })
 export class FlagStore {

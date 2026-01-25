@@ -2,11 +2,11 @@ import { DatePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
-import { ButtonComponent } from '../../../../shared/ui/button/button';
-import { EmptyStateComponent } from '../../../../shared/ui/empty-state/empty-state';
-import { EnvironmentStore } from '../../../../shared/store/environment.store';
-import { SearchStore } from '../../../../shared/store/search.store';
-import { matchesSearch } from '../../../../shared/utils/search.utils';
+import { ButtonComponent } from '@/app/shared/ui/button/button';
+import { EmptyStateComponent } from '@/app/shared/ui/empty-state/empty-state';
+import { EnvironmentStore } from '@/app/shared/store/environment.store';
+import { SearchStore } from '@/app/shared/store/search.store';
+import { matchesSearch } from '@/app/shared/utils/search.utils';
 import { Flag, FlagType } from '../../models/flag.model';
 import { FlagTypeMap } from '../../models/flag-value.model';
 import { FlagStore } from '../../store/flag.store';

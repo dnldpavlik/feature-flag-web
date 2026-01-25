@@ -2,8 +2,8 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { By } from '@angular/platform-browser';
 
-import { ProjectStore } from '../../../../shared/store/project.store';
-import { SearchStore } from '../../../../shared/store/search.store';
+import { ProjectStore } from '@/app/shared/store/project.store';
+import { SearchStore } from '@/app/shared/store/search.store';
 import { ProjectListComponent } from './project-list';
 
 describe('ProjectList', () => {

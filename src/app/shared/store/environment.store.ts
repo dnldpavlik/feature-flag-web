@@ -1,6 +1,6 @@
 import { Injectable, computed, signal } from '@angular/core';
 
-import { CreateEnvironmentInput, Environment } from '../../features/flags/models/environment.model';
+import { CreateEnvironmentInput, Environment } from '@/app/features/flags/models/environment.model';
 import { createId, createTimestamp } from '../utils/id.utils';
 
 @Injectable({ providedIn: 'root' })
