@@ -4,6 +4,10 @@ import { RouterLink } from '@angular/router';
 
 import { ButtonComponent } from '@/app/shared/ui/button/button';
 import { EmptyStateComponent } from '@/app/shared/ui/empty-state/empty-state';
+import {
+  LabeledSelectComponent,
+} from '@/app/shared/ui/labeled-select/labeled-select';
+import { SelectOption } from '@/app/shared/ui/labeled-select/labeled-select.types';
 import { EnvironmentStore } from '@/app/shared/store/environment.store';
 import { SearchStore } from '@/app/shared/store/search.store';
 import { matchesSearch } from '@/app/shared/utils/search.utils';
@@ -15,9 +19,23 @@ import {
 import { formatFlagValue } from '@/app/features/flags/utils/flag-format.utils';
 import { FlagWithEnvironmentStatus, StatusFilter, TypeFilter } from './flag-list.types';
 
+const STATUS_OPTIONS: SelectOption[] = [
+  { value: 'all', label: 'All' },
+  { value: 'enabled', label: 'Enabled' },
+  { value: 'disabled', label: 'Disabled' },
+];
+
+const TYPE_OPTIONS: SelectOption[] = [
+  { value: 'all', label: 'All' },
+  { value: 'boolean', label: 'Boolean' },
+  { value: 'string', label: 'String' },
+  { value: 'number', label: 'Number' },
+  { value: 'json', label: 'JSON' },
+];
+
 @Component({
   selector: 'app-flag-list',
-  imports: [DatePipe, ButtonComponent, EmptyStateComponent, RouterLink],
+  imports: [DatePipe, ButtonComponent, EmptyStateComponent, LabeledSelectComponent, RouterLink],
   templateUrl: './flag-list.html',
   styleUrl: './flag-list.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -27,12 +45,19 @@ export class FlagListComponent {
   private readonly environmentStore = inject(EnvironmentStore);
   private readonly searchStore = inject(SearchStore);
 
+  protected readonly statusOptions = STATUS_OPTIONS;
+  protected readonly typeOptions = TYPE_OPTIONS;
+
   protected readonly statusFilter = signal<StatusFilter>('all');
   protected readonly typeFilter = signal<TypeFilter>('all');
 
   protected readonly environments = this.environmentStore.sortedEnvironments;
   protected readonly selectedEnvironment = this.environmentStore.selectedEnvironment;
   protected readonly searchQuery = computed(() => this.searchStore.query().trim().toLowerCase());
+
+  protected readonly environmentOptions = computed<SelectOption[]>(() =>
+    this.environments().map((env) => ({ value: env.id, label: env.name }))
+  );
 
   protected readonly flagsWithStatus = computed<FlagWithEnvironmentStatus[]>(() => {
     const envId = this.environmentStore.selectedEnvironmentId();
@@ -61,18 +86,15 @@ export class FlagListComponent {
   protected readonly filteredCount = computed(() => this.filteredFlags().length);
   protected readonly totalCount = computed(() => this.flagStore.flags().length);
 
-  protected onStatusChange(event: Event): void {
-    const value = (event.target as HTMLSelectElement).value as StatusFilter;
-    this.statusFilter.set(value);
+  protected onStatusChange(value: string): void {
+    this.statusFilter.set(value as StatusFilter);
   }
 
-  protected onTypeChange(event: Event): void {
-    const value = (event.target as HTMLSelectElement).value as TypeFilter;
-    this.typeFilter.set(value);
+  protected onTypeChange(value: string): void {
+    this.typeFilter.set(value as TypeFilter);
   }
 
-  protected onEnvironmentChange(event: Event): void {
-    const value = (event.target as HTMLSelectElement).value;
+  protected onEnvironmentChange(value: string): void {
     this.environmentStore.selectEnvironment(value);
   }
 

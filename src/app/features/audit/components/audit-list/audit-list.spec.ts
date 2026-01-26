@@ -49,7 +49,7 @@ describe('AuditList', () => {
     it('should filter entries by created action', () => {
       const createdCount = auditStore.entries().filter((e) => e.action === 'created').length;
 
-      component.onActionChange({ target: { value: 'created' } } as unknown as Event);
+      component.onActionChange('created');
       fixture.detectChanges();
 
       const rows = fixture.debugElement.queryAll(By.css('.audit-table__row'));
@@ -59,7 +59,7 @@ describe('AuditList', () => {
     it('should filter entries by updated action', () => {
       const updatedCount = auditStore.entries().filter((e) => e.action === 'updated').length;
 
-      component.onActionChange({ target: { value: 'updated' } } as unknown as Event);
+      component.onActionChange('updated');
       fixture.detectChanges();
 
       const rows = fixture.debugElement.queryAll(By.css('.audit-table__row'));
@@ -69,7 +69,7 @@ describe('AuditList', () => {
     it('should filter entries by deleted action', () => {
       const deletedCount = auditStore.entries().filter((e) => e.action === 'deleted').length;
 
-      component.onActionChange({ target: { value: 'deleted' } } as unknown as Event);
+      component.onActionChange('deleted');
       fixture.detectChanges();
 
       const rows = fixture.debugElement.queryAll(By.css('.audit-table__row'));
@@ -79,7 +79,7 @@ describe('AuditList', () => {
     it('should filter entries by toggled action', () => {
       const toggledCount = auditStore.entries().filter((e) => e.action === 'toggled').length;
 
-      component.onActionChange({ target: { value: 'toggled' } } as unknown as Event);
+      component.onActionChange('toggled');
       fixture.detectChanges();
 
       const rows = fixture.debugElement.queryAll(By.css('.audit-table__row'));
@@ -87,10 +87,10 @@ describe('AuditList', () => {
     });
 
     it('should show all entries when action filter is all', () => {
-      component.onActionChange({ target: { value: 'created' } } as unknown as Event);
+      component.onActionChange('created');
       fixture.detectChanges();
 
-      component.onActionChange({ target: { value: 'all' } } as unknown as Event);
+      component.onActionChange('all');
       fixture.detectChanges();
 
       const rows = fixture.debugElement.queryAll(By.css('.audit-table__row'));
@@ -102,7 +102,7 @@ describe('AuditList', () => {
     it('should filter entries by flag resource type', () => {
       const flagCount = auditStore.entries().filter((e) => e.resourceType === 'flag').length;
 
-      component.onResourceChange({ target: { value: 'flag' } } as unknown as Event);
+      component.onResourceChange('flag');
       fixture.detectChanges();
 
       const rows = fixture.debugElement.queryAll(By.css('.audit-table__row'));
@@ -112,7 +112,7 @@ describe('AuditList', () => {
     it('should filter entries by segment resource type', () => {
       const segmentCount = auditStore.entries().filter((e) => e.resourceType === 'segment').length;
 
-      component.onResourceChange({ target: { value: 'segment' } } as unknown as Event);
+      component.onResourceChange('segment');
       fixture.detectChanges();
 
       const rows = fixture.debugElement.queryAll(By.css('.audit-table__row'));
@@ -122,7 +122,7 @@ describe('AuditList', () => {
     it('should filter entries by environment resource type', () => {
       const envCount = auditStore.entries().filter((e) => e.resourceType === 'environment').length;
 
-      component.onResourceChange({ target: { value: 'environment' } } as unknown as Event);
+      component.onResourceChange('environment');
       fixture.detectChanges();
 
       const rows = fixture.debugElement.queryAll(By.css('.audit-table__row'));
@@ -132,7 +132,7 @@ describe('AuditList', () => {
     it('should filter entries by project resource type', () => {
       const projectCount = auditStore.entries().filter((e) => e.resourceType === 'project').length;
 
-      component.onResourceChange({ target: { value: 'project' } } as unknown as Event);
+      component.onResourceChange('project');
       fixture.detectChanges();
 
       const rows = fixture.debugElement.queryAll(By.css('.audit-table__row'));
@@ -140,10 +140,10 @@ describe('AuditList', () => {
     });
 
     it('should show all entries when resource filter is all', () => {
-      component.onResourceChange({ target: { value: 'flag' } } as unknown as Event);
+      component.onResourceChange('flag');
       fixture.detectChanges();
 
-      component.onResourceChange({ target: { value: 'all' } } as unknown as Event);
+      component.onResourceChange('all');
       fixture.detectChanges();
 
       const rows = fixture.debugElement.queryAll(By.css('.audit-table__row'));
@@ -157,8 +157,8 @@ describe('AuditList', () => {
         .entries()
         .filter((e) => e.action === 'created' && e.resourceType === 'flag').length;
 
-      component.onActionChange({ target: { value: 'created' } } as unknown as Event);
-      component.onResourceChange({ target: { value: 'flag' } } as unknown as Event);
+      component.onActionChange('created');
+      component.onResourceChange('flag');
       fixture.detectChanges();
 
       const rows = fixture.debugElement.queryAll(By.css('.audit-table__row'));

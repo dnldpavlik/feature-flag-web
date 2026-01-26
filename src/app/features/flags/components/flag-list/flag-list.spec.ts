@@ -38,12 +38,15 @@ describe('FlagList', () => {
   });
 
   it('should render environment selector', () => {
-    const envSelect = fixture.debugElement.query(By.css('.flags-select--environment'));
+    const envSelect = fixture.debugElement.query(By.css('app-labeled-select'));
     expect(envSelect).toBeTruthy();
   });
 
   it('should show all environments in selector', () => {
-    const options = fixture.debugElement.queryAll(By.css('.flags-select--environment option'));
+    const selects = fixture.debugElement.queryAll(By.css('app-labeled-select'));
+    // First select is Environment
+    const envSelect = selects[0];
+    const options = envSelect.queryAll(By.css('option'));
     expect(options.length).toBe(3);
   });
 
@@ -54,7 +57,7 @@ describe('FlagList', () => {
         .flags()
         .filter((f) => f.environmentValues['env_development']?.enabled).length;
 
-      component.onStatusChange({ target: { value: 'enabled' } } as unknown as Event);
+      component.onStatusChange('enabled');
       fixture.detectChanges();
 
       const rows = fixture.debugElement.queryAll(By.css('.flags-table__row'));
@@ -67,7 +70,7 @@ describe('FlagList', () => {
         .flags()
         .filter((f) => !f.environmentValues['env_development']?.enabled).length;
 
-      component.onStatusChange({ target: { value: 'disabled' } } as unknown as Event);
+      component.onStatusChange('disabled');
       fixture.detectChanges();
 
       const rows = fixture.debugElement.queryAll(By.css('.flags-table__row'));
@@ -81,10 +84,10 @@ describe('FlagList', () => {
         .filter((f) => f.environmentValues['env_staging']?.enabled).length;
 
       // Filter by enabled
-      component.onStatusChange({ target: { value: 'enabled' } } as unknown as Event);
+      component.onStatusChange('enabled');
 
       // Switch to staging
-      component.onEnvironmentChange({ target: { value: 'env_staging' } } as unknown as Event);
+      component.onEnvironmentChange('env_staging');
       fixture.detectChanges();
 
       const rows = fixture.debugElement.queryAll(By.css('.flags-table__row'));
@@ -94,7 +97,7 @@ describe('FlagList', () => {
 
   describe('type filtering', () => {
     it('should filter flags by type', () => {
-      component.onTypeChange({ target: { value: 'string' } } as unknown as Event);
+      component.onTypeChange('string');
       fixture.detectChanges();
 
       const rows = fixture.debugElement.queryAll(By.css('.flags-table__row'));
@@ -104,7 +107,7 @@ describe('FlagList', () => {
     it('should filter boolean flags', () => {
       const booleanCount = flagStore.flags().filter((f) => f.type === 'boolean').length;
 
-      component.onTypeChange({ target: { value: 'boolean' } } as unknown as Event);
+      component.onTypeChange('boolean');
       fixture.detectChanges();
 
       const rows = fixture.debugElement.queryAll(By.css('.flags-table__row'));

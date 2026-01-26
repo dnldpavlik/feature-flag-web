@@ -8,26 +8,18 @@
 
   <div class="audit-toolbar">
     <div class="audit-toolbar__filters">
-      <label class="audit-toolbar__label">
-        Action
-        <select class="audit-select" (change)="onActionChange($event)">
-          <option value="all">All Actions</option>
-          <option value="created">Created</option>
-          <option value="updated">Updated</option>
-          <option value="deleted">Deleted</option>
-          <option value="toggled">Toggled</option>
-        </select>
-      </label>
-      <label class="audit-toolbar__label">
-        Resource
-        <select class="audit-select" (change)="onResourceChange($event)">
-          <option value="all">All Resources</option>
-          <option value="flag">Flag</option>
-          <option value="segment">Segment</option>
-          <option value="environment">Environment</option>
-          <option value="project">Project</option>
-        </select>
-      </label>
+      <app-labeled-select
+        label="Action"
+        [options]="actionOptions"
+        [value]="actionFilter()"
+        (valueChange)="onActionChange($event)"
+      />
+      <app-labeled-select
+        label="Resource"
+        [options]="resourceOptions"
+        [value]="resourceFilter()"
+        (valueChange)="onResourceChange($event)"
+      />
     </div>
     <div class="audit-toolbar__meta">
       <span class="audit-count text-muted">

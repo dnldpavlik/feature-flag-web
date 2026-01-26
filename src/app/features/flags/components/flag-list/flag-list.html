@@ -8,37 +8,27 @@
 
   <div class="flags-toolbar">
     <div class="flags-toolbar__filters">
-      <label class="flags-toolbar__label">
-        Environment
-        <select
-          class="flags-select flags-select--environment"
-          (change)="onEnvironmentChange($event)"
-        >
-          @for (env of environments(); track env.id) {
-            <option [value]="env.id" [selected]="env.id === selectedEnvironment()?.id">
-              {{ env.name }}
-            </option>
-          }
-        </select>
-      </label>
-      <label class="flags-toolbar__label">
-        Status
-        <select class="flags-select" (change)="onStatusChange($event)">
-          <option value="all">All</option>
-          <option value="enabled">Enabled</option>
-          <option value="disabled">Disabled</option>
-        </select>
-      </label>
-      <label class="flags-toolbar__label">
-        Type
-        <select class="flags-select" (change)="onTypeChange($event)">
-          <option value="all">All</option>
-          <option value="boolean">Boolean</option>
-          <option value="string">String</option>
-          <option value="number">Number</option>
-          <option value="json">JSON</option>
-        </select>
-      </label>
+      <app-labeled-select
+        label="Environment"
+        [options]="environmentOptions()"
+        [value]="selectedEnvironment()?.id ?? ''"
+        minWidth="160px"
+        (valueChange)="onEnvironmentChange($event)"
+      />
+      <app-labeled-select
+        label="Status"
+        [options]="statusOptions"
+        [value]="statusFilter()"
+        minWidth="120px"
+        (valueChange)="onStatusChange($event)"
+      />
+      <app-labeled-select
+        label="Type"
+        [options]="typeOptions"
+        [value]="typeFilter()"
+        minWidth="120px"
+        (valueChange)="onTypeChange($event)"
+      />
     </div>
     <div class="flags-toolbar__meta">
       <span class="flags-toolbar__count text-muted">

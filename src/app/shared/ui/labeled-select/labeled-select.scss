@@ -1,0 +1,39 @@
+.labeled-select {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.labeled-select__label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+}
+
+.labeled-select__control {
+  padding: 0.4rem 0.6rem;
+  border-radius: var(--border-radius);
+  border: 1px solid var(--border-primary);
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  font-size: 0.875rem;
+  cursor: pointer;
+
+  &:focus {
+    outline: none;
+    border-color: var(--accent-primary);
+    box-shadow: 0 0 0 3px rgb(64 91 255 / 20%);
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+}
+
+.labeled-select--disabled {
+  .labeled-select__label {
+    opacity: 0.6;
+  }
+}

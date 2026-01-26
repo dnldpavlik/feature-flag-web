@@ -2,14 +2,34 @@ import { DatePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 
 import { EmptyStateComponent } from '@/app/shared/ui/empty-state/empty-state';
+import {
+  LabeledSelectComponent,
+} from '@/app/shared/ui/labeled-select/labeled-select';
+import { SelectOption } from '@/app/shared/ui/labeled-select/labeled-select.types';
 import { SearchStore } from '@/app/shared/store/search.store';
 import { AuditStore } from '@/app/features/audit/store/audit.store';
 import { AuditAction, AuditEntry, AuditResourceType } from '../../models/audit.model';
 import { ActionFilter, ResourceFilter } from './audit-list.types';
 
+const ACTION_OPTIONS: SelectOption[] = [
+  { value: 'all', label: 'All Actions' },
+  { value: 'created', label: 'Created' },
+  { value: 'updated', label: 'Updated' },
+  { value: 'deleted', label: 'Deleted' },
+  { value: 'toggled', label: 'Toggled' },
+];
+
+const RESOURCE_OPTIONS: SelectOption[] = [
+  { value: 'all', label: 'All Resources' },
+  { value: 'flag', label: 'Flag' },
+  { value: 'segment', label: 'Segment' },
+  { value: 'environment', label: 'Environment' },
+  { value: 'project', label: 'Project' },
+];
+
 @Component({
   selector: 'app-audit-list',
-  imports: [DatePipe, EmptyStateComponent],
+  imports: [DatePipe, EmptyStateComponent, LabeledSelectComponent],
   templateUrl: './audit-list.html',
   styleUrl: './audit-list.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -17,6 +37,9 @@ import { ActionFilter, ResourceFilter } from './audit-list.types';
 export class AuditListComponent {
   private readonly auditStore = inject(AuditStore);
   private readonly searchStore = inject(SearchStore);
+
+  protected readonly actionOptions = ACTION_OPTIONS;
+  protected readonly resourceOptions = RESOURCE_OPTIONS;
 
   protected readonly actionFilter = signal<ActionFilter>('all');
   protected readonly resourceFilter = signal<ResourceFilter>('all');
@@ -39,14 +62,12 @@ export class AuditListComponent {
   protected readonly filteredCount = computed(() => this.filteredEntries().length);
   protected readonly totalCount = computed(() => this.auditStore.entries().length);
 
-  onActionChange(event: Event): void {
-    const value = (event.target as HTMLSelectElement).value as ActionFilter;
-    this.actionFilter.set(value);
+  onActionChange(value: string): void {
+    this.actionFilter.set(value as ActionFilter);
   }
 
-  onResourceChange(event: Event): void {
-    const value = (event.target as HTMLSelectElement).value as ResourceFilter;
-    this.resourceFilter.set(value);
+  onResourceChange(value: string): void {
+    this.resourceFilter.set(value as ResourceFilter);
   }
 
   formatAction(action: AuditAction): string {
