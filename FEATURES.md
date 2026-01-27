@@ -35,7 +35,7 @@ Comprehensive feature catalog across all platform components: Rust API backend, 
 | View flag detail | `GET /api/v1/flags/{id}` | FlagDetailComponent | Done |
 | Get flag by key | `GET /api/v1/flags/key/{key}` | - | Done |
 | Update flag | `PUT /api/v1/flags/{id}`, `PATCH /api/v1/flags/{id}` | FlagDetailComponent | Done |
-| Delete flag | `DELETE /api/v1/flags/{id}` | - | API Done, UI Planned |
+| Delete flag | `DELETE /api/v1/flags/{id}` | FlagListComponent, FlagDetailComponent | Done |
 | Toggle flag per environment | `PATCH /api/v1/flags/{id}/environments/{env_id}` | FlagListComponent | Done |
 | Update environment-specific value | `PATCH /api/v1/flags/{id}/environments/{env_id}` | FlagDetailComponent | Done |
 | Evaluate flag | `GET /api/v1/evaluate/{key}` | - | Done |
@@ -431,7 +431,7 @@ Each entry records: resource name, action, resource type, user, details string, 
 
 | Category | Done | In Progress | Planned | Total |
 |----------|------|-------------|---------|-------|
-| Flag Operations | 10 | 0 | 3 | 13 |
+| Flag Operations | 11 | 0 | 2 | 13 |
 | Environments | 8 | 0 | 3 | 11 |
 | Projects | 7 | 0 | 0 | 7 |
 | Segments | 10 | 0 | 3 | 13 |
@@ -445,4 +445,4 @@ Each entry records: resource name, action, resource type, user, details string, 
 | Mobile | 1 | 0 | 7 | 8 |
 | SDK & Integrations | 1 | 0 | 10 | 11 |
 | User Management | 3 | 0 | 7 | 10 |
-| **Total** | **103** | **0** | **64** | **167** |
+| **Total** | **104** | **0** | **63** | **167** |

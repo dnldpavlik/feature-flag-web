@@ -1,8 +1,15 @@
 # Architecture Documentation
 
+> **Note:** This document describes both the current implementation and the target architecture.
+> Sections marked with **(Current)** reflect what exists today. Sections marked with **(Planned)**
+> describe infrastructure that has not yet been implemented, including: the `core/api/` service layer,
+> `core/auth/` authentication system, `core/error-handling/` error types and handlers, HTTP interceptors,
+> and the API service abstractions. The stores currently use in-memory seed data rather than HTTP calls
+> to a backend API.
+
 ## Overview
 
-The Feature Flag UI is an Angular 20 single-page application that provides a comprehensive interface for managing feature flags. This document describes the architectural decisions, patterns, and structure of the application.
+The Feature Flag UI is an Angular single-page application that provides a comprehensive interface for managing feature flags. This document describes the architectural decisions, patterns, and structure of the application.
 
 ## Architecture Principles
 

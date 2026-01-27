@@ -72,6 +72,8 @@ Components extracted from `app.html`:
 - [x] **UserMenu** - Avatar with user name/email dropdown trigger
 - [x] **NavItem** - Navigation link with icon, label, and active state
 - [x] **NavSection** - Grouped nav section with title header
+- [x] **Tabs** - Keyboard-navigable tabs with disabled support
+- [x] **LabeledSelect** - Select dropdown with label
 
 Additional shared components:
 
@@ -96,83 +98,84 @@ Additional shared components:
 
 #### Flag Store
 
-- [ ] Create Flag interface/types
-- [ ] Implement FlagStore with signals
-- [ ] Add flag loading action
-- [ ] Add flag CRUD actions
-- [ ] Add flag toggle action
-- [ ] Implement computed selectors (filtered, sorted)
-- [ ] Write store unit tests
+- [x] Create Flag interface/types
+- [x] Implement FlagStore with signals
+- [x] Add flag loading action
+- [x] Add flag CRUD actions
+- [x] Add flag toggle action
+- [x] Implement computed selectors (filtered, sorted)
+- [x] Write store unit tests
 
 #### Flag List View
 
-- [ ] Create flag list container component
-- [ ] Create flag list item component
-- [ ] Implement search functionality
-- [ ] Implement filter panel
+- [x] Create flag list container component
+- [x] Create flag list item component
+- [x] Implement search functionality
+- [x] Implement filter panel
 - [ ] Implement sort functionality
 - [ ] Add bulk selection
 - [ ] Implement virtual scrolling
-- [ ] Add inline toggle capability
-- [ ] Write component tests
+- [x] Add inline toggle capability
+- [x] Write component tests
 
 #### Flag Detail View
 
-- [ ] Create flag detail container component
-- [ ] Create flag header component
-- [ ] Create flag overview tab
+- [x] Create flag detail container component
+- [x] Create flag header component
+- [x] Create flag overview tab
 - [ ] Create SDK snippet display component
 - [ ] Create flag settings tab
-- [ ] Implement flag editing
-- [ ] Write component tests
+- [x] Implement flag editing
+- [x] Write component tests
 
 #### Flag Creation
 
-- [ ] Create flag creation wizard component
-- [ ] Step 1: Basic info form
-- [ ] Step 2: Type and variations form
-- [ ] Step 3: Initial targeting (optional)
+- [x] Create flag creation wizard component
+- [x] Step 1: Basic info form
+- [x] Step 2: Type and variations form
+- [x] Step 3: Initial targeting (optional)
 - [ ] Step 4: Review and create
-- [ ] Implement form validation
-- [ ] Write component tests
+- [x] Implement form validation
+- [x] Write component tests
 
 ### Environment Management 🔴
 
 #### Environment Store
 
-- [ ] Create Environment interface/types
-- [ ] Implement EnvironmentStore with signals
-- [ ] Add environment CRUD actions
-- [ ] Write store unit tests
+- [x] Create Environment interface/types
+- [x] Implement EnvironmentStore with signals
+- [x] Add environment CRUD actions (add, update, setDefault, select)
+- [x] Write store unit tests
 
 #### Environment UI
 
-- [ ] Create environment list component
-- [ ] Create environment card component
-- [ ] Create environment creation dialog
+- [x] Create environment list component
+- [x] Create environment card component
+- [x] Create environment creation dialog
+- [x] Create environment detail with inline editing
 - [ ] Create environment settings component
-- [ ] Implement API key display/copy
+- [x] Implement API key display/copy
 - [ ] Implement API key rotation
-- [ ] Add environment selector (global)
-- [ ] Write component tests
+- [x] Add environment selector (global)
+- [x] Write component tests
 
 ### Project Management 🔴
 
 #### Project Store
 
-- [ ] Create Project interface/types
-- [ ] Implement ProjectStore with signals
-- [ ] Add project CRUD actions
-- [ ] Write store unit tests
+- [x] Create Project interface/types
+- [x] Implement ProjectStore with signals
+- [x] Add project CRUD actions
+- [x] Write store unit tests
 
 #### Project UI
 
-- [ ] Create project list view
-- [ ] Create project card component
-- [ ] Create project creation dialog
+- [x] Create project list view
+- [x] Create project card component
+- [x] Create project creation dialog
 - [ ] Create project settings page
-- [ ] Implement project switcher in header
-- [ ] Write component tests
+- [x] Implement project switcher in header
+- [x] Write component tests
 
 ---
 
@@ -197,18 +200,18 @@ Additional shared components:
 
 #### Segment Store
 
-- [ ] Create Segment interface/types
-- [ ] Implement SegmentStore with signals
-- [ ] Write store unit tests
+- [x] Create Segment interface/types
+- [x] Implement SegmentStore with signals
+- [x] Write store unit tests
 
 #### Segment UI
 
-- [ ] Create segment list view
-- [ ] Create segment detail/edit view
-- [ ] Create segment builder (similar to rules)
+- [x] Create segment list view
+- [x] Create segment detail/edit view
+- [x] Create segment builder (similar to rules)
 - [ ] Implement included/excluded user lists
 - [ ] Add segment usage tracking display
-- [ ] Write component tests
+- [x] Write component tests
 
 ### Bulk Operations 🟡
 
@@ -233,7 +236,7 @@ Additional shared components:
 
 ### Analytics Dashboard 🟡
 
-- [ ] Create analytics container component
+- [x] Create analytics container component
 - [ ] Add performance metrics data source (API ingestion + storage)
 - [ ] Implement evaluation volume chart
 - [ ] Implement variation distribution pie chart
@@ -246,14 +249,14 @@ Additional shared components:
 
 ### Audit Log 🟡
 
-- [ ] Create AuditEvent interface/types
-- [ ] Implement audit log store
-- [ ] Create audit log list view
+- [x] Create AuditEvent interface/types
+- [x] Implement audit log store
+- [x] Create audit log list view
 - [ ] Create audit event detail component
-- [ ] Implement filtering (date, user, action)
+- [x] Implement filtering (date, user, action)
 - [ ] Add diff viewer for changes
 - [ ] Implement export functionality
-- [ ] Write tests
+- [x] Write tests
 
 ### Performance Optimization 🟡
 
@@ -290,10 +293,10 @@ Additional shared components:
 
 ### User Settings 🟢
 
-- [ ] User profile page
-- [ ] Theme preference
-- [ ] Notification settings
-- [ ] Personal API tokens
+- [x] User profile page
+- [x] Theme preference
+- [x] Notification settings
+- [x] Personal API tokens
 
 ### Team Management 🟢
 
@@ -349,4 +352,4 @@ Additional shared components:
 
 ---
 
-_Last updated: 2026-01-14_
+_Last updated: 2026-01-27_
