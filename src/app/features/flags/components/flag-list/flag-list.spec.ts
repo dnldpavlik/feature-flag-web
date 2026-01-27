@@ -149,6 +149,38 @@ describe('FlagList', () => {
     });
   });
 
+  describe('flag deletion', () => {
+    it('should show delete button per row when more than one flag exists', () => {
+      expect(flagStore.flags().length).toBeGreaterThan(1);
+
+      const deleteButtons = fixture.debugElement.queryAll(By.css('.flag-delete-btn'));
+      expect(deleteButtons.length).toBe(flagStore.flags().length);
+    });
+
+    it('should hide delete buttons when only one flag exists', () => {
+      // Delete all but one flag
+      const flags = flagStore.flags();
+      for (let i = 0; i < flags.length - 1; i++) {
+        flagStore.deleteFlag(flags[i].id);
+      }
+      fixture.detectChanges();
+
+      const deleteButtons = fixture.debugElement.queryAll(By.css('.flag-delete-btn'));
+      expect(deleteButtons.length).toBe(0);
+    });
+
+    it('should remove the flag when delete is clicked', () => {
+      const beforeCount = flagStore.flags().length;
+      const flagToDelete = flagStore.flags()[0];
+
+      component.onDeleteFlag(flagToDelete.id);
+      fixture.detectChanges();
+
+      expect(flagStore.flags().length).toBe(beforeCount - 1);
+      expect(flagStore.getFlagById(flagToDelete.id)).toBeUndefined();
+    });
+  });
+
   describe('value display', () => {
     it('should display current environment value', () => {
       fixture.detectChanges();

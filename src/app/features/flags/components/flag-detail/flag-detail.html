@@ -9,6 +9,14 @@
         <p class="text-secondary">{{ current.key }}</p>
       </div>
       <div class="flag-detail__actions">
+        @if (canDelete()) {
+          <app-button
+            class="flag-detail__delete-btn"
+            variant="ghost"
+            type="button"
+            (click)="deleteFlag()"
+          >Delete</app-button>
+        }
         <app-button variant="ghost" type="button" (click)="cancelChanges()">Cancel</app-button>
         <app-button variant="primary" type="button" (click)="saveDetails()"
           >Save Changes</app-button

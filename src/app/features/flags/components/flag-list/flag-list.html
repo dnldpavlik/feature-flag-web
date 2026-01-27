@@ -53,6 +53,7 @@
         <span>Type</span>
         <span>Tags</span>
         <span>Updated</span>
+        <span>Actions</span>
       </div>
       @for (flag of filteredFlags(); track flag.key) {
         <div class="flags-table__row">
@@ -90,6 +91,16 @@
             }
           </div>
           <div class="flag-cell text-muted">{{ flag.updatedAt | date: 'mediumDate' }}</div>
+          <div class="flag-cell">
+            @if (totalCount() > 1) {
+              <app-button
+                class="flag-delete-btn"
+                variant="ghost"
+                type="button"
+                (click)="onDeleteFlag(flag.id)"
+              >Delete</app-button>
+            }
+          </div>
         </div>
       }
     </div>

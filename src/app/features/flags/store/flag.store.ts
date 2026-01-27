@@ -157,6 +157,11 @@ export class FlagStore {
     this._flags.update((flags) => [newFlag, ...flags]);
   }
 
+  deleteFlag(flagId: string): void {
+    if (this._flags().length <= 1) return;
+    this._flags.update((flags) => flags.filter((flag) => flag.id !== flagId));
+  }
+
   getFlagById(id: string): Flag | undefined {
     return this._flags().find((f) => f.id === id);
   }

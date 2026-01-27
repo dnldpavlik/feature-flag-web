@@ -309,6 +309,61 @@ describe('FlagStore', () => {
     });
   });
 
+  describe('deleteFlag', () => {
+    it('should remove flag by id', () => {
+      const flagToDelete = store.flags()[0];
+      const beforeCount = store.flags().length;
+
+      store.deleteFlag(flagToDelete.id);
+
+      expect(store.flags().length).toBe(beforeCount - 1);
+      expect(store.getFlagById(flagToDelete.id)).toBeUndefined();
+    });
+
+    it('should preserve other flags', () => {
+      const flagToDelete = store.flags()[0];
+      const otherFlags = store.flags().slice(1);
+
+      store.deleteFlag(flagToDelete.id);
+
+      for (const flag of otherFlags) {
+        expect(store.getFlagById(flag.id)).toBeDefined();
+      }
+    });
+
+    it('should not delete last remaining flag', () => {
+      // Delete all but one
+      const flags = store.flags();
+      for (let i = 0; i < flags.length - 1; i++) {
+        store.deleteFlag(flags[i].id);
+      }
+
+      expect(store.flags().length).toBe(1);
+
+      // Try to delete the last one
+      store.deleteFlag(store.flags()[0].id);
+
+      expect(store.flags().length).toBe(1);
+    });
+
+    it('should ignore non-existent id', () => {
+      const beforeCount = store.flags().length;
+
+      store.deleteFlag('flag_nonexistent');
+
+      expect(store.flags().length).toBe(beforeCount);
+    });
+
+    it('should update totalCount after deletion', () => {
+      const beforeCount = store.totalCount();
+      const flagToDelete = store.flags()[0];
+
+      store.deleteFlag(flagToDelete.id);
+
+      expect(store.totalCount()).toBe(beforeCount - 1);
+    });
+  });
+
   describe('getValueInEnvironment', () => {
     it('should return value for specific environment', () => {
       store.addFlag({

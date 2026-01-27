@@ -52,6 +52,8 @@ export class FlagDetailComponent {
 
   private readonly initialized = signal(false);
 
+  protected readonly canDelete = computed(() => this.store.flags().length > 1);
+
   protected readonly environmentRows = computed<FlagEnvironmentRow[]>(() => {
     const flag = this.flag();
     if (!flag) return [];
@@ -189,6 +191,13 @@ export class FlagDetailComponent {
     const value = (event.target as HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement)
       .value;
     this.updateEnvironmentValue(envId, value);
+  }
+
+  protected deleteFlag(): void {
+    const current = this.flag();
+    if (!current) return;
+    this.store.deleteFlag(current.id);
+    void this.router.navigate(['/flags']);
   }
 
   protected backToList(): void {

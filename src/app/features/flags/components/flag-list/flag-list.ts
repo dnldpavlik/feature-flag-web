@@ -104,6 +104,10 @@ export class FlagListComponent {
     this.flagStore.toggleFlagInEnvironment(flagId, envId, checked);
   }
 
+  protected onDeleteFlag(flagId: string): void {
+    this.flagStore.deleteFlag(flagId);
+  }
+
   protected formatValue(flag: FlagWithEnvironmentStatus): string {
     return formatFlagValue(flag.type, flag.currentValue);
   }

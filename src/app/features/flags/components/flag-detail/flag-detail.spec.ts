@@ -394,6 +394,51 @@ describe('FlagDetail', () => {
     expect(navigateSpy).toHaveBeenCalledWith(['/flags']);
   });
 
+  describe('flag deletion', () => {
+    it('should show delete button when more than one flag exists', async () => {
+      await build('flag_new_checkout');
+
+      const deleteBtn = fixture.debugElement.query(By.css('.flag-detail__delete-btn'));
+      expect(deleteBtn).toBeTruthy();
+    });
+
+    it('should hide delete button when only one flag exists', async () => {
+      await build('flag_new_checkout');
+
+      // Delete all but one flag
+      const flags = store.flags();
+      for (let i = 0; i < flags.length - 1; i++) {
+        store.deleteFlag(flags[i].id);
+      }
+      fixture.detectChanges();
+
+      const deleteBtn = fixture.debugElement.query(By.css('.flag-detail__delete-btn'));
+      expect(deleteBtn).toBeFalsy();
+    });
+
+    it('should delete flag and navigate to /flags', async () => {
+      await build('flag_new_checkout');
+
+      const navigateSpy = jest.spyOn(router, 'navigate').mockResolvedValue(true);
+      const beforeCount = store.flags().length;
+
+      fixture.componentInstance.deleteFlag();
+
+      expect(store.flags().length).toBe(beforeCount - 1);
+      expect(store.getFlagById('flag_new_checkout')).toBeUndefined();
+      expect(navigateSpy).toHaveBeenCalledWith(['/flags']);
+    });
+
+    it('should not delete when flag is null', async () => {
+      await build('missing_flag');
+
+      const deleteSpy = jest.spyOn(store, 'deleteFlag');
+      fixture.componentInstance.deleteFlag();
+
+      expect(deleteSpy).not.toHaveBeenCalled();
+    });
+  });
+
   it('should format json values for display', async () => {
     await build('flag_new_checkout');
 
