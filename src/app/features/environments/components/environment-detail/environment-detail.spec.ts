@@ -133,4 +133,174 @@ describe('EnvironmentDetail', () => {
     expect(fixture.componentInstance.formatValue({ key: 'value' })).toBe('{"key":"value"}');
     expect(fixture.componentInstance.formatValue('alpha')).toBe('alpha');
   });
+
+  describe('inline editing', () => {
+    const clickButton = (label: string) => {
+      const buttons = fixture.debugElement.queryAll(By.css('app-button, button'));
+      const target = buttons.find((b) =>
+        b.nativeElement.textContent.trim().includes(label),
+      );
+      target?.triggerEventHandler('click', null);
+      target?.nativeElement.click?.();
+      fixture.detectChanges();
+    };
+
+    it('should show Edit button in detail view', async () => {
+      await build('env_staging');
+
+      const buttons = fixture.debugElement.queryAll(By.css('app-button'));
+      const editBtn = buttons.find((b) =>
+        b.nativeElement.textContent.trim().includes('Edit'),
+      );
+      expect(editBtn).toBeTruthy();
+    });
+
+    it('should enter edit mode when Edit is clicked', async () => {
+      await build('env_staging');
+      clickButton('Edit');
+
+      const editForm = fixture.debugElement.query(
+        By.css('.environment-detail__edit-form'),
+      );
+      expect(editForm).toBeTruthy();
+    });
+
+    it('should pre-fill edit form with current values', async () => {
+      await build('env_staging');
+      clickButton('Edit');
+
+      const nameInput = fixture.debugElement.query(
+        By.css('.environment-detail__name-input'),
+      );
+      const keyInput = fixture.debugElement.query(
+        By.css('.environment-detail__key-input'),
+      );
+      const colorInput = fixture.debugElement.query(
+        By.css('.environment-detail__color-input'),
+      );
+      expect(nameInput.nativeElement.value).toBe('Staging');
+      expect(keyInput.nativeElement.value).toBe('staging');
+      expect(colorInput.nativeElement.value).toBe('#F59E0B');
+    });
+
+    it('should save updates and exit edit mode', async () => {
+      await build('env_staging');
+      clickButton('Edit');
+
+      const nameInput = fixture.debugElement.query(
+        By.css('.environment-detail__name-input'),
+      );
+      nameInput.nativeElement.value = 'QA Staging';
+      nameInput.nativeElement.dispatchEvent(new Event('input'));
+      fixture.detectChanges();
+
+      clickButton('Save Changes');
+
+      const env = store.getEnvironmentById('env_staging');
+      expect(env?.name).toBe('QA Staging');
+
+      const editForm = fixture.debugElement.query(
+        By.css('.environment-detail__edit-form'),
+      );
+      expect(editForm).toBeFalsy();
+    });
+
+    it('should cancel edit and discard changes', async () => {
+      await build('env_staging');
+      clickButton('Edit');
+
+      const nameInput = fixture.debugElement.query(
+        By.css('.environment-detail__name-input'),
+      );
+      nameInput.nativeElement.value = 'Changed';
+      nameInput.nativeElement.dispatchEvent(new Event('input'));
+      fixture.detectChanges();
+
+      clickButton('Cancel');
+
+      const env = store.getEnvironmentById('env_staging');
+      expect(env?.name).toBe('Staging');
+
+      const editForm = fixture.debugElement.query(
+        By.css('.environment-detail__edit-form'),
+      );
+      expect(editForm).toBeFalsy();
+    });
+
+    it('should fall back to original values when name/key are blank', async () => {
+      await build('env_staging');
+      clickButton('Edit');
+
+      const nameInput = fixture.debugElement.query(
+        By.css('.environment-detail__name-input'),
+      );
+      nameInput.nativeElement.value = '   ';
+      nameInput.nativeElement.dispatchEvent(new Event('input'));
+
+      const keyInput = fixture.debugElement.query(
+        By.css('.environment-detail__key-input'),
+      );
+      keyInput.nativeElement.value = '   ';
+      keyInput.nativeElement.dispatchEvent(new Event('input'));
+      fixture.detectChanges();
+
+      clickButton('Save Changes');
+
+      const env = store.getEnvironmentById('env_staging');
+      expect(env?.name).toBe('Staging');
+      expect(env?.key).toBe('staging');
+    });
+
+    it('should save updated color', async () => {
+      await build('env_staging');
+      clickButton('Edit');
+
+      const colorInput = fixture.debugElement.query(
+        By.css('.environment-detail__color-input'),
+      );
+      colorInput.nativeElement.value = '#8B5CF6';
+      colorInput.nativeElement.dispatchEvent(new Event('input'));
+      fixture.detectChanges();
+
+      clickButton('Save Changes');
+
+      const env = store.getEnvironmentById('env_staging');
+      expect(env?.color).toBe('#8B5CF6');
+    });
+
+    it('should no-op enterEditMode when environment is null', async () => {
+      await build('missing_env');
+
+      fixture.componentInstance.enterEditMode();
+
+      expect(fixture.componentInstance.isEditing()).toBe(false);
+    });
+
+    it('should no-op saveEdit when environment is null', async () => {
+      await build('missing_env');
+      const updateSpy = jest.spyOn(store, 'updateEnvironment');
+
+      fixture.componentInstance.saveEdit();
+
+      expect(updateSpy).not.toHaveBeenCalled();
+    });
+
+    it('should fall back to original color when color is blank', async () => {
+      await build('env_staging');
+      const originalColor = store.getEnvironmentById('env_staging')?.color;
+      clickButton('Edit');
+
+      const colorInput = fixture.debugElement.query(
+        By.css('.environment-detail__color-input'),
+      );
+      colorInput.nativeElement.value = '   ';
+      colorInput.nativeElement.dispatchEvent(new Event('input'));
+      fixture.detectChanges();
+
+      clickButton('Save Changes');
+
+      const env = store.getEnvironmentById('env_staging');
+      expect(env?.color).toBe(originalColor);
+    });
+  });
 });

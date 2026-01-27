@@ -1,6 +1,6 @@
 import { Injectable, computed, signal } from '@angular/core';
 
-import { CreateEnvironmentInput, Environment } from '@/app/features/flags/models/environment.model';
+import { CreateEnvironmentInput, Environment, UpdateEnvironmentInput } from '@/app/features/flags/models/environment.model';
 import { createId, createTimestamp } from '@/app/shared/utils/id.utils';
 
 @Injectable({ providedIn: 'root' })
@@ -82,6 +82,16 @@ export class EnvironmentStore {
     };
 
     this._environments.update((envs) => [...envs, newEnv]);
+  }
+
+  updateEnvironment(envId: string, updates: UpdateEnvironmentInput): void {
+    this._environments.update((environments) =>
+      environments.map((env) =>
+        env.id === envId
+          ? { ...env, ...updates, updatedAt: createTimestamp() }
+          : env
+      ),
+    );
   }
 
   getEnvironmentById(id: string): Environment | undefined {

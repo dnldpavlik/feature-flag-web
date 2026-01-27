@@ -17,30 +17,74 @@
             Make Default
           </app-button>
         }
+        @if (!isEditing()) {
+          <app-button variant="secondary" type="button" (click)="enterEditMode()">
+            Edit
+          </app-button>
+        }
       </div>
     </header>
 
     <div class="environment-detail__grid">
       <div class="environment-detail__card">
         <h2>Overview</h2>
-        <div class="environment-detail__row">
-          <span class="text-muted">Status</span>
-          <div class="environment-detail__badges">
-            @if (env.isDefault) {
-              <span class="badge badge--info">Default</span>
-            }
-            @if (selectedEnvironmentId() === env.id) {
-              <span class="badge badge--success">Selected</span>
-            }
+        @if (isEditing()) {
+          <div class="environment-detail__edit-form">
+            <label class="environment-detail__field">
+              <span class="environment-detail__label">Name</span>
+              <input
+                type="text"
+                class="environment-detail__name-input"
+                [value]="editName()"
+                (input)="onNameInput($event)"
+              />
+            </label>
+
+            <label class="environment-detail__field">
+              <span class="environment-detail__label">Key</span>
+              <input
+                type="text"
+                class="environment-detail__key-input"
+                [value]="editKey()"
+                (input)="onKeyInput($event)"
+              />
+            </label>
+
+            <label class="environment-detail__field">
+              <span class="environment-detail__label">Color</span>
+              <input
+                type="text"
+                class="environment-detail__color-input"
+                [value]="editColor()"
+                (input)="onColorInput($event)"
+              />
+            </label>
+
+            <div class="environment-detail__edit-actions">
+              <app-button variant="primary" type="button" (click)="saveEdit()">Save Changes</app-button>
+              <app-button variant="ghost" type="button" (click)="cancelEdit()">Cancel</app-button>
+            </div>
           </div>
-        </div>
-        <div class="environment-detail__row">
-          <span class="text-muted">Color</span>
-          <div class="environment-detail__color">
-            <span class="environment-detail__dot" [style.--env-color]="env.color"></span>
-            <span>{{ env.color }}</span>
+        } @else {
+          <div class="environment-detail__row">
+            <span class="text-muted">Status</span>
+            <div class="environment-detail__badges">
+              @if (env.isDefault) {
+                <span class="badge badge--info">Default</span>
+              }
+              @if (selectedEnvironmentId() === env.id) {
+                <span class="badge badge--success">Selected</span>
+              }
+            </div>
           </div>
-        </div>
+          <div class="environment-detail__row">
+            <span class="text-muted">Color</span>
+            <div class="environment-detail__color">
+              <span class="environment-detail__dot" [style.--env-color]="env.color"></span>
+              <span>{{ env.color }}</span>
+            </div>
+          </div>
+        }
       </div>
 
       <div class="environment-detail__card">

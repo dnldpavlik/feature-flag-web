@@ -13,6 +13,15 @@ export interface Environment {
 }
 
 /**
+ * Input for updating an existing environment
+ */
+export interface UpdateEnvironmentInput {
+  name?: string;
+  key?: string;
+  color?: string;
+}
+
+/**
  * Input for creating a new environment
  */
 export interface CreateEnvironmentInput {
