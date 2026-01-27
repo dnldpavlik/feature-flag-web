@@ -33,6 +33,11 @@ export const routes: Routes = [
     loadChildren: () => import('./features/audit/audit.routes').then((m) => m.AUDIT_ROUTES),
   },
   {
+    path: 'settings',
+    loadChildren: () =>
+      import('./features/settings/settings.routes').then((m) => m.SETTINGS_ROUTES),
+  },
+  {
     path: '**',
     redirectTo: 'dashboard',
   },

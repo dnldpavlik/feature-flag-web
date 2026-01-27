@@ -1,0 +1,50 @@
+@if (isEditing()) {
+  <div class="rule-row rule-row--editing">
+    <div class="rule-row__edit-form">
+      <input
+        type="text"
+        class="rule-row__attribute-input"
+        [value]="editAttribute()"
+        (input)="onAttributeInput($event)"
+        placeholder="Attribute"
+      />
+
+      <select
+        class="rule-row__operator-select"
+        (change)="onOperatorChange($event)"
+      >
+        @for (option of operatorOptions; track option.value) {
+          <option [value]="option.value" [selected]="option.value === editOperator()">
+            {{ option.label }}
+          </option>
+        }
+      </select>
+
+      <input
+        type="text"
+        class="rule-row__value-input"
+        [value]="editValue()"
+        (input)="onValueInput($event)"
+        placeholder="Value"
+      />
+    </div>
+
+    <div class="rule-row__actions">
+      <app-button variant="primary" size="sm" (click)="saveEdit()">Save</app-button>
+      <app-button variant="ghost" size="sm" (click)="cancelEdit()">Cancel</app-button>
+    </div>
+  </div>
+} @else {
+  <div class="rule-row">
+    <div class="rule-row__content">
+      <span class="rule-row__attribute">{{ rule().attribute }}</span>
+      <span class="rule-row__operator">{{ operatorLabel() }}</span>
+      <span class="rule-row__value">{{ displayValue() }}</span>
+    </div>
+
+    <div class="rule-row__actions">
+      <app-button variant="secondary" size="sm" (click)="enterEditMode()">Edit</app-button>
+      <app-button variant="ghost" size="sm" (click)="onRemove()">Remove</app-button>
+    </div>
+  </div>
+}

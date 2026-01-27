@@ -1,0 +1,105 @@
+@if (segment(); as seg) {
+  <div class="segment-detail">
+    <header class="segment-detail__header">
+      <a routerLink="/segments" class="segment-detail__back-link">
+        &larr; Back to Segments
+      </a>
+      <div class="segment-detail__title">
+        <h1 class="segment-detail__name">{{ seg.name }}</h1>
+        <span class="segment-detail__key">{{ seg.key }}</span>
+      </div>
+    </header>
+
+    <section class="segment-detail__section">
+      <div class="segment-detail__section-header">
+        <h2>Details</h2>
+        @if (!isEditing()) {
+          <app-button variant="secondary" size="sm" (click)="enterEditMode()">
+            Edit
+          </app-button>
+        }
+      </div>
+
+      @if (isEditing()) {
+        <div class="segment-detail__edit-form">
+          <label class="segment-detail__field">
+            <span class="segment-detail__label">Name</span>
+            <input
+              type="text"
+              class="segment-detail__name-input"
+              [value]="editName()"
+              (input)="onNameInput($event)"
+            />
+          </label>
+
+          <label class="segment-detail__field">
+            <span class="segment-detail__label">Key</span>
+            <input
+              type="text"
+              class="segment-detail__key-input"
+              [value]="editKey()"
+              (input)="onKeyInput($event)"
+            />
+          </label>
+
+          <label class="segment-detail__field segment-detail__field--full">
+            <span class="segment-detail__label">Description</span>
+            <textarea
+              class="segment-detail__description-input"
+              rows="3"
+              [value]="editDescription()"
+              (input)="onDescriptionInput($event)"
+            ></textarea>
+          </label>
+
+          <div class="segment-detail__actions">
+            <app-button variant="primary" (click)="saveEdit()">Save Changes</app-button>
+            <app-button variant="ghost" (click)="cancelEdit()">Cancel</app-button>
+          </div>
+        </div>
+      } @else {
+        <div class="segment-detail__info">
+          <p class="segment-detail__description">{{ seg.description }}</p>
+        </div>
+      }
+    </section>
+
+    <section class="segment-detail__section">
+      <div class="segment-detail__rules-header">
+        <h2>Rules</h2>
+        <span class="segment-detail__rule-count">{{ seg.ruleCount }} rules</span>
+      </div>
+
+      <p class="segment-detail__rules-hint">
+        Users must match <strong>all</strong> rules to be included in this segment.
+      </p>
+
+      @if (seg.rules.length > 0) {
+        <div class="segment-detail__rules-list">
+          @for (rule of seg.rules; track rule.id) {
+            <app-rule-row
+              [rule]="rule"
+              (updated)="onRuleUpdated(rule.id, $event)"
+              (removed)="onRuleRemoved($event)"
+            />
+          }
+        </div>
+      } @else {
+        <p class="segment-detail__no-rules">No rules defined yet.</p>
+      }
+
+      <div class="segment-detail__add-rule">
+        <h3>Add Rule</h3>
+        <app-rule-builder (ruleAdded)="onRuleAdded($event)" />
+      </div>
+    </section>
+  </div>
+} @else {
+  <div class="segment-detail__not-found">
+    <h2>Segment Not Found</h2>
+    <p>The requested segment could not be found.</p>
+    <a routerLink="/segments" class="segment-detail__back-link">
+      &larr; Back to Segments
+    </a>
+  </div>
+}

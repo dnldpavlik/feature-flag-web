@@ -1,0 +1,170 @@
+<div class="api-keys-tab">
+  <header class="api-keys-tab__header">
+    <div>
+      <h3 class="api-keys-tab__title">API Keys</h3>
+      <p class="api-keys-tab__description">
+        Manage your API keys for programmatic access to the feature flag API.
+      </p>
+    </div>
+    @if (!showCreateForm() && !createdSecret()) {
+      <app-button
+        class="api-keys-tab__create-btn"
+        (click)="openCreateForm()"
+      >
+        Create API Key
+      </app-button>
+    }
+  </header>
+
+  @if (createdSecret()) {
+    <div class="api-keys-tab__secret-display">
+      <div class="api-keys-tab__secret-header">
+        <h4 class="api-keys-tab__secret-title">Your new API key</h4>
+        <p class="api-keys-tab__secret-warning">
+          Make sure to copy your API key now. You won't be able to see it again!
+        </p>
+      </div>
+      <div class="api-keys-tab__secret-value">
+        <code>{{ createdSecret() }}</code>
+        <app-button
+          variant="secondary"
+          size="sm"
+          class="api-keys-tab__copy-btn"
+          (click)="copySecret()"
+        >
+          Copy
+        </app-button>
+      </div>
+      <app-button
+        variant="secondary"
+        class="api-keys-tab__done-btn"
+        (click)="dismissSecret()"
+      >
+        Done
+      </app-button>
+    </div>
+  }
+
+  @if (showCreateForm()) {
+    <div class="api-keys-tab__create-form">
+      <h4 class="api-keys-tab__form-title">Create new API key</h4>
+
+      <div class="api-keys-tab__field">
+        <label class="api-keys-tab__label" for="key-name">Name</label>
+        <input
+          type="text"
+          id="key-name"
+          class="api-keys-tab__input"
+          placeholder="e.g., Production SDK Key"
+          [value]="newKeyName()"
+          (input)="onNameInput($event)"
+        />
+      </div>
+
+      <fieldset class="api-keys-tab__field">
+        <legend class="api-keys-tab__label">Permissions</legend>
+        <div class="api-keys-tab__scopes">
+          @for (scope of availableScopes; track scope.value) {
+            <label class="api-keys-tab__scope">
+              <input
+                type="checkbox"
+                class="api-keys-tab__scope-checkbox"
+                [value]="scope.value"
+                [checked]="isScopeSelected(scope.value)"
+                (change)="onScopeToggle(scope.value, $event)"
+              />
+              <span class="api-keys-tab__scope-label">{{ scope.label }}</span>
+            </label>
+          }
+        </div>
+      </fieldset>
+
+      <div class="api-keys-tab__form-actions">
+        <app-button
+          variant="secondary"
+          class="api-keys-tab__cancel-btn"
+          (click)="closeCreateForm()"
+        >
+          Cancel
+        </app-button>
+        <app-button
+          class="api-keys-tab__submit-btn"
+          [disabled]="!canSubmit()"
+          (click)="createKey()"
+        >
+          Create Key
+        </app-button>
+      </div>
+    </div>
+  }
+
+  @if (keyToRevoke()) {
+    <div class="api-keys-tab__confirm-revoke">
+      <p class="api-keys-tab__confirm-text">
+        Are you sure you want to revoke this API key? This action cannot be undone.
+      </p>
+      <div class="api-keys-tab__confirm-actions">
+        <app-button
+          variant="secondary"
+          class="api-keys-tab__cancel-revoke-btn"
+          (click)="cancelRevoke()"
+        >
+          Cancel
+        </app-button>
+        <app-button
+          variant="primary"
+          class="api-keys-tab__confirm-revoke-btn"
+          (click)="revokeKey()"
+        >
+          Revoke Key
+        </app-button>
+      </div>
+    </div>
+  }
+
+  @if (hasKeys()) {
+    <div class="api-keys-tab__table">
+      <div class="api-keys-tab__table-header">
+        <span class="api-keys-tab__table-cell api-keys-tab__table-cell--name">Name</span>
+        <span class="api-keys-tab__table-cell api-keys-tab__table-cell--prefix">Key</span>
+        <span class="api-keys-tab__table-cell api-keys-tab__table-cell--scopes">Scopes</span>
+        <span class="api-keys-tab__table-cell api-keys-tab__table-cell--created">Created</span>
+        <span class="api-keys-tab__table-cell api-keys-tab__table-cell--actions">Actions</span>
+      </div>
+
+      @for (key of apiKeys(); track key.id) {
+        <div class="api-keys-tab__table-row">
+          <span class="api-keys-tab__table-cell api-keys-tab__table-cell--name api-keys-tab__key-name">
+            {{ key.name }}
+          </span>
+          <span class="api-keys-tab__table-cell api-keys-tab__table-cell--prefix api-keys-tab__key-prefix">
+            <code>{{ key.prefix }}</code>
+          </span>
+          <span class="api-keys-tab__table-cell api-keys-tab__table-cell--scopes api-keys-tab__key-scopes">
+            {{ formatScopes(key.scopes) }}
+          </span>
+          <span class="api-keys-tab__table-cell api-keys-tab__table-cell--created">
+            {{ key.createdAt | date:'mediumDate' }}
+          </span>
+          <span class="api-keys-tab__table-cell api-keys-tab__table-cell--actions">
+            <app-button
+              variant="ghost"
+              size="sm"
+              class="api-keys-tab__revoke-btn"
+              (click)="confirmRevoke(key.id)"
+            >
+              Revoke
+            </app-button>
+          </span>
+        </div>
+      }
+    </div>
+  } @else if (!showCreateForm() && !createdSecret()) {
+    <div class="api-keys-tab__empty">
+      <p class="api-keys-tab__empty-text">No API keys yet</p>
+      <p class="api-keys-tab__empty-description">
+        Create your first API key to get started.
+      </p>
+    </div>
+  }
+</div>

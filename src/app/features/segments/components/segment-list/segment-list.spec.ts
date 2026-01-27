@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
 import { By } from '@angular/platform-browser';
 
 import { SearchStore } from '@/app/shared/store/search.store';
@@ -13,7 +14,7 @@ describe('SegmentList', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [SegmentListComponent],
-      providers: [SegmentStore, SearchStore],
+      providers: [provideRouter([]), SegmentStore, SearchStore],
     }).compileComponents();
 
     fixture = TestBed.createComponent(SegmentListComponent);
@@ -81,6 +82,19 @@ describe('SegmentList', () => {
     it('should get and set description field', () => {
       fixture.componentInstance.description = 'Test description';
       expect(fixture.componentInstance.description).toBe('Test description');
+    });
+  });
+
+  describe('segment name links', () => {
+    it('should render segment name as a link', () => {
+      const link = fixture.debugElement.query(By.css('.segment-name--link'));
+      expect(link).toBeTruthy();
+    });
+
+    it('should link to segment detail page', () => {
+      const links = fixture.debugElement.queryAll(By.css('.segment-name--link'));
+      const firstLink = links[0];
+      expect(firstLink.attributes['href']).toContain('/segments/seg_');
     });
   });
 });

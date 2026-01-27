@@ -31,7 +31,9 @@
         <div class="segments-table__row">
           <div class="segment-cell segment-cell--name">
             <div>
-              <span class="segment-name">{{ segment.name }}</span>
+              <a [routerLink]="['/segments', segment.id]" class="segment-name segment-name--link">
+                {{ segment.name }}
+              </a>
               <span class="text-muted">{{ segment.description }}</span>
             </div>
           </div>

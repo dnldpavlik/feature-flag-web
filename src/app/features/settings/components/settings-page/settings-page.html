@@ -1,0 +1,28 @@
+<div class="settings-page">
+  <header class="settings-page__header">
+    <h1 class="settings-page__title">Settings</h1>
+  </header>
+
+  <app-tabs
+    [tabs]="tabs"
+    [activeTabId]="activeTab()"
+    (tabChange)="onTabChange($event)"
+  />
+
+  <main class="settings-page__content">
+    @switch (activeTab()) {
+      @case ('profile') {
+        <app-user-profile-tab />
+      }
+      @case ('preferences') {
+        <app-preferences-tab />
+      }
+      @case ('api-keys') {
+        <app-api-keys-tab />
+      }
+      @case ('theme') {
+        <app-theme-tab />
+      }
+    }
+  </main>
+</div>

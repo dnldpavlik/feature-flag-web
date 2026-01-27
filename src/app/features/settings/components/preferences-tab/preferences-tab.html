@@ -1,0 +1,111 @@
+<div class="preferences-tab">
+  <section class="preferences-tab__section">
+    <h3 class="preferences-tab__section-title">Default Environment</h3>
+    <p class="preferences-tab__section-description">
+      Choose the environment that will be selected by default when you open the dashboard.
+    </p>
+
+    <app-labeled-select
+      label="Environment"
+      [options]="environmentOptions()"
+      [value]="currentDefaultEnvId()"
+      (valueChange)="onDefaultEnvironmentChange($event)"
+    />
+  </section>
+
+  <section class="preferences-tab__section">
+    <h3 class="preferences-tab__section-title">Notifications</h3>
+    <p class="preferences-tab__section-description">
+      Configure when you receive email notifications.
+    </p>
+
+    <div class="preferences-tab__toggles">
+      <label class="preferences-tab__toggle" for="email-flag-change">
+        <input
+          type="checkbox"
+          id="email-flag-change"
+          [checked]="notifications().emailOnFlagChange"
+          (change)="onEmailOnFlagChangeToggle($event)"
+        />
+        <span class="preferences-tab__toggle-content">
+          <span class="preferences-tab__toggle-label">Flag changes</span>
+          <span class="preferences-tab__toggle-description">
+            Receive an email when a flag is created, updated, or deleted
+          </span>
+        </span>
+      </label>
+
+      <label class="preferences-tab__toggle" for="email-api-key">
+        <input
+          type="checkbox"
+          id="email-api-key"
+          [checked]="notifications().emailOnApiKeyCreated"
+          (change)="onEmailOnApiKeyCreatedToggle($event)"
+        />
+        <span class="preferences-tab__toggle-content">
+          <span class="preferences-tab__toggle-label">API key created</span>
+          <span class="preferences-tab__toggle-description">
+            Receive an email when a new API key is created
+          </span>
+        </span>
+      </label>
+    </div>
+  </section>
+
+  <section class="preferences-tab__section">
+    <h3 class="preferences-tab__section-title">Email Digest</h3>
+    <p class="preferences-tab__section-description">
+      Receive a summary of activity in your projects.
+    </p>
+
+    <div class="preferences-tab__options">
+      <label class="preferences-tab__option">
+        <input
+          type="radio"
+          name="email-digest"
+          value="none"
+          [checked]="notifications().emailDigest === 'none'"
+          (change)="onEmailDigestChange('none')"
+        />
+        <span class="preferences-tab__option-content">
+          <span class="preferences-tab__option-label">None</span>
+          <span class="preferences-tab__option-description">
+            Don't send digest emails
+          </span>
+        </span>
+      </label>
+
+      <label class="preferences-tab__option">
+        <input
+          type="radio"
+          name="email-digest"
+          value="daily"
+          [checked]="notifications().emailDigest === 'daily'"
+          (change)="onEmailDigestChange('daily')"
+        />
+        <span class="preferences-tab__option-content">
+          <span class="preferences-tab__option-label">Daily</span>
+          <span class="preferences-tab__option-description">
+            Receive a daily summary every morning
+          </span>
+        </span>
+      </label>
+
+      <label class="preferences-tab__option">
+        <input
+          type="radio"
+          name="email-digest"
+          value="weekly"
+          [checked]="notifications().emailDigest === 'weekly'"
+          (change)="onEmailDigestChange('weekly')"
+        />
+        <span class="preferences-tab__option-content">
+          <span class="preferences-tab__option-label">Weekly</span>
+          <span class="preferences-tab__option-description">
+            Receive a weekly summary every Monday
+          </span>
+        </span>
+      </label>
+    </div>
+  </section>
+</div>

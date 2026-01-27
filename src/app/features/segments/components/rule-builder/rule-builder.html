@@ -1,0 +1,61 @@
+<div class="rule-builder">
+  <div class="rule-builder__form">
+    <label class="rule-builder__field">
+      <span class="rule-builder__label">Attribute</span>
+      <select
+        class="rule-builder__attribute-select"
+        [value]="selectedAttribute()"
+        (change)="onAttributeChange($event)"
+      >
+        <option value="">Select attribute...</option>
+        @for (attr of attributeOptions; track attr.value) {
+          <option [value]="attr.value">{{ attr.label }}</option>
+        }
+      </select>
+    </label>
+
+    @if (isCustomAttribute()) {
+      <label class="rule-builder__field">
+        <span class="rule-builder__label">Custom Attribute</span>
+        <input
+          type="text"
+          class="rule-builder__custom-attribute-input"
+          [value]="customAttribute()"
+          (input)="onCustomAttributeInput($event)"
+          placeholder="Enter attribute name"
+        />
+      </label>
+    }
+
+    <label class="rule-builder__field">
+      <span class="rule-builder__label">Operator</span>
+      <select
+        class="rule-builder__operator-select"
+        (change)="onOperatorChange($event)"
+      >
+        @for (op of operatorOptions; track op.value) {
+          <option [value]="op.value" [selected]="op.value === selectedOperator()">
+            {{ op.label }}
+          </option>
+        }
+      </select>
+    </label>
+
+    <label class="rule-builder__field">
+      <span class="rule-builder__label">Value</span>
+      <input
+        type="text"
+        class="rule-builder__value-input"
+        [value]="ruleValue()"
+        [placeholder]="valuePlaceholder()"
+        (input)="onValueInput($event)"
+      />
+    </label>
+
+    <div class="rule-builder__action">
+      <app-button variant="primary" [disabled]="!canAdd()" (click)="addRule()">
+        Add Rule
+      </app-button>
+    </div>
+  </div>
+</div>

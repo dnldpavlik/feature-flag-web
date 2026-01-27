@@ -1,0 +1,90 @@
+<div class="theme-tab">
+  <section class="theme-tab__section">
+    <h3 class="theme-tab__section-title">Theme</h3>
+    <p class="theme-tab__section-description">
+      Choose how the application looks to you.
+    </p>
+
+    <div class="theme-tab__options">
+      <label class="theme-tab__option">
+        <input
+          type="radio"
+          name="theme-mode"
+          value="light"
+          [checked]="currentMode() === 'light'"
+          (change)="onModeChange('light')"
+        />
+        <span class="theme-tab__option-content">
+          <span class="theme-tab__option-label">Light</span>
+          <span class="theme-tab__option-description">Always use light theme</span>
+        </span>
+      </label>
+
+      <label class="theme-tab__option">
+        <input
+          type="radio"
+          name="theme-mode"
+          value="dark"
+          [checked]="currentMode() === 'dark'"
+          (change)="onModeChange('dark')"
+        />
+        <span class="theme-tab__option-content">
+          <span class="theme-tab__option-label">Dark</span>
+          <span class="theme-tab__option-description">Always use dark theme</span>
+        </span>
+      </label>
+
+      <label class="theme-tab__option">
+        <input
+          type="radio"
+          name="theme-mode"
+          value="system"
+          [checked]="currentMode() === 'system'"
+          (change)="onModeChange('system')"
+        />
+        <span class="theme-tab__option-content">
+          <span class="theme-tab__option-label">System</span>
+          <span class="theme-tab__option-description">
+            Follow your system preference
+          </span>
+        </span>
+      </label>
+    </div>
+  </section>
+
+  <section class="theme-tab__section">
+    <h3 class="theme-tab__section-title">Accessibility</h3>
+
+    <div class="theme-tab__toggles">
+      <label class="theme-tab__toggle" for="reduced-motion">
+        <input
+          type="checkbox"
+          id="reduced-motion"
+          [checked]="reducedMotion()"
+          (change)="onReducedMotionChange($event)"
+        />
+        <span class="theme-tab__toggle-content">
+          <span class="theme-tab__toggle-label">Reduce motion</span>
+          <span class="theme-tab__toggle-description">
+            Disable animations and transitions
+          </span>
+        </span>
+      </label>
+
+      <label class="theme-tab__toggle" for="compact-mode">
+        <input
+          type="checkbox"
+          id="compact-mode"
+          [checked]="compactMode()"
+          (change)="onCompactModeChange($event)"
+        />
+        <span class="theme-tab__toggle-content">
+          <span class="theme-tab__toggle-label">Compact mode</span>
+          <span class="theme-tab__toggle-description">
+            Reduce spacing and padding for denser information display
+          </span>
+        </span>
+      </label>
+    </div>
+  </section>
+</div>

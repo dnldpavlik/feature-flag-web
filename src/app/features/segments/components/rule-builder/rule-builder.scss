@@ -1,0 +1,78 @@
+.rule-builder {
+  padding: 1rem;
+  background: var(--bg-card);
+  border: 1px dashed var(--border-primary);
+  border-radius: var(--border-radius-md);
+}
+
+.rule-builder__form {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 1rem;
+}
+
+.rule-builder__field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  min-width: 140px;
+}
+
+.rule-builder__label {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.rule-builder__attribute-select,
+.rule-builder__operator-select,
+.rule-builder__custom-attribute-input,
+.rule-builder__value-input {
+  padding: 0.5rem 0.75rem;
+  font-size: 0.9rem;
+  border: 1px solid var(--border-primary);
+  border-radius: var(--border-radius-sm);
+  background: var(--bg-input);
+  color: var(--text-primary);
+
+  &:focus {
+    outline: none;
+    border-color: var(--primary-border);
+    box-shadow: 0 0 0 2px var(--primary-focus);
+  }
+}
+
+.rule-builder__attribute-select {
+  min-width: 140px;
+}
+
+.rule-builder__operator-select {
+  min-width: 150px;
+}
+
+.rule-builder__value-input {
+  flex: 1;
+  min-width: 200px;
+}
+
+.rule-builder__action {
+  display: flex;
+  align-items: flex-end;
+}
+
+@media (width <= 768px) {
+  .rule-builder__form {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .rule-builder__field {
+    min-width: 100%;
+  }
+
+  .rule-builder__value-input {
+    min-width: 100%;
+  }
+}

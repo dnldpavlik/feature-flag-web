@@ -1,0 +1,115 @@
+.theme-tab {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+
+  &__section {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  &__section-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-primary, #e6edf3);
+    margin: 0;
+  }
+
+  &__section-description {
+    font-size: 0.875rem;
+    color: var(--text-secondary, #7d8590);
+    margin: 0;
+  }
+
+  &__options {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  &__option {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 1rem;
+    border: 1px solid var(--border-primary, #30363d);
+    border-radius: var(--border-radius, 6px);
+    cursor: pointer;
+    transition: all var(--transition-fast, 150ms ease);
+
+    &:hover {
+      background: var(--bg-hover, #30363d);
+    }
+
+    &:has(input:checked) {
+      border-color: var(--accent-primary, #405bff);
+      background: rgb(64 91 255 / 10%);
+    }
+
+    input[type='radio'] {
+      margin-top: 0.125rem;
+      accent-color: var(--accent-primary, #405bff);
+    }
+  }
+
+  &__option-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  &__option-label {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--text-primary, #e6edf3);
+  }
+
+  &__option-description {
+    font-size: 0.75rem;
+    color: var(--text-secondary, #7d8590);
+  }
+
+  &__toggles {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  &__toggle {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 1rem;
+    border: 1px solid var(--border-primary, #30363d);
+    border-radius: var(--border-radius, 6px);
+    cursor: pointer;
+    transition: all var(--transition-fast, 150ms ease);
+
+    &:hover {
+      background: var(--bg-hover, #30363d);
+    }
+
+    input[type='checkbox'] {
+      margin-top: 0.125rem;
+      accent-color: var(--accent-primary, #405bff);
+    }
+  }
+
+  &__toggle-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  &__toggle-label {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--text-primary, #e6edf3);
+  }
+
+  &__toggle-description {
+    font-size: 0.75rem;
+    color: var(--text-secondary, #7d8590);
+  }
+}

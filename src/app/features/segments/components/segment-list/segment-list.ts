@@ -1,6 +1,7 @@
 import { DatePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { NonNullableFormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { RouterLink } from '@angular/router';
 
 import { ButtonComponent } from '@/app/shared/ui/button/button';
 import { EmptyStateComponent } from '@/app/shared/ui/empty-state/empty-state';
@@ -9,7 +10,7 @@ import { SegmentStore } from '@/app/features/segments/store/segment.store';
 
 @Component({
   selector: 'app-segment-list',
-  imports: [DatePipe, ReactiveFormsModule, ButtonComponent, EmptyStateComponent],
+  imports: [DatePipe, ReactiveFormsModule, RouterLink, ButtonComponent, EmptyStateComponent],
   templateUrl: './segment-list.html',
   styleUrl: './segment-list.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

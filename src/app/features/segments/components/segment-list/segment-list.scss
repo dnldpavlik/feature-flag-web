@@ -49,6 +49,16 @@
   color: var(--text-primary);
 }
 
+.segment-name--link {
+  text-decoration: none;
+  transition: color 0.15s ease;
+
+  &:hover {
+    color: var(--primary-text);
+    text-decoration: underline;
+  }
+}
+
 .segment-cell--actions {
   display: flex;
   gap: 0.5rem;
