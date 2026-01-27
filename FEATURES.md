@@ -1,598 +1,448 @@
-# Features Specification
+# Feature Flag Management System - Features
 
-This document provides detailed specifications for all features in the Feature Flag UI application.
+Comprehensive feature catalog across all platform components: Rust API backend, Angular web UI, and Android mobile app.
 
-## Feature Index
-
-| ID | Feature | Priority | Status |
-|----|---------|----------|--------|
-| F01 | Dashboard | P0 | Planned |
-| F02 | Flag Management | P0 | Planned |
-| F03 | Targeting Rules Builder | P0 | Planned |
-| F04 | Environment Management | P0 | Planned |
-| F05 | Project Management | P0 | Planned |
-| F06 | Analytics Dashboard | P1 | Planned |
-| F07 | Audit Log | P1 | Planned |
-| F08 | Segment Management | P1 | Planned |
-| F09 | Search & Filtering | P1 | Planned |
-| F10 | User Settings | P2 | Planned |
-| F11 | Team Management | P2 | Planned |
-| F12 | Integrations | P2 | Planned |
+> **Last updated:** 2026-01-27
+> **Status legend:** Done | In Progress | Planned
 
 ---
 
-## F01: Dashboard
+## Table of Contents
 
-### Overview
-
-The dashboard provides an at-a-glance view of the system state, recent activity, and quick access to common actions.
-
-### User Stories
-
-- As a developer, I want to see recent flag changes so I can stay updated on team activity
-- As an operator, I want quick toggle access so I can respond to incidents rapidly
-- As a PM, I want to see flag statistics so I can track rollout progress
-
-### Components
-
-#### Summary Cards
-
-```
-┌──────────────┐  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐
-│ Total Flags  │  │ Active Flags │  │  Projects    │  │ Environments │
-│     124      │  │      89      │  │      8       │  │      3       │
-│   +5 today   │  │  72% active  │  │              │  │              │
-└──────────────┘  └──────────────┘  └──────────────┘  └──────────────┘
-```
-
-#### Activity Feed
-
-- Chronological list of recent changes
-- Shows: user, action, target, timestamp
-- Filterable by action type
-- Click to navigate to affected resource
-
-#### Quick Toggle Panel
-
-- Favorite/pinned flags for quick access
-- Toggle switch with confirmation
-- Environment selector
-- Last changed indicator
-
-#### Global Search
-
-- Search across all flags, projects, segments
-- Keyboard shortcut: `Cmd/Ctrl + K`
-- Recent searches
-- Suggested results
-
-### Acceptance Criteria
-
-- [ ] Dashboard loads within 2 seconds
-- [ ] Summary cards show accurate counts
-- [ ] Activity feed updates in real-time (or near real-time with polling)
-- [ ] Quick toggles require confirmation before execution
-- [ ] Search returns results within 300ms
-- [ ] Responsive layout works on tablet and desktop
+- [Core Feature Flag Operations](#core-feature-flag-operations)
+- [Environment Management](#environment-management)
+- [Project Management](#project-management)
+- [Segment Management](#segment-management)
+- [Targeting Rules](#targeting-rules)
+- [User Settings & Preferences](#user-settings--preferences)
+- [Audit Log](#audit-log)
+- [Dashboard & Analytics](#dashboard--analytics)
+- [Search & Navigation](#search--navigation)
+- [API Capabilities](#api-capabilities)
+- [Web UI Features](#web-ui-features)
+- [Mobile App (Android)](#mobile-app-android)
+- [SDK & Integration Points](#sdk--integration-points)
+- [User Management & Permissions](#user-management--permissions)
 
 ---
 
-## F02: Flag Management
+## Core Feature Flag Operations
 
-### Overview
+| Feature | API | Web UI | Status |
+|---------|-----|--------|--------|
+| List all flags | `GET /api/v1/flags` | FlagListComponent | Done |
+| Create flag | `POST /api/v1/flags` | FlagCreateComponent | Done |
+| View flag detail | `GET /api/v1/flags/{id}` | FlagDetailComponent | Done |
+| Get flag by key | `GET /api/v1/flags/key/{key}` | - | Done |
+| Update flag | `PUT /api/v1/flags/{id}`, `PATCH /api/v1/flags/{id}` | FlagDetailComponent | Done |
+| Delete flag | `DELETE /api/v1/flags/{id}` | - | API Done, UI Planned |
+| Toggle flag per environment | `PATCH /api/v1/flags/{id}/environments/{env_id}` | FlagListComponent | Done |
+| Update environment-specific value | `PATCH /api/v1/flags/{id}/environments/{env_id}` | FlagDetailComponent | Done |
+| Evaluate flag | `GET /api/v1/evaluate/{key}` | - | Done |
+| Bulk flag operations | - | - | Planned |
+| Flag archiving | - | - | Planned |
+| Flag scheduling (kill dates) | - | - | Planned |
 
-Complete CRUD operations for feature flags including list view, detail view, and creation wizard.
+### Flag Types Supported
 
-### User Stories
+| Type | API | Web UI | Status |
+|------|-----|--------|--------|
+| Boolean | Supported | Supported | Done |
+| String | Supported | Supported | Done |
+| Number | Supported | Supported | Done |
+| JSON | Supported | Supported (with validation) | Done |
 
-- As a developer, I want to create flags quickly so I can start feature development
-- As a developer, I want to see all flags in a project so I can manage them efficiently
-- As a PM, I want to understand flag purposes so I can track feature progress
+### Flag Creation Details
 
-### Flag List View
-
-#### Layout
-
-```
-┌─────────────────────────────────────────────────────────────────────┐
-│ Project: My App ▼    Environment: Production ▼    [+ Create Flag]  │
-├─────────────────────────────────────────────────────────────────────┤
-│ 🔍 Search flags...                      Filter ▼   Sort: Name ▼    │
-├─────────────────────────────────────────────────────────────────────┤
-│ ☐ │ Name              │ Key            │ Type    │ Status │ Updated│
-├───┼───────────────────┼────────────────┼─────────┼────────┼────────┤
-│ ☐ │ Dark Mode         │ dark-mode      │ Boolean │ 🟢 ON  │ 2h ago │
-│ ☐ │ New Checkout      │ new-checkout   │ Boolean │ 🔴 OFF │ 1d ago │
-│ ☐ │ API Version       │ api-version    │ String  │ 🟢 ON  │ 3d ago │
-└───┴───────────────────┴────────────────┴─────────┴────────┴────────┘
-│                           Load More                                  │
-└─────────────────────────────────────────────────────────────────────┘
-```
-
-#### Features
-
-- Virtual scrolling for large lists (1000+ flags)
-- Multi-select with bulk actions
-- Inline toggle capability
-- Column sorting (all columns)
-- Saved filter presets
-
-### Flag Detail View
-
-#### Tabs
-
-1. **Overview**: Basic info, quick toggle, SDK snippets
-2. **Targeting**: Targeting rules configuration
-3. **Variations**: Manage flag variations
-4. **History**: Change audit log
-5. **Settings**: Flag settings and danger zone
-
-#### Overview Tab
-
-```
-┌─────────────────────────────────────────────────────────────────────┐
-│ Dark Mode                                            [Edit] [...]   │
-│ dark-mode                                                           │
-├─────────────────────────────────────────────────────────────────────┤
-│ Enable dark mode for users                                          │
-│                                                                     │
-│ Tags: [ui] [theme] [user-preference]                                │
-├───────────────────────────────┬─────────────────────────────────────┤
-│ Status                        │ SDK Integration                     │
-│ ┌─────────────────────────┐   │ ```javascript                       │
-│ │ Production   🟢 ON [⇄] │   │ const darkMode = await client       │
-│ │ Staging      🟢 ON [⇄] │   │   .boolVariation('dark-mode',       │
-│ │ Development  🟢 ON [⇄] │   │     user, false);                   │
-│ └─────────────────────────┘   │ ```                                 │
-└───────────────────────────────┴─────────────────────────────────────┘
-```
-
-### Flag Creation Wizard
-
-#### Step 1: Basic Information
-
-- Name (required)
-- Key (auto-generated, editable)
-- Description
-- Tags (autocomplete from existing)
-
-#### Step 2: Flag Type & Variations
-
-- Type selection: Boolean, String, Number, JSON
-- Variation configuration based on type
-- Default variation selection
-
-#### Step 3: Initial Targeting (Optional)
-
-- Enable/disable per environment
-- Basic percentage rollout
-- Skip to create with defaults
-
-#### Step 4: Review & Create
-
-- Summary of configuration
-- SDK code snippet preview
-- Create button
-
-### Acceptance Criteria
-
-- [ ] List view loads 100 flags within 1 second
-- [ ] Virtual scroll handles 10,000+ flags smoothly
-- [ ] Search filters results as user types (debounced)
-- [ ] Bulk operations work with up to 100 selected flags
-- [ ] Create wizard validates all required fields
-- [ ] Flag keys are unique within project (validated)
-- [ ] SDK snippets copy to clipboard correctly
-- [ ] All CRUD operations show loading and success/error states
+- **Web UI wizard:** Name, auto-generated key (editable), description, type selection, per-environment enabled state, tags (comma-separated)
+- **API:** Accepts `name`, `key`, `description`, `flagType`, `defaultValue`, `tags`, `initialEnabledEnvironments`
+- **Validation:** Key uniqueness enforced at API level (PostgreSQL unique constraint)
 
 ---
 
-## F03: Targeting Rules Builder
+## Environment Management
 
-### Overview
+| Feature | API | Web UI | Status |
+|---------|-----|--------|--------|
+| List environments | `GET /api/v1/environments` | EnvironmentListComponent | Done |
+| Create environment | `POST /api/v1/environments` | EnvironmentListComponent | Done |
+| View environment detail | `GET /api/v1/environments/{id}` | EnvironmentDetailComponent | Done |
+| Update environment | `PATCH /api/v1/environments/{id}` | - | API Done, UI Planned |
+| Set default environment | `POST /api/v1/environments/{id}/default` | EnvironmentListComponent | Done |
+| Delete environment | - | - | Planned |
+| Environment color coding | Stored in DB | Displayed in list and sidebar | Done |
+| Environment ordering | Stored in DB (`order` column) | Sorted display | Done |
+| View flags per environment | - | EnvironmentDetailComponent | Done |
+| Copy configuration between environments | - | - | Planned |
+| API key rotation per environment | - | - | Planned |
 
-Visual interface for creating and managing complex targeting rules that determine which users see which flag variations.
+### Implementation Details
 
-### User Stories
-
-- As a developer, I want to create percentage rollouts so I can gradually release features
-- As a PM, I want to target specific user segments so I can run A/B tests
-- As an operator, I want to test rules before saving so I can avoid mistakes
-
-### Rule Structure
-
-```
-┌─────────────────────────────────────────────────────────────────────┐
-│ Targeting Rules                                        [+ Add Rule] │
-├─────────────────────────────────────────────────────────────────────┤
-│                                                                     │
-│ Rule 1: Beta Users                                    [⋮] [↑] [↓]  │
-│ ┌─────────────────────────────────────────────────────────────────┐│
-│ │ IF  [user.plan     ▼] [equals      ▼] [beta           ]  [+]   ││
-│ │ AND [user.country  ▼] [is one of   ▼] [US, CA, UK     ]  [−]   ││
-│ │                                                                 ││
-│ │ THEN serve: [Variation: Enabled ▼]                              ││
-│ │ to [100]% of matching users                                     ││
-│ └─────────────────────────────────────────────────────────────────┘│
-│                                                                     │
-│ Rule 2: Gradual Rollout                               [⋮] [↑] [↓]  │
-│ ┌─────────────────────────────────────────────────────────────────┐│
-│ │ IF  [user.id       ▼] [exists      ▼]                      [+]  ││
-│ │                                                                 ││
-│ │ THEN serve: [Variation: Enabled ▼]                              ││
-│ │ to [25]% of matching users        ═══════════●═══════════       ││
-│ └─────────────────────────────────────────────────────────────────┘│
-│                                                                     │
-│ Default Rule (when no rules match)                                  │
-│ ┌─────────────────────────────────────────────────────────────────┐│
-│ │ Serve: [Variation: Disabled ▼]                                  ││
-│ └─────────────────────────────────────────────────────────────────┘│
-│                                                                     │
-└─────────────────────────────────────────────────────────────────────┘
-```
-
-### Condition Operators
-
-| Attribute Type | Available Operators |
-|---------------|---------------------|
-| String | equals, not equals, contains, not contains, starts with, ends with, is one of, is not one of |
-| Number | equals, not equals, greater than, less than, greater or equal, less or equal |
-| Boolean | is true, is false |
-| Semver | equals, greater than, less than |
-| Date | before, after, between |
-
-### Rule Testing Panel
-
-```
-┌─────────────────────────────────────────────────────────────────────┐
-│ Test Your Rules                                                     │
-├─────────────────────────────────────────────────────────────────────┤
-│ Enter test user attributes:                                         │
-│                                                                     │
-│ {                                                                   │
-│   "key": "user-123",                                                │
-│   "plan": "beta",                                                   │
-│   "country": "US",                                                  │
-│   "email": "test@example.com"                                       │
-│ }                                                                   │
-│                                                           [Test]    │
-├─────────────────────────────────────────────────────────────────────┤
-│ Result:                                                             │
-│ ✓ Matched Rule 1: "Beta Users"                                      │
-│ → Serving variation: "Enabled" (true)                               │
-└─────────────────────────────────────────────────────────────────────┘
-```
-
-### Acceptance Criteria
-
-- [ ] Rules can be reordered via drag-and-drop
-- [ ] Conditions can be added/removed dynamically
-- [ ] Percentage slider updates value in real-time
-- [ ] Rule testing shows which rule matched
-- [ ] Invalid rules show validation errors
-- [ ] Changes require confirmation before saving
-- [ ] Complex rules with 10+ conditions perform well
+- **API:** Auto-creates `flag_environment_values` entries for all existing flags when a new environment is created
+- **Database:** 3 default environments seeded: Development (green, order 0, default), Staging (orange, order 1), Production (red, order 2)
+- **Web UI:** Color picker on creation, sorted display, default indicator
 
 ---
 
-## F04: Environment Management
+## Project Management
 
-### Overview
+| Feature | API | Web UI | Status |
+|---------|-----|--------|--------|
+| List projects | - | ProjectListComponent | UI Done, API Planned |
+| Create project | - | ProjectListComponent | UI Done, API Planned |
+| View project detail | - | ProjectDetailComponent | UI Done, API Planned |
+| Set default project | - | ProjectListComponent | UI Done, API Planned |
+| Delete project | - | ProjectListComponent | UI Done, API Planned |
+| Project search/filter | - | ProjectListComponent | UI Done |
+| Project switcher (header) | - | BreadcrumbComponent | UI Done |
 
-Configure and manage deployment environments (development, staging, production, etc.).
+### Implementation Notes
 
-### User Stories
-
-- As an admin, I want to create environments so teams can test features safely
-- As a developer, I want to copy flags between environments so I can promote changes
-- As an operator, I want to see environment status so I can monitor deployments
-
-### Environment List
-
-```
-┌─────────────────────────────────────────────────────────────────────┐
-│ Environments                                      [+ New Environment]│
-├─────────────────────────────────────────────────────────────────────┤
-│ 🟢 Production                                                        │
-│    API Key: sdk-prod-****-****-****        [Copy] [Rotate]          │
-│    45 flags • Last change: 2 hours ago                               │
-│    Settings: Require approval ✓  Require comments ✓                  │
-├─────────────────────────────────────────────────────────────────────┤
-│ 🟡 Staging                                                           │
-│    API Key: sdk-stag-****-****-****        [Copy] [Rotate]          │
-│    45 flags • Last change: 30 minutes ago                            │
-│    Settings: Require approval ✗  Require comments ✓                  │
-├─────────────────────────────────────────────────────────────────────┤
-│ 🔵 Development                                                       │
-│    API Key: sdk-dev-****-****-****         [Copy] [Rotate]          │
-│    52 flags • Last change: 5 minutes ago                             │
-│    Settings: Require approval ✗  Require comments ✗                  │
-└─────────────────────────────────────────────────────────────────────┘
-```
-
-### Copy Configuration Dialog
-
-```
-┌─────────────────────────────────────────────────────────────────────┐
-│ Copy Flag Configuration                                      [X]    │
-├─────────────────────────────────────────────────────────────────────┤
-│ From: [Staging        ▼]    To: [Production     ▼]                  │
-│                                                                     │
-│ Select flags to copy:                                               │
-│ ☑ All flags (45)                                                    │
-│   ☑ dark-mode                                                       │
-│   ☑ new-checkout                                                    │
-│   ☑ api-version                                                     │
-│   ...                                                               │
-│                                                                     │
-│ Options:                                                            │
-│ ☑ Copy targeting rules                                              │
-│ ☑ Copy enabled/disabled state                                       │
-│ ☐ Overwrite existing configurations                                 │
-│                                                                     │
-│ Preview changes: 12 flags will be updated                           │
-│                                                                     │
-│                              [Cancel]  [Copy Configuration]         │
-└─────────────────────────────────────────────────────────────────────┘
-```
-
-### Acceptance Criteria
-
-- [ ] Environment colors are visually distinct
-- [ ] API keys are partially masked by default
-- [ ] Key rotation requires confirmation
-- [ ] Copy configuration shows diff preview
-- [ ] Environment deletion requires typing environment name
-- [ ] Mobile API key separate from server key
+- Web UI uses local mock store with 2 sample projects (Default Project, Growth Experiments)
+- API does not yet have project endpoints -- flags are currently global
+- Prevents deleting the last remaining project in the UI
 
 ---
 
-## F05: Project Management
+## Segment Management
 
-### Overview
+| Feature | API | Web UI | Status |
+|---------|-----|--------|--------|
+| List segments | - | SegmentListComponent | UI Done, API Planned |
+| Create segment | - | SegmentListComponent | UI Done, API Planned |
+| View segment detail | - | SegmentDetailComponent | UI Done, API Planned |
+| Edit segment (name, key, description) | - | SegmentDetailComponent | UI Done, API Planned |
+| Delete segment | - | SegmentListComponent | UI Done, API Planned |
+| Add rules to segment | - | RuleBuilderComponent | UI Done, API Planned |
+| Edit rules | - | RuleRowComponent | UI Done, API Planned |
+| Remove rules | - | RuleRowComponent | UI Done, API Planned |
+| Segment search/filter | - | SegmentListComponent | UI Done |
+| Link segments to flags | - | - | Planned |
+| Segment membership preview | - | - | Planned |
+| Bulk user import | - | - | Planned |
 
-Organize flags into logical projects for team-based management.
+### Segment Rule Configuration
 
-### User Stories
+Rules define membership criteria using attribute-operator-value triples:
 
-- As an admin, I want to create projects so teams can organize their flags
-- As a developer, I want to switch projects quickly so I can work on different apps
-- As a PM, I want to see project overview so I can track all team features
+**Supported attributes:** email, country, plan, role, company, custom (user-defined)
 
-### Project Settings
+**Supported operators:**
 
-- Name and description
-- Default environment
-- Team member access
-- Webhook integrations
-- Flag templates
+| Operator | Label | Value Type |
+|----------|-------|------------|
+| `equals` | equals | string |
+| `not_equals` | does not equal | string |
+| `contains` | contains | string |
+| `not_contains` | does not contain | string |
+| `starts_with` | starts with | string |
+| `ends_with` | ends with | string |
+| `in` | is one of | string[] (comma-separated input) |
+| `not_in` | is not one of | string[] (comma-separated input) |
 
-### Acceptance Criteria
+### Implementation Details
 
-- [ ] Projects can be created with default environments
-- [ ] Project switcher is always accessible in header
-- [ ] Project deletion requires confirmation
-- [ ] Project-level permissions are enforced
-- [ ] Flags cannot exist without a project
-
----
-
-## F06: Analytics Dashboard
-
-### Overview
-
-Insights into flag usage patterns and evaluation metrics.
-
-### Metrics Displayed
-
-1. **Evaluation Volume**: Total evaluations over time
-2. **Variation Distribution**: Pie chart of variation percentages
-3. **Unique Users**: Count of unique users per variation
-4. **Error Rate**: Failed evaluations percentage
-5. **Latency**: p50, p95, p99 evaluation times
-
-### Time Range Options
-
-- Last hour
-- Last 24 hours
-- Last 7 days
-- Last 30 days
-- Custom range
-
-### Acceptance Criteria
-
-- [ ] Charts render within 2 seconds
-- [ ] Data updates on time range change
-- [ ] Export to CSV available
-- [ ] Responsive charts on mobile
-- [ ] Empty states when no data
+- Immutable state updates via pure utility functions (`addRuleToSegment`, `updateRuleInSegment`, `removeRuleFromSegment`)
+- Rule IDs auto-generated with `rule_` prefix
+- Timestamps tracked per rule (`createdAt`, `updatedAt`)
+- Mock data: 2 segments (Beta Testers, Internal Users) with sample rules
 
 ---
 
-## F07: Audit Log
+## Targeting Rules
 
-### Overview
-
-Complete history of all changes for compliance and debugging.
-
-### Log Entry Information
-
-- Timestamp
-- User who made change
-- Action type (create, update, delete, toggle)
-- Resource affected (flag, project, environment)
-- Before/after values (for updates)
-- IP address and user agent
-
-### Filtering Options
-
-- Date range
-- User
-- Action type
-- Resource type
-- Specific resource
-
-### Acceptance Criteria
-
-- [ ] Logs are immutable
-- [ ] Pagination for large result sets
-- [ ] Detail view shows full before/after diff
-- [ ] Export capability for compliance
-- [ ] Logs retained per retention policy
+| Feature | API | Web UI | Status |
+|---------|-----|--------|--------|
+| Segment-based targeting rules | - | RuleBuilderComponent (segments) | Done |
+| Flag-level targeting rules | - | - | Planned |
+| Percentage rollout | - | - | Planned |
+| User-specific targeting | - | - | Planned |
+| Rule ordering/priority | - | - | Planned |
+| Rule testing/preview | - | - | Planned |
+| Multi-condition rules (AND logic) | - | - | Planned |
+| Default rule (fallback) | - | - | Planned |
 
 ---
 
-## F08: Segment Management
+## User Settings & Preferences
 
-### Overview
+| Feature | API | Web UI | Status |
+|---------|-----|--------|--------|
+| Settings page with tabs | - | SettingsPageComponent | Done |
+| User profile (name, email) | - | UserProfileTabComponent | Done |
+| Change password | - | UserProfileTabComponent | Done |
+| Default environment preference | - | PreferencesTabComponent | Done |
+| Notification preferences | - | PreferencesTabComponent | Done |
+| Email digest frequency | - | PreferencesTabComponent | Done |
+| Theme selection (light/dark/system) | - | ThemeTabComponent | Done |
+| Reduced motion preference | - | ThemeTabComponent | Done |
+| Compact mode | - | ThemeTabComponent | Done |
+| API key management | - | ApiKeysTabComponent | Done |
+| API key creation with scopes | - | ApiKeysTabComponent | Done |
+| API key revocation | - | ApiKeysTabComponent | Done |
+| Copy API key secret | - | ApiKeysTabComponent | Done |
 
-Reusable user segments for consistent targeting across flags.
+### API Key Scopes
 
-### Segment Definition
+| Scope | Description |
+|-------|-------------|
+| `read:flags` | Read-only access to flags |
+| `write:flags` | Create and modify flags |
+| `admin` | Full administrative access |
 
-```typescript
-interface Segment {
-  id: string;
-  key: string;
-  name: string;
-  description: string;
-  included: string[];      // Explicitly included user keys
-  excluded: string[];      // Explicitly excluded user keys
-  rules: SegmentRule[];    // Dynamic rules
-}
-```
+### Implementation Notes
 
-### Segment Builder
-
-Similar to targeting rules but for defining user groups:
-
-- Included users list (explicit)
-- Excluded users list (explicit)
-- Dynamic rules (attribute-based)
-
-### Acceptance Criteria
-
-- [ ] Segments reusable across multiple flags
-- [ ] Segment changes affect all using flags
-- [ ] Usage tracking shows which flags use segment
-- [ ] Segment membership preview available
-- [ ] Bulk user import for included/excluded lists
+- Settings are managed via local SettingsStore (no API persistence yet)
+- API key secrets shown only once on creation
+- Theme mode computed from system preference when set to "system"
+- Password change validates current password match and new password confirmation
 
 ---
 
-## F09: Search & Filtering
+## Audit Log
 
-### Overview
+| Feature | API | Web UI | Status |
+|---------|-----|--------|--------|
+| View audit entries | - | AuditListComponent | UI Done, API Planned |
+| Filter by action type | - | AuditListComponent | UI Done |
+| Filter by resource type | - | AuditListComponent | UI Done |
+| Search audit entries | - | AuditListComponent | UI Done |
+| Audit entry detail | - | - | Planned |
+| Before/after diff view | - | - | Planned |
+| Export audit log | - | - | Planned |
+| Immutable log storage | - | - | Planned |
 
-Global search and advanced filtering capabilities.
+### Tracked Actions
 
-### Global Search (Cmd/Ctrl + K)
+| Action | Description |
+|--------|-------------|
+| `created` | Resource was created |
+| `updated` | Resource was modified |
+| `deleted` | Resource was removed |
+| `toggled` | Flag was enabled/disabled |
 
-- Search flags by name, key, description
-- Search projects by name
-- Search segments by name
-- Recent searches history
-- Keyboard navigation of results
+### Tracked Resource Types
 
-### Advanced Filters (Flag List)
+`flag`, `segment`, `environment`, `project`
 
-- Status: enabled/disabled
-- Type: boolean, string, number, JSON
-- Tags: multi-select
-- Created by: user selector
-- Date range: created/updated
-- Has targeting rules: yes/no
-
-### Acceptance Criteria
-
-- [ ] Search results appear within 300ms
-- [ ] Filters combine with AND logic
-- [ ] Filter presets can be saved
-- [ ] Clear all filters button
-- [ ] URL reflects current filters (shareable)
+Each entry records: resource name, action, resource type, user, details string, timestamp.
 
 ---
 
-## F10: User Settings
+## Dashboard & Analytics
 
-### Overview
-
-Personal user preferences and account settings.
-
-### Settings Categories
-
-1. **Profile**: Name, email, avatar
-2. **Preferences**: Theme, default project, notifications
-3. **Security**: Password, 2FA, sessions
-4. **API Keys**: Personal access tokens
-
-### Acceptance Criteria
-
-- [ ] Theme preference persists
-- [ ] Notification preferences granular
-- [ ] Session list shows all active sessions
-- [ ] Personal API keys can be created/revoked
+| Feature | API | Web UI | Status |
+|---------|-----|--------|--------|
+| Dashboard overview | - | DashboardComponent | Done |
+| Total flags count | - | DashboardComponent | Done |
+| Active/inactive flag counts | - | DashboardComponent | Done |
+| Total environments count | - | DashboardComponent | Done |
+| Recent flags list | - | DashboardComponent | Done |
+| Search integration | - | DashboardComponent | Done |
+| Evaluation volume charts | - | - | Planned |
+| Variation distribution | - | - | Planned |
+| Unique users per variation | - | - | Planned |
+| Error rate tracking | - | - | Planned |
+| Latency metrics (p50/p95/p99) | - | - | Planned |
+| Time range selection | - | - | Planned |
+| CSV export | - | - | Planned |
 
 ---
 
-## F11: Team Management
+## Search & Navigation
 
-### Overview
-
-User and role management for organizations.
-
-### Roles
-
-- **Owner**: Full access, can delete organization
-- **Admin**: Manage users, projects, environments
-- **Developer**: Create/edit flags, targeting
-- **Viewer**: Read-only access
-
-### Permissions Matrix
-
-| Action | Owner | Admin | Developer | Viewer |
-|--------|-------|-------|-----------|--------|
-| View flags | ✓ | ✓ | ✓ | ✓ |
-| Edit flags | ✓ | ✓ | ✓ | ✗ |
-| Delete flags | ✓ | ✓ | ✓ | ✗ |
-| Manage environments | ✓ | ✓ | ✗ | ✗ |
-| Manage projects | ✓ | ✓ | ✗ | ✗ |
-| Manage users | ✓ | ✓ | ✗ | ✗ |
-| Manage billing | ✓ | ✗ | ✗ | ✗ |
-
-### Acceptance Criteria
-
-- [ ] Invite users by email
-- [ ] Role changes take effect immediately
-- [ ] Cannot demote last owner
-- [ ] Removed users lose access immediately
+| Feature | API | Web UI | Status |
+|---------|-----|--------|--------|
+| Global search input | - | SearchInputComponent | Done |
+| Search across flags | - | FlagListComponent | Done |
+| Search across segments | - | SegmentListComponent | Done |
+| Search across projects | - | ProjectListComponent | Done |
+| Search across environments | - | EnvironmentListComponent | Done |
+| Search across audit entries | - | AuditListComponent | Done |
+| Breadcrumb navigation | - | BreadcrumbComponent | Done |
+| Sidebar navigation | - | SidebarComponent | Done |
+| Flag status filter | - | FlagListComponent | Done |
+| Flag type filter | - | FlagListComponent | Done |
+| Keyboard shortcut (Cmd+K) | - | - | Planned |
+| Saved filter presets | - | - | Planned |
+| URL-reflected filters | - | - | Planned |
 
 ---
 
-## F12: Integrations
+## API Capabilities
 
-### Overview
+| Feature | Endpoint | Status |
+|---------|----------|--------|
+| Health check | `GET /health` | Done |
+| Flag CRUD | `GET/POST/PUT/PATCH/DELETE /api/v1/flags/*` | Done |
+| Flag lookup by key | `GET /api/v1/flags/key/{key}` | Done |
+| Environment CRUD | `GET/POST/PATCH /api/v1/environments/*` | Done |
+| Set default environment | `POST /api/v1/environments/{id}/default` | Done |
+| Environment-specific flag values | `PATCH /api/v1/flags/{id}/environments/{env_id}` | Done |
+| Flag evaluation | `GET /api/v1/evaluate/{key}` | Done |
+| Data backup/export | `GET /api/v1/backup` | Done |
+| CORS configuration | Configurable via `CORS_ORIGINS` | Done |
+| Request logging/tracing | Tower HTTP TraceLayer | Done |
+| Error handling | Typed error responses (400, 404, 500) | Done |
+| Database migrations | SQLx migrate (3 migrations) | Done |
+| Seed file execution | Configurable via `RUN_SEEDS` | Done |
+| Authentication/authorization | - | Planned |
+| Rate limiting | - | Planned |
+| Pagination | - | Planned |
+| Webhook delivery | - | Planned |
+| SDK endpoint | - | Planned |
+| Batch evaluation | - | Planned |
+| Audit logging API | - | Planned |
+| Project API endpoints | - | Planned |
+| Segment API endpoints | - | Planned |
 
-Third-party integrations for enhanced workflows.
+### Database Architecture
 
-### Planned Integrations
+- **PostgreSQL** with SQLx (async, compile-time checked queries)
+- **In-memory repository** for testing/development
+- **Repository pattern** with `FlagRepository` trait for swappable implementations
+- **Connection pooling** (max 10 connections, 5s timeout)
+- **3 migrations:** Initial schema, environment support, web UI contract alignment
 
-1. **Slack**: Notifications for flag changes
-2. **GitHub**: Link flags to PRs/issues
-3. **Jira**: Link flags to tickets
-4. **DataDog**: Metrics export
-5. **PagerDuty**: Incident-triggered toggles
+### Configuration (Environment Variables)
 
-### Webhook System
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `DATABASE_URL` | `postgres://postgres:postgres@localhost:5432/feature_flags` | PostgreSQL connection |
+| `API_HOST` | `127.0.0.1` | Server bind address |
+| `API_PORT` | `3000` | Server port |
+| `RUN_SEEDS` | `false` | Execute seed SQL on startup |
+| `SEEDS_DIR` | `./seeds` | Seed files directory |
+| `CORS_ORIGINS` | `*` | Allowed origins (comma-separated) |
 
-- Custom webhooks for any event
-- Configurable payload templates
-- Retry logic for failures
-- Event filtering
+---
 
-### Acceptance Criteria
+## Web UI Features
 
-- [ ] Integrations can be enabled/disabled
-- [ ] Webhook test functionality
-- [ ] Failed webhook retry history
-- [ ] Event filtering per integration
+### Shared UI Component Library
+
+| Component | Description | Status |
+|-----------|-------------|--------|
+| ButtonComponent | Variants: primary, secondary, tertiary, danger, ghost. Sizes: sm, md, lg | Done |
+| TabsComponent | Keyboard-navigable tabs with disabled support | Done |
+| LabeledSelectComponent | Select dropdown with label | Done |
+| BreadcrumbComponent | Navigation breadcrumbs with project selector | Done |
+| SearchInputComponent | Global search field | Done |
+| IconComponent | SVG icon display | Done |
+| EmptyStateComponent | Empty state messaging | Done |
+| StatCardComponent | Statistics display card | Done |
+| NavItemComponent | Sidebar navigation item | Done |
+| NavSectionComponent | Sidebar section divider | Done |
+| UserMenuComponent | User profile menu | Done |
+
+### Layout
+
+| Component | Description | Status |
+|-----------|-------------|--------|
+| HeaderComponent | Breadcrumbs, search, create button, menu toggle | Done |
+| SidebarComponent | Navigation, environment links, user menu | Done |
+| AppComponent | Shell with header, sidebar, router outlet | Done |
+
+### Architecture
+
+- **Framework:** Angular 20 with standalone components
+- **State:** Signals-first (signal, computed, effect)
+- **Routing:** Lazy-loaded feature routes
+- **Styling:** SCSS with BEM methodology
+- **Change Detection:** OnPush throughout
+- **Testing:** Jest with 100% coverage on feature code
+- **Build:** Angular CLI with component style budgets
+
+### Shared Utilities
+
+| Utility | Functions | Status |
+|---------|-----------|--------|
+| `id.utils.ts` | `createId(prefix)`, `createTimestamp()` | Done |
+| `search.utils.ts` | `matchesSearch()`, `highlightParts()` | Done |
+| `url.utils.ts` | `toKey()`, `getSectionLabel()` | Done |
+| `segment-rule.utils.ts` | `createSegmentRule()`, `addRuleToSegment()`, `updateRuleInSegment()`, `removeRuleFromSegment()`, `validateRuleInput()`, `formatRuleValue()`, `parseArrayValue()`, `getOperatorLabel()` | Done |
+| `flag-format.utils.ts` | `formatFlagValue()`, `formatDisplayValue()`, `parseValueForType()`, `validateJsonObject()` | Done |
+| `flag-value.utils.ts` | `isEnabledInEnvironment()`, `getEffectiveValue()`, `getDefaultForType()` | Done |
+
+---
+
+## Mobile App (Android)
+
+| Feature | Status |
+|---------|--------|
+| Project directory created | Done |
+| Android project setup | Planned |
+| Flag list view | Planned |
+| Flag toggle | Planned |
+| Environment switching | Planned |
+| Push notifications | Planned |
+| Offline flag caching | Planned |
+| SDK integration | Planned |
+
+> The Android app directory (`feature-flags-android`) exists but contains no code. Development has not started.
+
+---
+
+## SDK & Integration Points
+
+| Feature | Status |
+|---------|--------|
+| Server-side SDK (Rust/Go/Python/Node) | Planned |
+| Client-side SDK (JavaScript/React) | Planned |
+| Mobile SDK (Android/iOS) | Planned |
+| REST API evaluation endpoint | Done |
+| Streaming/SSE updates | Planned |
+| Webhook system | Planned |
+| Slack integration | Planned |
+| GitHub integration | Planned |
+| Jira integration | Planned |
+| DataDog metrics export | Planned |
+| PagerDuty incident toggles | Planned |
+
+---
+
+## User Management & Permissions
+
+| Feature | Status |
+|---------|--------|
+| User profile display | Done (UI) |
+| Password management | Done (UI) |
+| API key management | Done (UI) |
+| Authentication (login/signup) | Planned |
+| Role-based access control | Planned |
+| Team/organization management | Planned |
+| Invite users by email | Planned |
+| Session management | Planned |
+| 2FA/MFA | Planned |
+| SSO (SAML/OIDC) | Planned |
+
+### Planned Roles
+
+| Role | Permissions |
+|------|-------------|
+| Owner | Full access, organization deletion |
+| Admin | Manage users, projects, environments |
+| Developer | Create/edit flags and targeting |
+| Viewer | Read-only access |
+
+---
+
+## Feature Count Summary
+
+| Category | Done | In Progress | Planned | Total |
+|----------|------|-------------|---------|-------|
+| Flag Operations | 10 | 0 | 3 | 13 |
+| Environments | 8 | 0 | 3 | 11 |
+| Projects | 7 | 0 | 0 | 7 |
+| Segments | 10 | 0 | 3 | 13 |
+| Targeting Rules | 1 | 0 | 7 | 8 |
+| Settings | 14 | 0 | 0 | 14 |
+| Audit Log | 4 | 0 | 4 | 8 |
+| Dashboard | 6 | 0 | 7 | 13 |
+| Search & Nav | 10 | 0 | 3 | 13 |
+| API | 14 | 0 | 10 | 24 |
+| Web UI Components | 14 | 0 | 0 | 14 |
+| Mobile | 1 | 0 | 7 | 8 |
+| SDK & Integrations | 1 | 0 | 10 | 11 |
+| User Management | 3 | 0 | 7 | 10 |
+| **Total** | **103** | **0** | **64** | **167** |
