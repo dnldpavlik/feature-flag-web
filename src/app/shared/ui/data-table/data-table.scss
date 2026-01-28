@@ -1,0 +1,122 @@
+/* Outer container */
+.data-table {
+  background: var(--bg-card);
+  border: 1px solid var(--border-primary);
+  border-radius: 14px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* Scrollable body wrapper */
+.data-table__body-wrap {
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
+/* Base table styles */
+.data-table--head,
+.data-table__body {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  color: var(--text-primary);
+}
+
+/* Header table (non-scrolling) */
+.data-table--head {
+  table-layout: fixed;
+}
+
+/* Head cells */
+.data-table__header {
+  padding: 10px 12px;
+  text-align: left;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--text-muted);
+  background: var(--bg-tertiary);
+  border-bottom: 1px solid var(--border-primary);
+  white-space: nowrap;
+}
+
+.data-table__header--num {
+  text-align: right;
+}
+
+.data-table__header--center {
+  text-align: center;
+}
+
+/* Sortable header interactions */
+.data-table__header--sortable {
+  cursor: pointer;
+  user-select: none;
+}
+
+.data-table__header--sortable:hover {
+  background: rgb(148 163 184 / 16%);
+}
+
+.data-table__header--sorted {
+  color: var(--text-primary);
+}
+
+.data-table__header-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.data-table__sort-indicator {
+  margin-left: 4px;
+  font-size: 10px;
+  opacity: 0.9;
+}
+
+/* Body table cells */
+.data-table__cell {
+  padding: 12px;
+  vertical-align: middle;
+}
+
+.data-table__cell--num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.data-table__cell--center {
+  text-align: center;
+}
+
+/* Row separators */
+.data-table__body tbody tr:not(:last-child) .data-table__cell {
+  border-bottom: 1px dashed var(--border-secondary);
+}
+
+/* Row hover */
+.data-table__body tbody tr:hover {
+  background: var(--bg-hover);
+}
+
+/* Empty state */
+.data-table__empty {
+  text-align: center;
+  color: var(--text-muted);
+  padding: 28px 8px;
+}
+
+/* Scrollbar styling */
+.data-table__body-wrap::-webkit-scrollbar {
+  width: 8px;
+}
+
+.data-table__body-wrap::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.data-table__body-wrap::-webkit-scrollbar-thumb {
+  background: rgb(148 163 184 / 45%);
+  border-radius: 999px;
+}
