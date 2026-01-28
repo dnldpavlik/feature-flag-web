@@ -29,8 +29,8 @@
       </ng-template>
       <ng-template appUiCol="status" header="Status" width="17%" [sortable]="false" let-env>
         <div class="env-cell env-cell--badges">
-          @if (env.isDefault) { <span class="badge badge--info">Default</span> }
-          @if (selectedEnvironmentId() === env.id) { <span class="badge badge--success">Selected</span> }
+          @if (env.isDefault) { <app-badge variant="info">Default</app-badge> }
+          @if (selectedEnvironmentId() === env.id) { <app-badge variant="success">Selected</app-badge> }
         </div>
       </ng-template>
       <ng-template appUiCol="updatedAt" header="Updated" width="17%" let-env>

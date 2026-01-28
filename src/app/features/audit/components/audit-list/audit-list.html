@@ -38,11 +38,11 @@
         <span class="audit-cell audit-cell--timestamp text-muted">{{ entry.timestamp | date: 'medium' }}</span>
       </ng-template>
       <ng-template appUiCol="action" header="Action" width="12%" let-entry>
-        <span class="badge badge--{{ entry.action }}">{{ formatAction(entry.action) }}</span>
+        <app-badge [variant]="entry.action">{{ formatAction(entry.action) }}</app-badge>
       </ng-template>
       <ng-template appUiCol="resource" header="Resource" width="24%" let-entry>
         <div class="audit-cell audit-cell--resource">
-          <span class="badge badge--info">{{ formatResourceType(entry.resourceType) }}</span>
+          <app-badge variant="info">{{ formatResourceType(entry.resourceType) }}</app-badge>
           <span class="audit-cell__name">{{ entry.resourceName }}</span>
         </div>
       </ng-template>

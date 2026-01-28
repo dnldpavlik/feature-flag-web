@@ -304,40 +304,6 @@ a {
 }
 
 // -----------------------------------------------------------------------------
-// Badge/Tag
-// -----------------------------------------------------------------------------
-.badge {
-  display: inline-flex;
-  align-items: center;
-  padding: 0.25rem 0.75rem;
-  font-size: 0.875rem;
-  font-weight: 500;
-  border-radius: 9999px;
-  justify-content: center;
-  line-height: 1;
-
-  &--success {
-    background: rgb(63 185 80 / 15%);
-    color: var(--color-success);
-  }
-
-  &--warning {
-    background: rgb(210 153 34 / 15%);
-    color: var(--color-warning);
-  }
-
-  &--error {
-    background: rgb(248 81 73 / 15%);
-    color: var(--color-error);
-  }
-
-  &--info {
-    background: rgb(88 166 255 / 15%);
-    color: var(--color-info);
-  }
-}
-
-// -----------------------------------------------------------------------------
 // Scrollbar
 // -----------------------------------------------------------------------------
 ::-webkit-scrollbar {

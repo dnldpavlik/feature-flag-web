@@ -31,8 +31,8 @@
       </ng-template>
       <ng-template appUiCol="status" header="Status" width="17%" [sortable]="false" let-project>
         <div class="project-cell project-cell--badges">
-          @if (project.isDefault) { <span class="badge badge--info">Default</span> }
-          @if (selectedProjectId() === project.id) { <span class="badge badge--success">Selected</span> }
+          @if (project.isDefault) { <app-badge variant="info">Default</app-badge> }
+          @if (selectedProjectId() === project.id) { <app-badge variant="success">Selected</app-badge> }
         </div>
       </ng-template>
       <ng-template appUiCol="updatedAt" header="Updated" width="17%" let-project>

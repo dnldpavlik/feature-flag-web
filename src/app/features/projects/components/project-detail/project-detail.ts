@@ -3,13 +3,14 @@ import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/c
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
 
+import { BadgeComponent } from '@/app/shared/ui/badge/badge';
 import { ButtonComponent } from '@/app/shared/ui/button/button';
 import { EmptyStateComponent } from '@/app/shared/ui/empty-state/empty-state';
 import { ProjectStore } from '@/app/shared/store/project.store';
 
 @Component({
   selector: 'app-project-detail',
-  imports: [DatePipe, ButtonComponent, EmptyStateComponent],
+  imports: [BadgeComponent, DatePipe, ButtonComponent, EmptyStateComponent],
   templateUrl: './project-detail.html',
   styleUrl: './project-detail.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

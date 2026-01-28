@@ -37,23 +37,3 @@
   font-size: 0.8125rem;
 }
 
-.badge--created {
-  background-color: var(--status-success-bg, #dcfce7);
-  color: var(--status-success-text, #166534);
-}
-
-.badge--updated {
-  background-color: var(--status-info-bg, #dbeafe);
-  color: var(--status-info-text, #1e40af);
-}
-
-.badge--deleted {
-  background-color: var(--status-error-bg, #fee2e2);
-  color: var(--status-error-text, #991b1b);
-}
-
-.badge--toggled {
-  background-color: var(--status-warning-bg, #fef3c7);
-  color: var(--status-warning-text, #92400e);
-}
-

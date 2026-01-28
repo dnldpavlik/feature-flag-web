@@ -2,6 +2,7 @@ import { DatePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
+import { BadgeComponent } from '@/app/shared/ui/badge/badge';
 import { ButtonComponent } from '@/app/shared/ui/button/button';
 import { DataTableComponent } from '@/app/shared/ui/data-table/data-table';
 import { UiColDirective } from '@/app/shared/ui/data-table/ui-col.directive';
@@ -40,7 +41,7 @@ const TYPE_OPTIONS: SelectOption[] = [
 
 @Component({
   selector: 'app-flag-list',
-  imports: [DatePipe, ButtonComponent, DataTableComponent, UiColDirective, EmptyStateComponent, LabeledSelectComponent, PageHeaderComponent, RouterLink, ToggleComponent, ToolbarComponent],
+  imports: [BadgeComponent, DatePipe, ButtonComponent, DataTableComponent, UiColDirective, EmptyStateComponent, LabeledSelectComponent, PageHeaderComponent, RouterLink, ToggleComponent, ToolbarComponent],
   templateUrl: './flag-list.html',
   styleUrl: './flag-list.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

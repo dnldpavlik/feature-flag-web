@@ -2,6 +2,7 @@ import { DatePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
+import { BadgeComponent } from '@/app/shared/ui/badge/badge';
 import { ButtonComponent } from '@/app/shared/ui/button/button';
 import { DataTableComponent } from '@/app/shared/ui/data-table/data-table';
 import { UiColDirective } from '@/app/shared/ui/data-table/ui-col.directive';
@@ -19,7 +20,7 @@ import { RecentFlag } from './dashboard.types';
 
 @Component({
   selector: 'app-dashboard',
-  imports: [DatePipe, ButtonComponent, DataTableComponent, UiColDirective, EmptyStateComponent, PageHeaderComponent, RouterLink, StatCardComponent],
+  imports: [BadgeComponent, DatePipe, ButtonComponent, DataTableComponent, UiColDirective, EmptyStateComponent, PageHeaderComponent, RouterLink, StatCardComponent],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

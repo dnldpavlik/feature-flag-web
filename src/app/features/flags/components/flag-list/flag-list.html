@@ -62,11 +62,11 @@
         <code class="flag-value">{{ formatValue(flag) }}</code>
       </ng-template>
       <ng-template appUiCol="type" header="Type" width="10%" let-flag>
-        <span class="badge badge--info">{{ flag.type }}</span>
+        <app-badge variant="info">{{ flag.type }}</app-badge>
       </ng-template>
       <ng-template appUiCol="tags" header="Tags" width="14%" [sortable]="false" let-flag>
         @for (tag of flag.tags; track tag) {
-          <span class="badge badge--success">{{ tag }}</span>
+          <app-badge variant="success">{{ tag }}</app-badge>
         }
       </ng-template>
       <ng-template appUiCol="updatedAt" header="Updated" width="10%" let-flag>

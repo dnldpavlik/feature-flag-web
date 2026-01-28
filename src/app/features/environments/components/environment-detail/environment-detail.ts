@@ -3,6 +3,7 @@ import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@a
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
+import { BadgeComponent } from '@/app/shared/ui/badge/badge';
 import { ButtonComponent } from '@/app/shared/ui/button/button';
 import { EmptyStateComponent } from '@/app/shared/ui/empty-state/empty-state';
 import { EnvironmentStore } from '@/app/shared/store/environment.store';
@@ -16,7 +17,7 @@ import { formatDisplayValue } from '@/app/features/flags/utils/flag-format.utils
 
 @Component({
   selector: 'app-environment-detail',
-  imports: [DatePipe, ButtonComponent, EmptyStateComponent, RouterLink],
+  imports: [BadgeComponent, DatePipe, ButtonComponent, EmptyStateComponent, RouterLink],
   templateUrl: './environment-detail.html',
   styleUrl: './environment-detail.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

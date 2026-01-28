@@ -3,6 +3,7 @@ import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/c
 import { NonNullableFormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 
+import { BadgeComponent } from '@/app/shared/ui/badge/badge';
 import { ButtonComponent } from '@/app/shared/ui/button/button';
 import { DataTableComponent } from '@/app/shared/ui/data-table/data-table';
 import { UiColDirective } from '@/app/shared/ui/data-table/ui-col.directive';
@@ -13,7 +14,7 @@ import { EnvironmentStore } from '@/app/shared/store/environment.store';
 
 @Component({
   selector: 'app-environment-list',
-  imports: [DatePipe, ReactiveFormsModule, ButtonComponent, DataTableComponent, UiColDirective, EmptyStateComponent, PageHeaderComponent, RouterLink],
+  imports: [BadgeComponent, DatePipe, ReactiveFormsModule, ButtonComponent, DataTableComponent, UiColDirective, EmptyStateComponent, PageHeaderComponent, RouterLink],
   templateUrl: './environment-list.html',
   styleUrl: './environment-list.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

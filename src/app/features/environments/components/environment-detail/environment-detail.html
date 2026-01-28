@@ -70,10 +70,10 @@
             <span class="text-muted">Status</span>
             <div class="environment-detail__badges">
               @if (env.isDefault) {
-                <span class="badge badge--info">Default</span>
+                <app-badge variant="info">Default</app-badge>
               }
               @if (selectedEnvironmentId() === env.id) {
-                <span class="badge badge--success">Selected</span>
+                <app-badge variant="success">Selected</app-badge>
               }
             </div>
           </div>
@@ -123,15 +123,11 @@
               </a>
               <span class="text-muted">{{ flag.key }}</span>
             </div>
-            <span
-              class="badge"
-              [class.badge--success]="flag.currentEnabled"
-              [class.badge--error]="!flag.currentEnabled"
-            >
+            <app-badge [variant]="flag.currentEnabled ? 'success' : 'error'">
               {{ flag.currentEnabled ? 'Enabled' : 'Disabled' }}
-            </span>
+            </app-badge>
             <code class="environment-detail__value">{{ formatValue(flag.currentValue) }}</code>
-            <span class="badge badge--info">{{ flag.type }}</span>
+            <app-badge variant="info">{{ flag.type }}</app-badge>
           </div>
         }
       </div>

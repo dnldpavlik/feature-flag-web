@@ -80,15 +80,22 @@ Additional shared components:
 - [ ] Input component with validation states
 - [ ] Select/dropdown component
 - [ ] Checkbox component
-- [ ] Toggle switch component
+- [x] Toggle switch component
 - [ ] Card component
 - [ ] Modal/dialog component
 - [ ] Toast notification component
 - [ ] Loading spinner component
 - [ ] Error state component
 - [ ] Skeleton loader component
-- [ ] Badge/tag component
+- [x] Badge/tag component
 - [ ] Tooltip directive
+
+Additional shared infrastructure:
+
+- [x] **DataTable** - Sortable table with column templates (UiColDirective)
+- [x] **PageHeader** - Page title with description and action slot
+- [x] **Toolbar** - Filter bar with content projection for filters and meta
+- [x] **SCSS Mixins** - auto-grid, form-label in `src/styles/_mixins.scss`
 
 ---
 
@@ -352,4 +359,4 @@ Additional shared components:
 
 ---
 
-_Last updated: 2026-01-27_
+_Last updated: 2026-01-28_
