@@ -1,0 +1,19 @@
+// =============================================================================
+// SCSS Mixins
+// =============================================================================
+
+/// Creates a responsive auto-fit grid layout.
+/// Items will automatically wrap and fill available space.
+///
+/// @param {Length} $min-width [200px] - Minimum width for each grid item
+/// @param {Length} $gap [1rem] - Gap between grid items
+///
+/// @example scss
+///   .my-grid {
+///     @include auto-grid(240px, 1.5rem);
+///   }
+@mixin auto-grid($min-width: 200px, $gap: 1rem) {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax($min-width, 1fr));
+  gap: $gap;
+}

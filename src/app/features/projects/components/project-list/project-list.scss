@@ -1,3 +1,5 @@
+@use 'styles/mixins' as *;
+
 .projects-page {
   display: flex;
   flex-direction: column;
@@ -60,9 +62,7 @@
 }
 
 .project-form__grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 1rem;
+  @include auto-grid(200px);
 }
 
 .project-form__field {

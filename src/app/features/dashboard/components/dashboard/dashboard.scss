@@ -1,3 +1,5 @@
+@use 'styles/mixins' as *;
+
 .welcome-section {
   display: flex;
   flex-direction: column;
@@ -23,9 +25,7 @@
 }
 
 .stats-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: 1rem;
+  @include auto-grid(180px);
 }
 
 .recent-flags {

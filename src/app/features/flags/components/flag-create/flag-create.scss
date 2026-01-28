@@ -1,3 +1,5 @@
+@use 'styles/mixins' as *;
+
 .flag-create {
   display: flex;
   flex-direction: column;
@@ -44,9 +46,7 @@
 }
 
 .flag-create__row {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 1rem;
+  @include auto-grid(220px);
 }
 
 .flag-create__toggle {

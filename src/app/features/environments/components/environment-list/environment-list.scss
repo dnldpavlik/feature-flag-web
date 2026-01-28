@@ -1,3 +1,5 @@
+@use 'styles/mixins' as *;
+
 .environments-page {
   display: flex;
   flex-direction: column;
@@ -59,9 +61,7 @@
 }
 
 .env-form__grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: 1rem;
+  @include auto-grid(180px);
 }
 
 .env-form__field {

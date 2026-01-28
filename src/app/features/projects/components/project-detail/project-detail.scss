@@ -1,3 +1,5 @@
+@use 'styles/mixins' as *;
+
 .project-detail {
   display: flex;
   flex-direction: column;
@@ -36,9 +38,7 @@
 }
 
 .project-detail__grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 1.5rem;
+  @include auto-grid(240px, 1.5rem);
 }
 
 .project-detail__card {
