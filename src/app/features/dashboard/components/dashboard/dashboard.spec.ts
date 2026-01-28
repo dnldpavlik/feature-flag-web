@@ -59,10 +59,10 @@ describe('Dashboard', () => {
   });
 
   it('should render recently updated flags', () => {
-    const rows = fixture.debugElement.queryAll(By.css('.recent-flags__row'));
-    expect(rows.length).toBeGreaterThan(1);
+    const rows = fixture.debugElement.queryAll(By.css('.data-table__body-wrap tbody tr'));
+    expect(rows.length).toBeGreaterThan(0);
 
-    const firstRow = rows[1];
+    const firstRow = rows[0];
     const link = firstRow.query(By.css('.recent-flags__link'));
     expect(link).toBeTruthy();
     const description = firstRow.query(By.css('.recent-flags__description'));
@@ -75,7 +75,7 @@ describe('Dashboard', () => {
 
     const emptyState = fixture.debugElement.query(By.css('app-empty-state'));
     expect(emptyState).toBeTruthy();
-    const rows = fixture.debugElement.queryAll(By.css('.recent-flags__row'));
+    const rows = fixture.debugElement.queryAll(By.css('.data-table__body-wrap tbody tr'));
     expect(rows.length).toBe(0);
   });
 

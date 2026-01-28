@@ -35,54 +35,51 @@
         >
         </app-empty-state>
       } @else {
-        <div class="recent-flags__table">
-          <div class="recent-flags__row recent-flags__row--header">
-            <span>Flag</span>
-            <span>Status</span>
-            <span>Updated</span>
-          </div>
-          @for (flag of filteredRecentFlags(); track flag.id) {
-            <div class="recent-flags__row">
-              <div class="recent-flags__flag">
-                <a class="recent-flags__link" [routerLink]="['/flags', flag.id]">
-                  @for (part of highlightParts(flag.name); track $index) {
-                    @if (part.match) {
-                      <mark class="recent-flags__highlight">{{ part.text }}</mark>
-                    } @else {
-                      <span>{{ part.text }}</span>
-                    }
+        <app-ui-data-table [items]="filteredRecentFlags()" ariaLabel="Recently updated flags" emptyText="No recent flags.">
+          <ng-template appUiCol="name" header="Flag" width="50%" let-flag>
+            <div class="recent-flags__flag">
+              <a class="recent-flags__link" [routerLink]="['/flags', flag.id]">
+                @for (part of highlightParts(flag.name); track $index) {
+                  @if (part.match) {
+                    <mark class="recent-flags__highlight">{{ part.text }}</mark>
+                  } @else {
+                    <span>{{ part.text }}</span>
                   }
-                </a>
-                <span class="text-muted">
-                  @for (part of highlightParts(flag.key); track $index) {
-                    @if (part.match) {
-                      <mark class="recent-flags__highlight">{{ part.text }}</mark>
-                    } @else {
-                      <span>{{ part.text }}</span>
-                    }
+                }
+              </a>
+              <span class="text-muted">
+                @for (part of highlightParts(flag.key); track $index) {
+                  @if (part.match) {
+                    <mark class="recent-flags__highlight">{{ part.text }}</mark>
+                  } @else {
+                    <span>{{ part.text }}</span>
                   }
-                </span>
-                <span class="recent-flags__description text-secondary">
-                  @for (part of highlightParts(flag.description); track $index) {
-                    @if (part.match) {
-                      <mark class="recent-flags__highlight">{{ part.text }}</mark>
-                    } @else {
-                      <span>{{ part.text }}</span>
-                    }
-                  }
-                </span>
-              </div>
-              <span
-                class="badge"
-                [class.badge--success]="flag.currentEnabled"
-                [class.badge--error]="!flag.currentEnabled"
-              >
-                {{ flag.currentEnabled ? 'Enabled' : 'Disabled' }}
+                }
               </span>
-              <span class="text-muted">{{ flag.updatedAt | date: 'mediumDate' }}</span>
+              <span class="recent-flags__description text-secondary">
+                @for (part of highlightParts(flag.description); track $index) {
+                  @if (part.match) {
+                    <mark class="recent-flags__highlight">{{ part.text }}</mark>
+                  } @else {
+                    <span>{{ part.text }}</span>
+                  }
+                }
+              </span>
             </div>
-          }
-        </div>
+          </ng-template>
+          <ng-template appUiCol="status" header="Status" width="25%" [sortable]="false" let-flag>
+            <span
+              class="badge"
+              [class.badge--success]="flag.currentEnabled"
+              [class.badge--error]="!flag.currentEnabled"
+            >
+              {{ flag.currentEnabled ? 'Enabled' : 'Disabled' }}
+            </span>
+          </ng-template>
+          <ng-template appUiCol="updatedAt" header="Updated" width="25%" let-flag>
+            <span class="text-muted">{{ flag.updatedAt | date: 'mediumDate' }}</span>
+          </ng-template>
+        </app-ui-data-table>
       }
     </section>
   }

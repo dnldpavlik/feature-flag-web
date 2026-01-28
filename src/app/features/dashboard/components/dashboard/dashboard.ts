@@ -3,6 +3,8 @@ import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/c
 import { RouterLink } from '@angular/router';
 
 import { ButtonComponent } from '@/app/shared/ui/button/button';
+import { DataTableComponent } from '@/app/shared/ui/data-table/data-table';
+import { UiColDirective } from '@/app/shared/ui/data-table/ui-col.directive';
 import { EmptyStateComponent } from '@/app/shared/ui/empty-state/empty-state';
 import { StatCardComponent } from '@/app/shared/ui/stat-card/stat-card';
 import { EnvironmentStore } from '@/app/shared/store/environment.store';
@@ -16,7 +18,7 @@ import { RecentFlag } from './dashboard.types';
 
 @Component({
   selector: 'app-dashboard',
-  imports: [DatePipe, ButtonComponent, EmptyStateComponent, RouterLink, StatCardComponent],
+  imports: [DatePipe, ButtonComponent, DataTableComponent, UiColDirective, EmptyStateComponent, RouterLink, StatCardComponent],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
