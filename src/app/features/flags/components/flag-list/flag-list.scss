@@ -10,29 +10,6 @@
   flex-shrink: 0;
 }
 
-.flags-toolbar {
-  display: flex;
-  flex-flow: row wrap;
-  gap: 1rem;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.flags-toolbar__filters {
-  display: flex;
-  gap: 0.75rem;
-}
-
-.flags-toolbar__count {
-  font-size: 0.8125rem;
-}
-
-.flags-toolbar__meta {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.75rem;
-}
-
 .flag-cell {
   display: flex;
   flex-direction: column;
@@ -79,8 +56,3 @@
   font-size: 0.8125rem;
 }
 
-@media (width <= 960px) {
-  .flags-toolbar {
-    align-items: flex-start;
-  }
-}

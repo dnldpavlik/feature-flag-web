@@ -5,6 +5,7 @@ import { DataTableComponent } from '@/app/shared/ui/data-table/data-table';
 import { UiColDirective } from '@/app/shared/ui/data-table/ui-col.directive';
 import { EmptyStateComponent } from '@/app/shared/ui/empty-state/empty-state';
 import { PageHeaderComponent } from '@/app/shared/ui/page-header/page-header';
+import { ToolbarComponent } from '@/app/shared/ui/toolbar/toolbar';
 import {
   LabeledSelectComponent,
 } from '@/app/shared/ui/labeled-select/labeled-select';
@@ -32,7 +33,7 @@ const RESOURCE_OPTIONS: SelectOption[] = [
 
 @Component({
   selector: 'app-audit-list',
-  imports: [DatePipe, DataTableComponent, UiColDirective, EmptyStateComponent, LabeledSelectComponent, PageHeaderComponent],
+  imports: [DatePipe, DataTableComponent, UiColDirective, EmptyStateComponent, LabeledSelectComponent, PageHeaderComponent, ToolbarComponent],
   templateUrl: './audit-list.html',
   styleUrl: './audit-list.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

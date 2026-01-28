@@ -40,7 +40,7 @@ describe('AuditList', () => {
   });
 
   it('should display entry count', () => {
-    const countEl = fixture.debugElement.query(By.css('.audit-count'));
+    const countEl = fixture.debugElement.query(By.css('.toolbar__count'));
     expect(countEl).toBeTruthy();
     expect(countEl.nativeElement.textContent).toContain(auditStore.entries().length.toString());
   });
