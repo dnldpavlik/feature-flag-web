@@ -12,6 +12,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 
 import { ButtonComponent } from '@/app/shared/ui/button/button';
 import { EmptyStateComponent } from '@/app/shared/ui/empty-state/empty-state';
+import { ToggleComponent } from '@/app/shared/ui/toggle/toggle';
 import { EnvironmentStore } from '@/app/shared/store/environment.store';
 import { Flag, FlagType } from '@/app/features/flags/models/flag.model';
 import { FlagTypeMap } from '@/app/features/flags/models/flag-value.model';
@@ -21,7 +22,7 @@ import { FlagEnvironmentRow } from './flag-detail.types';
 
 @Component({
   selector: 'app-flag-detail',
-  imports: [ButtonComponent, EmptyStateComponent, ReactiveFormsModule],
+  imports: [ButtonComponent, EmptyStateComponent, ReactiveFormsModule, ToggleComponent],
   templateUrl: './flag-detail.html',
   styleUrl: './flag-detail.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -166,8 +167,7 @@ export class FlagDetailComponent {
     this.store.toggleFlagInEnvironment(current.id, envId, enabled);
   }
 
-  protected onEnvironmentToggle(envId: string, event: Event): void {
-    const checked = (event.target as HTMLInputElement).checked;
+  protected onEnvironmentToggle(envId: string, checked: boolean): void {
     this.toggleEnvironment(envId, checked);
   }
 

@@ -132,7 +132,7 @@ describe('FlagList', () => {
       const flag = flagStore.flags()[0];
       const initialEnabled = flag.environmentValues['env_development']?.enabled ?? false;
 
-      component.onToggleFlag(flag.id, { target: { checked: !initialEnabled } } as unknown as Event);
+      component.onToggleFlag(flag.id, !initialEnabled);
 
       const updated = flagStore.getFlagById(flag.id);
       expect(updated?.environmentValues['env_development'].enabled).toBe(!initialEnabled);
@@ -142,7 +142,7 @@ describe('FlagList', () => {
       const flag = flagStore.flags()[0];
       const stagingEnabled = flag.environmentValues['env_staging']?.enabled;
 
-      component.onToggleFlag(flag.id, { target: { checked: true } } as unknown as Event);
+      component.onToggleFlag(flag.id, true);
 
       const updated = flagStore.getFlagById(flag.id);
       expect(updated?.environmentValues['env_staging'].enabled).toBe(stagingEnabled);

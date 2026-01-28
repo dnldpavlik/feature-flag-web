@@ -7,6 +7,7 @@ import { DataTableComponent } from '@/app/shared/ui/data-table/data-table';
 import { UiColDirective } from '@/app/shared/ui/data-table/ui-col.directive';
 import { EmptyStateComponent } from '@/app/shared/ui/empty-state/empty-state';
 import { PageHeaderComponent } from '@/app/shared/ui/page-header/page-header';
+import { ToggleComponent } from '@/app/shared/ui/toggle/toggle';
 import { ToolbarComponent } from '@/app/shared/ui/toolbar/toolbar';
 import {
   LabeledSelectComponent,
@@ -39,7 +40,7 @@ const TYPE_OPTIONS: SelectOption[] = [
 
 @Component({
   selector: 'app-flag-list',
-  imports: [DatePipe, ButtonComponent, DataTableComponent, UiColDirective, EmptyStateComponent, LabeledSelectComponent, PageHeaderComponent, RouterLink, ToolbarComponent],
+  imports: [DatePipe, ButtonComponent, DataTableComponent, UiColDirective, EmptyStateComponent, LabeledSelectComponent, PageHeaderComponent, RouterLink, ToggleComponent, ToolbarComponent],
   templateUrl: './flag-list.html',
   styleUrl: './flag-list.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -102,8 +103,7 @@ export class FlagListComponent {
     this.environmentStore.selectEnvironment(value);
   }
 
-  protected onToggleFlag(flagId: string, event: Event): void {
-    const checked = (event.target as HTMLInputElement).checked;
+  protected onToggleFlag(flagId: string, checked: boolean): void {
     const envId = this.environmentStore.selectedEnvironmentId();
     this.flagStore.toggleFlagInEnvironment(flagId, envId, checked);
   }

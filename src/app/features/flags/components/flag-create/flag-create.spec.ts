@@ -283,8 +283,7 @@ describe('FlagCreate', () => {
     });
 
     it('should toggle environment via event handler', () => {
-      const event = { target: { checked: true } } as unknown as Event;
-      component.onEnvironmentToggle('env_development', event);
+      component.onEnvironmentToggle('env_development', true);
 
       const envs = component.environmentsWithEnabled();
       const devEnv = envs.find((e) => e.id === 'env_development');

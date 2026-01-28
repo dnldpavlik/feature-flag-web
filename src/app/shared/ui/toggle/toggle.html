@@ -1,0 +1,12 @@
+<label class="toggle">
+  <input
+    type="checkbox"
+    [checked]="checked()"
+    [disabled]="disabled()"
+    (change)="onChange($event)"
+  />
+  <span class="toggle__slider"></span>
+</label>
+@if (label()) {
+  <span class="toggle__label">{{ label() }}</span>
+}

@@ -457,8 +457,7 @@ describe('FlagDetail', () => {
     await build('flag_new_checkout');
 
     const envId = 'env_development';
-    const event = { target: { checked: false } } as unknown as Event;
-    fixture.componentInstance.onEnvironmentToggle(envId, event);
+    fixture.componentInstance.onEnvironmentToggle(envId, false);
 
     const updated = store.getFlagById('flag_new_checkout');
     expect(updated?.environmentValues[envId].enabled).toBe(false);
