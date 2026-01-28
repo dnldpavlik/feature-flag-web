@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 
+import { PageHeaderComponent } from '@/app/shared/ui/page-header/page-header';
 import { TabsComponent } from '@/app/shared/ui/tabs/tabs';
 import { TabItem } from '@/app/shared/ui/tabs/tabs.types';
 import { UserProfileTabComponent } from '../user-profile-tab/user-profile-tab';
@@ -19,6 +20,7 @@ const SETTINGS_TABS: TabItem[] = [
 @Component({
   selector: 'app-settings-page',
   imports: [
+    PageHeaderComponent,
     TabsComponent,
     UserProfileTabComponent,
     PreferencesTabComponent,

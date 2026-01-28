@@ -1,10 +1,8 @@
 <section class="projects-page">
-  <header class="projects-page__header">
-    <div>
-      <h1>Projects</h1>
-      <p class="text-secondary">Create and manage workspaces for each product.</p>
-    </div>
-  </header>
+  <app-page-header
+    title="Projects"
+    description="Create and manage workspaces for each product."
+  />
 
   @if (projects().length === 0) {
     <app-empty-state

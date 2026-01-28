@@ -1,10 +1,8 @@
 <section class="segments-page">
-  <header class="segments-page__header">
-    <div>
-      <h1>Segments</h1>
-      <p class="text-secondary">Create reusable audiences for precise targeting.</p>
-    </div>
-  </header>
+  <app-page-header
+    title="Segments"
+    description="Create reusable audiences for precise targeting."
+  />
 
   @if (segments().length === 0) {
     <app-empty-state

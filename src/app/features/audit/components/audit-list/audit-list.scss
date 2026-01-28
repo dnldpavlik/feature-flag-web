@@ -4,21 +4,6 @@
   gap: 1.5rem;
 }
 
-.audit-page__header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 1rem;
-
-  h1 {
-    margin-bottom: 0.25rem;
-  }
-
-  p {
-    margin-bottom: 0;
-  }
-}
-
 .audit-toolbar {
   display: flex;
   flex-flow: row wrap;
