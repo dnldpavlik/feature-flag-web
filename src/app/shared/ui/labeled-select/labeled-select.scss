@@ -1,3 +1,5 @@
+@use 'styles/mixins' as *;
+
 .labeled-select {
   display: flex;
   flex-direction: column;
@@ -5,10 +7,7 @@
 }
 
 .labeled-select__label {
-  font-size: 0.75rem;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  color: var(--text-muted);
+  @include form-label;
 }
 
 .labeled-select__control {

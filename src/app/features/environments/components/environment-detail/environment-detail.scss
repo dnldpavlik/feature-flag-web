@@ -63,11 +63,9 @@
 }
 
 .environment-detail__row--header {
+  @include form-label;
+
   background: var(--bg-tertiary);
-  font-size: 0.75rem;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: var(--text-muted);
 }
 
 .environment-detail__row--data {

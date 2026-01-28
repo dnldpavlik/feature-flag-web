@@ -30,10 +30,7 @@
 }
 
 .flag-create__label {
-  font-size: 0.75rem;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  color: var(--text-muted);
+  @include form-label;
 }
 
 .flag-create__help {

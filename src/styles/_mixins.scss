@@ -17,3 +17,17 @@
   grid-template-columns: repeat(auto-fit, minmax($min-width, 1fr));
   gap: $gap;
 }
+
+/// Applies form label styling - small uppercase text with letter spacing.
+/// Used for field labels, table headers, and section titles.
+///
+/// @example scss
+///   .my-label {
+///     @include form-label;
+///   }
+@mixin form-label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+}
