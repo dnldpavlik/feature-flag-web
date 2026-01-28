@@ -8,6 +8,8 @@ import {
 } from '@angular/core';
 
 import { ButtonComponent } from '@/app/shared/ui/button/button';
+import { DataTableComponent } from '@/app/shared/ui/data-table/data-table';
+import { UiColDirective } from '@/app/shared/ui/data-table/ui-col.directive';
 import { SettingsStore } from '../../store/settings.store';
 import { ApiKeyScope } from '../../models/settings.model';
 
@@ -19,7 +21,7 @@ const AVAILABLE_SCOPES: { value: ApiKeyScope; label: string }[] = [
 
 @Component({
   selector: 'app-api-keys-tab',
-  imports: [DatePipe, ButtonComponent],
+  imports: [DatePipe, ButtonComponent, DataTableComponent, UiColDirective],
   templateUrl: './api-keys-tab.html',
   styleUrl: './api-keys-tab.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

@@ -1,6 +1,8 @@
 import { DatePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 
+import { DataTableComponent } from '@/app/shared/ui/data-table/data-table';
+import { UiColDirective } from '@/app/shared/ui/data-table/ui-col.directive';
 import { EmptyStateComponent } from '@/app/shared/ui/empty-state/empty-state';
 import {
   LabeledSelectComponent,
@@ -29,7 +31,7 @@ const RESOURCE_OPTIONS: SelectOption[] = [
 
 @Component({
   selector: 'app-audit-list',
-  imports: [DatePipe, EmptyStateComponent, LabeledSelectComponent],
+  imports: [DatePipe, DataTableComponent, UiColDirective, EmptyStateComponent, LabeledSelectComponent],
   templateUrl: './audit-list.html',
   styleUrl: './audit-list.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

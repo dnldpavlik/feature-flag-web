@@ -3,6 +3,8 @@ import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@a
 import { RouterLink } from '@angular/router';
 
 import { ButtonComponent } from '@/app/shared/ui/button/button';
+import { DataTableComponent } from '@/app/shared/ui/data-table/data-table';
+import { UiColDirective } from '@/app/shared/ui/data-table/ui-col.directive';
 import { EmptyStateComponent } from '@/app/shared/ui/empty-state/empty-state';
 import {
   LabeledSelectComponent,
@@ -35,7 +37,7 @@ const TYPE_OPTIONS: SelectOption[] = [
 
 @Component({
   selector: 'app-flag-list',
-  imports: [DatePipe, ButtonComponent, EmptyStateComponent, LabeledSelectComponent, RouterLink],
+  imports: [DatePipe, ButtonComponent, DataTableComponent, UiColDirective, EmptyStateComponent, LabeledSelectComponent, RouterLink],
   templateUrl: './flag-list.html',
   styleUrl: './flag-list.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

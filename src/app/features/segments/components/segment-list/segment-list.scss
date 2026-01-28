@@ -12,32 +12,6 @@
   flex-wrap: wrap;
 }
 
-.segments-table {
-  display: grid;
-  gap: 0.5rem;
-}
-
-.segments-table__row {
-  display: grid;
-  grid-template-columns: 2fr 1fr 0.7fr 1fr 1fr;
-  gap: 1rem;
-  align-items: center;
-  padding: 1rem;
-  border-radius: var(--border-radius-lg);
-  background: var(--bg-card);
-  border: 1px solid var(--border-primary);
-}
-
-.segments-table__row--header {
-  text-transform: uppercase;
-  font-size: 0.7rem;
-  letter-spacing: 0.08em;
-  background: transparent;
-  border: none;
-  color: var(--text-muted);
-  padding: 0 1rem;
-}
-
 .segment-cell--name {
   display: flex;
   align-items: center;
@@ -102,15 +76,6 @@
 }
 
 @media (width <= 960px) {
-  .segments-table__row {
-    grid-template-columns: 1fr;
-    gap: 0.75rem;
-  }
-
-  .segments-table__row--header {
-    display: none;
-  }
-
   .segment-form__grid {
     grid-template-columns: 1fr;
   }

@@ -19,37 +19,32 @@
     >
     </app-empty-state>
   } @else {
-    <div class="segments-table">
-      <div class="segments-table__row segments-table__row--header">
-        <span>Segment</span>
-        <span>Key</span>
-        <span>Rules</span>
-        <span>Updated</span>
-        <span>Actions</span>
-      </div>
-      @for (segment of filteredSegments(); track segment.id) {
-        <div class="segments-table__row">
-          <div class="segment-cell segment-cell--name">
-            <div>
-              <a [routerLink]="['/segments', segment.id]" class="segment-name segment-name--link">
-                {{ segment.name }}
-              </a>
-              <span class="text-muted">{{ segment.description }}</span>
-            </div>
-          </div>
-          <span class="text-muted">{{ segment.key }}</span>
-          <span class="text-muted">{{ segment.ruleCount }}</span>
-          <span class="text-muted">{{ segment.updatedAt | date: 'mediumDate' }}</span>
-          <div class="segment-cell segment-cell--actions">
-            @if (segments().length > 1) {
-              <app-button variant="ghost" type="button" (click)="deleteSegment(segment.id)">
-                Delete
-              </app-button>
-            }
+    <app-ui-data-table [items]="filteredSegments()" ariaLabel="Segments" emptyText="No segments match.">
+      <ng-template appUiCol="name" header="Segment" width="33%" let-segment>
+        <div class="segment-cell segment-cell--name">
+          <div>
+            <a [routerLink]="['/segments', segment.id]" class="segment-name segment-name--link">{{ segment.name }}</a>
+            <span class="text-muted">{{ segment.description }}</span>
           </div>
         </div>
-      }
-    </div>
+      </ng-template>
+      <ng-template appUiCol="key" header="Key" width="17%" let-segment>
+        <span class="text-muted">{{ segment.key }}</span>
+      </ng-template>
+      <ng-template appUiCol="ruleCount" header="Rules" width="12%" align="right" let-segment>
+        <span class="text-muted">{{ segment.ruleCount }}</span>
+      </ng-template>
+      <ng-template appUiCol="updatedAt" header="Updated" width="17%" let-segment>
+        <span class="text-muted">{{ segment.updatedAt | date: 'mediumDate' }}</span>
+      </ng-template>
+      <ng-template appUiCol="actions" header="Actions" width="17%" [sortable]="false" let-segment>
+        <div class="segment-cell segment-cell--actions">
+          @if (segments().length > 1) {
+            <app-button variant="ghost" type="button" (click)="deleteSegment(segment.id)">Delete</app-button>
+          }
+        </div>
+      </ng-template>
+    </app-ui-data-table>
   }
 
   <div class="segment-form card" [formGroup]="form">

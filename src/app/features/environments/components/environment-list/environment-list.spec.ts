@@ -35,8 +35,8 @@ describe('EnvironmentList', () => {
   it('should render environment rows', async () => {
     await build();
 
-    const rows = fixture.debugElement.queryAll(By.css('.environments-table__row'));
-    expect(rows.length).toBe(store.environments().length + 1);
+    const rows = fixture.debugElement.queryAll(By.css('.data-table__body-wrap tbody tr'));
+    expect(rows.length).toBe(store.environments().length);
   });
 
   it('should mark the selected environment', async () => {
@@ -45,7 +45,7 @@ describe('EnvironmentList', () => {
     fixture.detectChanges();
 
     const selectedBadge = fixture.debugElement.query(
-      By.css('.environments-table__row .badge--success'),
+      By.css('.data-table__body-wrap tbody tr .badge--success'),
     );
     expect(selectedBadge.nativeElement.textContent).toContain('Selected');
   });
@@ -101,7 +101,7 @@ describe('EnvironmentList', () => {
     searchStore.setQuery('zzzz-no-match');
     fixture.detectChanges();
 
-    const rows = fixture.debugElement.queryAll(By.css('.environments-table__row'));
+    const rows = fixture.debugElement.queryAll(By.css('.data-table__body-wrap tbody tr'));
     expect(rows.length).toBe(0);
     const emptyState = fixture.debugElement.query(By.css('app-empty-state'));
     expect(emptyState).toBeTruthy();

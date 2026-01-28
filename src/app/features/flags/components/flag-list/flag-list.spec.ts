@@ -33,7 +33,7 @@ describe('FlagList', () => {
   });
 
   it('should render flag rows', () => {
-    const rows = fixture.debugElement.queryAll(By.css('.flags-table__row'));
+    const rows = fixture.debugElement.queryAll(By.css('.data-table__body-wrap tbody tr'));
     expect(rows.length).toBeGreaterThan(0);
   });
 
@@ -60,7 +60,7 @@ describe('FlagList', () => {
       component.onStatusChange('enabled');
       fixture.detectChanges();
 
-      const rows = fixture.debugElement.queryAll(By.css('.flags-table__row'));
+      const rows = fixture.debugElement.queryAll(By.css('.data-table__body-wrap tbody tr'));
       expect(rows.length).toBe(enabledCount);
     });
 
@@ -73,7 +73,7 @@ describe('FlagList', () => {
       component.onStatusChange('disabled');
       fixture.detectChanges();
 
-      const rows = fixture.debugElement.queryAll(By.css('.flags-table__row'));
+      const rows = fixture.debugElement.queryAll(By.css('.data-table__body-wrap tbody tr'));
       expect(rows.length).toBe(disabledCount);
     });
 
@@ -90,7 +90,7 @@ describe('FlagList', () => {
       component.onEnvironmentChange('env_staging');
       fixture.detectChanges();
 
-      const rows = fixture.debugElement.queryAll(By.css('.flags-table__row'));
+      const rows = fixture.debugElement.queryAll(By.css('.data-table__body-wrap tbody tr'));
       expect(rows.length).toBe(enabledInStaging);
     });
   });
@@ -100,7 +100,7 @@ describe('FlagList', () => {
       component.onTypeChange('string');
       fixture.detectChanges();
 
-      const rows = fixture.debugElement.queryAll(By.css('.flags-table__row'));
+      const rows = fixture.debugElement.queryAll(By.css('.data-table__body-wrap tbody tr'));
       expect(rows.length).toBe(1);
     });
 
@@ -110,7 +110,7 @@ describe('FlagList', () => {
       component.onTypeChange('boolean');
       fixture.detectChanges();
 
-      const rows = fixture.debugElement.queryAll(By.css('.flags-table__row'));
+      const rows = fixture.debugElement.queryAll(By.css('.data-table__body-wrap tbody tr'));
       expect(rows.length).toBe(booleanCount);
     });
   });
@@ -120,7 +120,7 @@ describe('FlagList', () => {
       searchStore.setQuery('zzzz-no-match');
       fixture.detectChanges();
 
-      const rows = fixture.debugElement.queryAll(By.css('.flags-table__row'));
+      const rows = fixture.debugElement.queryAll(By.css('.data-table__body-wrap tbody tr'));
       expect(rows.length).toBe(0);
       const emptyState = fixture.debugElement.query(By.css('app-empty-state'));
       expect(emptyState).toBeTruthy();

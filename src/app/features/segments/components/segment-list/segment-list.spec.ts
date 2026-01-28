@@ -29,8 +29,8 @@ describe('SegmentList', () => {
   });
 
   it('should render segment rows', () => {
-    const rows = fixture.debugElement.queryAll(By.css('.segments-table__row'));
-    expect(rows.length).toBe(store.segments().length + 1);
+    const rows = fixture.debugElement.queryAll(By.css('.data-table__body-wrap tbody tr'));
+    expect(rows.length).toBe(store.segments().length);
   });
 
   it('should add a segment', () => {
@@ -40,8 +40,8 @@ describe('SegmentList', () => {
     fixture.componentInstance.addSegment();
     fixture.detectChanges();
 
-    const rows = fixture.debugElement.queryAll(By.css('.segments-table__row'));
-    expect(rows.length).toBe(store.segments().length + 1);
+    const rows = fixture.debugElement.queryAll(By.css('.data-table__body-wrap tbody tr'));
+    expect(rows.length).toBe(store.segments().length);
   });
 
   it('should not add a segment when required fields are missing', () => {
@@ -62,7 +62,7 @@ describe('SegmentList', () => {
     searchStore.setQuery('zzzz-no-match');
     fixture.detectChanges();
 
-    const rows = fixture.debugElement.queryAll(By.css('.segments-table__row'));
+    const rows = fixture.debugElement.queryAll(By.css('.data-table__body-wrap tbody tr'));
     expect(rows.length).toBe(0);
     const emptyState = fixture.debugElement.query(By.css('app-empty-state'));
     expect(emptyState).toBeTruthy();

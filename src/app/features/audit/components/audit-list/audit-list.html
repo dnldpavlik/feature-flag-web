@@ -35,36 +35,25 @@
     >
     </app-empty-state>
   } @else {
-    <div class="audit-table">
-      <div class="audit-table__header">
-        <span>Timestamp</span>
-        <span>Action</span>
-        <span>Resource</span>
-        <span>User</span>
-        <span>Details</span>
-      </div>
-      @for (entry of filteredEntries(); track entry.id) {
-        <div class="audit-table__row">
-          <div class="audit-cell audit-cell--timestamp text-muted">
-            {{ entry.timestamp | date: 'medium' }}
-          </div>
-          <div class="audit-cell audit-cell--action">
-            <span class="badge badge--{{ entry.action }}">
-              {{ formatAction(entry.action) }}
-            </span>
-          </div>
-          <div class="audit-cell audit-cell--resource">
-            <span class="badge badge--info">{{ formatResourceType(entry.resourceType) }}</span>
-            <span class="audit-cell__name">{{ entry.resourceName }}</span>
-          </div>
-          <div class="audit-cell audit-cell--user">
-            {{ entry.userName }}
-          </div>
-          <div class="audit-cell audit-cell--details text-secondary">
-            {{ entry.details }}
-          </div>
+    <app-ui-data-table [items]="filteredEntries()" ariaLabel="Audit log" emptyText="No audit entries match.">
+      <ng-template appUiCol="timestamp" header="Timestamp" width="20%" let-entry>
+        <span class="audit-cell audit-cell--timestamp text-muted">{{ entry.timestamp | date: 'medium' }}</span>
+      </ng-template>
+      <ng-template appUiCol="action" header="Action" width="12%" let-entry>
+        <span class="badge badge--{{ entry.action }}">{{ formatAction(entry.action) }}</span>
+      </ng-template>
+      <ng-template appUiCol="resource" header="Resource" width="24%" let-entry>
+        <div class="audit-cell audit-cell--resource">
+          <span class="badge badge--info">{{ formatResourceType(entry.resourceType) }}</span>
+          <span class="audit-cell__name">{{ entry.resourceName }}</span>
         </div>
-      }
-    </div>
+      </ng-template>
+      <ng-template appUiCol="userName" header="User" width="15%" let-entry>
+        <span>{{ entry.userName }}</span>
+      </ng-template>
+      <ng-template appUiCol="details" header="Details" width="29%" [sortable]="false" let-entry>
+        <span class="audit-cell audit-cell--details text-secondary">{{ entry.details }}</span>
+      </ng-template>
+    </app-ui-data-table>
   }
 </section>

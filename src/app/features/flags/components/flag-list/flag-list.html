@@ -45,64 +45,42 @@
     >
     </app-empty-state>
   } @else {
-    <div class="flags-table">
-      <div class="flags-table__header">
-        <span>Flag</span>
-        <span>Status</span>
-        <span>Value</span>
-        <span>Type</span>
-        <span>Tags</span>
-        <span>Updated</span>
-        <span>Actions</span>
-      </div>
-      @for (flag of filteredFlags(); track flag.key) {
-        <div class="flags-table__row">
-          <div class="flag-cell flag-cell--name">
-            <a class="flag-cell__title flag-cell__link" [routerLink]="['/flags', flag.id]">
-              {{ flag.name }}
-            </a>
-            <div class="flag-cell__meta text-muted">{{ flag.key }}</div>
-            <div class="flag-cell__description text-secondary">{{ flag.description }}</div>
-          </div>
-          <div class="flag-cell">
-            <div class="flag-status">
-              <label class="toggle">
-                <input
-                  type="checkbox"
-                  [checked]="flag.currentEnabled"
-                  (change)="onToggleFlag(flag.id, $event)"
-                />
-                <span class="toggle__slider"></span>
-              </label>
-              <span class="flag-status__label">
-                {{ flag.currentEnabled ? 'Enabled' : 'Disabled' }}
-              </span>
-            </div>
-          </div>
-          <div class="flag-cell flag-cell--value">
-            <code class="flag-value">{{ formatValue(flag) }}</code>
-          </div>
-          <div class="flag-cell flag-cell--tags">
-            <span class="badge badge--info">{{ flag.type }}</span>
-          </div>
-          <div class="flag-cell flag-cell--tags">
-            @for (tag of flag.tags; track tag) {
-              <span class="badge badge--success">{{ tag }}</span>
-            }
-          </div>
-          <div class="flag-cell text-muted">{{ flag.updatedAt | date: 'mediumDate' }}</div>
-          <div class="flag-cell">
-            @if (totalCount() > 1) {
-              <app-button
-                class="flag-delete-btn"
-                variant="ghost"
-                type="button"
-                (click)="onDeleteFlag(flag.id)"
-              >Delete</app-button>
-            }
-          </div>
+    <app-ui-data-table [items]="filteredFlags()" ariaLabel="Feature flags" emptyText="No flags match filters.">
+      <ng-template appUiCol="name" header="Flag" width="28%" let-flag>
+        <div class="flag-cell flag-cell--name">
+          <a class="flag-cell__title flag-cell__link" [routerLink]="['/flags', flag.id]">{{ flag.name }}</a>
+          <div class="flag-cell__meta text-muted">{{ flag.key }}</div>
+          <div class="flag-cell__description text-secondary">{{ flag.description }}</div>
         </div>
-      }
-    </div>
+      </ng-template>
+      <ng-template appUiCol="status" header="Status" width="14%" [sortable]="false" let-flag>
+        <div class="flag-status">
+          <label class="toggle">
+            <input type="checkbox" [checked]="flag.currentEnabled" (change)="onToggleFlag(flag.id, $event)" />
+            <span class="toggle__slider"></span>
+          </label>
+          <span class="flag-status__label">{{ flag.currentEnabled ? 'Enabled' : 'Disabled' }}</span>
+        </div>
+      </ng-template>
+      <ng-template appUiCol="value" header="Value" width="16%" [sortable]="false" let-flag>
+        <code class="flag-value">{{ formatValue(flag) }}</code>
+      </ng-template>
+      <ng-template appUiCol="type" header="Type" width="10%" let-flag>
+        <span class="badge badge--info">{{ flag.type }}</span>
+      </ng-template>
+      <ng-template appUiCol="tags" header="Tags" width="14%" [sortable]="false" let-flag>
+        @for (tag of flag.tags; track tag) {
+          <span class="badge badge--success">{{ tag }}</span>
+        }
+      </ng-template>
+      <ng-template appUiCol="updatedAt" header="Updated" width="10%" let-flag>
+        <span class="text-muted">{{ flag.updatedAt | date: 'mediumDate' }}</span>
+      </ng-template>
+      <ng-template appUiCol="actions" header="Actions" [sortable]="false" let-flag>
+        @if (totalCount() > 1) {
+          <app-button class="flag-delete-btn" variant="ghost" type="button" (click)="onDeleteFlag(flag.id)">Delete</app-button>
+        }
+      </ng-template>
+    </app-ui-data-table>
   }
 </section>

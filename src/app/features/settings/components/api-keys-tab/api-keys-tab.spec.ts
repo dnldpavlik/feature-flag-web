@@ -27,13 +27,13 @@ describe('ApiKeysTabComponent', () => {
 
   describe('keys table', () => {
     it('should render API keys table', () => {
-      const table = fixture.debugElement.query(By.css('.api-keys-tab__table'));
+      const table = fixture.debugElement.query(By.css('app-ui-data-table'));
       expect(table).toBeTruthy();
     });
 
     it('should display existing API keys', () => {
       const rows = fixture.debugElement.queryAll(
-        By.css('.api-keys-tab__table-row')
+        By.css('.data-table__body-wrap tbody tr')
       );
       expect(rows.length).toBe(settingsStore.apiKeys().length);
     });
@@ -41,7 +41,7 @@ describe('ApiKeysTabComponent', () => {
     it('should display key name', () => {
       const firstKey = settingsStore.apiKeys()[0];
       const nameCell = fixture.debugElement.query(
-        By.css('.api-keys-tab__table-row .api-keys-tab__key-name')
+        By.css('.data-table__body-wrap tbody tr .api-keys-tab__key-name')
       );
       expect(nameCell.nativeElement.textContent).toContain(firstKey.name);
     });
@@ -49,7 +49,7 @@ describe('ApiKeysTabComponent', () => {
     it('should display masked key prefix', () => {
       const firstKey = settingsStore.apiKeys()[0];
       const prefixCell = fixture.debugElement.query(
-        By.css('.api-keys-tab__table-row .api-keys-tab__key-prefix')
+        By.css('.data-table__body-wrap tbody tr .api-keys-tab__key-prefix')
       );
       expect(prefixCell.nativeElement.textContent).toContain(firstKey.prefix);
     });
@@ -57,7 +57,7 @@ describe('ApiKeysTabComponent', () => {
     it('should display scopes', () => {
       const firstKey = settingsStore.apiKeys()[0];
       const scopesCell = fixture.debugElement.query(
-        By.css('.api-keys-tab__table-row .api-keys-tab__key-scopes')
+        By.css('.data-table__body-wrap tbody tr .api-keys-tab__key-scopes')
       );
       expect(scopesCell.nativeElement.textContent).toContain(
         firstKey.scopes[0]

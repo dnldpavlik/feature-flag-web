@@ -123,42 +123,23 @@
   }
 
   @if (hasKeys()) {
-    <div class="api-keys-tab__table">
-      <div class="api-keys-tab__table-header">
-        <span class="api-keys-tab__table-cell api-keys-tab__table-cell--name">Name</span>
-        <span class="api-keys-tab__table-cell api-keys-tab__table-cell--prefix">Key</span>
-        <span class="api-keys-tab__table-cell api-keys-tab__table-cell--scopes">Scopes</span>
-        <span class="api-keys-tab__table-cell api-keys-tab__table-cell--created">Created</span>
-        <span class="api-keys-tab__table-cell api-keys-tab__table-cell--actions">Actions</span>
-      </div>
-
-      @for (key of apiKeys(); track key.id) {
-        <div class="api-keys-tab__table-row">
-          <span class="api-keys-tab__table-cell api-keys-tab__table-cell--name api-keys-tab__key-name">
-            {{ key.name }}
-          </span>
-          <span class="api-keys-tab__table-cell api-keys-tab__table-cell--prefix api-keys-tab__key-prefix">
-            <code>{{ key.prefix }}</code>
-          </span>
-          <span class="api-keys-tab__table-cell api-keys-tab__table-cell--scopes api-keys-tab__key-scopes">
-            {{ formatScopes(key.scopes) }}
-          </span>
-          <span class="api-keys-tab__table-cell api-keys-tab__table-cell--created">
-            {{ key.createdAt | date:'mediumDate' }}
-          </span>
-          <span class="api-keys-tab__table-cell api-keys-tab__table-cell--actions">
-            <app-button
-              variant="ghost"
-              size="sm"
-              class="api-keys-tab__revoke-btn"
-              (click)="confirmRevoke(key.id)"
-            >
-              Revoke
-            </app-button>
-          </span>
-        </div>
-      }
-    </div>
+    <app-ui-data-table [items]="apiKeys()" ariaLabel="API keys" emptyText="No API keys.">
+      <ng-template appUiCol="name" header="Name" width="25%" let-key>
+        <span class="api-keys-tab__key-name">{{ key.name }}</span>
+      </ng-template>
+      <ng-template appUiCol="prefix" header="Key" width="25%" [sortable]="false" let-key>
+        <span class="api-keys-tab__key-prefix"><code>{{ key.prefix }}</code></span>
+      </ng-template>
+      <ng-template appUiCol="scopes" header="Scopes" width="20%" [sortable]="false" let-key>
+        <span class="api-keys-tab__key-scopes">{{ formatScopes(key.scopes) }}</span>
+      </ng-template>
+      <ng-template appUiCol="createdAt" header="Created" width="15%" let-key>
+        {{ key.createdAt | date:'mediumDate' }}
+      </ng-template>
+      <ng-template appUiCol="actions" header="Actions" width="15%" align="right" [sortable]="false" let-key>
+        <app-button variant="ghost" size="sm" class="api-keys-tab__revoke-btn" (click)="confirmRevoke(key.id)">Revoke</app-button>
+      </ng-template>
+    </app-ui-data-table>
   } @else if (!showCreateForm() && !createdSecret()) {
     <div class="api-keys-tab__empty">
       <p class="api-keys-tab__empty-text">No API keys yet</p>

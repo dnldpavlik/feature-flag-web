@@ -35,7 +35,7 @@ describe('AuditList', () => {
   });
 
   it('should render audit entry rows', () => {
-    const rows = fixture.debugElement.queryAll(By.css('.audit-table__row'));
+    const rows = fixture.debugElement.queryAll(By.css('.data-table__body-wrap tbody tr'));
     expect(rows.length).toBeGreaterThan(0);
   });
 
@@ -52,7 +52,7 @@ describe('AuditList', () => {
       component.onActionChange('created');
       fixture.detectChanges();
 
-      const rows = fixture.debugElement.queryAll(By.css('.audit-table__row'));
+      const rows = fixture.debugElement.queryAll(By.css('.data-table__body-wrap tbody tr'));
       expect(rows.length).toBe(createdCount);
     });
 
@@ -62,7 +62,7 @@ describe('AuditList', () => {
       component.onActionChange('updated');
       fixture.detectChanges();
 
-      const rows = fixture.debugElement.queryAll(By.css('.audit-table__row'));
+      const rows = fixture.debugElement.queryAll(By.css('.data-table__body-wrap tbody tr'));
       expect(rows.length).toBe(updatedCount);
     });
 
@@ -72,7 +72,7 @@ describe('AuditList', () => {
       component.onActionChange('deleted');
       fixture.detectChanges();
 
-      const rows = fixture.debugElement.queryAll(By.css('.audit-table__row'));
+      const rows = fixture.debugElement.queryAll(By.css('.data-table__body-wrap tbody tr'));
       expect(rows.length).toBe(deletedCount);
     });
 
@@ -82,7 +82,7 @@ describe('AuditList', () => {
       component.onActionChange('toggled');
       fixture.detectChanges();
 
-      const rows = fixture.debugElement.queryAll(By.css('.audit-table__row'));
+      const rows = fixture.debugElement.queryAll(By.css('.data-table__body-wrap tbody tr'));
       expect(rows.length).toBe(toggledCount);
     });
 
@@ -93,7 +93,7 @@ describe('AuditList', () => {
       component.onActionChange('all');
       fixture.detectChanges();
 
-      const rows = fixture.debugElement.queryAll(By.css('.audit-table__row'));
+      const rows = fixture.debugElement.queryAll(By.css('.data-table__body-wrap tbody tr'));
       expect(rows.length).toBe(auditStore.entries().length);
     });
   });
@@ -105,7 +105,7 @@ describe('AuditList', () => {
       component.onResourceChange('flag');
       fixture.detectChanges();
 
-      const rows = fixture.debugElement.queryAll(By.css('.audit-table__row'));
+      const rows = fixture.debugElement.queryAll(By.css('.data-table__body-wrap tbody tr'));
       expect(rows.length).toBe(flagCount);
     });
 
@@ -115,7 +115,7 @@ describe('AuditList', () => {
       component.onResourceChange('segment');
       fixture.detectChanges();
 
-      const rows = fixture.debugElement.queryAll(By.css('.audit-table__row'));
+      const rows = fixture.debugElement.queryAll(By.css('.data-table__body-wrap tbody tr'));
       expect(rows.length).toBe(segmentCount);
     });
 
@@ -125,7 +125,7 @@ describe('AuditList', () => {
       component.onResourceChange('environment');
       fixture.detectChanges();
 
-      const rows = fixture.debugElement.queryAll(By.css('.audit-table__row'));
+      const rows = fixture.debugElement.queryAll(By.css('.data-table__body-wrap tbody tr'));
       expect(rows.length).toBe(envCount);
     });
 
@@ -135,7 +135,7 @@ describe('AuditList', () => {
       component.onResourceChange('project');
       fixture.detectChanges();
 
-      const rows = fixture.debugElement.queryAll(By.css('.audit-table__row'));
+      const rows = fixture.debugElement.queryAll(By.css('.data-table__body-wrap tbody tr'));
       expect(rows.length).toBe(projectCount);
     });
 
@@ -146,7 +146,7 @@ describe('AuditList', () => {
       component.onResourceChange('all');
       fixture.detectChanges();
 
-      const rows = fixture.debugElement.queryAll(By.css('.audit-table__row'));
+      const rows = fixture.debugElement.queryAll(By.css('.data-table__body-wrap tbody tr'));
       expect(rows.length).toBe(auditStore.entries().length);
     });
   });
@@ -161,7 +161,7 @@ describe('AuditList', () => {
       component.onResourceChange('flag');
       fixture.detectChanges();
 
-      const rows = fixture.debugElement.queryAll(By.css('.audit-table__row'));
+      const rows = fixture.debugElement.queryAll(By.css('.data-table__body-wrap tbody tr'));
       expect(rows.length).toBe(createdFlagCount);
     });
   });
@@ -171,7 +171,7 @@ describe('AuditList', () => {
       searchStore.setQuery('zzzz-no-match');
       fixture.detectChanges();
 
-      const rows = fixture.debugElement.queryAll(By.css('.audit-table__row'));
+      const rows = fixture.debugElement.queryAll(By.css('.data-table__body-wrap tbody tr'));
       expect(rows.length).toBe(0);
     });
 
@@ -179,7 +179,7 @@ describe('AuditList', () => {
       searchStore.setQuery('Dark Mode');
       fixture.detectChanges();
 
-      const rows = fixture.debugElement.queryAll(By.css('.audit-table__row'));
+      const rows = fixture.debugElement.queryAll(By.css('.data-table__body-wrap tbody tr'));
       expect(rows.length).toBeGreaterThan(0);
     });
 
@@ -187,7 +187,7 @@ describe('AuditList', () => {
       searchStore.setQuery('Admin User');
       fixture.detectChanges();
 
-      const rows = fixture.debugElement.queryAll(By.css('.audit-table__row'));
+      const rows = fixture.debugElement.queryAll(By.css('.data-table__body-wrap tbody tr'));
       expect(rows.length).toBeGreaterThan(0);
     });
 
@@ -195,7 +195,7 @@ describe('AuditList', () => {
       searchStore.setQuery('boolean flag');
       fixture.detectChanges();
 
-      const rows = fixture.debugElement.queryAll(By.css('.audit-table__row'));
+      const rows = fixture.debugElement.queryAll(By.css('.data-table__body-wrap tbody tr'));
       expect(rows.length).toBeGreaterThan(0);
     });
   });

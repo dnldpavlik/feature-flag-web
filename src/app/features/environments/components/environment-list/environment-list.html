@@ -19,47 +19,36 @@
     >
     </app-empty-state>
   } @else {
-    <div class="environments-table">
-      <div class="environments-table__row environments-table__row--header">
-        <span>Environment</span>
-        <span>Key</span>
-        <span>Status</span>
-        <span>Updated</span>
-        <span>Actions</span>
-      </div>
-      @for (env of filteredEnvironments(); track env.id) {
-        <div class="environments-table__row">
-          <div class="env-cell env-cell--name">
-            <span class="env-dot" [style.--env-color]="env.color"></span>
-            <a class="env-link" [routerLink]="['/environments', env.id]">
-              {{ env.name }}
-            </a>
-          </div>
-          <span class="text-muted">{{ env.key }}</span>
-          <div class="env-cell env-cell--badges">
-            @if (env.isDefault) {
-              <span class="badge badge--info">Default</span>
-            }
-            @if (selectedEnvironmentId() === env.id) {
-              <span class="badge badge--success">Selected</span>
-            }
-          </div>
-          <span class="text-muted">{{ env.updatedAt | date: 'mediumDate' }}</span>
-          <div class="env-cell env-cell--actions">
-            @if (selectedEnvironmentId() !== env.id) {
-              <app-button variant="ghost" type="button" (click)="selectEnvironment(env.id)">
-                Select
-              </app-button>
-            }
-            @if (!env.isDefault) {
-              <app-button variant="ghost" type="button" (click)="setDefaultEnvironment(env.id)">
-                Make Default
-              </app-button>
-            }
-          </div>
+    <app-ui-data-table [items]="filteredEnvironments()" ariaLabel="Environments" emptyText="No environments match.">
+      <ng-template appUiCol="name" header="Environment" width="26%" let-env>
+        <div class="env-cell env-cell--name">
+          <span class="env-dot" [style.--env-color]="env.color"></span>
+          <a class="env-link" [routerLink]="['/environments', env.id]">{{ env.name }}</a>
         </div>
-      }
-    </div>
+      </ng-template>
+      <ng-template appUiCol="key" header="Key" width="17%" let-env>
+        <span class="text-muted">{{ env.key }}</span>
+      </ng-template>
+      <ng-template appUiCol="status" header="Status" width="17%" [sortable]="false" let-env>
+        <div class="env-cell env-cell--badges">
+          @if (env.isDefault) { <span class="badge badge--info">Default</span> }
+          @if (selectedEnvironmentId() === env.id) { <span class="badge badge--success">Selected</span> }
+        </div>
+      </ng-template>
+      <ng-template appUiCol="updatedAt" header="Updated" width="17%" let-env>
+        <span class="text-muted">{{ env.updatedAt | date: 'mediumDate' }}</span>
+      </ng-template>
+      <ng-template appUiCol="actions" header="Actions" width="23%" [sortable]="false" let-env>
+        <div class="env-cell env-cell--actions">
+          @if (selectedEnvironmentId() !== env.id) {
+            <app-button variant="ghost" type="button" (click)="selectEnvironment(env.id)">Select</app-button>
+          }
+          @if (!env.isDefault) {
+            <app-button variant="ghost" type="button" (click)="setDefaultEnvironment(env.id)">Make Default</app-button>
+          }
+        </div>
+      </ng-template>
+    </app-ui-data-table>
   }
 
   <div class="env-form card" [formGroup]="form">

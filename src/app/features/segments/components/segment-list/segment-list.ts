@@ -4,13 +4,15 @@ import { NonNullableFormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 
 import { ButtonComponent } from '@/app/shared/ui/button/button';
+import { DataTableComponent } from '@/app/shared/ui/data-table/data-table';
+import { UiColDirective } from '@/app/shared/ui/data-table/ui-col.directive';
 import { EmptyStateComponent } from '@/app/shared/ui/empty-state/empty-state';
 import { SearchStore } from '@/app/shared/store/search.store';
 import { SegmentStore } from '@/app/features/segments/store/segment.store';
 
 @Component({
   selector: 'app-segment-list',
-  imports: [DatePipe, ReactiveFormsModule, RouterLink, ButtonComponent, EmptyStateComponent],
+  imports: [DatePipe, ReactiveFormsModule, RouterLink, ButtonComponent, DataTableComponent, UiColDirective, EmptyStateComponent],
   templateUrl: './segment-list.html',
   styleUrl: './segment-list.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

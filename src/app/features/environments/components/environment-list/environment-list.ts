@@ -4,13 +4,15 @@ import { NonNullableFormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 
 import { ButtonComponent } from '@/app/shared/ui/button/button';
+import { DataTableComponent } from '@/app/shared/ui/data-table/data-table';
+import { UiColDirective } from '@/app/shared/ui/data-table/ui-col.directive';
 import { EmptyStateComponent } from '@/app/shared/ui/empty-state/empty-state';
 import { SearchStore } from '@/app/shared/store/search.store';
 import { EnvironmentStore } from '@/app/shared/store/environment.store';
 
 @Component({
   selector: 'app-environment-list',
-  imports: [DatePipe, ReactiveFormsModule, ButtonComponent, EmptyStateComponent, RouterLink],
+  imports: [DatePipe, ReactiveFormsModule, ButtonComponent, DataTableComponent, UiColDirective, EmptyStateComponent, RouterLink],
   templateUrl: './environment-list.html',
   styleUrl: './environment-list.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

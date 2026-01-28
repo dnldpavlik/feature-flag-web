@@ -19,54 +19,41 @@
     >
     </app-empty-state>
   } @else {
-    <div class="projects-table">
-      <div class="projects-table__row projects-table__row--header">
-        <span>Project</span>
-        <span>Key</span>
-        <span>Status</span>
-        <span>Updated</span>
-        <span>Actions</span>
-      </div>
-      @for (project of filteredProjects(); track project.id) {
-        <div class="projects-table__row">
-          <div class="project-cell project-cell--name">
-            <div>
-              <a class="project-link" [routerLink]="['/projects', project.id]">
-                {{ project.name }}
-              </a>
-              <span class="text-muted">{{ project.description }}</span>
-            </div>
-          </div>
-          <span class="text-muted">{{ project.key }}</span>
-          <div class="project-cell project-cell--badges">
-            @if (project.isDefault) {
-              <span class="badge badge--info">Default</span>
-            }
-            @if (selectedProjectId() === project.id) {
-              <span class="badge badge--success">Selected</span>
-            }
-          </div>
-          <span class="text-muted">{{ project.updatedAt | date: 'mediumDate' }}</span>
-          <div class="project-cell project-cell--actions">
-            @if (selectedProjectId() !== project.id) {
-              <app-button variant="ghost" type="button" (click)="selectProject(project.id)">
-                Select
-              </app-button>
-            }
-            @if (!project.isDefault) {
-              <app-button variant="ghost" type="button" (click)="setDefaultProject(project.id)">
-                Make Default
-              </app-button>
-            }
-            @if (projects().length > 1) {
-              <app-button variant="ghost" type="button" (click)="deleteProject(project.id)">
-                Delete
-              </app-button>
-            }
+    <app-ui-data-table [items]="filteredProjects()" ariaLabel="Projects" emptyText="No projects match.">
+      <ng-template appUiCol="name" header="Project" width="26%" let-project>
+        <div class="project-cell project-cell--name">
+          <div>
+            <a class="project-link" [routerLink]="['/projects', project.id]">{{ project.name }}</a>
+            <span class="text-muted">{{ project.description }}</span>
           </div>
         </div>
-      }
-    </div>
+      </ng-template>
+      <ng-template appUiCol="key" header="Key" width="17%" let-project>
+        <span class="text-muted">{{ project.key }}</span>
+      </ng-template>
+      <ng-template appUiCol="status" header="Status" width="17%" [sortable]="false" let-project>
+        <div class="project-cell project-cell--badges">
+          @if (project.isDefault) { <span class="badge badge--info">Default</span> }
+          @if (selectedProjectId() === project.id) { <span class="badge badge--success">Selected</span> }
+        </div>
+      </ng-template>
+      <ng-template appUiCol="updatedAt" header="Updated" width="17%" let-project>
+        <span class="text-muted">{{ project.updatedAt | date: 'mediumDate' }}</span>
+      </ng-template>
+      <ng-template appUiCol="actions" header="Actions" width="23%" [sortable]="false" let-project>
+        <div class="project-cell project-cell--actions">
+          @if (selectedProjectId() !== project.id) {
+            <app-button variant="ghost" type="button" (click)="selectProject(project.id)">Select</app-button>
+          }
+          @if (!project.isDefault) {
+            <app-button variant="ghost" type="button" (click)="setDefaultProject(project.id)">Make Default</app-button>
+          }
+          @if (projects().length > 1) {
+            <app-button variant="ghost" type="button" (click)="deleteProject(project.id)">Delete</app-button>
+          }
+        </div>
+      </ng-template>
+    </app-ui-data-table>
   }
 
   <div class="project-form card" [formGroup]="form">

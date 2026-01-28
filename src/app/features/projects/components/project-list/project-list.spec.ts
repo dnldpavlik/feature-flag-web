@@ -29,8 +29,8 @@ describe('ProjectList', () => {
   });
 
   it('should render project rows', () => {
-    const rows = fixture.debugElement.queryAll(By.css('.projects-table__row'));
-    expect(rows.length).toBe(store.projects().length + 1);
+    const rows = fixture.debugElement.queryAll(By.css('.data-table__body-wrap tbody tr'));
+    expect(rows.length).toBe(store.projects().length);
   });
 
   it('should add a project', () => {
@@ -40,8 +40,8 @@ describe('ProjectList', () => {
     fixture.componentInstance.addProject();
     fixture.detectChanges();
 
-    const rows = fixture.debugElement.queryAll(By.css('.projects-table__row'));
-    expect(rows.length).toBe(store.projects().length + 1);
+    const rows = fixture.debugElement.queryAll(By.css('.data-table__body-wrap tbody tr'));
+    expect(rows.length).toBe(store.projects().length);
   });
 
   it('should not add a project when required fields are missing', () => {
@@ -74,7 +74,7 @@ describe('ProjectList', () => {
     searchStore.setQuery('zzzz-no-match');
     fixture.detectChanges();
 
-    const rows = fixture.debugElement.queryAll(By.css('.projects-table__row'));
+    const rows = fixture.debugElement.queryAll(By.css('.data-table__body-wrap tbody tr'));
     expect(rows.length).toBe(0);
     const emptyState = fixture.debugElement.query(By.css('app-empty-state'));
     expect(emptyState).toBeTruthy();
