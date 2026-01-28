@@ -11,6 +11,7 @@ import { NonNullableFormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { ButtonComponent } from '@/app/shared/ui/button/button';
+import { CardComponent } from '@/app/shared/ui/card/card';
 import { EmptyStateComponent } from '@/app/shared/ui/empty-state/empty-state';
 import { ToggleComponent } from '@/app/shared/ui/toggle/toggle';
 import { EnvironmentStore } from '@/app/shared/store/environment.store';
@@ -22,7 +23,7 @@ import { FlagEnvironmentRow } from './flag-detail.types';
 
 @Component({
   selector: 'app-flag-detail',
-  imports: [ButtonComponent, EmptyStateComponent, ReactiveFormsModule, ToggleComponent],
+  imports: [ButtonComponent, CardComponent, EmptyStateComponent, ReactiveFormsModule, ToggleComponent],
   templateUrl: './flag-detail.html',
   styleUrl: './flag-detail.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

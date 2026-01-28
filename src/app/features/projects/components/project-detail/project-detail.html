@@ -22,7 +22,7 @@
     </header>
 
     <div class="project-detail__grid">
-      <div class="project-detail__card">
+      <app-card padding="lg">
         <h2>Overview</h2>
         <div class="project-detail__row">
           <span class="text-muted">Status</span>
@@ -39,9 +39,9 @@
           <span class="text-muted">Description</span>
           <span>{{ project.description || '—' }}</span>
         </div>
-      </div>
+      </app-card>
 
-      <div class="project-detail__card">
+      <app-card padding="lg">
         <h2>Details</h2>
         <div class="project-detail__row">
           <span class="text-muted">Created</span>
@@ -51,7 +51,7 @@
           <span class="text-muted">Last updated</span>
           <span>{{ project.updatedAt | date: 'mediumDate' }}</span>
         </div>
-      </div>
+      </app-card>
     </div>
   </section>
 } @else {

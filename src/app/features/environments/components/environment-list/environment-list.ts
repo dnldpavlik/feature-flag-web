@@ -5,6 +5,7 @@ import { Router, RouterLink } from '@angular/router';
 
 import { BadgeComponent } from '@/app/shared/ui/badge/badge';
 import { ButtonComponent } from '@/app/shared/ui/button/button';
+import { CardComponent } from '@/app/shared/ui/card/card';
 import { DataTableComponent } from '@/app/shared/ui/data-table/data-table';
 import { UiColDirective } from '@/app/shared/ui/data-table/ui-col.directive';
 import { EmptyStateComponent } from '@/app/shared/ui/empty-state/empty-state';
@@ -14,7 +15,7 @@ import { EnvironmentStore } from '@/app/shared/store/environment.store';
 
 @Component({
   selector: 'app-environment-list',
-  imports: [BadgeComponent, DatePipe, ReactiveFormsModule, ButtonComponent, DataTableComponent, UiColDirective, EmptyStateComponent, PageHeaderComponent, RouterLink],
+  imports: [BadgeComponent, CardComponent, DatePipe, ReactiveFormsModule, ButtonComponent, DataTableComponent, UiColDirective, EmptyStateComponent, PageHeaderComponent, RouterLink],
   templateUrl: './environment-list.html',
   styleUrl: './environment-list.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

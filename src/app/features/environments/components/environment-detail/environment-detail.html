@@ -26,7 +26,7 @@
     </header>
 
     <div class="environment-detail__grid">
-      <div class="environment-detail__card">
+      <app-card padding="lg">
         <h2>Overview</h2>
         @if (isEditing()) {
           <div class="environment-detail__edit-form">
@@ -85,9 +85,9 @@
             </div>
           </div>
         }
-      </div>
+      </app-card>
 
-      <div class="environment-detail__card">
+      <app-card padding="lg">
         <h2>Details</h2>
         <div class="environment-detail__row">
           <span class="text-muted">Created</span>
@@ -97,7 +97,7 @@
           <span class="text-muted">Last updated</span>
           <span>{{ env.updatedAt | date: 'mediumDate' }}</span>
         </div>
-      </div>
+      </app-card>
     </div>
 
     <section class="environment-detail__flags">

@@ -2,12 +2,8 @@
 // Stat Card Component Styles
 // =============================================================================
 
-:host {
-  display: block;
-  background: var(--bg-card);
-  border: 1px solid var(--border-primary);
-  border-radius: var(--border-radius-lg);
-  padding: 1.25rem;
+.stat-card {
+  gap: 0.5rem;
 }
 
 .stat-card__value {
@@ -15,7 +11,6 @@
   font-weight: 600;
   color: var(--text-primary);
   line-height: 1;
-  margin-bottom: 0.5rem;
 }
 
 .stat-card__label {

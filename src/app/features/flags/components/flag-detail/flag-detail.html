@@ -25,7 +25,7 @@
     </header>
 
     <div class="flag-detail__grid" [formGroup]="form">
-      <div class="flag-detail__card">
+      <app-card padding="lg">
         <h2>Details</h2>
         <label class="flag-detail__field">
           <span class="flag-detail__label">Name</span>
@@ -43,9 +43,9 @@
           <span class="flag-detail__label">Tags</span>
           <input class="form-input" formControlName="tags" placeholder="checkout, web" />
         </label>
-      </div>
+      </app-card>
 
-      <div class="flag-detail__card">
+      <app-card padding="lg">
         <h2>Default Value</h2>
         <p class="text-secondary flag-detail__help">
           Used when an environment does not have an override.
@@ -75,10 +75,10 @@
             }
           }
         }
-      </div>
+      </app-card>
     </div>
 
-    <div class="flag-detail__card">
+    <app-card padding="lg">
       <h2>Environment Overrides</h2>
       <div class="flag-detail__env-table">
         <div class="flag-detail__env-header">
@@ -136,7 +136,7 @@
           </div>
         }
       </div>
-    </div>
+    </app-card>
   </section>
 } @else {
   <app-empty-state

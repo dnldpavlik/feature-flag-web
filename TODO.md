@@ -81,7 +81,7 @@ Additional shared components:
 - [ ] Select/dropdown component
 - [ ] Checkbox component
 - [x] Toggle switch component
-- [ ] Card component
+- [x] Card component
 - [ ] Modal/dialog component
 - [ ] Toast notification component
 - [ ] Loading spinner component

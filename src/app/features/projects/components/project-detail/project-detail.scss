@@ -39,16 +39,6 @@
 
 .project-detail__grid {
   @include auto-grid(240px, 1.5rem);
-}
-
-.project-detail__card {
-  background: var(--bg-card);
-  border: 1px solid var(--border-primary);
-  border-radius: var(--border-radius-lg);
-  padding: 1.5rem;
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
 
   h2 {
     font-size: 1rem;

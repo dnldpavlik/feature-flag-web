@@ -45,7 +45,7 @@
     </app-ui-data-table>
   }
 
-  <div class="segment-form card" [formGroup]="form">
+  <app-card class="segment-form" padding="lg" [formGroup]="form">
     <div class="segment-form__header">
       <h2>New Segment</h2>
       <p class="text-secondary">Build a reusable audience definition.</p>
@@ -83,5 +83,5 @@
     <app-button variant="primary" type="button" [disabled]="!canAdd()" (click)="addSegment()">
       Add Segment
     </app-button>
-  </div>
+  </app-card>
 </section>

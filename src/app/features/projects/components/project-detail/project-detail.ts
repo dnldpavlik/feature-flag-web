@@ -5,12 +5,13 @@ import { ActivatedRoute, Router } from '@angular/router';
 
 import { BadgeComponent } from '@/app/shared/ui/badge/badge';
 import { ButtonComponent } from '@/app/shared/ui/button/button';
+import { CardComponent } from '@/app/shared/ui/card/card';
 import { EmptyStateComponent } from '@/app/shared/ui/empty-state/empty-state';
 import { ProjectStore } from '@/app/shared/store/project.store';
 
 @Component({
   selector: 'app-project-detail',
-  imports: [BadgeComponent, DatePipe, ButtonComponent, EmptyStateComponent],
+  imports: [BadgeComponent, CardComponent, DatePipe, ButtonComponent, EmptyStateComponent],
   templateUrl: './project-detail.html',
   styleUrl: './project-detail.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

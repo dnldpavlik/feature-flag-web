@@ -93,13 +93,13 @@ describe('StatCard', () => {
   });
 
   describe('host element styling', () => {
-    it('should apply stat-card class to host element for styling', () => {
+    it('should use Card component with stat-card class', () => {
       fixture.componentRef.setInput('value', '0');
       fixture.componentRef.setInput('label', 'Test');
       fixture.detectChanges();
 
-      const hostElement = fixture.debugElement.nativeElement;
-      expect(hostElement.classList.contains('stat-card')).toBe(true);
+      const cardElement = fixture.debugElement.query(By.css('app-card.stat-card'));
+      expect(cardElement).toBeTruthy();
     });
   });
 

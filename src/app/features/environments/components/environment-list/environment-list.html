@@ -49,7 +49,7 @@
     </app-ui-data-table>
   }
 
-  <div class="env-form card" [formGroup]="form">
+  <app-card class="env-form" padding="lg" [formGroup]="form">
     <div class="env-form__header">
       <h2>New Environment</h2>
       <p class="text-secondary">Add a new release stage for your feature flags.</p>
@@ -86,5 +86,5 @@
     <app-button variant="primary" type="button" [disabled]="!canAdd()" (click)="addEnvironment()">
       Add Environment
     </app-button>
-  </div>
+  </app-card>
 </section>

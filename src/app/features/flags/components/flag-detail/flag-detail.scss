@@ -41,18 +41,8 @@
   @include auto-grid(260px, 1.5rem);
 }
 
-.flag-detail__card {
-  background: var(--bg-card);
-  border: 1px solid var(--border-primary);
-  border-radius: var(--border-radius-lg);
-  padding: 1.5rem;
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-
-  h2 {
-    font-size: 1rem;
-  }
+.flag-detail app-card h2 {
+  font-size: 1rem;
 }
 
 .flag-detail__field {

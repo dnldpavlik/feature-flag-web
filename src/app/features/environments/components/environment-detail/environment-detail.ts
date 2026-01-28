@@ -5,6 +5,7 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { BadgeComponent } from '@/app/shared/ui/badge/badge';
 import { ButtonComponent } from '@/app/shared/ui/button/button';
+import { CardComponent } from '@/app/shared/ui/card/card';
 import { EmptyStateComponent } from '@/app/shared/ui/empty-state/empty-state';
 import { EnvironmentStore } from '@/app/shared/store/environment.store';
 import { FlagStore } from '@/app/features/flags/store/flag.store';
@@ -17,7 +18,7 @@ import { formatDisplayValue } from '@/app/features/flags/utils/flag-format.utils
 
 @Component({
   selector: 'app-environment-detail',
-  imports: [BadgeComponent, DatePipe, ButtonComponent, EmptyStateComponent, RouterLink],
+  imports: [BadgeComponent, CardComponent, DatePipe, ButtonComponent, EmptyStateComponent, RouterLink],
   templateUrl: './environment-detail.html',
   styleUrl: './environment-detail.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
