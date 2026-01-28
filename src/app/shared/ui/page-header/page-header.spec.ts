@@ -1,7 +1,22 @@
+import { Component } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 
 import { PageHeaderComponent } from './page-header';
+
+@Component({
+  imports: [PageHeaderComponent],
+  template: `
+    <app-page-header title="Dashboard">
+      <p page-header-description class="text-secondary">
+        Project: <span class="project-name">{{ projectName }}</span>
+      </p>
+    </app-page-header>
+  `,
+})
+class TestHostComponent {
+  projectName = 'My Project';
+}
 
 describe('PageHeader', () => {
   let fixture: ComponentFixture<PageHeaderComponent>;
@@ -60,5 +75,29 @@ describe('PageHeader', () => {
 
     const header = fixture.debugElement.query(By.css('header'));
     expect(header).toBeTruthy();
+  });
+});
+
+describe('PageHeader with content projection', () => {
+  let fixture: ComponentFixture<TestHostComponent>;
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [TestHostComponent],
+    }).compileComponents();
+
+    fixture = TestBed.createComponent(TestHostComponent);
+    fixture.detectChanges();
+  });
+
+  it('should render projected content when no description input is provided', () => {
+    const projected = fixture.debugElement.query(By.css('.project-name'));
+    expect(projected).toBeTruthy();
+    expect(projected.nativeElement.textContent).toBe('My Project');
+  });
+
+  it('should render the title alongside projected content', () => {
+    const h1 = fixture.debugElement.query(By.css('h1'));
+    expect(h1.nativeElement.textContent.trim()).toBe('Dashboard');
   });
 });

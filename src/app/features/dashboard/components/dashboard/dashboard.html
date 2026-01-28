@@ -1,14 +1,11 @@
 <div class="welcome-section">
-  <div class="dashboard-header">
-    <div>
-      <h1>Feature Flags</h1>
-      <p class="text-secondary">
-        Project: <span class="dashboard-env">{{ selectedProjectName() }}</span>
-        <span class="dashboard-divider">·</span>
-        Environment: <span class="dashboard-env">{{ selectedEnvironmentName() }}</span>
-      </p>
-    </div>
-  </div>
+  <app-page-header title="Feature Flags">
+    <p page-header-description class="text-secondary">
+      Project: <span class="dashboard-env">{{ selectedProjectName() }}</span>
+      <span class="dashboard-divider">·</span>
+      Environment: <span class="dashboard-env">{{ selectedEnvironmentName() }}</span>
+    </p>
+  </app-page-header>
 
   <div class="stats-grid">
     <app-stat-card [value]="totalFlags()" label="Total Flags" />
