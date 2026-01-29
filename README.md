@@ -137,7 +137,7 @@ This project follows strict development practices:
 **Test-Driven Development (TDD)**
 - Write failing tests before implementation
 - Maintain minimum 80% code coverage
-- See [CLAUDE.md](./CLAUDE.md) for detailed TDD workflow
+- See [CLAUDE.md](./.claude/CLAUDE.md) for detailed TDD workflow
 
 **SOLID Principles**
 - Single Responsibility: One reason to change per class/function
@@ -292,7 +292,7 @@ npm install
 
 ## Documentation
 
-- [CLAUDE.md](./CLAUDE.md) - AI coding assistant instructions
+- [CLAUDE.md](./.claude/CLAUDE.md) - AI coding assistant instructions
 - [e2e/README.md](./e2e/README.md) - E2E testing guide
 - [docs/DESIGN.md](./docs/DESIGN.md) - Design document
 - [docs/ARCHITECTURE.md](./docs/ARCHITECTURE.md) - Architecture documentation
