@@ -3,14 +3,21 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
+    "//-- Development --//": "",
     "ng": "ng",
     "start": "ng serve --host 0.0.0.0 --port 4200",
+    "watch": "ng build --watch --configuration development",
+
+    "//-- Build --//": "",
     "build": "ng build",
     "build:prod": "ng build --configuration production",
-    "watch": "ng build --watch --configuration development",
+
+    "//-- Unit Testing (Jest) --//": "",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
+
+    "//-- E2E Testing (Playwright) --//": "",
     "e2e": "playwright test",
     "e2e:smoke": "playwright test --project=smoke",
     "e2e:journeys": "playwright test --project=journeys",
@@ -18,9 +25,10 @@
     "e2e:all-browsers": "playwright test --project=regression --project=firefox --project=webkit",
     "e2e:ui": "playwright test --ui",
     "e2e:debug": "playwright test --debug",
-    "e2e:report": "playwright show-report",
     "e2e:headed": "playwright test --headed",
-    "e2e:ci": "E2E_ENV=staging playwright test --project=smoke --project=journeys",
+    "e2e:report": "playwright show-report",
+
+    "//-- Code Quality --//": "",
     "lint": "npm run lint:ts && npm run lint:scss",
     "lint:ts": "eslint \"src/**/*.{ts,html}\"",
     "lint:scss": "stylelint \"src/**/*.scss\"",
@@ -28,7 +36,12 @@
     "format": "prettier --write \"src/**/*.{ts,html,scss}\"",
     "format:check": "prettier --check \"src/**/*.{ts,html,scss}\"",
     "typecheck": "tsc --noEmit",
+
+    "//-- CI/CD --//": "",
     "ci:local": "npm run lint && npm run test:coverage && npm run build",
+    "e2e:ci": "E2E_ENV=staging playwright test --project=smoke --project=journeys",
+
+    "//-- Dependency Management --//": "",
     "check-updates": "npm outdated",
     "check-updates:major": "npx npm-check-updates",
     "update-deps": "npx npm-check-updates -u && npm install",
@@ -36,6 +49,8 @@
     "update-deps:patch": "npx npm-check-updates -u --target patch && npm install",
     "audit": "npm audit",
     "audit:fix": "npm audit fix",
+
+    "//-- Hooks --//": "",
     "prepare": "husky"
   },
   "prettier": {
