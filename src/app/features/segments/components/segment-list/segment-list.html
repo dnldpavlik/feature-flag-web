@@ -17,11 +17,17 @@
     >
     </app-empty-state>
   } @else {
-    <app-ui-data-table [items]="filteredSegments()" ariaLabel="Segments" emptyText="No segments match.">
+    <app-ui-data-table
+      [items]="filteredSegments()"
+      ariaLabel="Segments"
+      emptyText="No segments match."
+    >
       <ng-template appUiCol="name" header="Segment" width="33%" let-segment>
         <div class="segment-cell segment-cell--name">
           <div>
-            <a [routerLink]="['/segments', segment.id]" class="segment-name segment-name--link">{{ segment.name }}</a>
+            <a [routerLink]="['/segments', segment.id]" class="segment-name segment-name--link">{{
+              segment.name
+            }}</a>
             <span class="text-muted">{{ segment.description }}</span>
           </div>
         </div>
@@ -38,7 +44,9 @@
       <ng-template appUiCol="actions" header="Actions" width="17%" [sortable]="false" let-segment>
         <div class="segment-cell segment-cell--actions">
           @if (segments().length > 1) {
-            <app-button variant="ghost" type="button" (click)="deleteSegment(segment.id)">Delete</app-button>
+            <app-button variant="ghost" type="button" (click)="deleteSegment(segment.id)"
+              >Delete</app-button
+            >
           }
         </div>
       </ng-template>

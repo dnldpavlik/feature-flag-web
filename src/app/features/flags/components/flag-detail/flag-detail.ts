@@ -18,12 +18,21 @@ import { EnvironmentStore } from '@/app/shared/store/environment.store';
 import { Flag, FlagType } from '@/app/features/flags/models/flag.model';
 import { FlagTypeMap } from '@/app/features/flags/models/flag-value.model';
 import { FlagStore } from '@/app/features/flags/store/flag.store';
-import { parseValueForType, validateJsonObject } from '@/app/features/flags/utils/flag-format.utils';
+import {
+  parseValueForType,
+  validateJsonObject,
+} from '@/app/features/flags/utils/flag-format.utils';
 import { FlagEnvironmentRow } from './flag-detail.types';
 
 @Component({
   selector: 'app-flag-detail',
-  imports: [ButtonComponent, CardComponent, EmptyStateComponent, ReactiveFormsModule, ToggleComponent],
+  imports: [
+    ButtonComponent,
+    CardComponent,
+    EmptyStateComponent,
+    ReactiveFormsModule,
+    ToggleComponent,
+  ],
   templateUrl: './flag-detail.html',
   styleUrl: './flag-detail.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

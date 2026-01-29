@@ -25,7 +25,7 @@ Development task tracker organized by phase and priority.
 - [x] Set up Playwright for E2E tests
 - [x] Configure ESLint with strict rules
 - [x] Configure Prettier
-- [ ] Set up Husky pre-commit hooks
+- [x] Set up Husky pre-commit hooks
 - [x] Configure path aliases (@ for src)
 - [x] Set up environment configuration system
 - [x] Create initial CI/CD pipeline configuration

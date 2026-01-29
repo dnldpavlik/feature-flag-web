@@ -15,7 +15,8 @@
             variant="ghost"
             type="button"
             (click)="deleteFlag()"
-          >Delete</app-button>
+            >Delete</app-button
+          >
         }
         <app-button variant="ghost" type="button" (click)="cancelChanges()">Cancel</app-button>
         <app-button variant="primary" type="button" (click)="saveDetails()"
@@ -92,10 +93,7 @@
               <span class="flag-detail__env-dot" [style.--env-color]="env.color"></span>
               <span>{{ env.name }}</span>
             </div>
-            <app-toggle
-              [checked]="env.enabled"
-              (toggled)="onEnvironmentToggle(env.id, $event)"
-            />
+            <app-toggle [checked]="env.enabled" (toggled)="onEnvironmentToggle(env.id, $event)" />
             <div>
               @switch (current.type) {
                 @case ('boolean') {

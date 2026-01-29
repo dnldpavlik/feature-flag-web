@@ -14,7 +14,17 @@ import { SegmentStore } from '@/app/features/segments/store/segment.store';
 
 @Component({
   selector: 'app-segment-list',
-  imports: [CardComponent, DatePipe, ReactiveFormsModule, RouterLink, ButtonComponent, DataTableComponent, UiColDirective, EmptyStateComponent, PageHeaderComponent],
+  imports: [
+    CardComponent,
+    DatePipe,
+    ReactiveFormsModule,
+    RouterLink,
+    ButtonComponent,
+    DataTableComponent,
+    UiColDirective,
+    EmptyStateComponent,
+    PageHeaderComponent,
+  ],
   templateUrl: './segment-list.html',
   styleUrl: './segment-list.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

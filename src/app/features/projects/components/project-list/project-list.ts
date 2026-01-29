@@ -15,7 +15,18 @@ import { ProjectStore } from '@/app/shared/store/project.store';
 
 @Component({
   selector: 'app-project-list',
-  imports: [BadgeComponent, CardComponent, DatePipe, ReactiveFormsModule, ButtonComponent, DataTableComponent, UiColDirective, EmptyStateComponent, PageHeaderComponent, RouterLink],
+  imports: [
+    BadgeComponent,
+    CardComponent,
+    DatePipe,
+    ReactiveFormsModule,
+    ButtonComponent,
+    DataTableComponent,
+    UiColDirective,
+    EmptyStateComponent,
+    PageHeaderComponent,
+    RouterLink,
+  ],
   templateUrl: './project-list.html',
   styleUrl: './project-list.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

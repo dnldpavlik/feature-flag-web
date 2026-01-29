@@ -18,7 +18,14 @@ import { formatDisplayValue } from '@/app/features/flags/utils/flag-format.utils
 
 @Component({
   selector: 'app-environment-detail',
-  imports: [BadgeComponent, CardComponent, DatePipe, ButtonComponent, EmptyStateComponent, RouterLink],
+  imports: [
+    BadgeComponent,
+    CardComponent,
+    DatePipe,
+    ButtonComponent,
+    EmptyStateComponent,
+    RouterLink,
+  ],
   templateUrl: './environment-detail.html',
   styleUrl: './environment-detail.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

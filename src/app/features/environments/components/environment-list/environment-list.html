@@ -17,7 +17,11 @@
     >
     </app-empty-state>
   } @else {
-    <app-ui-data-table [items]="filteredEnvironments()" ariaLabel="Environments" emptyText="No environments match.">
+    <app-ui-data-table
+      [items]="filteredEnvironments()"
+      ariaLabel="Environments"
+      emptyText="No environments match."
+    >
       <ng-template appUiCol="name" header="Environment" width="26%" let-env>
         <div class="env-cell env-cell--name">
           <span class="env-dot" [style.--env-color]="env.color"></span>
@@ -29,8 +33,12 @@
       </ng-template>
       <ng-template appUiCol="status" header="Status" width="17%" [sortable]="false" let-env>
         <div class="env-cell env-cell--badges">
-          @if (env.isDefault) { <app-badge variant="info">Default</app-badge> }
-          @if (selectedEnvironmentId() === env.id) { <app-badge variant="success">Selected</app-badge> }
+          @if (env.isDefault) {
+            <app-badge variant="info">Default</app-badge>
+          }
+          @if (selectedEnvironmentId() === env.id) {
+            <app-badge variant="success">Selected</app-badge>
+          }
         </div>
       </ng-template>
       <ng-template appUiCol="updatedAt" header="Updated" width="17%" let-env>
@@ -39,10 +47,14 @@
       <ng-template appUiCol="actions" header="Actions" width="23%" [sortable]="false" let-env>
         <div class="env-cell env-cell--actions">
           @if (selectedEnvironmentId() !== env.id) {
-            <app-button variant="ghost" type="button" (click)="selectEnvironment(env.id)">Select</app-button>
+            <app-button variant="ghost" type="button" (click)="selectEnvironment(env.id)"
+              >Select</app-button
+            >
           }
           @if (!env.isDefault) {
-            <app-button variant="ghost" type="button" (click)="setDefaultEnvironment(env.id)">Make Default</app-button>
+            <app-button variant="ghost" type="button" (click)="setDefaultEnvironment(env.id)"
+              >Make Default</app-button
+            >
           }
         </div>
       </ng-template>
