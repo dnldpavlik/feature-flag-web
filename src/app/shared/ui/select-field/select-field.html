@@ -1,0 +1,40 @@
+<label class="form-field__label" [attr.for]="selectId()">
+  {{ label() }}
+</label>
+
+<select
+  class="form-field__select"
+  [class.form-field__select--error]="error()"
+  [id]="selectId()"
+  [disabled]="isDisabled()"
+  [attr.aria-describedby]="ariaDescribedBy()"
+  [attr.aria-invalid]="error() ? 'true' : null"
+  [value]="value()"
+  (change)="onSelectionChange($event)"
+  (blur)="onTouched()"
+>
+  @if (placeholder()) {
+    <option value="" disabled>{{ placeholder() }}</option>
+  }
+  @for (option of options(); track option.value) {
+    <option
+      [value]="option.value"
+      [disabled]="option.disabled"
+      [selected]="option.value === value()"
+    >
+      {{ option.label }}
+    </option>
+  }
+</select>
+
+@if (hint()) {
+  <span class="form-field__hint" [id]="selectId() + '-hint'">
+    {{ hint() }}
+  </span>
+}
+
+@if (error()) {
+  <span class="form-field__error" [id]="selectId() + '-error'">
+    {{ error() }}
+  </span>
+}

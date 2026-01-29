@@ -1,8 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 
-import { LabeledSelectComponent } from './labeled-select';
-import { SelectOption } from './labeled-select.types';
+import { LabeledSelectComponent, SelectOption } from './labeled-select';
 
 describe('LabeledSelect', () => {
   let component: LabeledSelectComponent;
@@ -202,6 +201,62 @@ describe('LabeledSelect', () => {
 
       const container = fixture.debugElement.query(By.css('.labeled-select'));
       expect(container.nativeElement.classList.contains('labeled-select--disabled')).toBe(true);
+    });
+
+    it('should not apply disabled class when not disabled', () => {
+      fixture.componentRef.setInput('disabled', false);
+      fixture.detectChanges();
+
+      const container = fixture.debugElement.query(By.css('.labeled-select'));
+      expect(container.nativeElement.classList.contains('labeled-select--disabled')).toBe(false);
+    });
+  });
+
+  describe('containerClasses', () => {
+    beforeEach(() => {
+      fixture.componentRef.setInput('label', 'Resource');
+      fixture.componentRef.setInput('options', mockOptions);
+    });
+
+    it('should return correct classes when enabled', () => {
+      fixture.detectChanges();
+
+      // Access the protected method through the fixture
+      const classes = (
+        component as unknown as { containerClasses: () => Record<string, boolean> }
+      ).containerClasses();
+      expect(classes['labeled-select']).toBe(true);
+      expect(classes['labeled-select--disabled']).toBe(false);
+    });
+
+    it('should return correct classes when disabled', () => {
+      fixture.componentRef.setInput('disabled', true);
+      fixture.detectChanges();
+
+      const classes = (
+        component as unknown as { containerClasses: () => Record<string, boolean> }
+      ).containerClasses();
+      expect(classes['labeled-select']).toBe(true);
+      expect(classes['labeled-select--disabled']).toBe(true);
+    });
+  });
+
+  describe('onChange', () => {
+    beforeEach(() => {
+      fixture.componentRef.setInput('label', 'Resource');
+      fixture.componentRef.setInput('options', mockOptions);
+      fixture.detectChanges();
+    });
+
+    it('should emit the selected value', () => {
+      const valueChangeSpy = jest.fn();
+      component.valueChange.subscribe(valueChangeSpy);
+
+      // Call onChange directly
+      const mockEvent = { target: { value: 'segment' } } as unknown as Event;
+      (component as unknown as { onChange: (e: Event) => void }).onChange(mockEvent);
+
+      expect(valueChangeSpy).toHaveBeenCalledWith('segment');
     });
   });
 

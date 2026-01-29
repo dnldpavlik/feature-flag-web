@@ -1,6 +1,8 @@
 import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
 
-import { SelectOption } from './labeled-select.types';
+import { SelectOption } from '../select/select.types';
+
+export type { SelectOption } from '../select/select.types';
 
 let nextId = 0;
 

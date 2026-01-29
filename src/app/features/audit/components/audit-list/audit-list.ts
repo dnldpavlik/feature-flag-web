@@ -9,8 +9,8 @@ import { PageHeaderComponent } from '@/app/shared/ui/page-header/page-header';
 import { ToolbarComponent } from '@/app/shared/ui/toolbar/toolbar';
 import {
   LabeledSelectComponent,
+  SelectOption,
 } from '@/app/shared/ui/labeled-select/labeled-select';
-import { SelectOption } from '@/app/shared/ui/labeled-select/labeled-select.types';
 import { SearchStore } from '@/app/shared/store/search.store';
 import { AuditStore } from '@/app/features/audit/store/audit.store';
 import { AuditAction, AuditEntry, AuditResourceType } from '../../models/audit.model';
@@ -34,7 +34,16 @@ const RESOURCE_OPTIONS: SelectOption[] = [
 
 @Component({
   selector: 'app-audit-list',
-  imports: [BadgeComponent, DatePipe, DataTableComponent, UiColDirective, EmptyStateComponent, LabeledSelectComponent, PageHeaderComponent, ToolbarComponent],
+  imports: [
+    BadgeComponent,
+    DatePipe,
+    DataTableComponent,
+    UiColDirective,
+    EmptyStateComponent,
+    LabeledSelectComponent,
+    PageHeaderComponent,
+    ToolbarComponent,
+  ],
   templateUrl: './audit-list.html',
   styleUrl: './audit-list.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

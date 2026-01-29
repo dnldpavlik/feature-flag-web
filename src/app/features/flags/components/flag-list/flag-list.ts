@@ -12,8 +12,8 @@ import { ToggleComponent } from '@/app/shared/ui/toggle/toggle';
 import { ToolbarComponent } from '@/app/shared/ui/toolbar/toolbar';
 import {
   LabeledSelectComponent,
+  SelectOption,
 } from '@/app/shared/ui/labeled-select/labeled-select';
-import { SelectOption } from '@/app/shared/ui/labeled-select/labeled-select.types';
 import { EnvironmentStore } from '@/app/shared/store/environment.store';
 import { SearchStore } from '@/app/shared/store/search.store';
 import { matchesSearch } from '@/app/shared/utils/search.utils';
@@ -41,7 +41,19 @@ const TYPE_OPTIONS: SelectOption[] = [
 
 @Component({
   selector: 'app-flag-list',
-  imports: [BadgeComponent, DatePipe, ButtonComponent, DataTableComponent, UiColDirective, EmptyStateComponent, LabeledSelectComponent, PageHeaderComponent, RouterLink, ToggleComponent, ToolbarComponent],
+  imports: [
+    BadgeComponent,
+    DatePipe,
+    ButtonComponent,
+    DataTableComponent,
+    UiColDirective,
+    EmptyStateComponent,
+    LabeledSelectComponent,
+    PageHeaderComponent,
+    RouterLink,
+    ToggleComponent,
+    ToolbarComponent,
+  ],
   templateUrl: './flag-list.html',
   styleUrl: './flag-list.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -62,7 +74,7 @@ export class FlagListComponent {
   protected readonly searchQuery = computed(() => this.searchStore.query().trim().toLowerCase());
 
   protected readonly environmentOptions = computed<SelectOption[]>(() =>
-    this.environments().map((env) => ({ value: env.id, label: env.name }))
+    this.environments().map((env) => ({ value: env.id, label: env.name })),
   );
 
   protected readonly flagsWithStatus = computed<FlagWithEnvironmentStatus[]>(() => {

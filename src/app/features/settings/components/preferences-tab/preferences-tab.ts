@@ -1,7 +1,9 @@
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 
-import { LabeledSelectComponent } from '@/app/shared/ui/labeled-select/labeled-select';
-import { SelectOption } from '@/app/shared/ui/labeled-select/labeled-select.types';
+import {
+  LabeledSelectComponent,
+  SelectOption,
+} from '@/app/shared/ui/labeled-select/labeled-select';
 import { EnvironmentStore } from '@/app/shared/store/environment.store';
 import { SettingsStore } from '../../store/settings.store';
 import { EmailDigestFrequency } from '../../models/settings.model';
@@ -17,24 +19,20 @@ export class PreferencesTabComponent {
   private readonly settingsStore = inject(SettingsStore);
   private readonly environmentStore = inject(EnvironmentStore);
 
-  protected readonly projectPreferences = computed(() =>
-    this.settingsStore.projectPreferences()
-  );
+  protected readonly projectPreferences = computed(() => this.settingsStore.projectPreferences());
 
   protected readonly environmentOptions = computed((): SelectOption[] =>
     this.environmentStore.environments().map((env) => ({
       value: env.id,
       label: env.name,
-    }))
+    })),
   );
 
   protected readonly currentDefaultEnvId = computed(
-    () => this.projectPreferences().defaultEnvironmentId
+    () => this.projectPreferences().defaultEnvironmentId,
   );
 
-  protected readonly notifications = computed(
-    () => this.projectPreferences().notifications
-  );
+  protected readonly notifications = computed(() => this.projectPreferences().notifications);
 
   protected onDefaultEnvironmentChange(value: string): void {
     this.settingsStore.updateProjectPreferences({

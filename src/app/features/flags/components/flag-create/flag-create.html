@@ -28,15 +28,7 @@
     />
 
     <div class="flag-create__row">
-      <label class="flag-create__field">
-        <span class="flag-create__label">Type</span>
-        <select class="form-input" formControlName="type">
-          <option value="boolean">Boolean</option>
-          <option value="string">String</option>
-          <option value="number">Number</option>
-          <option value="json">JSON</option>
-        </select>
-      </label>
+      <app-select-field label="Type" [options]="typeOptions" [formControl]="form.controls.type" />
 
       <app-form-field label="Tags" placeholder="checkout, web" [formControl]="form.controls.tags" />
     </div>

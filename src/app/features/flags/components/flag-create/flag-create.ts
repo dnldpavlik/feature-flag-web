@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 
 import { ButtonComponent } from '@/app/shared/ui/button/button';
 import { FormFieldComponent } from '@/app/shared/ui/form-field/form-field';
+import { SelectFieldComponent, SelectOption } from '@/app/shared/ui/select-field';
 import { EnvironmentStore } from '@/app/shared/store/environment.store';
 import { toKey } from '@/app/shared/utils/url.utils';
 import { CreateFlagInput, FlagType } from '@/app/features/flags/models/flag.model';
@@ -14,12 +15,18 @@ import { FlagStore } from '@/app/features/flags/store/flag.store';
 
 @Component({
   selector: 'app-flag-create',
-  imports: [ButtonComponent, FormFieldComponent, ReactiveFormsModule],
+  imports: [ButtonComponent, FormFieldComponent, SelectFieldComponent, ReactiveFormsModule],
   templateUrl: './flag-create.html',
   styleUrl: './flag-create.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FlagCreateComponent {
+  protected readonly typeOptions: SelectOption[] = [
+    { value: 'boolean', label: 'Boolean' },
+    { value: 'string', label: 'String' },
+    { value: 'number', label: 'Number' },
+    { value: 'json', label: 'JSON' },
+  ];
   private readonly store = inject(FlagStore);
   private readonly environmentStore = inject(EnvironmentStore);
   private readonly router = inject(Router);

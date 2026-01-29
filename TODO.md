@@ -85,7 +85,7 @@ Components extracted from `app.html`:
 Additional shared components:
 
 - [x] Input component with validation states
-- [ ] Select/dropdown component
+- [x] Select/dropdown component (SelectFieldComponent for forms)
 - [ ] Checkbox component
 - [x] Toggle switch component
 - [x] Card component

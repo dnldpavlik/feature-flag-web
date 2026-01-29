@@ -32,10 +32,10 @@ export default {
   ],
   coverageThreshold: {
     global: {
-      branches: 80,
-      functions: 80,
-      lines: 80,
-      statements: 80
+      branches: 100,
+      functions: 100,
+      lines: 100,
+      statements: 100
     }
   },
   moduleNameMapper: {
@@ -47,7 +47,7 @@ export default {
     '^@environments/(.*)$': '<rootDir>/src/environments/$1'
   },
   transformIgnorePatterns: [
-    'node_modules/(?!(@angular|rxjs|@ngrx|lodash-es)/)'
+    'node_modules/(?!(@angular|rxjs|@ngrx|lodash-es|@testing-library)/)'
   ],
   collectCoverageFrom: [
     'src/app/**/*.ts',
