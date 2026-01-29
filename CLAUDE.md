@@ -1,8 +1,8 @@
-# CLAUDE.md - Feature Flag UI (Angular 20)
+# CLAUDE.md - Feature Flag UI (Angular 21)
 
 ## Project Overview
 
-This is an Angular 20 application that serves as the web UI for a Feature Flag management system (LaunchDarkly clone). The backend API is written in Rust. This UI provides comprehensive feature flag management capabilities including creation, targeting rules, environments, and analytics.
+This is an Angular 21 application that serves as the web UI for a Feature Flag management system (LaunchDarkly clone). The backend API is written in Rust. This UI provides comprehensive feature flag management capabilities including creation, targeting rules, environments, and analytics.
 
 ## Core Development Principles
 
@@ -90,7 +90,7 @@ readonly isValid = computed(() => this.form().valid && this.hasChanges());
 <button [disabled]="!form.valid || !hasChanges || loading || error">Save</button>
 ```
 
-## Angular 20 Best Practices
+## Angular 21 Best Practices
 
 ### Signals-First Architecture
 

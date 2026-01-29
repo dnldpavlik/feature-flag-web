@@ -1,6 +1,6 @@
 # Feature Flag UI
 
-A modern Angular 20 web application for managing feature flags, inspired by LaunchDarkly. This application provides a comprehensive interface for creating, managing, and monitoring feature flags across multiple projects and environments.
+A modern Angular 21 web application for managing feature flags, inspired by LaunchDarkly. This application provides a comprehensive interface for creating, managing, and monitoring feature flags across multiple projects and environments.
 
 ## Overview
 
@@ -14,7 +14,7 @@ Feature Flag UI connects to a Rust backend API to provide teams with powerful fe
 
 ## Tech Stack
 
-- **Framework**: Angular 20
+- **Framework**: Angular 21
 - **Language**: TypeScript 5.x
 - **State Management**: Angular Signals
 - **Styling**: SCSS with BEM methodology
