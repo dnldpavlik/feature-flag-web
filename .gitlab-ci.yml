@@ -9,9 +9,14 @@ stages:
   - lint
   - test
   - build
+  - deploy        # Placeholder for future deployment
+  - e2e           # E2E tests run against deployed environment
 
 variables:
   NODE_VERSION: "22"
+  # E2E Configuration - Set these in GitLab CI/CD Variables when deployment is ready
+  # E2E_BASE_URL: "https://staging.example.com"
+  # E2E_API_URL: "https://api.staging.example.com"
 
 default:
   image: node:${NODE_VERSION}-alpine
@@ -23,10 +28,13 @@ default:
       - node_modules/
     policy: pull
 
+# =============================================================================
+# Install Stage
+# =============================================================================
 install:
   stage: install
   script:
-    - npm install
+    - npm ci
   cache:
     key:
       files:
@@ -35,6 +43,9 @@ install:
       - node_modules/
     policy: pull-push
 
+# =============================================================================
+# Lint Stage
+# =============================================================================
 lint:typescript:
   stage: lint
   needs: [install]
@@ -47,7 +58,10 @@ lint:scss:
   script:
     - npm run lint:scss
 
-test:
+# =============================================================================
+# Test Stage (Unit Tests)
+# =============================================================================
+test:unit:
   stage: test
   needs: [install]
   script:
@@ -63,18 +77,155 @@ test:
         coverage_format: cobertura
         path: coverage/cobertura-coverage.xml
 
+sast:
+  stage: test
+
+# =============================================================================
+# Build Stage
+# =============================================================================
 build:
   stage: build
   needs: [install]
   script:
-    - npm run build
+    - npm run build:prod
   artifacts:
     paths:
       - dist/
     expire_in: 1 week
 
-sast:
-  stage: test
+# =============================================================================
+# Deploy Stage (Placeholder - Enable when deployment target is ready)
+# =============================================================================
+# Uncomment and configure when you have a deployment target
 
+# deploy:staging:
+#   stage: deploy
+#   needs: [build, test:unit, lint:typescript, lint:scss]
+#   environment:
+#     name: staging
+#     url: https://staging.example.com
+#   script:
+#     - echo "Deploy to staging server"
+#     # Add your deployment commands here
+#     # Examples:
+#     # - rsync -avz dist/ user@server:/var/www/staging/
+#     # - aws s3 sync dist/ s3://my-staging-bucket --delete
+#     # - kubectl apply -f k8s/staging/
+#   rules:
+#     - if: $CI_COMMIT_BRANCH == "develop"
+
+# deploy:production:
+#   stage: deploy
+#   needs: [build, test:unit, lint:typescript, lint:scss]
+#   environment:
+#     name: production
+#     url: https://app.example.com
+#   script:
+#     - echo "Deploy to production server"
+#   rules:
+#     - if: $CI_COMMIT_BRANCH == "main"
+#   when: manual  # Require manual approval for production
+
+# =============================================================================
+# E2E Test Stage
+# =============================================================================
+# These jobs are configured but will not run until:
+# 1. E2E_BASE_URL variable is set in GitLab CI/CD settings
+# 2. A deployment stage is enabled above
+#
+# To enable: Set E2E_BASE_URL in GitLab > Settings > CI/CD > Variables
+
+.e2e_base:
+  stage: e2e
+  image: mcr.microsoft.com/playwright:v1.50.0-jammy
+  variables:
+    E2E_ENV: "staging"
+  before_script:
+    - npm ci
+    - npx playwright install --with-deps chromium
+  artifacts:
+    when: always
+    paths:
+      - playwright-report/
+      - test-results/
+    reports:
+      junit: test-results/junit.xml
+    expire_in: 1 week
+  rules:
+    # Only run when E2E_BASE_URL is configured (indicates deployment is ready)
+    - if: $E2E_BASE_URL
+      when: on_success
+    # Allow manual trigger even without E2E_BASE_URL for testing against local
+    - when: manual
+      allow_failure: true
+
+e2e:smoke:
+  extends: .e2e_base
+  needs:
+    - job: build
+      optional: true
+    # Uncomment when deploy stage is enabled:
+    # - job: deploy:staging
+    #   optional: true
+  script:
+    - npm run e2e:smoke -- --reporter=junit,html
+  # Smoke tests are fast - run on every commit when deployment is available
+  rules:
+    - if: $E2E_BASE_URL
+      when: on_success
+    - when: manual
+      allow_failure: true
+
+e2e:journeys:
+  extends: .e2e_base
+  needs:
+    - job: e2e:smoke
+      optional: true
+  script:
+    - npm run e2e:journeys -- --reporter=junit,html
+  rules:
+    # Run after smoke tests pass, or manually
+    - if: $E2E_BASE_URL
+      when: on_success
+    - when: manual
+      allow_failure: true
+
+e2e:regression:
+  extends: .e2e_base
+  needs:
+    - job: e2e:journeys
+      optional: true
+  script:
+    - npm run e2e:regression -- --reporter=junit,html
+  rules:
+    # Only run regression on main/develop branches, or manually
+    - if: $E2E_BASE_URL && ($CI_COMMIT_BRANCH == "main" || $CI_COMMIT_BRANCH == "develop")
+      when: on_success
+    - when: manual
+      allow_failure: true
+  # Regression tests can be slow
+  timeout: 30m
+
+e2e:cross-browser:
+  extends: .e2e_base
+  needs:
+    - job: e2e:smoke
+      optional: true
+  before_script:
+    - npm ci
+    - npx playwright install --with-deps  # Install all browsers
+  script:
+    - npm run e2e:all-browsers -- --reporter=junit,html
+  rules:
+    # Cross-browser only on main branch or manually
+    - if: $E2E_BASE_URL && $CI_COMMIT_BRANCH == "main"
+      when: on_success
+    - when: manual
+      allow_failure: true
+  timeout: 45m
+
+# =============================================================================
+# Security Scanning
+# =============================================================================
 include:
   - template: Security/SAST.gitlab-ci.yml
