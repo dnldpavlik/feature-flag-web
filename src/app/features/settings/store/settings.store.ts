@@ -1,5 +1,6 @@
-import { Injectable, computed, signal } from '@angular/core';
+import { Injectable, computed, inject, signal } from '@angular/core';
 
+import { ThemeService } from '@/app/core/theme/theme.service';
 import { createId, createTimestamp } from '@/app/shared/utils/id.utils';
 import {
   ApiKey,
@@ -12,6 +13,8 @@ import {
 
 @Injectable({ providedIn: 'root' })
 export class SettingsStore {
+  private readonly themeService = inject(ThemeService);
+
   // Private state signals
   private readonly _userProfile = signal<UserProfile>({
     id: 'user_1',
@@ -70,19 +73,8 @@ export class SettingsStore {
   // Computed selectors
   readonly apiKeyCount = computed(() => this._apiKeys().length);
 
-  readonly activeThemeMode = computed((): 'light' | 'dark' => {
-    const mode = this._themePreferences().mode;
-    if (mode !== 'system') {
-      return mode;
-    }
-    // Check system preference
-    if (typeof window !== 'undefined' && window.matchMedia) {
-      return window.matchMedia('(prefers-color-scheme: dark)').matches
-        ? 'dark'
-        : 'light';
-    }
-    return 'light';
-  });
+  /** Resolved active theme - delegates to ThemeService */
+  readonly activeThemeMode = computed(() => this.themeService.activeTheme());
 
   // Actions
   updateUserProfile(updates: Partial<Omit<UserProfile, 'id'>>): void {
@@ -104,6 +96,11 @@ export class SettingsStore {
       ...prefs,
       ...updates,
     }));
+
+    // Sync mode with ThemeService
+    if (updates.mode) {
+      this.themeService.setMode(updates.mode);
+    }
   }
 
   createApiKey(input: CreateApiKeyInput): CreateApiKeyResult {
@@ -150,8 +147,7 @@ export class SettingsStore {
 
 /** Generate a random alphanumeric string */
 function generateRandomString(length: number): string {
-  const chars =
-    'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
   let result = '';
   for (let i = 0; i < length; i++) {
     result += chars.charAt(Math.floor(Math.random() * chars.length));

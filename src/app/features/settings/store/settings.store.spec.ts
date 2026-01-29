@@ -1,17 +1,41 @@
 import { TestBed } from '@angular/core/testing';
+import { DOCUMENT } from '@angular/common';
 
+import { ThemeService } from '@/app/core/theme/theme.service';
 import { SettingsStore } from './settings.store';
 import { CreateApiKeyInput } from '../models/settings.model';
 
 describe('SettingsStore', () => {
   let store: SettingsStore;
+  let themeService: ThemeService;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({
-      providers: [SettingsStore],
+    // Mock matchMedia for ThemeService
+    Object.defineProperty(window, 'matchMedia', {
+      value: (query: string) => ({
+        matches: false,
+        media: query,
+        onchange: null,
+        addEventListener: jest.fn(),
+        removeEventListener: jest.fn(),
+        addListener: jest.fn(),
+        removeListener: jest.fn(),
+        dispatchEvent: jest.fn(),
+      }),
+      writable: true,
     });
 
+    TestBed.configureTestingModule({
+      providers: [SettingsStore, ThemeService, { provide: DOCUMENT, useValue: document }],
+    });
+
+    themeService = TestBed.inject(ThemeService);
     store = TestBed.inject(SettingsStore);
+    TestBed.flushEffects();
+  });
+
+  afterEach(() => {
+    document.documentElement.removeAttribute('data-theme');
   });
 
   describe('initial state', () => {
@@ -65,9 +89,7 @@ describe('SettingsStore', () => {
 
     it('should update avatar URL', () => {
       store.updateUserProfile({ avatarUrl: 'https://example.com/avatar.png' });
-      expect(store.userProfile().avatarUrl).toBe(
-        'https://example.com/avatar.png'
-      );
+      expect(store.userProfile().avatarUrl).toBe('https://example.com/avatar.png');
     });
 
     it('should only update provided fields', () => {
@@ -80,9 +102,7 @@ describe('SettingsStore', () => {
   describe('updateProjectPreferences', () => {
     it('should update default environment ID', () => {
       store.updateProjectPreferences({ defaultEnvironmentId: 'env_staging' });
-      expect(store.projectPreferences().defaultEnvironmentId).toBe(
-        'env_staging'
-      );
+      expect(store.projectPreferences().defaultEnvironmentId).toBe('env_staging');
     });
 
     it('should update notification preferences', () => {
@@ -107,9 +127,7 @@ describe('SettingsStore', () => {
           emailOnFlagChange: true,
         },
       });
-      expect(store.projectPreferences().notifications.emailDigest).toBe(
-        originalDigest
-      );
+      expect(store.projectPreferences().notifications.emailDigest).toBe(originalDigest);
     });
   });
 
@@ -268,72 +286,21 @@ describe('SettingsStore', () => {
   });
 
   describe('computed selectors', () => {
-    it('should compute active theme mode based on system preference', () => {
-      store.updateThemePreferences({ mode: 'system' });
-      const activeMode = store.activeThemeMode();
-      expect(['light', 'dark']).toContain(activeMode);
+    it('should delegate activeThemeMode to ThemeService', () => {
+      // activeThemeMode should reflect ThemeService.activeTheme()
+      expect(store.activeThemeMode()).toBe(themeService.activeTheme());
     });
 
-    it('should return explicit mode when not system', () => {
+    it('should sync theme mode with ThemeService when updated', () => {
       store.updateThemePreferences({ mode: 'dark' });
+      TestBed.flushEffects();
+      expect(themeService.mode()).toBe('dark');
       expect(store.activeThemeMode()).toBe('dark');
 
       store.updateThemePreferences({ mode: 'light' });
+      TestBed.flushEffects();
+      expect(themeService.mode()).toBe('light');
       expect(store.activeThemeMode()).toBe('light');
-    });
-
-    it('should fallback to light mode when window.matchMedia is unavailable', () => {
-      store.updateThemePreferences({ mode: 'system' });
-      const originalMatchMedia = window.matchMedia;
-      // Simulate environment where matchMedia is unavailable
-      Object.defineProperty(window, 'matchMedia', {
-        value: undefined,
-        writable: true,
-      });
-
-      expect(store.activeThemeMode()).toBe('light');
-
-      // Restore matchMedia
-      Object.defineProperty(window, 'matchMedia', {
-        value: originalMatchMedia,
-        writable: true,
-      });
-    });
-
-    it('should return dark when system prefers dark color scheme', () => {
-      store.updateThemePreferences({ mode: 'system' });
-      const originalMatchMedia = window.matchMedia;
-      // Mock matchMedia to return dark preference
-      Object.defineProperty(window, 'matchMedia', {
-        value: jest.fn().mockReturnValue({ matches: true }),
-        writable: true,
-      });
-
-      expect(store.activeThemeMode()).toBe('dark');
-
-      // Restore matchMedia
-      Object.defineProperty(window, 'matchMedia', {
-        value: originalMatchMedia,
-        writable: true,
-      });
-    });
-
-    it('should return light when system prefers light color scheme', () => {
-      store.updateThemePreferences({ mode: 'system' });
-      const originalMatchMedia = window.matchMedia;
-      // Mock matchMedia to return light preference
-      Object.defineProperty(window, 'matchMedia', {
-        value: jest.fn().mockReturnValue({ matches: false }),
-        writable: true,
-      });
-
-      expect(store.activeThemeMode()).toBe('light');
-
-      // Restore matchMedia
-      Object.defineProperty(window, 'matchMedia', {
-        value: originalMatchMedia,
-        writable: true,
-      });
     });
 
     it('should compute API key count', () => {

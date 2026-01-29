@@ -1,4 +1,3 @@
-import { DOCUMENT } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -11,7 +10,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { filter, map } from 'rxjs';
 
-import { SettingsStore } from './features/settings/store/settings.store';
+import { ThemeService } from './core/theme/theme.service';
 import { BreadcrumbItem } from './shared/ui/breadcrumb/breadcrumb';
 import { HeaderComponent } from './layout/header/header';
 import { SidebarComponent } from './layout/sidebar/sidebar';
@@ -35,12 +34,13 @@ interface SidebarEnvironment {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AppComponent {
-  private readonly document = inject(DOCUMENT);
   private readonly environmentStore = inject(EnvironmentStore);
   private readonly projectStore = inject(ProjectStore);
   private readonly searchStore = inject(SearchStore);
-  private readonly settingsStore = inject(SettingsStore);
   private readonly router = inject(Router);
+
+  // Inject ThemeService to ensure it initializes and applies theme on startup
+  private readonly _themeService = inject(ThemeService);
 
   private readonly currentUrl = toSignal(
     this.router.events.pipe(
@@ -86,12 +86,6 @@ export class AppComponent {
     effect(() => {
       this.currentUrl();
       this.searchStore.clear();
-    });
-
-    // Apply theme to document element
-    effect(() => {
-      const theme = this.settingsStore.activeThemeMode();
-      this.document.documentElement.setAttribute('data-theme', theme);
     });
   }
 

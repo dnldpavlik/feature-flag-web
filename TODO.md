@@ -39,7 +39,7 @@ Development task tracker organized by phase and priority.
 - [ ] Implement HTTP interceptor for error handling
 - [ ] Create global loading indicator service
 - [ ] Set up toast/notification service
-- [ ] Implement theme service (light/dark mode)
+- [x] Implement theme service (light/dark mode)
 - [ ] Create responsive breakpoint service
 
 ### Authentication 🔴
