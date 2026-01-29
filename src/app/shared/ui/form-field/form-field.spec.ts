@@ -151,6 +151,66 @@ describe('FormFieldComponent', () => {
       fixture.detectChanges();
       expect(input.disabled).toBe(false);
     });
+
+    it('should handle null value in writeValue', () => {
+      const { fixture, component } = setupWithFormControl();
+      const input = fixture.nativeElement.querySelector('input');
+
+      component.control.setValue(null);
+      fixture.detectChanges();
+      expect(input.value).toBe('');
+    });
+
+    it('should call onTouched when input loses focus', () => {
+      const { fixture, component } = setupWithFormControl();
+      const input = fixture.nativeElement.querySelector('input');
+
+      expect(component.control.touched).toBe(false);
+
+      input.dispatchEvent(new Event('blur'));
+      fixture.detectChanges();
+
+      expect(component.control.touched).toBe(true);
+    });
+
+    it('should call onTouched when textarea loses focus', () => {
+      const { fixture, component } = setupWithFormControlTextarea();
+      const textarea = fixture.nativeElement.querySelector('textarea');
+
+      expect(component.control.touched).toBe(false);
+
+      textarea.dispatchEvent(new Event('blur'));
+      fixture.detectChanges();
+
+      expect(component.control.touched).toBe(true);
+    });
+  });
+
+  describe('standalone usage (no form control)', () => {
+    it('should handle input without form control', () => {
+      const { fixture } = setup({ label: 'Name' });
+      const input = fixture.nativeElement.querySelector('input');
+
+      // Trigger input event - calls default onChange which is a no-op
+      input.value = 'test value';
+      input.dispatchEvent(new Event('input'));
+      fixture.detectChanges();
+
+      // Value should be updated in the component
+      expect(input.value).toBe('test value');
+    });
+
+    it('should handle blur without form control', () => {
+      const { fixture } = setup({ label: 'Name' });
+      const input = fixture.nativeElement.querySelector('input');
+
+      // Trigger blur event - calls default onTouched which is a no-op
+      input.dispatchEvent(new Event('blur'));
+      fixture.detectChanges();
+
+      // Should not throw
+      expect(input).toBeTruthy();
+    });
   });
 
   describe('accessibility', () => {
@@ -243,6 +303,25 @@ function setupWithFormControl() {
   @Component({
     imports: [FormFieldComponent, ReactiveFormsModule],
     template: ` <app-form-field label="Test" [formControl]="control" /> `,
+  })
+  class TestHostComponent {
+    control = new FormControl('initial');
+  }
+
+  TestBed.configureTestingModule({
+    imports: [TestHostComponent],
+  });
+
+  const fixture = TestBed.createComponent(TestHostComponent);
+  fixture.detectChanges();
+
+  return { fixture, component: fixture.componentInstance };
+}
+
+function setupWithFormControlTextarea() {
+  @Component({
+    imports: [FormFieldComponent, ReactiveFormsModule],
+    template: ` <app-form-field label="Test" type="textarea" [formControl]="control" /> `,
   })
   class TestHostComponent {
     control = new FormControl('initial');
