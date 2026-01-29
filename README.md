@@ -174,15 +174,23 @@ npm run test:coverage
 
 **E2E Tests** (Playwright)
 ```bash
-# Run E2E tests
-npm run e2e
+# Run smoke tests (fast, ~15s)
+npm run e2e:smoke
 
-# Run with UI
+# Run user journey tests
+npm run e2e:journeys
+
+# Run full regression suite
+npm run e2e:regression
+
+# Interactive UI mode
 npm run e2e:ui
 
 # Debug mode
 npm run e2e:debug
 ```
+
+See [e2e/README.md](./e2e/README.md) for the complete E2E testing guide.
 
 ### API Configuration
 
@@ -285,6 +293,7 @@ npm install
 ## Documentation
 
 - [CLAUDE.md](./CLAUDE.md) - AI coding assistant instructions
+- [e2e/README.md](./e2e/README.md) - E2E testing guide
 - [docs/DESIGN.md](./docs/DESIGN.md) - Design document
 - [docs/ARCHITECTURE.md](./docs/ARCHITECTURE.md) - Architecture documentation
 - [docs/FEATURES.md](./docs/FEATURES.md) - Feature specifications

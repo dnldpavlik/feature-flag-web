@@ -32,8 +32,8 @@ test.describe('Smoke Tests', () => {
     test('should display the main layout', async ({ page, navigateTo }) => {
       await navigateTo('/');
 
-      // Verify sidebar navigation exists
-      await expect(page.locator('app-sidebar')).toBeVisible();
+      // Verify sidebar navigation exists (use .sidebar as app-sidebar host has no dimensions due to fixed positioning)
+      await expect(page.locator('.sidebar')).toBeVisible();
 
       // Verify header exists
       await expect(page.locator('app-header')).toBeVisible();
@@ -45,8 +45,8 @@ test.describe('Smoke Tests', () => {
     test('should have working navigation links', async ({ page, navigateTo }) => {
       await navigateTo('/');
 
-      // Check navigation links are present
-      const nav = page.locator('app-sidebar');
+      // Check navigation links are present (use .sidebar as app-sidebar host has no dimensions)
+      const nav = page.locator('.sidebar');
       await expect(nav.getByRole('link', { name: /dashboard/i })).toBeVisible();
       await expect(nav.getByRole('link', { name: /flags/i })).toBeVisible();
       await expect(nav.getByRole('link', { name: /environments/i })).toBeVisible();
@@ -142,7 +142,7 @@ test.describe('Smoke Tests', () => {
       await flagList.goto();
 
       // Verify either data table or empty state is shown
-      const tableOrEmpty = page.locator('app-data-table, app-empty-state');
+      const tableOrEmpty = page.locator('app-ui-data-table, app-empty-state');
       await expect(tableOrEmpty.first()).toBeVisible();
     });
 
