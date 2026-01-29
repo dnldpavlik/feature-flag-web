@@ -294,6 +294,7 @@ npm install
 
 - [CLAUDE.md](./.claude/CLAUDE.md) - AI coding assistant instructions
 - [e2e/README.md](./e2e/README.md) - E2E testing guide
+- [docs/SECURITY.md](./docs/SECURITY.md) - Security guidelines and requirements
 - [docs/DESIGN.md](./docs/DESIGN.md) - Design document
 - [docs/ARCHITECTURE.md](./docs/ARCHITECTURE.md) - Architecture documentation
 - [docs/FEATURES.md](./docs/FEATURES.md) - Feature specifications
