@@ -61,39 +61,15 @@
     </app-ui-data-table>
   }
 
-  <app-card class="env-form" padding="lg" [formGroup]="form">
+  <app-card class="env-form" padding="lg">
     <div class="env-form__header">
       <h2>New Environment</h2>
       <p class="text-secondary">Add a new release stage for your feature flags.</p>
     </div>
     <div class="env-form__grid">
-      <label class="env-form__field">
-        <span class="env-form__label">Name</span>
-        <input
-          class="form-input"
-          formControlName="name"
-          placeholder="Production"
-          (keydown.enter)="$event.preventDefault()"
-        />
-      </label>
-      <label class="env-form__field">
-        <span class="env-form__label">Key</span>
-        <input
-          class="form-input"
-          formControlName="key"
-          placeholder="production"
-          (keydown.enter)="$event.preventDefault()"
-        />
-      </label>
-      <label class="env-form__field">
-        <span class="env-form__label">Color</span>
-        <input
-          class="form-input env-form__color"
-          type="color"
-          formControlName="color"
-          (keydown.enter)="$event.preventDefault()"
-        />
-      </label>
+      <app-form-field label="Name" placeholder="Production" [formControl]="form.controls.name" />
+      <app-form-field label="Key" placeholder="production" [formControl]="form.controls.key" />
+      <app-form-field label="Color" type="color" [formControl]="form.controls.color" />
     </div>
     <app-button variant="primary" type="button" [disabled]="!canAdd()" (click)="addEnvironment()">
       Add Environment

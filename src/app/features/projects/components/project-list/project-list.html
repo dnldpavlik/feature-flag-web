@@ -66,40 +66,25 @@
     </app-ui-data-table>
   }
 
-  <app-card class="project-form" padding="lg" [formGroup]="form">
+  <app-card class="project-form" padding="lg">
     <div class="project-form__header">
       <h2>New Project</h2>
       <p class="text-secondary">Spin up a new workspace for an app or product.</p>
     </div>
     <div class="project-form__grid">
-      <label class="project-form__field">
-        <span class="project-form__label">Name</span>
-        <input
-          class="form-input"
-          formControlName="name"
-          placeholder="Accounting App"
-          (keydown.enter)="$event.preventDefault()"
-        />
-      </label>
-      <label class="project-form__field">
-        <span class="project-form__label">Key</span>
-        <input
-          class="form-input"
-          formControlName="key"
-          placeholder="accounting"
-          (keydown.enter)="$event.preventDefault()"
-        />
-      </label>
-      <label class="project-form__field project-form__field--full">
-        <span class="project-form__label">Description</span>
-        <textarea
-          class="form-input project-form__textarea"
-          rows="3"
-          formControlName="description"
-          placeholder="Flags for the accounting product surface."
-          (keydown.enter)="$event.preventDefault()"
-        ></textarea>
-      </label>
+      <app-form-field
+        label="Name"
+        placeholder="Accounting App"
+        [formControl]="form.controls.name"
+      />
+      <app-form-field label="Key" placeholder="accounting" [formControl]="form.controls.key" />
+      <app-form-field
+        class="project-form__field--full"
+        label="Description"
+        type="textarea"
+        placeholder="Flags for the accounting product surface."
+        [formControl]="form.controls.description"
+      />
     </div>
     <app-button variant="primary" type="button" [disabled]="!canAdd()" (click)="addProject()">
       Add Project

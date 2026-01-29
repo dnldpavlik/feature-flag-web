@@ -28,22 +28,17 @@
     <div class="flag-detail__grid" [formGroup]="form">
       <app-card padding="lg">
         <h2>Details</h2>
-        <label class="flag-detail__field">
-          <span class="flag-detail__label">Name</span>
-          <input class="form-input" formControlName="name" />
-        </label>
-        <label class="flag-detail__field">
-          <span class="flag-detail__label">Description</span>
-          <textarea
-            class="form-input flag-detail__textarea"
-            rows="3"
-            formControlName="description"
-          ></textarea>
-        </label>
-        <label class="flag-detail__field">
-          <span class="flag-detail__label">Tags</span>
-          <input class="form-input" formControlName="tags" placeholder="checkout, web" />
-        </label>
+        <app-form-field label="Name" [formControl]="form.controls.name" />
+        <app-form-field
+          label="Description"
+          type="textarea"
+          [formControl]="form.controls.description"
+        />
+        <app-form-field
+          label="Tags"
+          placeholder="checkout, web"
+          [formControl]="form.controls.tags"
+        />
       </app-card>
 
       <app-card padding="lg">
@@ -60,20 +55,19 @@
             </label>
           }
           @case ('string') {
-            <input class="form-input" formControlName="stringValue" />
+            <app-form-field label="" [formControl]="form.controls.stringValue" />
           }
           @case ('number') {
-            <input class="form-input" type="number" formControlName="numberValue" />
+            <app-form-field label="" type="number" [formControl]="form.controls.numberValue" />
           }
           @case ('json') {
-            <textarea
-              class="form-input flag-detail__textarea"
-              rows="4"
-              formControlName="jsonValue"
-            ></textarea>
-            @if (jsonError()) {
-              <span class="flag-detail__error">{{ jsonError() }}</span>
-            }
+            <app-form-field
+              label=""
+              type="textarea"
+              [rows]="4"
+              [error]="jsonError()"
+              [formControl]="form.controls.jsonValue"
+            />
           }
         }
       </app-card>

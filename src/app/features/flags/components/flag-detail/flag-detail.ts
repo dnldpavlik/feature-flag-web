@@ -13,6 +13,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ButtonComponent } from '@/app/shared/ui/button/button';
 import { CardComponent } from '@/app/shared/ui/card/card';
 import { EmptyStateComponent } from '@/app/shared/ui/empty-state/empty-state';
+import { FormFieldComponent } from '@/app/shared/ui/form-field/form-field';
 import { ToggleComponent } from '@/app/shared/ui/toggle/toggle';
 import { EnvironmentStore } from '@/app/shared/store/environment.store';
 import { Flag, FlagType } from '@/app/features/flags/models/flag.model';
@@ -30,6 +31,7 @@ import { FlagEnvironmentRow } from './flag-detail.types';
     ButtonComponent,
     CardComponent,
     EmptyStateComponent,
+    FormFieldComponent,
     ReactiveFormsModule,
     ToggleComponent,
   ],

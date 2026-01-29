@@ -9,6 +9,7 @@ import { CardComponent } from '@/app/shared/ui/card/card';
 import { DataTableComponent } from '@/app/shared/ui/data-table/data-table';
 import { UiColDirective } from '@/app/shared/ui/data-table/ui-col.directive';
 import { EmptyStateComponent } from '@/app/shared/ui/empty-state/empty-state';
+import { FormFieldComponent } from '@/app/shared/ui/form-field/form-field';
 import { PageHeaderComponent } from '@/app/shared/ui/page-header/page-header';
 import { SearchStore } from '@/app/shared/store/search.store';
 import { EnvironmentStore } from '@/app/shared/store/environment.store';
@@ -17,15 +18,16 @@ import { EnvironmentStore } from '@/app/shared/store/environment.store';
   selector: 'app-environment-list',
   imports: [
     BadgeComponent,
-    CardComponent,
-    DatePipe,
-    ReactiveFormsModule,
     ButtonComponent,
+    CardComponent,
     DataTableComponent,
-    UiColDirective,
+    DatePipe,
     EmptyStateComponent,
+    FormFieldComponent,
     PageHeaderComponent,
+    ReactiveFormsModule,
     RouterLink,
+    UiColDirective,
   ],
   templateUrl: './environment-list.html',
   styleUrl: './environment-list.scss',

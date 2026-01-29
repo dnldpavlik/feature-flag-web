@@ -45,21 +45,6 @@
   font-size: 1rem;
 }
 
-.flag-detail__field {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.flag-detail__label {
-  @include form-label;
-}
-
-.flag-detail__textarea {
-  min-height: 96px;
-  resize: vertical;
-}
-
 .flag-detail__toggle {
   display: inline-flex;
   align-items: center;
@@ -70,11 +55,6 @@
 .flag-detail__help {
   margin: 0;
   font-size: 0.875rem;
-}
-
-.flag-detail__error {
-  color: var(--color-error);
-  font-size: 0.75rem;
 }
 
 .flag-detail__env-table {

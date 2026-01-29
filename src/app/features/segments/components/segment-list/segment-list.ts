@@ -8,6 +8,7 @@ import { CardComponent } from '@/app/shared/ui/card/card';
 import { DataTableComponent } from '@/app/shared/ui/data-table/data-table';
 import { UiColDirective } from '@/app/shared/ui/data-table/ui-col.directive';
 import { EmptyStateComponent } from '@/app/shared/ui/empty-state/empty-state';
+import { FormFieldComponent } from '@/app/shared/ui/form-field/form-field';
 import { PageHeaderComponent } from '@/app/shared/ui/page-header/page-header';
 import { SearchStore } from '@/app/shared/store/search.store';
 import { SegmentStore } from '@/app/features/segments/store/segment.store';
@@ -15,15 +16,16 @@ import { SegmentStore } from '@/app/features/segments/store/segment.store';
 @Component({
   selector: 'app-segment-list',
   imports: [
+    ButtonComponent,
     CardComponent,
+    DataTableComponent,
     DatePipe,
+    EmptyStateComponent,
+    FormFieldComponent,
+    PageHeaderComponent,
     ReactiveFormsModule,
     RouterLink,
-    ButtonComponent,
-    DataTableComponent,
     UiColDirective,
-    EmptyStateComponent,
-    PageHeaderComponent,
   ],
   templateUrl: './segment-list.html',
   styleUrl: './segment-list.scss',

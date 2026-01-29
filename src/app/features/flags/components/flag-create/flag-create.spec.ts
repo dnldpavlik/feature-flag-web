@@ -242,7 +242,11 @@ describe('FlagCreate', () => {
     component.form.controls.type.setValue('string');
     fixture.detectChanges();
 
-    const stringInput = fixture.debugElement.query(By.css('input[formControlName="stringValue"]'));
+    // String input is inside app-form-field component
+    const stringFormField = fixture.debugElement.queryAll(By.css('app-form-field'));
+    const stringInput = stringFormField.find((el) =>
+      el.nativeElement.querySelector('input.form-field__input:not([type="checkbox"])'),
+    );
     expect(stringInput).toBeTruthy();
   });
 

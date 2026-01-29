@@ -65,21 +65,6 @@
   @include auto-grid(200px);
 }
 
-.project-form__field {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
 .project-form__field--full {
   grid-column: 1 / -1;
-}
-
-.project-form__label {
-  @include form-label;
-}
-
-.project-form__textarea {
-  min-height: 96px;
-  resize: vertical;
 }

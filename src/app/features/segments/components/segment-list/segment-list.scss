@@ -48,23 +48,8 @@
   margin: 1rem 0 1.5rem;
 }
 
-.segment-form__field {
-  display: flex;
-  flex-direction: column;
-  gap: 0.35rem;
-}
-
 .segment-form__field--full {
   grid-column: 1 / -1;
-}
-
-.segment-form__label {
-  font-size: 0.85rem;
-  color: var(--text-secondary);
-}
-
-.segment-form__textarea {
-  resize: vertical;
 }
 
 @media (width <= 960px) {
