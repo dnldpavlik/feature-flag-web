@@ -241,4 +241,72 @@ describe('ThemeService', () => {
       expect(service.mode()).toBe('dark');
     });
   });
+
+  describe('fallbacks when browser APIs unavailable', () => {
+    it('should default to system mode when localStorage is unavailable', () => {
+      // Remove localStorage
+      Object.defineProperty(window, 'localStorage', {
+        value: undefined,
+        writable: true,
+      });
+
+      TestBed.resetTestingModule();
+      TestBed.configureTestingModule({
+        providers: [ThemeService, { provide: DOCUMENT, useValue: mockDocument }],
+      });
+      const freshService = TestBed.inject(ThemeService);
+
+      expect(freshService.mode()).toBe('system');
+    });
+
+    it('should not throw when saving mode without localStorage', () => {
+      // Remove localStorage
+      Object.defineProperty(window, 'localStorage', {
+        value: undefined,
+        writable: true,
+      });
+
+      TestBed.resetTestingModule();
+      TestBed.configureTestingModule({
+        providers: [ThemeService, { provide: DOCUMENT, useValue: mockDocument }],
+      });
+      const freshService = TestBed.inject(ThemeService);
+
+      expect(() => freshService.setMode('dark')).not.toThrow();
+      expect(freshService.mode()).toBe('dark');
+    });
+
+    it('should default to light system preference when matchMedia is unavailable', () => {
+      // Remove matchMedia
+      Object.defineProperty(window, 'matchMedia', {
+        value: undefined,
+        writable: true,
+      });
+
+      TestBed.resetTestingModule();
+      TestBed.configureTestingModule({
+        providers: [ThemeService, { provide: DOCUMENT, useValue: mockDocument }],
+      });
+      const freshService = TestBed.inject(ThemeService);
+      TestBed.flushEffects();
+
+      // With system mode and no matchMedia, should default to light
+      expect(freshService.activeTheme()).toBe('light');
+    });
+
+    it('should not throw when setting up listener without matchMedia', () => {
+      // Remove matchMedia
+      Object.defineProperty(window, 'matchMedia', {
+        value: undefined,
+        writable: true,
+      });
+
+      TestBed.resetTestingModule();
+      TestBed.configureTestingModule({
+        providers: [ThemeService, { provide: DOCUMENT, useValue: mockDocument }],
+      });
+
+      expect(() => TestBed.inject(ThemeService)).not.toThrow();
+    });
+  });
 });
