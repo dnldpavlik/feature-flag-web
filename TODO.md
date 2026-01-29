@@ -23,12 +23,19 @@ Development task tracker organized by phase and priority.
 - [x] Set up Jest testing framework
 - [x] Configure Angular Testing Library
 - [x] Set up Playwright for E2E tests
+  - [x] Configure multi-project setup (smoke, journeys, regression)
+  - [x] Implement Page Object Model pattern
+  - [x] Create test fixtures and data factories
+  - [x] Add cross-browser and mobile viewport testing
 - [x] Configure ESLint with strict rules
 - [x] Configure Prettier
 - [x] Set up Husky pre-commit hooks
 - [x] Configure path aliases (@ for src)
 - [x] Set up environment configuration system
 - [x] Create initial CI/CD pipeline configuration
+  - [x] GitLab CI with lint, test, build stages
+  - [x] E2E test stages (ready, pending deployment target)
+  - [ ] Configure deployment stage (needs server)
 
 ### Core Infrastructure 🔴
 
@@ -277,6 +284,8 @@ Additional shared infrastructure:
 
 ### Accessibility Audit 🔴
 
+- [x] Create E2E accessibility test scaffolding (keyboard nav, ARIA, focus)
+- [ ] Install @axe-core/playwright for automated a11y scanning
 - [ ] Run automated accessibility tests
 - [ ] Test keyboard navigation throughout
 - [ ] Test screen reader compatibility
@@ -359,4 +368,4 @@ Additional shared infrastructure:
 
 ---
 
-_Last updated: 2026-01-28_
+_Last updated: 2026-01-29_
