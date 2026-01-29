@@ -1,8 +1,17 @@
-import { ChangeDetectionStrategy, Component, computed, effect, inject, signal } from '@angular/core';
+import { DOCUMENT } from '@angular/common';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  effect,
+  inject,
+  signal,
+} from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { filter, map } from 'rxjs';
 
+import { SettingsStore } from './features/settings/store/settings.store';
 import { BreadcrumbItem } from './shared/ui/breadcrumb/breadcrumb';
 import { HeaderComponent } from './layout/header/header';
 import { SidebarComponent } from './layout/sidebar/sidebar';
@@ -26,9 +35,11 @@ interface SidebarEnvironment {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AppComponent {
+  private readonly document = inject(DOCUMENT);
   private readonly environmentStore = inject(EnvironmentStore);
   private readonly projectStore = inject(ProjectStore);
   private readonly searchStore = inject(SearchStore);
+  private readonly settingsStore = inject(SettingsStore);
   private readonly router = inject(Router);
 
   private readonly currentUrl = toSignal(
@@ -71,9 +82,16 @@ export class AppComponent {
   );
 
   constructor() {
+    // Clear search when navigating
     effect(() => {
       this.currentUrl();
       this.searchStore.clear();
+    });
+
+    // Apply theme to document element
+    effect(() => {
+      const theme = this.settingsStore.activeThemeMode();
+      this.document.documentElement.setAttribute('data-theme', theme);
     });
   }
 

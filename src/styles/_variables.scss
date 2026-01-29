@@ -1,0 +1,110 @@
+// =============================================================================
+// CSS Variables - Theme Definitions
+// =============================================================================
+// All color variables are defined here for easy theme switching.
+// To switch themes, add/remove `data-theme="dark"` on the <html> element.
+// =============================================================================
+
+// -----------------------------------------------------------------------------
+// Light Theme (Default)
+// -----------------------------------------------------------------------------
+:root {
+  // Background colors
+  --bg-primary: #fff;
+  --bg-secondary: #f6f8fa;
+  --bg-tertiary: #eaeef2;
+  --bg-sidebar: #f6f8fa;
+  --bg-header: #fff;
+  --bg-card: #fff;
+  --bg-hover: #eaeef2;
+  --bg-active: #dde2e8;
+
+  // Text colors
+  --text-primary: #1f2328;
+  --text-secondary: #59636e;
+  --text-muted: #848d97;
+  --text-link: #0969da;
+
+  // Border colors
+  --border-primary: #d1d9e0;
+  --border-secondary: #e4e8ec;
+
+  // Accent colors (LaunchDarkly-inspired purple/blue)
+  --accent-primary: #405bff;
+  --accent-secondary: #6366f1;
+  --accent-hover: #3449e3;
+  --accent-gradient: linear-gradient(135deg, #405bff 0%, #6366f1 100%);
+
+  // Status colors
+  --color-success: #1a7f37;
+  --color-warning: #9a6700;
+  --color-error: #d1242f;
+  --color-info: #0969da;
+
+  // Sizing
+  --sidebar-width: 240px;
+  --header-height: 56px;
+  --border-radius: 6px;
+  --border-radius-lg: 8px;
+
+  // Shadows
+  --shadow-sm: 0 1px 2px rgb(0 0 0 / 8%);
+  --shadow-md: 0 4px 6px rgb(0 0 0 / 10%);
+  --shadow-lg: 0 10px 20px rgb(0 0 0 / 12%);
+
+  // Transitions
+  --transition-fast: 150ms ease;
+  --transition-normal: 250ms ease;
+}
+
+// -----------------------------------------------------------------------------
+// Dark Theme
+// -----------------------------------------------------------------------------
+[data-theme='dark'] {
+  // Background colors
+  --bg-primary: #0f1218;
+  --bg-secondary: #161b22;
+  --bg-tertiary: #1c2128;
+  --bg-sidebar: #0d1117;
+  --bg-header: #161b22;
+  --bg-card: #1c2128;
+  --bg-hover: #262c36;
+  --bg-active: #2d333b;
+
+  // Text colors
+  --text-primary: #e6edf3;
+  --text-secondary: #8b949e;
+  --text-muted: #6e7681;
+  --text-link: #58a6ff;
+
+  // Border colors
+  --border-primary: #30363d;
+  --border-secondary: #21262d;
+
+  // Accent colors
+  --accent-primary: #405bff;
+  --accent-secondary: #6366f1;
+  --accent-hover: #5865f2;
+  --accent-gradient: linear-gradient(135deg, #405bff 0%, #6366f1 100%);
+
+  // Status colors
+  --color-success: #3fb950;
+  --color-warning: #d29922;
+  --color-error: #f85149;
+  --color-info: #58a6ff;
+
+  // Shadows (darker for dark theme)
+  --shadow-sm: 0 1px 2px rgb(0 0 0 / 30%);
+  --shadow-md: 0 4px 6px rgb(0 0 0 / 40%);
+  --shadow-lg: 0 10px 20px rgb(0 0 0 / 50%);
+}
+
+// -----------------------------------------------------------------------------
+// System Preference Support (Optional)
+// Uncomment to auto-detect user's OS preference when no data-theme is set
+// -----------------------------------------------------------------------------
+// @media (prefers-color-scheme: dark) {
+//   :root:not([data-theme='light']) {
+//     // Copy dark theme values here for auto-detection
+//   }
+// }

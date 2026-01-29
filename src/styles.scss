@@ -1,58 +1,11 @@
 // =============================================================================
-// Global Styles - Feature Flag UI (LaunchDarkly-inspired Dark Theme)
+// Global Styles - Feature Flag UI
 // =============================================================================
 
 // -----------------------------------------------------------------------------
-// CSS Variables - Dark Theme
+// Imports
 // -----------------------------------------------------------------------------
-:root {
-  // Background colors
-  --bg-primary: #0f1218;
-  --bg-secondary: #161b22;
-  --bg-tertiary: #1c2128;
-  --bg-sidebar: #0d1117;
-  --bg-header: #161b22;
-  --bg-card: #1c2128;
-  --bg-hover: #262c36;
-  --bg-active: #2d333b;
-
-  // Text colors
-  --text-primary: #e6edf3;
-  --text-secondary: #8b949e;
-  --text-muted: #6e7681;
-  --text-link: #58a6ff;
-
-  // Border colors
-  --border-primary: #30363d;
-  --border-secondary: #21262d;
-
-  // Accent colors (LaunchDarkly-inspired purple/blue)
-  --accent-primary: #405bff;
-  --accent-secondary: #6366f1;
-  --accent-hover: #5865f2;
-  --accent-gradient: linear-gradient(135deg, #405bff 0%, #6366f1 100%);
-
-  // Status colors
-  --color-success: #3fb950;
-  --color-warning: #d29922;
-  --color-error: #f85149;
-  --color-info: #58a6ff;
-
-  // Sizing
-  --sidebar-width: 240px;
-  --header-height: 56px;
-  --border-radius: 6px;
-  --border-radius-lg: 8px;
-
-  // Shadows
-  --shadow-sm: 0 1px 2px rgb(0 0 0 / 30%);
-  --shadow-md: 0 4px 6px rgb(0 0 0 / 40%);
-  --shadow-lg: 0 10px 20px rgb(0 0 0 / 50%);
-
-  // Transitions
-  --transition-fast: 150ms ease;
-  --transition-normal: 250ms ease;
-}
+@use 'styles/variables';
 
 // -----------------------------------------------------------------------------
 // Reset & Base Styles
