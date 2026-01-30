@@ -17,6 +17,7 @@
 import { test, expect } from '../fixtures/base.fixture';
 import { FlagListPage, FlagCreatePage, FlagDetailPage } from '../pages';
 import { testFlags, uniqueId } from '../fixtures/test-data';
+import { skipIfEmpty, skipIfNotFound } from '../helpers';
 
 test.describe('Feature Flag Management Journey', () => {
   test.describe('Flag List', () => {
@@ -205,49 +206,26 @@ test.describe('Feature Flag Management Journey', () => {
       const flagList = new FlagListPage(page);
       await flagList.goto();
 
-      const flagCount = await flagList.getFlagCount();
-      if (flagCount === 0) {
-        test.skip();
-        return;
-      }
+      if (skipIfEmpty(await flagList.getFlagCount())) return;
 
-      // Get the first toggle (click label since input is visually hidden)
-      const firstToggleLabel = page.locator('app-toggle label.toggle').first();
-      const firstToggleInput = page.locator('app-toggle input').first();
-      const initialState = await firstToggleInput.isChecked();
-
-      // Toggle it by clicking the label
-      await firstToggleLabel.click();
-
-      // Verify state changed
-      await expect(firstToggleInput).toBeChecked({ checked: !initialState });
+      // Use page object's toggle helper
+      await flagList.toggle.toggleAndVerify();
     });
 
     test('should toggle flag from detail view', async ({ page }) => {
       const flagList = new FlagListPage(page);
       await flagList.goto();
 
-      const flagCount = await flagList.getFlagCount();
-      if (flagCount === 0) {
-        test.skip();
-        return;
-      }
+      if (skipIfEmpty(await flagList.getFlagCount())) return;
 
-      // Navigate to first flag
-      const firstFlagLink = flagList.tableRows.first().getByRole('link').first();
-      await firstFlagLink.click();
+      // Navigate to first flag using page object
+      await flagList.clickFirstRowLink(/flags\/[^/]+$/);
 
-      // Get the first environment toggle (click label since input is visually hidden)
-      const envToggleLabel = page.locator('.flag-detail__env-row app-toggle label.toggle').first();
-      const envToggleInput = page.locator('.flag-detail__env-row app-toggle input').first();
-      if ((await envToggleInput.count()) === 0) {
-        test.skip();
-        return;
-      }
+      // Toggle in the environment row container
+      const envRow = page.locator('.flag-detail__env-row').first();
+      if (await skipIfNotFound(envRow)) return;
 
-      const initialState = await envToggleInput.isChecked();
-      await envToggleLabel.click();
-      await expect(envToggleInput).toBeChecked({ checked: !initialState });
+      await flagList.toggle.toggleAndVerify(envRow);
     });
   });
 

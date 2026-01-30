@@ -6,16 +6,31 @@
  */
 
 import { Page, Locator, expect } from '@playwright/test';
+import { ToggleHelper } from '../helpers/toggle.helper';
+import { WaitHelper } from '../helpers/wait.helper';
+import { NavigationHelper } from '../helpers/navigation.helper';
 
 export abstract class BasePage {
   /** The Playwright page instance */
   protected readonly page: Page;
+
+  /** Toggle interaction helper */
+  protected readonly toggle: ToggleHelper;
+
+  /** Wait helper for semantic delays */
+  protected readonly wait: WaitHelper;
+
+  /** Navigation helper */
+  protected readonly nav: NavigationHelper;
 
   /** Abstract property for the page URL path */
   abstract readonly path: string;
 
   constructor(page: Page) {
     this.page = page;
+    this.toggle = new ToggleHelper(page);
+    this.wait = new WaitHelper(page);
+    this.nav = new NavigationHelper(page);
   }
 
   // ============================================================
@@ -245,14 +260,13 @@ export abstract class BasePage {
   /** Search for a term */
   async search(term: string): Promise<void> {
     await this.searchInput.fill(term);
-    // Wait for debounce
-    await this.page.waitForTimeout(300);
+    await this.wait.forSearchDebounce();
   }
 
   /** Clear search */
   async clearSearch(): Promise<void> {
     await this.searchInput.clear();
-    await this.page.waitForTimeout(300);
+    await this.wait.forSearchDebounce();
   }
 
   // ============================================================
@@ -287,5 +301,74 @@ export abstract class BasePage {
   /** Assert element contains text */
   async assertContainsText(locator: Locator, text: string | RegExp): Promise<void> {
     await expect(locator).toContainText(text);
+  }
+
+  // ============================================================
+  // Toggle Interactions
+  // ============================================================
+
+  /**
+   * Click a toggle in a specific row
+   * Handles the hidden input by clicking the label
+   */
+  async clickToggleInRow(rowText: string | RegExp): Promise<boolean> {
+    const row = this.tableRow(rowText);
+    return this.toggle.click(row);
+  }
+
+  /**
+   * Toggle and verify state changed in a row
+   */
+  async toggleAndVerifyInRow(
+    rowText: string | RegExp,
+  ): Promise<{ initial: boolean; final: boolean }> {
+    const row = this.tableRow(rowText);
+    return this.toggle.toggleAndVerify(row);
+  }
+
+  /**
+   * Get the first toggle on the page
+   */
+  get firstToggleLabel(): Locator {
+    return this.toggle.getToggleLabel().first();
+  }
+
+  /**
+   * Get the first toggle input (for checking state)
+   */
+  get firstToggleInput(): Locator {
+    return this.toggle.getToggleInput().first();
+  }
+
+  // ============================================================
+  // Row Navigation
+  // ============================================================
+
+  /**
+   * Click the first row's link and verify navigation
+   */
+  async clickFirstRowLink(urlPattern: RegExp): Promise<{ name: string | null }> {
+    return this.nav.clickFirstRowLink(this.tableRows, urlPattern);
+  }
+
+  /**
+   * Click a row by text and verify navigation
+   */
+  async clickRowByText(text: string | RegExp, urlPattern: RegExp): Promise<void> {
+    await this.nav.clickRowLinkByText(this.tableRows, text, urlPattern);
+  }
+
+  /**
+   * Get the count of table rows
+   */
+  async getRowCount(): Promise<number> {
+    return this.tableRows.count();
+  }
+
+  /**
+   * Check if table has any rows
+   */
+  async hasRows(): Promise<boolean> {
+    return (await this.getRowCount()) > 0;
   }
 }
