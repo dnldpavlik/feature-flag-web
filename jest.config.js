@@ -18,6 +18,7 @@ export default {
   coveragePathIgnorePatterns: [
     '<rootDir>/node_modules/',
     '<rootDir>/src/environments/',
+    '<rootDir>/src/app/testing/',
     '.*.mock.ts$',
     '.*.module.ts$',
     '<rootDir>/src/main.ts'
@@ -53,7 +54,8 @@ export default {
     'src/app/**/*.ts',
     '!src/app/**/*.module.ts',
     '!src/app/**/*.routes.ts',
-    '!src/app/**/index.ts'
+    '!src/app/**/index.ts',
+    '!src/app/testing/**'
   ],
   testMatch: [
     '<rootDir>/src/**/*.spec.ts'
