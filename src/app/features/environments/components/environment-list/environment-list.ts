@@ -100,7 +100,7 @@ export class EnvironmentListComponent {
     if (!this.canAdd()) return;
 
     const { name, key } = getTrimmedValues(this.form, ['name', 'key']);
-    const color = this.form.get('color')?.value ?? '#3b82f6';
+    const color = this.color;
     const order = this.environmentStore.environments().length;
 
     this.environmentStore.addEnvironment({ name, key, color, order });
