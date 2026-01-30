@@ -6,6 +6,15 @@ import { EnvironmentStore } from '@/app/shared/store/environment.store';
 import { SearchStore } from '@/app/shared/store/search.store';
 import { FlagStore } from '@/app/features/flags/store/flag.store';
 import { FlagListComponent } from './flag-list';
+import {
+  expectHeading,
+  expectExists,
+  expectEmptyState,
+  getTableRows,
+  queryAll,
+  injectService,
+  getComponent,
+} from '@/app/testing';
 
 describe('FlagList', () => {
   let fixture: ComponentFixture<FlagListComponent>;
@@ -20,30 +29,27 @@ describe('FlagList', () => {
     }).compileComponents();
 
     fixture = TestBed.createComponent(FlagListComponent);
-    component = fixture.componentInstance;
-    flagStore = TestBed.inject(FlagStore);
-    searchStore = TestBed.inject(SearchStore);
+    component = getComponent(fixture);
+    flagStore = injectService(FlagStore);
+    searchStore = injectService(SearchStore);
     fixture.detectChanges();
   });
 
   it('should render the feature flags heading', () => {
-    const heading = fixture.debugElement.query(By.css('h1'));
-    expect(heading).toBeTruthy();
-    expect(heading.nativeElement.textContent).toContain('Feature Flags');
+    expectHeading(fixture, 'Feature Flags');
   });
 
   it('should render flag rows', () => {
-    const rows = fixture.debugElement.queryAll(By.css('.data-table__body-wrap tbody tr'));
+    const rows = getTableRows(fixture);
     expect(rows.length).toBeGreaterThan(0);
   });
 
   it('should render environment selector', () => {
-    const envSelect = fixture.debugElement.query(By.css('app-labeled-select'));
-    expect(envSelect).toBeTruthy();
+    expectExists(fixture, 'app-labeled-select');
   });
 
   it('should show all environments in selector', () => {
-    const selects = fixture.debugElement.queryAll(By.css('app-labeled-select'));
+    const selects = queryAll(fixture, 'app-labeled-select');
     // First select is Environment
     const envSelect = selects[0];
     const options = envSelect.queryAll(By.css('option'));
@@ -60,7 +66,7 @@ describe('FlagList', () => {
       component.onStatusChange('enabled');
       fixture.detectChanges();
 
-      const rows = fixture.debugElement.queryAll(By.css('.data-table__body-wrap tbody tr'));
+      const rows = getTableRows(fixture);
       expect(rows.length).toBe(enabledCount);
     });
 
@@ -73,7 +79,7 @@ describe('FlagList', () => {
       component.onStatusChange('disabled');
       fixture.detectChanges();
 
-      const rows = fixture.debugElement.queryAll(By.css('.data-table__body-wrap tbody tr'));
+      const rows = getTableRows(fixture);
       expect(rows.length).toBe(disabledCount);
     });
 
@@ -90,7 +96,7 @@ describe('FlagList', () => {
       component.onEnvironmentChange('env_staging');
       fixture.detectChanges();
 
-      const rows = fixture.debugElement.queryAll(By.css('.data-table__body-wrap tbody tr'));
+      const rows = getTableRows(fixture);
       expect(rows.length).toBe(enabledInStaging);
     });
   });
@@ -100,7 +106,7 @@ describe('FlagList', () => {
       component.onTypeChange('string');
       fixture.detectChanges();
 
-      const rows = fixture.debugElement.queryAll(By.css('.data-table__body-wrap tbody tr'));
+      const rows = getTableRows(fixture);
       expect(rows.length).toBe(1);
     });
 
@@ -110,7 +116,7 @@ describe('FlagList', () => {
       component.onTypeChange('boolean');
       fixture.detectChanges();
 
-      const rows = fixture.debugElement.queryAll(By.css('.data-table__body-wrap tbody tr'));
+      const rows = getTableRows(fixture);
       expect(rows.length).toBe(booleanCount);
     });
   });
@@ -120,10 +126,9 @@ describe('FlagList', () => {
       searchStore.setQuery('zzzz-no-match');
       fixture.detectChanges();
 
-      const rows = fixture.debugElement.queryAll(By.css('.data-table__body-wrap tbody tr'));
+      const rows = getTableRows(fixture);
       expect(rows.length).toBe(0);
-      const emptyState = fixture.debugElement.query(By.css('app-empty-state'));
-      expect(emptyState).toBeTruthy();
+      expectEmptyState(fixture);
     });
   });
 
@@ -153,7 +158,7 @@ describe('FlagList', () => {
     it('should show delete button per row when more than one flag exists', () => {
       expect(flagStore.flags().length).toBeGreaterThan(1);
 
-      const deleteButtons = fixture.debugElement.queryAll(By.css('.flag-delete-btn'));
+      const deleteButtons = queryAll(fixture, '.flag-delete-btn');
       expect(deleteButtons.length).toBe(flagStore.flags().length);
     });
 
@@ -165,7 +170,7 @@ describe('FlagList', () => {
       }
       fixture.detectChanges();
 
-      const deleteButtons = fixture.debugElement.queryAll(By.css('.flag-delete-btn'));
+      const deleteButtons = queryAll(fixture, '.flag-delete-btn');
       expect(deleteButtons.length).toBe(0);
     });
 
@@ -185,7 +190,7 @@ describe('FlagList', () => {
     it('should display current environment value', () => {
       fixture.detectChanges();
 
-      const valueCells = fixture.debugElement.queryAll(By.css('.flag-value'));
+      const valueCells = queryAll(fixture, '.flag-value');
       expect(valueCells.length).toBeGreaterThan(0);
     });
 
