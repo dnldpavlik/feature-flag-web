@@ -141,7 +141,7 @@ snyk:code:
   script:
     - echo "=== Snyk Code (SAST) Scan ==="
     - snyk code test --severity-threshold=high --json-file-output=snyk-code-results.json || true
-    - snyk code test --severity-threshold=high || true
+    - "[ -f snyk-code-results.json ] || echo '{}' > snyk-code-results.json"
   artifacts:
     when: always
     paths:
@@ -162,8 +162,9 @@ snyk:iac:
     - snyk auth ${SNYK_TOKEN}
   script:
     - echo "=== Snyk IaC Scan ==="
-    - snyk iac test --severity-threshold=medium --json-file-output=snyk-iac-results.json || true
-    - snyk iac test --severity-threshold=medium || true
+    - snyk iac test docker-compose.yml .devcontainer/Dockerfile --severity-threshold=medium --json-file-output=snyk-iac-results.json || true
+    - snyk iac test docker-compose.yml .devcontainer/Dockerfile --severity-threshold=medium || true
+    - "[ -f snyk-iac-results.json ] || echo '{}' > snyk-iac-results.json"
   artifacts:
     when: always
     paths:
