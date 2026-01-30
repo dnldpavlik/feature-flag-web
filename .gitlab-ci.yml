@@ -110,9 +110,10 @@ build:
 # -----------------------------------------------------------------------------
 snyk:dependencies:
   stage: security
-  image: snyk/snyk:node
+  image: node:22-alpine
   needs: []
   before_script:
+    - npm install -g snyk
     - snyk auth ${SNYK_TOKEN}
   script:
     - echo "=== Snyk Dependency Scan ==="
@@ -132,9 +133,10 @@ snyk:dependencies:
 # -----------------------------------------------------------------------------
 snyk:code:
   stage: security
-  image: snyk/snyk:node
+  image: node:22-alpine
   needs: []
   before_script:
+    - npm install -g snyk
     - snyk auth ${SNYK_TOKEN}
   script:
     - echo "=== Snyk Code (SAST) Scan ==="
@@ -153,9 +155,10 @@ snyk:code:
 # -----------------------------------------------------------------------------
 snyk:iac:
   stage: security
-  image: snyk/snyk:linux
+  image: node:22-alpine
   needs: []
   before_script:
+    - npm install -g snyk
     - snyk auth ${SNYK_TOKEN}
   script:
     - echo "=== Snyk IaC Scan ==="
