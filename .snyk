@@ -1,0 +1,43 @@
+# =============================================================================
+# Snyk Policy File
+# =============================================================================
+# This file allows you to:
+# - Ignore specific vulnerabilities (with justification and expiry)
+# - Set language settings
+# - Configure vulnerability patching
+#
+# Documentation: https://docs.snyk.io/snyk-cli/test-for-vulnerabilities/.snyk-files
+# =============================================================================
+
+version: v1.25.0
+
+# Language and package manager settings
+language-settings:
+  javascript:
+    packageManager: npm
+
+# =============================================================================
+# Ignored Vulnerabilities
+# =============================================================================
+# Only ignore vulnerabilities with valid justification!
+# Always set an expiry date to force re-evaluation.
+#
+# Format:
+#   ignore:
+#     SNYK-JS-XXXXX-XXXXXX:
+#       - '*':
+#           reason: 'Justification for ignoring'
+#           expires: '2025-06-01T00:00:00.000Z'
+#           created: '2025-01-01T00:00:00.000Z'
+# =============================================================================
+
+ignore: {}
+
+# =============================================================================
+# Patches
+# =============================================================================
+# Snyk can automatically apply patches to fix vulnerabilities in dependencies.
+# These are applied during `snyk protect` command.
+# =============================================================================
+
+patch: {}
