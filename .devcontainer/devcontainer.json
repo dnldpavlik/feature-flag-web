@@ -1,7 +1,7 @@
 {
   "name": "Feature Flag UI - Angular 20",
-  // Use the compose file one level up from /frontend
-  "dockerComposeFile": ["../docker-compose.yml"],
+  // Use the compose file in this directory
+  "dockerComposeFile": ["./docker-compose.yml"],
   // This must match the compose service name
   "service": "frontend-dev",
   // Map the open folder to the container's mounted workspace

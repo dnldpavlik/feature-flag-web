@@ -1,0 +1,48 @@
+# =============================================================================
+# Production Docker Compose - Feature Flag UI
+# =============================================================================
+# Prerequisites:
+#   Build Angular app first:  npm run build:prod
+#
+# Usage:
+#   Build:  docker compose -f docker/docker-compose.yml build
+#   Run:    docker compose -f docker/docker-compose.yml up -d
+#   Stop:   docker compose -f docker/docker-compose.yml down
+#
+# Note: The Dockerfile expects pre-built files in dist/feature-flags-web/browser
+#       In CI, these come from the build job artifacts.
+#       For local builds, run npm run build:prod first.
+# =============================================================================
+
+services:
+  feature-flags-ui:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    image: feature-flags-ui:${TAG:-latest}
+    container_name: feature-flags-ui
+    ports:
+      - "${PORT:-8080}:80"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost/health"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 5s
+    # Resource limits (adjust as needed)
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 128M
+        reservations:
+          cpus: '0.1'
+          memory: 64M
+    # Security options
+    security_opt:
+      - no-new-privileges:true
+    read_only: true
+    tmpfs:
+      - /var/cache/nginx:uid=1001,gid=1001
+      - /var/run:uid=1001,gid=1001

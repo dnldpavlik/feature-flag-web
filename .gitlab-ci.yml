@@ -94,6 +94,33 @@ build:
       - dist/
     expire_in: 1 week
 
+# -----------------------------------------------------------------------------
+# Docker Image Build (Kaniko)
+# -----------------------------------------------------------------------------
+# Builds the production Docker image using pre-built artifacts from the build job
+# Uses Kaniko for building without Docker daemon (more reliable in GitLab CI)
+build:docker:
+  stage: build
+  image:
+    name: gcr.io/kaniko-project/executor:v1.23.2-debug
+    entrypoint: [""]
+  needs:
+    - job: build
+      artifacts: true
+  script:
+    - mkdir -p /kaniko/.docker
+    - echo "{\"auths\":{\"$CI_REGISTRY\":{\"username\":\"$CI_REGISTRY_USER\",\"password\":\"$CI_REGISTRY_PASSWORD\"}}}" > /kaniko/.docker/config.json
+    - /kaniko/executor
+      --context "$CI_PROJECT_DIR"
+      --dockerfile "$CI_PROJECT_DIR/docker/Dockerfile"
+      --destination "$CI_REGISTRY_IMAGE:$CI_COMMIT_SHA"
+      --destination "$CI_REGISTRY_IMAGE:latest"
+      --insecure
+      --skip-tls-verify
+      --skip-tls-verify-pull
+  rules:
+    - if: ($CI_COMMIT_BRANCH == "main" || $CI_COMMIT_BRANCH == "master") && $CI_REGISTRY_IMAGE
+
 # =============================================================================
 # Security Stage - Snyk Scanning (Weekly Scheduled)
 # =============================================================================
@@ -162,8 +189,8 @@ snyk:iac:
     - snyk auth ${SNYK_TOKEN}
   script:
     - echo "=== Snyk IaC Scan ==="
-    - snyk iac test docker-compose.yml .devcontainer/Dockerfile --severity-threshold=medium --json-file-output=snyk-iac-results.json || true
-    - snyk iac test docker-compose.yml .devcontainer/Dockerfile --severity-threshold=medium || true
+    - snyk iac test .devcontainer/Dockerfile .devcontainer/docker-compose.yml docker/Dockerfile docker/docker-compose.yml --severity-threshold=medium --json-file-output=snyk-iac-results.json || true
+    - snyk iac test .devcontainer/Dockerfile .devcontainer/docker-compose.yml docker/Dockerfile docker/docker-compose.yml --severity-threshold=medium || true
     - "[ -f snyk-iac-results.json ] || echo '{}' > snyk-iac-results.json"
   artifacts:
     when: always
