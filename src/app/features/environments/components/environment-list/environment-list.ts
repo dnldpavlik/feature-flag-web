@@ -14,6 +14,7 @@ import { PageHeaderComponent } from '@/app/shared/ui/page-header/page-header';
 import { SearchStore } from '@/app/shared/store/search.store';
 import { EnvironmentStore } from '@/app/shared/store/environment.store';
 import { hasRequiredFields, getTrimmedValues } from '@/app/shared/utils/form.utils';
+import { textFilter } from '@/app/shared/utils/filter.utils';
 
 @Component({
   selector: 'app-environment-list',
@@ -45,11 +46,7 @@ export class EnvironmentListComponent {
   protected readonly searchQuery = computed(() => this.searchStore.query().trim().toLowerCase());
   protected readonly filteredEnvironments = computed(() => {
     const query = this.searchQuery();
-    if (!query) return this.environments();
-
-    return this.environments().filter((env) =>
-      `${env.name} ${env.key}`.toLowerCase().includes(query),
-    );
+    return this.environments().filter(textFilter(['name', 'key'], query));
   });
 
   readonly form = this.fb.group({

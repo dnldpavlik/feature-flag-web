@@ -12,6 +12,7 @@ import { FormFieldComponent } from '@/app/shared/ui/form-field/form-field';
 import { PageHeaderComponent } from '@/app/shared/ui/page-header/page-header';
 import { SearchStore } from '@/app/shared/store/search.store';
 import { SegmentStore } from '@/app/features/segments/store/segment.store';
+import { textFilter } from '@/app/shared/utils/filter.utils';
 
 @Component({
   selector: 'app-segment-list',
@@ -40,11 +41,7 @@ export class SegmentListComponent {
   protected readonly searchQuery = computed(() => this.searchStore.query().trim().toLowerCase());
   protected readonly filteredSegments = computed(() => {
     const query = this.searchQuery();
-    if (!query) return this.segments();
-
-    return this.segments().filter((segment) =>
-      `${segment.name} ${segment.key} ${segment.description}`.toLowerCase().includes(query),
-    );
+    return this.segments().filter(textFilter(['name', 'key', 'description'], query));
   });
 
   protected readonly form = this.fb.group({

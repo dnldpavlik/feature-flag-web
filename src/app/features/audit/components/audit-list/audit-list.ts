@@ -13,8 +13,9 @@ import {
 } from '@/app/shared/ui/labeled-select/labeled-select';
 import { SearchStore } from '@/app/shared/store/search.store';
 import { AuditStore } from '@/app/features/audit/store/audit.store';
-import { AuditAction, AuditEntry, AuditResourceType } from '../../models/audit.model';
+import { AuditAction, AuditResourceType } from '../../models/audit.model';
 import { ActionFilter, ResourceFilter } from './audit-list.types';
+import { textFilter, propertyEquals, matchesAll } from '@/app/shared/utils/filter.utils';
 
 const ACTION_OPTIONS: SelectOption[] = [
   { value: 'all', label: 'All Actions' },
@@ -65,12 +66,15 @@ export class AuditListComponent {
     const resource = this.resourceFilter();
     const query = this.searchQuery();
 
-    return this.auditStore.entries().filter((entry) => {
-      const matchesAction = action === 'all' || entry.action === action;
-      const matchesResource = resource === 'all' || entry.resourceType === resource;
-      const matchesSearch = this.matchesSearchQuery(entry, query);
-      return matchesAction && matchesResource && matchesSearch;
-    });
+    return this.auditStore
+      .entries()
+      .filter(
+        matchesAll([
+          propertyEquals('action', action),
+          propertyEquals('resourceType', resource),
+          textFilter(['resourceName', 'userName', 'details', 'action', 'resourceType'], query),
+        ]),
+      );
   });
 
   protected readonly filteredCount = computed(() => this.filteredEntries().length);
@@ -90,19 +94,5 @@ export class AuditListComponent {
 
   formatResourceType(resourceType: AuditResourceType): string {
     return resourceType.charAt(0).toUpperCase() + resourceType.slice(1);
-  }
-
-  private matchesSearchQuery(entry: AuditEntry, query: string): boolean {
-    if (!query) return true;
-    const searchable = [
-      entry.resourceName,
-      entry.userName,
-      entry.details,
-      entry.action,
-      entry.resourceType,
-    ]
-      .join(' ')
-      .toLowerCase();
-    return searchable.includes(query);
   }
 }

@@ -14,6 +14,7 @@ import { PageHeaderComponent } from '@/app/shared/ui/page-header/page-header';
 import { SearchStore } from '@/app/shared/store/search.store';
 import { ProjectStore } from '@/app/shared/store/project.store';
 import { hasRequiredFields, getTrimmedValues } from '@/app/shared/utils/form.utils';
+import { textFilter } from '@/app/shared/utils/filter.utils';
 
 @Component({
   selector: 'app-project-list',
@@ -44,11 +45,7 @@ export class ProjectListComponent {
   protected readonly searchQuery = computed(() => this.searchStore.query().trim().toLowerCase());
   protected readonly filteredProjects = computed(() => {
     const query = this.searchQuery();
-    if (!query) return this.projects();
-
-    return this.projects().filter((project) =>
-      `${project.name} ${project.key} ${project.description}`.toLowerCase().includes(query),
-    );
+    return this.projects().filter(textFilter(['name', 'key', 'description'], query));
   });
 
   readonly form = this.fb.group({

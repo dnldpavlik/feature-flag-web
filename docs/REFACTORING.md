@@ -206,15 +206,33 @@ it('should render details', async () => {
 ## Low Priority
 
 ### 7. Filter Logic Duplication
-**Status:** `[ ]` Not started
+**Status:** `[x]` Complete
+
+**Files Affected:**
+- `src/app/features/environments/components/environment-list/environment-list.ts` (85 → 82 lines)
+- `src/app/features/projects/components/project-list/project-list.ts` (84 → 81 lines)
+- `src/app/features/segments/components/segment-list/segment-list.ts` (100 → 97 lines)
+- `src/app/features/audit/components/audit-list/audit-list.ts` (109 → 95 lines)
 
 **Problem:**
-Inline filter predicates in list components.
+Inline filter predicates duplicated text search and property matching patterns.
 
 **Solution:**
-Extract filter predicates to pure utility functions with composition helpers.
+Created `src/app/shared/utils/filter.utils.ts` with:
+- `textFilter(fields, query)` - Creates text search predicate for specified fields
+- `propertyEquals(field, value)` - Creates exact match predicate (treats 'all' as match-all)
+- `matchesAll(predicates)` - Combines predicates with AND logic
+- `matchesAny(predicates)` - Combines predicates with OR logic
+- `isTruthy(field)` / `isFalsy(field)` - Boolean field predicates
+- `not(predicate)` - Negates a predicate
 
-**Estimated Savings:** ~30 lines
+**Refactored Components:**
+- `environment-list.ts` - Uses `textFilter(['name', 'key'], query)`
+- `project-list.ts` - Uses `textFilter(['name', 'key', 'description'], query)`
+- `segment-list.ts` - Uses `textFilter(['name', 'key', 'description'], query)`
+- `audit-list.ts` - Uses `matchesAll()` with `propertyEquals()` and `textFilter()`
+
+**Actual Savings:** ~24 lines + reusable utilities (120 lines) with full test coverage
 
 ---
 
@@ -251,6 +269,7 @@ Define clear interfaces for store, component, and page object patterns.
 | 2026-01-30 | Getter/Setter Pattern | Completed | Removed boilerplate from 3 components, updated tests |
 | 2026-01-30 | Large Component Files | Completed | Created FlagValueInputComponent and flag-form.utils.ts |
 | 2026-01-30 | Unit Test Setup | Completed | Created detail-component.helpers.ts, refactored flag-detail.spec.ts |
+| 2026-01-30 | Filter Logic | Completed | Created filter.utils.ts, refactored 4 list components |
 
 ---
 
