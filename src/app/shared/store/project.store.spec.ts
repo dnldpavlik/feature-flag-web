@@ -1,6 +1,15 @@
 import { TestBed } from '@angular/core/testing';
 
 import { ProjectStore } from './project.store';
+import {
+  expectSignal,
+  expectHasItems,
+  expectIdPattern,
+  expectItemAdded,
+  getCountBefore,
+  findByKey,
+  injectService,
+} from '@/app/testing';
 
 describe('ProjectStore', () => {
   let store: ProjectStore;
@@ -10,12 +19,12 @@ describe('ProjectStore', () => {
       providers: [ProjectStore],
     });
 
-    store = TestBed.inject(ProjectStore);
+    store = injectService(ProjectStore);
   });
 
   describe('initial state', () => {
     it('should seed with pre-configured projects', () => {
-      expect(store.projects().length).toBeGreaterThan(0);
+      expectHasItems(store.projects);
     });
 
     it('should include a default project', () => {
@@ -24,7 +33,7 @@ describe('ProjectStore', () => {
     });
 
     it('should provide readonly projects signal', () => {
-      expect(typeof store.projects).toBe('function');
+      expectSignal(store.projects);
     });
   });
 
@@ -62,9 +71,9 @@ describe('ProjectStore', () => {
         description: 'R&D experiments.',
       });
 
-      const labsBefore = store.projects().find((item) => item.key === 'labs');
+      const labsBefore = findByKey(store.projects, 'labs');
       store.setDefaultProject('proj_growth');
-      const labsAfter = store.projects().find((item) => item.key === 'labs');
+      const labsAfter = findByKey(store.projects, 'labs');
 
       expect(labsAfter?.updatedAt).toBe(labsBefore?.updatedAt);
     });
@@ -72,7 +81,7 @@ describe('ProjectStore', () => {
 
   describe('addProject', () => {
     it('should add a new project to the store', () => {
-      const initialCount = store.projects().length;
+      const countBefore = getCountBefore(store.projects);
 
       store.addProject({
         key: 'pricing',
@@ -80,7 +89,7 @@ describe('ProjectStore', () => {
         description: 'Pricing and packaging experiments.',
       });
 
-      expect(store.projects().length).toBe(initialCount + 1);
+      expectItemAdded(store.projects, countBefore);
     });
 
     it('should create project with provided key', () => {
@@ -90,7 +99,7 @@ describe('ProjectStore', () => {
         description: 'Description',
       });
 
-      const project = store.projects().find((p) => p.key === 'unique-key');
+      const project = findByKey(store.projects, 'unique-key');
       expect(project?.key).toBe('unique-key');
     });
 
@@ -102,7 +111,7 @@ describe('ProjectStore', () => {
         isDefault: true,
       });
 
-      const project = store.projects().find((item) => item.key === 'ops');
+      const project = findByKey(store.projects, 'ops');
       expect(project?.isDefault).toBe(true);
     });
 
@@ -113,8 +122,8 @@ describe('ProjectStore', () => {
         description: 'Test',
       });
 
-      const project = store.projects().find((p) => p.key === 'new-proj');
-      expect(project?.id).toMatch(/^proj_/);
+      const project = findByKey(store.projects, 'new-proj');
+      expectIdPattern(project!.id, 'proj');
     });
   });
 
@@ -135,7 +144,7 @@ describe('ProjectStore', () => {
         description: 'Test',
       });
 
-      const added = store.projects().find((p) => p.key === 'findable');
+      const added = findByKey(store.projects, 'findable');
       const found = store.getProjectById(added!.id);
       expect(found?.name).toBe('Findable Project');
     });
@@ -149,7 +158,7 @@ describe('ProjectStore', () => {
         name: 'Deletable',
         description: 'Will be deleted',
       });
-      const project = store.projects().find((p) => p.key === 'deletable');
+      const project = findByKey(store.projects, 'deletable');
 
       store.deleteProject(project!.id);
 

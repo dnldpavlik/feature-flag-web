@@ -67,18 +67,24 @@ export function expectIdPattern(id: string, prefix: string): void {
 }
 
 /**
- * Assert timestamp is set and recent
+ * Assert timestamp is set (either as Date object or ISO string)
  */
-export function expectTimestamp(date: Date | undefined): void {
-  expect(date).toBeInstanceOf(Date);
+export function expectTimestamp(date: Date | string | undefined): void {
+  expect(date).toBeDefined();
+  if (typeof date === 'string') {
+    // ISO string timestamp
+    expect(new Date(date).toISOString()).toBe(date);
+  } else {
+    expect(date).toBeInstanceOf(Date);
+  }
 }
 
 /**
  * Assert createdAt and updatedAt are set
  */
 export function expectTimestamps(item: StoreItem): void {
-  expectTimestamp(item.createdAt);
-  expectTimestamp(item.updatedAt);
+  expectTimestamp(item.createdAt as Date | string | undefined);
+  expectTimestamp(item.updatedAt as Date | string | undefined);
 }
 
 /**

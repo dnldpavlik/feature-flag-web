@@ -1,8 +1,14 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Component } from '@angular/core';
-import { By } from '@angular/platform-browser';
 
 import { BadgeComponent } from './badge';
+import {
+  createComponentFixture,
+  query,
+  expectExists,
+  expectNotExists,
+  getComponent,
+} from '@/app/testing';
 
 describe('BadgeComponent', () => {
   let fixture: ComponentFixture<BadgeComponent>;
@@ -11,12 +17,8 @@ describe('BadgeComponent', () => {
   const getHostElement = () => fixture.debugElement.nativeElement as HTMLElement;
 
   beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [BadgeComponent],
-    }).compileComponents();
-
-    fixture = TestBed.createComponent(BadgeComponent);
-    component = fixture.componentInstance;
+    fixture = await createComponentFixture(BadgeComponent);
+    component = getComponent(fixture);
   });
 
   it('should create', () => {
@@ -34,8 +36,8 @@ describe('BadgeComponent', () => {
     const hostFixture = TestBed.createComponent(TestHost);
     hostFixture.detectChanges();
 
-    const badge = hostFixture.debugElement.query(By.css('app-badge'));
-    expect(badge.nativeElement.textContent).toContain('Test Label');
+    const badge = query(hostFixture, 'app-badge');
+    expect(badge?.nativeElement.textContent).toContain('Test Label');
   });
 
   describe('variants', () => {
@@ -105,17 +107,13 @@ describe('BadgeComponent', () => {
   describe('dismissible', () => {
     it('should not show dismiss button by default', () => {
       fixture.detectChanges();
-
-      const dismissBtn = fixture.debugElement.query(By.css('.badge__dismiss'));
-      expect(dismissBtn).toBeFalsy();
+      expectNotExists(fixture, '.badge__dismiss');
     });
 
     it('should show dismiss button when dismissible is true', () => {
       fixture.componentRef.setInput('dismissible', true);
       fixture.detectChanges();
-
-      const dismissBtn = fixture.debugElement.query(By.css('.badge__dismiss'));
-      expect(dismissBtn).toBeTruthy();
+      expectExists(fixture, '.badge__dismiss');
     });
 
     it('should emit dismissed event when dismiss button is clicked', () => {
@@ -125,8 +123,8 @@ describe('BadgeComponent', () => {
       const dismissedSpy = jest.fn();
       component.dismissed.subscribe(dismissedSpy);
 
-      const dismissBtn = fixture.debugElement.query(By.css('.badge__dismiss'));
-      dismissBtn.nativeElement.click();
+      const dismissBtn = query(fixture, '.badge__dismiss');
+      dismissBtn?.nativeElement.click();
 
       expect(dismissedSpy).toHaveBeenCalled();
     });

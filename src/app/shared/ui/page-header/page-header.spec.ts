@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { By } from '@angular/platform-browser';
 
 import { PageHeaderComponent } from './page-header';
+import { expectExists, expectNotExists, getText } from '@/app/testing';
 
 @Component({
   imports: [PageHeaderComponent],
@@ -21,6 +21,8 @@ class TestHostComponent {
 describe('PageHeader', () => {
   let fixture: ComponentFixture<PageHeaderComponent>;
 
+  // Note: Cannot use createComponentFixture here because PageHeaderComponent
+  // has required inputs that must be set before the first detectChanges()
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [PageHeaderComponent],
@@ -39,9 +41,8 @@ describe('PageHeader', () => {
     fixture.componentRef.setInput('title', 'Feature Flags');
     fixture.detectChanges();
 
-    const h1 = fixture.debugElement.query(By.css('h1'));
-    expect(h1).toBeTruthy();
-    expect(h1.nativeElement.textContent.trim()).toBe('Feature Flags');
+    expectExists(fixture, 'h1');
+    expect(getText(fixture, 'h1')).toBe('Feature Flags');
   });
 
   it('should render the description when provided', () => {
@@ -49,17 +50,17 @@ describe('PageHeader', () => {
     fixture.componentRef.setInput('description', 'Ship safely with targeted rollouts.');
     fixture.detectChanges();
 
-    const p = fixture.debugElement.query(By.css('.page-header__description'));
-    expect(p).toBeTruthy();
-    expect(p.nativeElement.textContent.trim()).toBe('Ship safely with targeted rollouts.');
+    expectExists(fixture, '.page-header__description');
+    expect(getText(fixture, '.page-header__description')).toBe(
+      'Ship safely with targeted rollouts.',
+    );
   });
 
   it('should not render the description paragraph when not provided', () => {
     fixture.componentRef.setInput('title', 'Settings');
     fixture.detectChanges();
 
-    const p = fixture.debugElement.query(By.css('.page-header__description'));
-    expect(p).toBeFalsy();
+    expectNotExists(fixture, '.page-header__description');
   });
 
   it('should apply the page-header class to the host element', () => {
@@ -73,8 +74,7 @@ describe('PageHeader', () => {
     fixture.componentRef.setInput('title', 'Test');
     fixture.detectChanges();
 
-    const header = fixture.debugElement.query(By.css('header'));
-    expect(header).toBeTruthy();
+    expectExists(fixture, 'header');
   });
 });
 
@@ -91,13 +91,11 @@ describe('PageHeader with content projection', () => {
   });
 
   it('should render projected content when no description input is provided', () => {
-    const projected = fixture.debugElement.query(By.css('.project-name'));
-    expect(projected).toBeTruthy();
-    expect(projected.nativeElement.textContent).toBe('My Project');
+    expectExists(fixture, '.project-name');
+    expect(getText(fixture, '.project-name')).toBe('My Project');
   });
 
   it('should render the title alongside projected content', () => {
-    const h1 = fixture.debugElement.query(By.css('h1'));
-    expect(h1.nativeElement.textContent.trim()).toBe('Dashboard');
+    expect(getText(fixture, 'h1')).toBe('Dashboard');
   });
 });

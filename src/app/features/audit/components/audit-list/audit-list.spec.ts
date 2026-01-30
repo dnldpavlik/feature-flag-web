@@ -1,9 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { By } from '@angular/platform-browser';
 
 import { SearchStore } from '@/app/shared/store/search.store';
 import { AuditStore } from '@/app/features/audit/store/audit.store';
 import { AuditListComponent } from './audit-list';
+import {
+  expectHeading,
+  expectEmptyState,
+  getTableRows,
+  getRowCount,
+  query,
+  injectService,
+  getComponent,
+} from '@/app/testing';
 
 describe('AuditList', () => {
   let fixture: ComponentFixture<AuditListComponent>;
@@ -18,9 +26,9 @@ describe('AuditList', () => {
     }).compileComponents();
 
     fixture = TestBed.createComponent(AuditListComponent);
-    component = fixture.componentInstance;
-    auditStore = TestBed.inject(AuditStore);
-    searchStore = TestBed.inject(SearchStore);
+    component = getComponent(fixture);
+    auditStore = injectService(AuditStore);
+    searchStore = injectService(SearchStore);
     fixture.detectChanges();
   });
 
@@ -29,20 +37,18 @@ describe('AuditList', () => {
   });
 
   it('should render the audit log heading', () => {
-    const heading = fixture.debugElement.query(By.css('h1'));
-    expect(heading).toBeTruthy();
-    expect(heading.nativeElement.textContent).toContain('Audit Log');
+    expectHeading(fixture, 'Audit Log');
   });
 
   it('should render audit entry rows', () => {
-    const rows = fixture.debugElement.queryAll(By.css('.data-table__body-wrap tbody tr'));
+    const rows = getTableRows(fixture);
     expect(rows.length).toBeGreaterThan(0);
   });
 
   it('should display entry count', () => {
-    const countEl = fixture.debugElement.query(By.css('.toolbar__count'));
+    const countEl = query(fixture, '.toolbar__count');
     expect(countEl).toBeTruthy();
-    expect(countEl.nativeElement.textContent).toContain(auditStore.entries().length.toString());
+    expect(countEl?.nativeElement.textContent).toContain(auditStore.entries().length.toString());
   });
 
   describe('action filtering', () => {
@@ -52,8 +58,7 @@ describe('AuditList', () => {
       component.onActionChange('created');
       fixture.detectChanges();
 
-      const rows = fixture.debugElement.queryAll(By.css('.data-table__body-wrap tbody tr'));
-      expect(rows.length).toBe(createdCount);
+      expect(getRowCount(fixture)).toBe(createdCount);
     });
 
     it('should filter entries by updated action', () => {
@@ -62,8 +67,7 @@ describe('AuditList', () => {
       component.onActionChange('updated');
       fixture.detectChanges();
 
-      const rows = fixture.debugElement.queryAll(By.css('.data-table__body-wrap tbody tr'));
-      expect(rows.length).toBe(updatedCount);
+      expect(getRowCount(fixture)).toBe(updatedCount);
     });
 
     it('should filter entries by deleted action', () => {
@@ -72,8 +76,7 @@ describe('AuditList', () => {
       component.onActionChange('deleted');
       fixture.detectChanges();
 
-      const rows = fixture.debugElement.queryAll(By.css('.data-table__body-wrap tbody tr'));
-      expect(rows.length).toBe(deletedCount);
+      expect(getRowCount(fixture)).toBe(deletedCount);
     });
 
     it('should filter entries by toggled action', () => {
@@ -82,8 +85,7 @@ describe('AuditList', () => {
       component.onActionChange('toggled');
       fixture.detectChanges();
 
-      const rows = fixture.debugElement.queryAll(By.css('.data-table__body-wrap tbody tr'));
-      expect(rows.length).toBe(toggledCount);
+      expect(getRowCount(fixture)).toBe(toggledCount);
     });
 
     it('should show all entries when action filter is all', () => {
@@ -93,8 +95,7 @@ describe('AuditList', () => {
       component.onActionChange('all');
       fixture.detectChanges();
 
-      const rows = fixture.debugElement.queryAll(By.css('.data-table__body-wrap tbody tr'));
-      expect(rows.length).toBe(auditStore.entries().length);
+      expect(getRowCount(fixture)).toBe(auditStore.entries().length);
     });
   });
 
@@ -105,8 +106,7 @@ describe('AuditList', () => {
       component.onResourceChange('flag');
       fixture.detectChanges();
 
-      const rows = fixture.debugElement.queryAll(By.css('.data-table__body-wrap tbody tr'));
-      expect(rows.length).toBe(flagCount);
+      expect(getRowCount(fixture)).toBe(flagCount);
     });
 
     it('should filter entries by segment resource type', () => {
@@ -115,8 +115,7 @@ describe('AuditList', () => {
       component.onResourceChange('segment');
       fixture.detectChanges();
 
-      const rows = fixture.debugElement.queryAll(By.css('.data-table__body-wrap tbody tr'));
-      expect(rows.length).toBe(segmentCount);
+      expect(getRowCount(fixture)).toBe(segmentCount);
     });
 
     it('should filter entries by environment resource type', () => {
@@ -125,8 +124,7 @@ describe('AuditList', () => {
       component.onResourceChange('environment');
       fixture.detectChanges();
 
-      const rows = fixture.debugElement.queryAll(By.css('.data-table__body-wrap tbody tr'));
-      expect(rows.length).toBe(envCount);
+      expect(getRowCount(fixture)).toBe(envCount);
     });
 
     it('should filter entries by project resource type', () => {
@@ -135,8 +133,7 @@ describe('AuditList', () => {
       component.onResourceChange('project');
       fixture.detectChanges();
 
-      const rows = fixture.debugElement.queryAll(By.css('.data-table__body-wrap tbody tr'));
-      expect(rows.length).toBe(projectCount);
+      expect(getRowCount(fixture)).toBe(projectCount);
     });
 
     it('should show all entries when resource filter is all', () => {
@@ -146,8 +143,7 @@ describe('AuditList', () => {
       component.onResourceChange('all');
       fixture.detectChanges();
 
-      const rows = fixture.debugElement.queryAll(By.css('.data-table__body-wrap tbody tr'));
-      expect(rows.length).toBe(auditStore.entries().length);
+      expect(getRowCount(fixture)).toBe(auditStore.entries().length);
     });
   });
 
@@ -161,8 +157,7 @@ describe('AuditList', () => {
       component.onResourceChange('flag');
       fixture.detectChanges();
 
-      const rows = fixture.debugElement.queryAll(By.css('.data-table__body-wrap tbody tr'));
-      expect(rows.length).toBe(createdFlagCount);
+      expect(getRowCount(fixture)).toBe(createdFlagCount);
     });
   });
 
@@ -171,15 +166,14 @@ describe('AuditList', () => {
       searchStore.setQuery('zzzz-no-match');
       fixture.detectChanges();
 
-      const rows = fixture.debugElement.queryAll(By.css('.data-table__body-wrap tbody tr'));
-      expect(rows.length).toBe(0);
+      expect(getRowCount(fixture)).toBe(0);
     });
 
     it('should search in resource name', () => {
       searchStore.setQuery('Dark Mode');
       fixture.detectChanges();
 
-      const rows = fixture.debugElement.queryAll(By.css('.data-table__body-wrap tbody tr'));
+      const rows = getTableRows(fixture);
       expect(rows.length).toBeGreaterThan(0);
     });
 
@@ -187,7 +181,7 @@ describe('AuditList', () => {
       searchStore.setQuery('Admin User');
       fixture.detectChanges();
 
-      const rows = fixture.debugElement.queryAll(By.css('.data-table__body-wrap tbody tr'));
+      const rows = getTableRows(fixture);
       expect(rows.length).toBeGreaterThan(0);
     });
 
@@ -195,7 +189,7 @@ describe('AuditList', () => {
       searchStore.setQuery('boolean flag');
       fixture.detectChanges();
 
-      const rows = fixture.debugElement.queryAll(By.css('.data-table__body-wrap tbody tr'));
+      const rows = getTableRows(fixture);
       expect(rows.length).toBeGreaterThan(0);
     });
   });
@@ -205,8 +199,7 @@ describe('AuditList', () => {
       searchStore.setQuery('zzzz-no-match');
       fixture.detectChanges();
 
-      const emptyState = fixture.debugElement.query(By.css('app-empty-state'));
-      expect(emptyState).toBeTruthy();
+      expectEmptyState(fixture);
     });
   });
 

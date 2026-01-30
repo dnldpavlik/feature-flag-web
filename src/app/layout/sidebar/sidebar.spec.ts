@@ -5,6 +5,7 @@ import { By } from '@angular/platform-browser';
 
 import { SidebarComponent } from './sidebar';
 import { SidebarEnvironment, SidebarNavItem, SidebarUser } from './sidebar.types';
+import { expectExists, expectTextContains, query, queryAll } from '@/app/testing';
 
 @Component({
   selector: 'app-sidebar-host',
@@ -57,28 +58,23 @@ describe('Sidebar', () => {
     });
 
     it('should render the sidebar container element', () => {
-      const sidebar = fixture.debugElement.query(By.css('.sidebar'));
-      expect(sidebar).toBeTruthy();
+      expectExists(fixture, '.sidebar');
     });
 
     it('should render the application logo', () => {
-      const logo = fixture.debugElement.query(By.css('.sidebar__logo'));
-      expect(logo).toBeTruthy();
+      expectExists(fixture, '.sidebar__logo');
     });
 
     it('should render the application title', () => {
-      const title = fixture.debugElement.query(By.css('.sidebar__title'));
-      expect(title.nativeElement.textContent).toContain('Feature Flags');
+      expectTextContains(fixture, '.sidebar__title', 'Feature Flags');
     });
 
     it('should render the navigation section', () => {
-      const nav = fixture.debugElement.query(By.css('.sidebar__nav'));
-      expect(nav).toBeTruthy();
+      expectExists(fixture, '.sidebar__nav');
     });
 
     it('should render the footer section', () => {
-      const footer = fixture.debugElement.query(By.css('.sidebar__footer'));
-      expect(footer).toBeTruthy();
+      expectExists(fixture, '.sidebar__footer');
     });
   });
 
@@ -96,13 +92,12 @@ describe('Sidebar', () => {
     });
 
     it('should render nav items for each provided item', () => {
-      const items = fixture.debugElement.queryAll(By.css('.nav-list app-nav-item'));
+      const items = queryAll(fixture, '.nav-list app-nav-item');
       expect(items.length).toBeGreaterThanOrEqual(1);
     });
 
     it('should render environment items in the environments section', () => {
-      const envSection = fixture.debugElement.query(By.css('app-nav-section'));
-      expect(envSection).toBeTruthy();
+      expectExists(fixture, 'app-nav-section');
     });
   });
 
@@ -120,14 +115,14 @@ describe('Sidebar', () => {
     });
 
     it('should render all provided nav items', () => {
-      const items = fixture.debugElement.queryAll(By.css('app-nav-item'));
+      const items = queryAll(fixture, 'app-nav-item');
       // 3 nav items + 3 environment items = 6 total
       expect(items.length).toBe(6);
     });
 
     it('should render all environment items', () => {
-      const envSection = fixture.debugElement.query(By.css('app-nav-section'));
-      const envItems = envSection.queryAll(By.css('app-nav-item'));
+      const envSection = query(fixture, 'app-nav-section');
+      const envItems = envSection?.queryAll(By.css('app-nav-item')) ?? [];
       expect(envItems.length).toBe(3);
     });
   });
@@ -146,18 +141,15 @@ describe('Sidebar', () => {
     });
 
     it('should render the user menu component', () => {
-      const menu = fixture.debugElement.query(By.css('app-user-menu'));
-      expect(menu).toBeTruthy();
+      expectExists(fixture, 'app-user-menu');
     });
 
     it('should display user name in the user menu', () => {
-      const userMenuText = fixture.debugElement.query(By.css('.user-menu'));
-      expect(userMenuText.nativeElement.textContent).toContain('John Doe');
+      expectTextContains(fixture, '.user-menu', 'John Doe');
     });
 
     it('should display user email in the user menu', () => {
-      const userMenuText = fixture.debugElement.query(By.css('.user-menu'));
-      expect(userMenuText.nativeElement.textContent).toContain('john@example.com');
+      expectTextContains(fixture, '.user-menu', 'john@example.com');
     });
   });
 
@@ -175,8 +167,8 @@ describe('Sidebar', () => {
     });
 
     it('should display environments section with title', () => {
-      const section = fixture.debugElement.query(By.css('app-nav-section'));
-      expect(section.properties['title']).toBe('Environments');
+      const section = query(fixture, 'app-nav-section');
+      expect(section?.properties['title']).toBe('Environments');
     });
   });
 });

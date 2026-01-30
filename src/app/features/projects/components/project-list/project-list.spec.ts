@@ -1,13 +1,21 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
-import { By } from '@angular/platform-browser';
 
 import { ProjectStore } from '@/app/shared/store/project.store';
 import { SearchStore } from '@/app/shared/store/search.store';
 import { ProjectListComponent } from './project-list';
+import {
+  expectHeading,
+  expectEmptyState,
+  getTableRows,
+  getRowCount,
+  injectService,
+  getComponent,
+} from '@/app/testing';
 
 describe('ProjectList', () => {
   let fixture: ComponentFixture<ProjectListComponent>;
+  let component: ProjectListComponent;
   let store: ProjectStore;
   let searchStore: SearchStore;
 
@@ -18,55 +26,55 @@ describe('ProjectList', () => {
     }).compileComponents();
 
     fixture = TestBed.createComponent(ProjectListComponent);
-    store = TestBed.inject(ProjectStore);
-    searchStore = TestBed.inject(SearchStore);
+    component = getComponent(fixture);
+    store = injectService(ProjectStore);
+    searchStore = injectService(SearchStore);
     fixture.detectChanges();
   });
 
   it('should render the project heading', () => {
-    const heading = fixture.debugElement.query(By.css('h1'));
-    expect(heading.nativeElement.textContent).toContain('Projects');
+    expectHeading(fixture, 'Projects');
   });
 
   it('should render project rows', () => {
-    const rows = fixture.debugElement.queryAll(By.css('.data-table__body-wrap tbody tr'));
+    const rows = getTableRows(fixture);
     expect(rows.length).toBe(store.projects().length);
   });
 
   it('should add a project', () => {
-    fixture.componentInstance.name = 'Pricing App';
-    fixture.componentInstance.key = 'pricing';
-    fixture.componentInstance.description = 'Pricing tests';
-    fixture.componentInstance.addProject();
+    component.name = 'Pricing App';
+    component.key = 'pricing';
+    component.description = 'Pricing tests';
+    component.addProject();
     fixture.detectChanges();
 
-    const rows = fixture.debugElement.queryAll(By.css('.data-table__body-wrap tbody tr'));
+    const rows = getTableRows(fixture);
     expect(rows.length).toBe(store.projects().length);
   });
 
   it('should not add a project when required fields are missing', () => {
     const initialCount = store.projects().length;
-    fixture.componentInstance.name = '';
-    fixture.componentInstance.key = '';
-    fixture.componentInstance.addProject();
+    component.name = '';
+    component.key = '';
+    component.addProject();
     expect(store.projects().length).toBe(initialCount);
   });
 
   it('should select a project', () => {
     const selectSpy = jest.spyOn(store, 'selectProject');
-    fixture.componentInstance.selectProject('proj_growth');
+    component.selectProject('proj_growth');
     expect(selectSpy).toHaveBeenCalledWith('proj_growth');
   });
 
   it('should set the default project', () => {
     const defaultSpy = jest.spyOn(store, 'setDefaultProject');
-    fixture.componentInstance.setDefaultProject('proj_growth');
+    component.setDefaultProject('proj_growth');
     expect(defaultSpy).toHaveBeenCalledWith('proj_growth');
   });
 
   it('should delete a project', () => {
     const deleteSpy = jest.spyOn(store, 'deleteProject');
-    fixture.componentInstance.deleteProject('proj_growth');
+    component.deleteProject('proj_growth');
     expect(deleteSpy).toHaveBeenCalledWith('proj_growth');
   });
 
@@ -74,26 +82,24 @@ describe('ProjectList', () => {
     searchStore.setQuery('zzzz-no-match');
     fixture.detectChanges();
 
-    const rows = fixture.debugElement.queryAll(By.css('.data-table__body-wrap tbody tr'));
-    expect(rows.length).toBe(0);
-    const emptyState = fixture.debugElement.query(By.css('app-empty-state'));
-    expect(emptyState).toBeTruthy();
+    expect(getRowCount(fixture)).toBe(0);
+    expectEmptyState(fixture);
   });
 
   describe('form field accessors', () => {
     it('should get and set name field', () => {
-      fixture.componentInstance.name = 'Test Project';
-      expect(fixture.componentInstance.name).toBe('Test Project');
+      component.name = 'Test Project';
+      expect(component.name).toBe('Test Project');
     });
 
     it('should get and set key field', () => {
-      fixture.componentInstance.key = 'test-key';
-      expect(fixture.componentInstance.key).toBe('test-key');
+      component.key = 'test-key';
+      expect(component.key).toBe('test-key');
     });
 
     it('should get and set description field', () => {
-      fixture.componentInstance.description = 'Test description';
-      expect(fixture.componentInstance.description).toBe('Test description');
+      component.description = 'Test description';
+      expect(component.description).toBe('Test description');
     });
   });
 });

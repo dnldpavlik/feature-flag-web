@@ -2,6 +2,16 @@ import { TestBed } from '@angular/core/testing';
 
 import { CreateSegmentRuleInput } from '../models/segment-rule.model';
 import { SegmentStore } from './segment.store';
+import {
+  expectSignal,
+  expectHasItems,
+  expectIdPattern,
+  expectItemAdded,
+  expectItemRemoved,
+  getCountBefore,
+  findByKey,
+  injectService,
+} from '@/app/testing';
 
 describe('SegmentStore', () => {
   let store: SegmentStore;
@@ -10,28 +20,28 @@ describe('SegmentStore', () => {
     TestBed.configureTestingModule({
       providers: [SegmentStore],
     });
-    store = TestBed.inject(SegmentStore);
+    store = injectService(SegmentStore);
   });
 
   describe('initial state', () => {
     it('should seed with pre-configured segments', () => {
-      expect(store.segments().length).toBeGreaterThan(0);
+      expectHasItems(store.segments);
     });
 
     it('should include beta testers segment by default', () => {
-      const betaSegment = store.segments().find((s) => s.key === 'beta-testers');
+      const betaSegment = findByKey(store.segments, 'beta-testers');
       expect(betaSegment).toBeDefined();
       expect(betaSegment?.name).toBe('Beta Testers');
     });
 
     it('should include internal users segment by default', () => {
-      const internalSegment = store.segments().find((s) => s.key === 'internal-users');
+      const internalSegment = findByKey(store.segments, 'internal-users');
       expect(internalSegment).toBeDefined();
       expect(internalSegment?.name).toBe('Internal Users');
     });
 
     it('should provide readonly segments signal', () => {
-      expect(typeof store.segments).toBe('function');
+      expectSignal(store.segments);
     });
   });
 
@@ -41,33 +51,33 @@ describe('SegmentStore', () => {
     });
 
     it('should update when segments are added', () => {
-      const initialCount = store.segmentCount();
+      const countBefore = getCountBefore(store.segments);
       store.addSegment({
         key: 'new-segment',
         name: 'New Segment',
         description: 'Test segment',
       });
-      expect(store.segmentCount()).toBe(initialCount + 1);
+      expectItemAdded(store.segments, countBefore);
     });
 
     it('should update when segments are deleted', () => {
-      const initialCount = store.segmentCount();
+      const countBefore = getCountBefore(store.segments);
       const target = store.segments()[0];
       store.deleteSegment(target.id);
-      expect(store.segmentCount()).toBe(initialCount - 1);
+      expectItemRemoved(store.segments, countBefore);
     });
   });
 
   describe('addSegment', () => {
     it('should add a new segment to the store', () => {
-      const initial = store.segments().length;
+      const countBefore = getCountBefore(store.segments);
       store.addSegment({
         key: 'vip-customers',
         name: 'VIP Customers',
         description: 'High-value customers for early releases.',
       });
 
-      expect(store.segments().length).toBe(initial + 1);
+      expectItemAdded(store.segments, countBefore);
     });
 
     it('should create segment with provided key', () => {
@@ -77,7 +87,7 @@ describe('SegmentStore', () => {
         description: 'Paying customers',
       });
 
-      const segment = store.segments().find((s) => s.key === 'premium-users');
+      const segment = findByKey(store.segments, 'premium-users');
       expect(segment?.key).toBe('premium-users');
     });
 
@@ -88,7 +98,7 @@ describe('SegmentStore', () => {
         description: 'Description',
       });
 
-      const segment = store.segments().find((s) => s.key === 'test-key');
+      const segment = findByKey(store.segments, 'test-key');
       expect(segment?.name).toBe('Test Segment Name');
     });
 
@@ -99,7 +109,7 @@ describe('SegmentStore', () => {
         description: 'A detailed description of this segment.',
       });
 
-      const segment = store.segments().find((s) => s.key === 'described-segment');
+      const segment = findByKey(store.segments, 'described-segment');
       expect(segment?.description).toBe('A detailed description of this segment.');
     });
 
@@ -110,8 +120,8 @@ describe('SegmentStore', () => {
         description: 'Test',
       });
 
-      const segment = store.segments().find((s) => s.key === 'unique-segment');
-      expect(segment?.id).toMatch(/^seg_/);
+      const segment = findByKey(store.segments, 'unique-segment');
+      expectIdPattern(segment!.id, 'seg');
     });
 
     it('should initialize new segment with zero rule count', () => {
@@ -121,7 +131,7 @@ describe('SegmentStore', () => {
         description: 'Test',
       });
 
-      const segment = store.segments().find((s) => s.key === 'no-rules-segment');
+      const segment = findByKey(store.segments, 'no-rules-segment');
       expect(segment?.ruleCount).toBe(0);
     });
 
@@ -132,7 +142,7 @@ describe('SegmentStore', () => {
         description: 'Test',
       });
 
-      const segment = store.segments().find((s) => s.key === 'timestamped-segment');
+      const segment = findByKey(store.segments, 'timestamped-segment');
       expect(segment?.createdAt).toBeDefined();
       expect(typeof segment?.createdAt).toBe('string');
     });
@@ -144,7 +154,7 @@ describe('SegmentStore', () => {
         description: 'Test',
       });
 
-      const segment = store.segments().find((s) => s.key === 'updated-segment');
+      const segment = findByKey(store.segments, 'updated-segment');
       expect(segment?.updatedAt).toBeDefined();
       expect(segment?.updatedAt).toBe(segment?.createdAt);
     });
@@ -244,7 +254,9 @@ describe('SegmentStore', () => {
 
       const updated = store.segments().find((s) => s.id === segment.id);
       expect(updated?.updatedAt).toMatch(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/);
-      expect(Date.parse(updated!.updatedAt)).toBeGreaterThanOrEqual(Date.parse(beforeUpdate.updatedAt));
+      expect(Date.parse(updated!.updatedAt)).toBeGreaterThanOrEqual(
+        Date.parse(beforeUpdate.updatedAt),
+      );
     });
 
     it('should not modify other segments', () => {
@@ -291,7 +303,7 @@ describe('SegmentStore', () => {
 
       const updated = store.segments().find((s) => s.id === segment.id);
       const newRule = updated?.rules[initialRuleCount];
-      expect(newRule?.id).toMatch(/^rule_/);
+      expectIdPattern(newRule!.id, 'rule');
     });
 
     it('should increment ruleCount', () => {
@@ -320,7 +332,9 @@ describe('SegmentStore', () => {
 
       const updated = store.segments().find((s) => s.id === segment.id);
       expect(updated?.updatedAt).toMatch(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/);
-      expect(Date.parse(updated!.updatedAt)).toBeGreaterThanOrEqual(Date.parse(beforeAdd.updatedAt));
+      expect(Date.parse(updated!.updatedAt)).toBeGreaterThanOrEqual(
+        Date.parse(beforeAdd.updatedAt),
+      );
     });
 
     it('should not modify other segments', () => {
@@ -402,7 +416,9 @@ describe('SegmentStore', () => {
 
       const updated = store.segments().find((s) => s.id === segment.id);
       expect(updated?.updatedAt).toMatch(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/);
-      expect(Date.parse(updated!.updatedAt)).toBeGreaterThanOrEqual(Date.parse(beforeUpdate.updatedAt));
+      expect(Date.parse(updated!.updatedAt)).toBeGreaterThanOrEqual(
+        Date.parse(beforeUpdate.updatedAt),
+      );
     });
 
     it('should not modify other rules', () => {
@@ -466,7 +482,9 @@ describe('SegmentStore', () => {
 
       const updated = store.segments().find((s) => s.id === segment.id);
       expect(updated?.updatedAt).toMatch(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/);
-      expect(Date.parse(updated!.updatedAt)).toBeGreaterThanOrEqual(Date.parse(beforeRemove.updatedAt));
+      expect(Date.parse(updated!.updatedAt)).toBeGreaterThanOrEqual(
+        Date.parse(beforeRemove.updatedAt),
+      );
     });
 
     it('should preserve other rules', () => {

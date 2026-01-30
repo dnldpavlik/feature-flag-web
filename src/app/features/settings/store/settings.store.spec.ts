@@ -4,6 +4,7 @@ import { DOCUMENT } from '@angular/common';
 import { ThemeService } from '@/app/core/theme/theme.service';
 import { SettingsStore } from './settings.store';
 import { CreateApiKeyInput } from '../models/settings.model';
+import { injectService, getCountBefore, expectItemAdded, expectItemRemoved } from '@/app/testing';
 
 describe('SettingsStore', () => {
   let store: SettingsStore;
@@ -29,8 +30,8 @@ describe('SettingsStore', () => {
       providers: [SettingsStore, ThemeService, { provide: DOCUMENT, useValue: document }],
     });
 
-    themeService = TestBed.inject(ThemeService);
-    store = TestBed.inject(SettingsStore);
+    themeService = injectService(ThemeService);
+    store = injectService(SettingsStore);
     TestBed.flushEffects();
   });
 
@@ -161,7 +162,7 @@ describe('SettingsStore', () => {
 
   describe('createApiKey', () => {
     it('should create a new API key', () => {
-      const beforeCount = store.apiKeys().length;
+      const countBefore = getCountBefore(store.apiKeys);
       const input: CreateApiKeyInput = {
         name: 'Test Key',
         scopes: ['read:flags'],
@@ -169,7 +170,7 @@ describe('SettingsStore', () => {
 
       const result = store.createApiKey(input);
 
-      expect(store.apiKeys().length).toBe(beforeCount + 1);
+      expectItemAdded(store.apiKeys, countBefore);
       expect(result.key.name).toBe('Test Key');
       expect(result.key.scopes).toEqual(['read:flags']);
     });
@@ -242,11 +243,11 @@ describe('SettingsStore', () => {
         scopes: ['read:flags'],
       };
       const result = store.createApiKey(input);
-      const beforeCount = store.apiKeys().length;
+      const countBefore = getCountBefore(store.apiKeys);
 
       store.revokeApiKey(result.key.id);
 
-      expect(store.apiKeys().length).toBe(beforeCount - 1);
+      expectItemRemoved(store.apiKeys, countBefore);
       expect(store.apiKeys().find((k) => k.id === result.key.id)).toBeUndefined();
     });
 

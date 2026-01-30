@@ -1,19 +1,21 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { By } from '@angular/platform-browser';
 
 import { StatCardComponent } from './stat-card';
+import { expectExists, getText, getComponent } from '@/app/testing';
 
 describe('StatCard', () => {
   let component: StatCardComponent;
   let fixture: ComponentFixture<StatCardComponent>;
 
+  // Note: Cannot use createComponentFixture here because StatCardComponent
+  // has required inputs that must be set before the first detectChanges()
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [StatCardComponent],
     }).compileComponents();
 
     fixture = TestBed.createComponent(StatCardComponent);
-    component = fixture.componentInstance;
+    component = getComponent(fixture);
   });
 
   describe('component initialization', () => {
@@ -31,8 +33,7 @@ describe('StatCard', () => {
       fixture.componentRef.setInput('label', 'Test Label');
       fixture.detectChanges();
 
-      const valueElement = fixture.debugElement.query(By.css('.stat-card__value'));
-      expect(valueElement.nativeElement.textContent.trim()).toBe('42');
+      expect(getText(fixture, '.stat-card__value')).toBe('42');
     });
 
     it('should display numeric value in the value element', () => {
@@ -40,8 +41,7 @@ describe('StatCard', () => {
       fixture.componentRef.setInput('label', 'Test Label');
       fixture.detectChanges();
 
-      const valueElement = fixture.debugElement.query(By.css('.stat-card__value'));
-      expect(valueElement.nativeElement.textContent.trim()).toBe('100');
+      expect(getText(fixture, '.stat-card__value')).toBe('100');
     });
 
     it('should display zero values correctly', () => {
@@ -49,8 +49,7 @@ describe('StatCard', () => {
       fixture.componentRef.setInput('label', 'Empty Count');
       fixture.detectChanges();
 
-      const valueElement = fixture.debugElement.query(By.css('.stat-card__value'));
-      expect(valueElement.nativeElement.textContent.trim()).toBe('0');
+      expect(getText(fixture, '.stat-card__value')).toBe('0');
     });
 
     it('should display large numbers correctly', () => {
@@ -58,8 +57,7 @@ describe('StatCard', () => {
       fixture.componentRef.setInput('label', 'Large Value');
       fixture.detectChanges();
 
-      const valueElement = fixture.debugElement.query(By.css('.stat-card__value'));
-      expect(valueElement.nativeElement.textContent.trim()).toBe('1000000');
+      expect(getText(fixture, '.stat-card__value')).toBe('1000000');
     });
 
     it('should display formatted string values', () => {
@@ -67,8 +65,7 @@ describe('StatCard', () => {
       fixture.componentRef.setInput('label', 'Formatted');
       fixture.detectChanges();
 
-      const valueElement = fixture.debugElement.query(By.css('.stat-card__value'));
-      expect(valueElement.nativeElement.textContent.trim()).toBe('1,234');
+      expect(getText(fixture, '.stat-card__value')).toBe('1,234');
     });
   });
 
@@ -78,8 +75,7 @@ describe('StatCard', () => {
       fixture.componentRef.setInput('label', 'Total Flags');
       fixture.detectChanges();
 
-      const labelElement = fixture.debugElement.query(By.css('.stat-card__label'));
-      expect(labelElement.nativeElement.textContent.trim()).toBe('Total Flags');
+      expect(getText(fixture, '.stat-card__label')).toBe('Total Flags');
     });
 
     it('should display multi-word labels correctly', () => {
@@ -87,8 +83,7 @@ describe('StatCard', () => {
       fixture.componentRef.setInput('label', 'Active Feature Flags');
       fixture.detectChanges();
 
-      const labelElement = fixture.debugElement.query(By.css('.stat-card__label'));
-      expect(labelElement.nativeElement.textContent.trim()).toBe('Active Feature Flags');
+      expect(getText(fixture, '.stat-card__label')).toBe('Active Feature Flags');
     });
   });
 
@@ -98,8 +93,7 @@ describe('StatCard', () => {
       fixture.componentRef.setInput('label', 'Test');
       fixture.detectChanges();
 
-      const cardElement = fixture.debugElement.query(By.css('app-card.stat-card'));
-      expect(cardElement).toBeTruthy();
+      expectExists(fixture, 'app-card.stat-card');
     });
   });
 
@@ -109,11 +103,8 @@ describe('StatCard', () => {
       fixture.componentRef.setInput('label', 'Environments');
       fixture.detectChanges();
 
-      const valueElement = fixture.debugElement.query(By.css('.stat-card__value'));
-      const labelElement = fixture.debugElement.query(By.css('.stat-card__label'));
-
-      expect(valueElement).toBeTruthy();
-      expect(labelElement).toBeTruthy();
+      expectExists(fixture, '.stat-card__value');
+      expectExists(fixture, '.stat-card__label');
     });
   });
 });

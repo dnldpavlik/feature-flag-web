@@ -1,13 +1,23 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
-import { By } from '@angular/platform-browser';
 
 import { SearchStore } from '@/app/shared/store/search.store';
 import { SegmentStore } from '@/app/features/segments/store/segment.store';
 import { SegmentListComponent } from './segment-list';
+import {
+  expectHeading,
+  expectEmptyState,
+  expectExists,
+  getTableRows,
+  getRowCount,
+  queryAll,
+  injectService,
+  getComponent,
+} from '@/app/testing';
 
 describe('SegmentList', () => {
   let fixture: ComponentFixture<SegmentListComponent>;
+  let component: SegmentListComponent;
   let store: SegmentStore;
   let searchStore: SearchStore;
 
@@ -18,43 +28,43 @@ describe('SegmentList', () => {
     }).compileComponents();
 
     fixture = TestBed.createComponent(SegmentListComponent);
-    store = TestBed.inject(SegmentStore);
-    searchStore = TestBed.inject(SearchStore);
+    component = getComponent(fixture);
+    store = injectService(SegmentStore);
+    searchStore = injectService(SearchStore);
     fixture.detectChanges();
   });
 
   it('should render the segments heading', () => {
-    const heading = fixture.debugElement.query(By.css('h1'));
-    expect(heading.nativeElement.textContent).toContain('Segments');
+    expectHeading(fixture, 'Segments');
   });
 
   it('should render segment rows', () => {
-    const rows = fixture.debugElement.queryAll(By.css('.data-table__body-wrap tbody tr'));
+    const rows = getTableRows(fixture);
     expect(rows.length).toBe(store.segments().length);
   });
 
   it('should add a segment', () => {
-    fixture.componentInstance.name = 'VIP Customers';
-    fixture.componentInstance.key = 'vip-customers';
-    fixture.componentInstance.description = 'High-value customers.';
-    fixture.componentInstance.addSegment();
+    component.name = 'VIP Customers';
+    component.key = 'vip-customers';
+    component.description = 'High-value customers.';
+    component.addSegment();
     fixture.detectChanges();
 
-    const rows = fixture.debugElement.queryAll(By.css('.data-table__body-wrap tbody tr'));
+    const rows = getTableRows(fixture);
     expect(rows.length).toBe(store.segments().length);
   });
 
   it('should not add a segment when required fields are missing', () => {
     const initialCount = store.segments().length;
-    fixture.componentInstance.name = '';
-    fixture.componentInstance.key = '';
-    fixture.componentInstance.addSegment();
+    component.name = '';
+    component.key = '';
+    component.addSegment();
     expect(store.segments().length).toBe(initialCount);
   });
 
   it('should delete a segment', () => {
     const deleteSpy = jest.spyOn(store, 'deleteSegment');
-    fixture.componentInstance.deleteSegment('seg_beta');
+    component.deleteSegment('seg_beta');
     expect(deleteSpy).toHaveBeenCalledWith('seg_beta');
   });
 
@@ -62,37 +72,34 @@ describe('SegmentList', () => {
     searchStore.setQuery('zzzz-no-match');
     fixture.detectChanges();
 
-    const rows = fixture.debugElement.queryAll(By.css('.data-table__body-wrap tbody tr'));
-    expect(rows.length).toBe(0);
-    const emptyState = fixture.debugElement.query(By.css('app-empty-state'));
-    expect(emptyState).toBeTruthy();
+    expect(getRowCount(fixture)).toBe(0);
+    expectEmptyState(fixture);
   });
 
   describe('form field accessors', () => {
     it('should get and set name field', () => {
-      fixture.componentInstance.name = 'Test Segment';
-      expect(fixture.componentInstance.name).toBe('Test Segment');
+      component.name = 'Test Segment';
+      expect(component.name).toBe('Test Segment');
     });
 
     it('should get and set key field', () => {
-      fixture.componentInstance.key = 'test-key';
-      expect(fixture.componentInstance.key).toBe('test-key');
+      component.key = 'test-key';
+      expect(component.key).toBe('test-key');
     });
 
     it('should get and set description field', () => {
-      fixture.componentInstance.description = 'Test description';
-      expect(fixture.componentInstance.description).toBe('Test description');
+      component.description = 'Test description';
+      expect(component.description).toBe('Test description');
     });
   });
 
   describe('segment name links', () => {
     it('should render segment name as a link', () => {
-      const link = fixture.debugElement.query(By.css('.segment-name--link'));
-      expect(link).toBeTruthy();
+      expectExists(fixture, '.segment-name--link');
     });
 
     it('should link to segment detail page', () => {
-      const links = fixture.debugElement.queryAll(By.css('.segment-name--link'));
+      const links = queryAll(fixture, '.segment-name--link');
       const firstLink = links[0];
       expect(firstLink.attributes['href']).toContain('/segments/seg_');
     });

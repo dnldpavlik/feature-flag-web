@@ -8,6 +8,7 @@ import { SearchInputComponent } from '@/app/shared/ui/search-input/search-input'
 import { ProjectStore } from '@/app/shared/store/project.store';
 import { SearchStore } from '@/app/shared/store/search.store';
 import { HeaderComponent } from './header';
+import { expectExists, query, injectService } from '@/app/testing';
 
 @Component({
   selector: 'app-header-host',
@@ -47,21 +48,19 @@ describe('Header', () => {
     }).compileComponents();
 
     fixture = TestBed.createComponent(HeaderHostComponent);
-    router = TestBed.inject(Router);
-    projectStore = TestBed.inject(ProjectStore);
-    searchStore = TestBed.inject(SearchStore);
+    router = injectService(Router);
+    projectStore = injectService(ProjectStore);
+    searchStore = injectService(SearchStore);
     fixture.detectChanges();
   });
 
   describe('rendering', () => {
     it('should render the header container element', () => {
-      const header = fixture.debugElement.query(By.css('.header'));
-      expect(header).toBeTruthy();
+      expectExists(fixture, '.header');
     });
 
     it('should render the breadcrumb navigation trail', () => {
-      const breadcrumb = fixture.debugElement.query(By.css('app-breadcrumb'));
-      expect(breadcrumb).toBeTruthy();
+      expectExists(fixture, 'app-breadcrumb');
     });
 
     it('should render the search input component', () => {
@@ -70,28 +69,26 @@ describe('Header', () => {
     });
 
     it('should render the create flag action button', () => {
-      const createButton = fixture.debugElement.query(By.css('.header__right app-button'));
-      expect(createButton).toBeTruthy();
+      expectExists(fixture, '.header__right app-button');
     });
 
     it('should render the mobile menu toggle button', () => {
-      const menuButton = fixture.debugElement.query(By.css('.header__menu-btn'));
-      expect(menuButton).toBeTruthy();
+      expectExists(fixture, '.header__menu-btn');
     });
   });
 
   describe('mobile menu interaction', () => {
     it('should emit menuToggle event when menu button is clicked', () => {
-      const menuButton = fixture.debugElement.query(By.css('.header__menu-btn'));
-      menuButton.triggerEventHandler('click');
+      const menuButton = query(fixture, '.header__menu-btn');
+      menuButton?.triggerEventHandler('click');
       expect(fixture.componentInstance.menuToggles).toBe(1);
     });
 
     it('should emit multiple times on multiple clicks', () => {
-      const menuButton = fixture.debugElement.query(By.css('.header__menu-btn'));
-      menuButton.triggerEventHandler('click');
-      menuButton.triggerEventHandler('click');
-      menuButton.triggerEventHandler('click');
+      const menuButton = query(fixture, '.header__menu-btn');
+      menuButton?.triggerEventHandler('click');
+      menuButton?.triggerEventHandler('click');
+      menuButton?.triggerEventHandler('click');
       expect(fixture.componentInstance.menuToggles).toBe(3);
     });
   });
@@ -99,8 +96,8 @@ describe('Header', () => {
   describe('create flag navigation', () => {
     it('should navigate to /flags/new when create button is clicked', () => {
       const navigateSpy = jest.spyOn(router, 'navigate').mockResolvedValue(true);
-      const createButton = fixture.debugElement.query(By.css('.header__right app-button'));
-      createButton.triggerEventHandler('click');
+      const createButton = query(fixture, '.header__right app-button');
+      createButton?.triggerEventHandler('click');
       expect(navigateSpy).toHaveBeenCalledWith(['/flags/new']);
     });
   });
@@ -108,8 +105,8 @@ describe('Header', () => {
   describe('project selection via breadcrumb', () => {
     it('should select project when breadcrumb dropdown value changes', () => {
       const selectSpy = jest.spyOn(projectStore, 'selectProject');
-      const select = fixture.debugElement.query(By.css('.breadcrumb__select'));
-      select.triggerEventHandler('change', { target: { value: 'proj_growth' } });
+      const select = query(fixture, '.breadcrumb__select');
+      select?.triggerEventHandler('change', { target: { value: 'proj_growth' } });
       expect(selectSpy).toHaveBeenCalledWith('proj_growth');
     });
 

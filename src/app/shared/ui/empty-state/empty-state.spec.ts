@@ -1,20 +1,22 @@
 import { Component } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { By } from '@angular/platform-browser';
 
 import { EmptyStateComponent } from './empty-state';
+import { query, expectExists, getText, expectHasClass, getComponent } from '@/app/testing';
 
 describe('EmptyState', () => {
   let component: EmptyStateComponent;
   let fixture: ComponentFixture<EmptyStateComponent>;
 
+  // Note: Cannot use createComponentFixture here because EmptyStateComponent
+  // has required inputs that must be set before the first detectChanges()
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [EmptyStateComponent],
     }).compileComponents();
 
     fixture = TestBed.createComponent(EmptyStateComponent);
-    component = fixture.componentInstance;
+    component = getComponent(fixture);
   });
 
   it('should create', () => {
@@ -30,8 +32,7 @@ describe('EmptyState', () => {
       fixture.componentRef.setInput('message', 'Test message');
       fixture.detectChanges();
 
-      const container = fixture.debugElement.query(By.css('.empty-state'));
-      expect(container).toBeTruthy();
+      expectExists(fixture, '.empty-state');
     });
 
     it('should render the title', () => {
@@ -39,9 +40,8 @@ describe('EmptyState', () => {
       fixture.componentRef.setInput('message', 'Test message');
       fixture.detectChanges();
 
-      const title = fixture.debugElement.query(By.css('.empty-state__title'));
-      expect(title).toBeTruthy();
-      expect(title.nativeElement.textContent).toContain('No items found');
+      expectExists(fixture, '.empty-state__title');
+      expect(getText(fixture, '.empty-state__title')).toContain('No items found');
     });
 
     it('should render the message', () => {
@@ -49,9 +49,10 @@ describe('EmptyState', () => {
       fixture.componentRef.setInput('message', 'Create your first item to get started.');
       fixture.detectChanges();
 
-      const message = fixture.debugElement.query(By.css('.empty-state__message'));
-      expect(message).toBeTruthy();
-      expect(message.nativeElement.textContent).toContain('Create your first item to get started.');
+      expectExists(fixture, '.empty-state__message');
+      expect(getText(fixture, '.empty-state__message')).toContain(
+        'Create your first item to get started.',
+      );
     });
 
     it('should use h3 for the title by default', () => {
@@ -59,8 +60,7 @@ describe('EmptyState', () => {
       fixture.componentRef.setInput('message', 'Test message');
       fixture.detectChanges();
 
-      const title = fixture.debugElement.query(By.css('h3.empty-state__title'));
-      expect(title).toBeTruthy();
+      expectExists(fixture, 'h3.empty-state__title');
     });
   });
 
@@ -70,8 +70,7 @@ describe('EmptyState', () => {
       fixture.componentRef.setInput('message', 'Test message');
       fixture.detectChanges();
 
-      const iconSlot = fixture.debugElement.query(By.css('.empty-state__icon'));
-      expect(iconSlot).toBeTruthy();
+      expectExists(fixture, '.empty-state__icon');
     });
   });
 
@@ -81,8 +80,7 @@ describe('EmptyState', () => {
       fixture.componentRef.setInput('message', 'Test message');
       fixture.detectChanges();
 
-      const actionSlot = fixture.debugElement.query(By.css('.empty-state__action'));
-      expect(actionSlot).toBeTruthy();
+      expectExists(fixture, '.empty-state__action');
     });
   });
 
@@ -92,8 +90,7 @@ describe('EmptyState', () => {
       fixture.componentRef.setInput('message', 'Test message');
       fixture.detectChanges();
 
-      const container = fixture.debugElement.query(By.css('.empty-state'));
-      expect(container.nativeElement.classList.contains('empty-state--md')).toBe(true);
+      expectHasClass(fixture, '.empty-state', 'empty-state--md');
     });
 
     it('should apply small size class', () => {
@@ -102,8 +99,7 @@ describe('EmptyState', () => {
       fixture.componentRef.setInput('size', 'sm');
       fixture.detectChanges();
 
-      const container = fixture.debugElement.query(By.css('.empty-state'));
-      expect(container.nativeElement.classList.contains('empty-state--sm')).toBe(true);
+      expectHasClass(fixture, '.empty-state', 'empty-state--sm');
     });
 
     it('should apply large size class', () => {
@@ -112,8 +108,7 @@ describe('EmptyState', () => {
       fixture.componentRef.setInput('size', 'lg');
       fixture.detectChanges();
 
-      const container = fixture.debugElement.query(By.css('.empty-state'));
-      expect(container.nativeElement.classList.contains('empty-state--lg')).toBe(true);
+      expectHasClass(fixture, '.empty-state', 'empty-state--lg');
     });
   });
 });
@@ -144,14 +139,13 @@ describe('EmptyState with content projection', () => {
   });
 
   it('should project icon content', () => {
-    const icon = fixture.debugElement.query(By.css('.empty-state__icon svg'));
-    expect(icon).toBeTruthy();
-    expect(icon.nativeElement.getAttribute('width')).toBe('48');
+    expectExists(fixture, '.empty-state__icon svg');
+    const icon = query(fixture, '.empty-state__icon svg');
+    expect(icon?.nativeElement.getAttribute('width')).toBe('48');
   });
 
   it('should project action content', () => {
-    const action = fixture.debugElement.query(By.css('.empty-state__action button'));
-    expect(action).toBeTruthy();
-    expect(action.nativeElement.textContent).toContain('Create');
+    expectExists(fixture, '.empty-state__action button');
+    expect(getText(fixture, '.empty-state__action button')).toContain('Create');
   });
 });

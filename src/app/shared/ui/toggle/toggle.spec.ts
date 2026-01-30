@@ -1,8 +1,14 @@
 import { Component } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { By } from '@angular/platform-browser';
 
 import { ToggleComponent } from './toggle';
+import {
+  createComponentFixture,
+  query,
+  expectExists,
+  expectNotExists,
+  getText,
+} from '@/app/testing';
 
 @Component({
   imports: [ToggleComponent],
@@ -30,11 +36,7 @@ describe('Toggle', () => {
   let fixture: ComponentFixture<ToggleComponent>;
 
   beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [ToggleComponent],
-    }).compileComponents();
-
-    fixture = TestBed.createComponent(ToggleComponent);
+    fixture = await createComponentFixture(ToggleComponent);
   });
 
   it('should create the component', () => {
@@ -44,54 +46,49 @@ describe('Toggle', () => {
 
   it('should render a label element with toggle class', () => {
     fixture.detectChanges();
-    const label = fixture.debugElement.query(By.css('label.toggle'));
-    expect(label).toBeTruthy();
+    expectExists(fixture, 'label.toggle');
   });
 
   it('should render a checkbox input', () => {
     fixture.detectChanges();
-    const input = fixture.debugElement.query(By.css('input[type="checkbox"]'));
-    expect(input).toBeTruthy();
+    expectExists(fixture, 'input[type="checkbox"]');
   });
 
   it('should render the slider span', () => {
     fixture.detectChanges();
-    const slider = fixture.debugElement.query(By.css('.toggle__slider'));
-    expect(slider).toBeTruthy();
+    expectExists(fixture, '.toggle__slider');
   });
 
   it('should not render label text when not provided', () => {
     fixture.detectChanges();
-    const labelText = fixture.debugElement.query(By.css('.toggle__label'));
-    expect(labelText).toBeFalsy();
+    expectNotExists(fixture, '.toggle__label');
   });
 
   it('should render label text when provided', () => {
     fixture.componentRef.setInput('label', 'Enable feature');
     fixture.detectChanges();
-    const labelText = fixture.debugElement.query(By.css('.toggle__label'));
-    expect(labelText).toBeTruthy();
-    expect(labelText.nativeElement.textContent).toBe('Enable feature');
+    expectExists(fixture, '.toggle__label');
+    expect(getText(fixture, '.toggle__label')).toBe('Enable feature');
   });
 
   it('should reflect checked state on the input', () => {
     fixture.componentRef.setInput('checked', true);
     fixture.detectChanges();
-    const input = fixture.debugElement.query(By.css('input')).nativeElement as HTMLInputElement;
+    const input = query(fixture, 'input')?.nativeElement as HTMLInputElement;
     expect(input.checked).toBe(true);
   });
 
   it('should reflect unchecked state on the input', () => {
     fixture.componentRef.setInput('checked', false);
     fixture.detectChanges();
-    const input = fixture.debugElement.query(By.css('input')).nativeElement as HTMLInputElement;
+    const input = query(fixture, 'input')?.nativeElement as HTMLInputElement;
     expect(input.checked).toBe(false);
   });
 
   it('should disable the input when disabled is true', () => {
     fixture.componentRef.setInput('disabled', true);
     fixture.detectChanges();
-    const input = fixture.debugElement.query(By.css('input')).nativeElement as HTMLInputElement;
+    const input = query(fixture, 'input')?.nativeElement as HTMLInputElement;
     expect(input.disabled).toBe(true);
   });
 
@@ -117,7 +114,7 @@ describe('Toggle with host component', () => {
   });
 
   it('should emit toggled event with true when checked', () => {
-    const input = fixture.debugElement.query(By.css('input')).nativeElement as HTMLInputElement;
+    const input = query(fixture, 'input')?.nativeElement as HTMLInputElement;
     input.click();
     fixture.detectChanges();
 
@@ -128,7 +125,7 @@ describe('Toggle with host component', () => {
     host.isChecked = true;
     fixture.detectChanges();
 
-    const input = fixture.debugElement.query(By.css('input')).nativeElement as HTMLInputElement;
+    const input = query(fixture, 'input')?.nativeElement as HTMLInputElement;
     input.click();
     fixture.detectChanges();
 
@@ -139,7 +136,7 @@ describe('Toggle with host component', () => {
     host.isDisabled = true;
     fixture.detectChanges();
 
-    const input = fixture.debugElement.query(By.css('input')).nativeElement as HTMLInputElement;
+    const input = query(fixture, 'input')?.nativeElement as HTMLInputElement;
     input.click();
     fixture.detectChanges();
 
@@ -149,16 +146,14 @@ describe('Toggle with host component', () => {
   it('should display label text from input', () => {
     host.label = 'My Toggle';
     fixture.detectChanges();
-
-    const labelText = fixture.debugElement.query(By.css('.toggle__label'));
-    expect(labelText.nativeElement.textContent).toBe('My Toggle');
+    expect(getText(fixture, '.toggle__label')).toBe('My Toggle');
   });
 
   it('should update checked state when input changes', () => {
     host.isChecked = true;
     fixture.detectChanges();
 
-    const input = fixture.debugElement.query(By.css('input')).nativeElement as HTMLInputElement;
+    const input = query(fixture, 'input')?.nativeElement as HTMLInputElement;
     expect(input.checked).toBe(true);
 
     host.isChecked = false;

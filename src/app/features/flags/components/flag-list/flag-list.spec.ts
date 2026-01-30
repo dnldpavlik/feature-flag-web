@@ -1,5 +1,4 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { provideRouter } from '@angular/router';
+import { ComponentFixture } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 
 import { EnvironmentStore } from '@/app/shared/store/environment.store';
@@ -7,9 +6,11 @@ import { SearchStore } from '@/app/shared/store/search.store';
 import { FlagStore } from '@/app/features/flags/store/flag.store';
 import { FlagListComponent } from './flag-list';
 import {
+  setupComponentTest,
   expectHeading,
   expectExists,
   expectEmptyState,
+  expectRowCount,
   getTableRows,
   queryAll,
   injectService,
@@ -23,16 +24,14 @@ describe('FlagList', () => {
   let searchStore: SearchStore;
 
   beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [FlagListComponent],
-      providers: [FlagStore, EnvironmentStore, SearchStore, provideRouter([])],
-    }).compileComponents();
+    fixture = await setupComponentTest({
+      component: FlagListComponent,
+      providers: [FlagStore, EnvironmentStore, SearchStore],
+    });
 
-    fixture = TestBed.createComponent(FlagListComponent);
     component = getComponent(fixture);
     flagStore = injectService(FlagStore);
     searchStore = injectService(SearchStore);
-    fixture.detectChanges();
   });
 
   it('should render the feature flags heading', () => {
@@ -126,8 +125,7 @@ describe('FlagList', () => {
       searchStore.setQuery('zzzz-no-match');
       fixture.detectChanges();
 
-      const rows = getTableRows(fixture);
-      expect(rows.length).toBe(0);
+      expectRowCount(fixture, 0);
       expectEmptyState(fixture);
     });
   });

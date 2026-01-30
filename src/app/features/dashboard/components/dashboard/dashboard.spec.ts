@@ -1,42 +1,49 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 
-import { provideRouter } from '@angular/router';
 import { EnvironmentStore } from '@/app/shared/store/environment.store';
 import { FlagStore } from '@/app/features/flags/store/flag.store';
 import { ProjectStore } from '@/app/shared/store/project.store';
 import { SearchStore } from '@/app/shared/store/search.store';
 import { DashboardComponent } from './dashboard';
+import {
+  setupComponentTest,
+  expectHeading,
+  expectEmptyState,
+  expectNoEmptyState,
+  expectRowCount,
+  getTableRows,
+  queryAll,
+  injectService,
+  getComponent,
+} from '@/app/testing';
 
 describe('Dashboard', () => {
   let fixture: ComponentFixture<DashboardComponent>;
+  let component: DashboardComponent;
   let environmentStore: EnvironmentStore;
   let flagStore: FlagStore;
   let projectStore: ProjectStore;
   let searchStore: SearchStore;
 
   beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [DashboardComponent],
-      providers: [provideRouter([])],
-    }).compileComponents();
+    fixture = await setupComponentTest({
+      component: DashboardComponent,
+    });
 
-    fixture = TestBed.createComponent(DashboardComponent);
-    environmentStore = TestBed.inject(EnvironmentStore);
-    flagStore = TestBed.inject(FlagStore);
-    projectStore = TestBed.inject(ProjectStore);
-    searchStore = TestBed.inject(SearchStore);
-    fixture.detectChanges();
+    component = getComponent(fixture);
+    environmentStore = injectService(EnvironmentStore);
+    flagStore = injectService(FlagStore);
+    projectStore = injectService(ProjectStore);
+    searchStore = injectService(SearchStore);
   });
 
   it('should render the welcome heading', () => {
-    const heading = fixture.debugElement.query(By.css('h1'));
-    expect(heading).toBeTruthy();
-    expect(heading.nativeElement.textContent).toContain('Feature Flags');
+    expectHeading(fixture, 'Feature Flags');
   });
 
   it('should render stat cards', () => {
-    const cards = fixture.debugElement.queryAll(By.css('app-stat-card'));
+    const cards = queryAll(fixture, 'app-stat-card');
     expect(cards.length).toBe(4);
   });
 
@@ -46,7 +53,7 @@ describe('Dashboard', () => {
     const inactiveFlags = totalFlags - activeFlags;
     const totalEnvironments = environmentStore.environments().length;
 
-    const cards = fixture.debugElement.queryAll(By.css('.stat-card'));
+    const cards = queryAll(fixture, '.stat-card');
     const stats = cards.map((card) => ({
       value: card.query(By.css('.stat-card__value')).nativeElement.textContent.trim(),
       label: card.query(By.css('.stat-card__label')).nativeElement.textContent.trim(),
@@ -59,7 +66,7 @@ describe('Dashboard', () => {
   });
 
   it('should render recently updated flags', () => {
-    const rows = fixture.debugElement.queryAll(By.css('.data-table__body-wrap tbody tr'));
+    const rows = getTableRows(fixture);
     expect(rows.length).toBeGreaterThan(0);
 
     const firstRow = rows[0];
@@ -73,22 +80,20 @@ describe('Dashboard', () => {
     searchStore.setQuery('zzzz-no-match');
     fixture.detectChanges();
 
-    const emptyState = fixture.debugElement.query(By.css('app-empty-state'));
-    expect(emptyState).toBeTruthy();
-    const rows = fixture.debugElement.queryAll(By.css('.data-table__body-wrap tbody tr'));
-    expect(rows.length).toBe(0);
+    expectEmptyState(fixture);
+    expectRowCount(fixture, 0);
   });
 
   it('should highlight matching text in recent flags', () => {
     searchStore.setQuery('pri');
     fixture.detectChanges();
 
-    const highlights = fixture.debugElement.queryAll(By.css('.recent-flags__highlight'));
+    const highlights = queryAll(fixture, '.recent-flags__highlight');
     expect(highlights.length).toBeGreaterThan(0);
   });
 
   it('should return no parts when highlight text is empty', () => {
-    const parts = (fixture.componentInstance as DashboardComponent).highlightParts('');
+    const parts = component.highlightParts('');
     expect(parts).toEqual([]);
   });
 
@@ -97,12 +102,10 @@ describe('Dashboard', () => {
     fixture.detectChanges();
 
     const activeFlags = flagStore.enabledFlagsInCurrentEnvironment().length;
-    const activeCard = fixture.debugElement
-      .queryAll(By.css('.stat-card'))
-      .find(
-        (card) =>
-          card.query(By.css('.stat-card__label')).nativeElement.textContent.trim() === 'Active',
-      );
+    const activeCard = queryAll(fixture, '.stat-card').find(
+      (card) =>
+        card.query(By.css('.stat-card__label')).nativeElement.textContent.trim() === 'Active',
+    );
 
     expect(activeCard?.query(By.css('.stat-card__value')).nativeElement.textContent.trim()).toBe(
       String(activeFlags),
@@ -110,15 +113,14 @@ describe('Dashboard', () => {
   });
 
   it('should hide empty state when flags exist', () => {
-    const emptyState = fixture.debugElement.query(By.css('app-empty-state'));
-    expect(emptyState).toBeNull();
+    expectNoEmptyState(fixture);
   });
 
   it('should render selected environment name in the header', () => {
     environmentStore.selectEnvironment('env_production');
     fixture.detectChanges();
 
-    const envText = fixture.debugElement.queryAll(By.css('.dashboard-env'));
+    const envText = queryAll(fixture, '.dashboard-env');
     expect(envText[1].nativeElement.textContent).toContain('Production');
   });
 
@@ -126,7 +128,7 @@ describe('Dashboard', () => {
     environmentStore.selectEnvironment('env_missing');
     fixture.detectChanges();
 
-    const envText = fixture.debugElement.queryAll(By.css('.dashboard-env'));
+    const envText = queryAll(fixture, '.dashboard-env');
     expect(envText[1].nativeElement.textContent).toContain('All Environments');
   });
 
@@ -134,7 +136,7 @@ describe('Dashboard', () => {
     projectStore.selectProject('proj_growth');
     fixture.detectChanges();
 
-    const envText = fixture.debugElement.queryAll(By.css('.dashboard-env'));
+    const envText = queryAll(fixture, '.dashboard-env');
     expect(envText[0].nativeElement.textContent).toContain('Growth Experiments');
   });
 
@@ -142,7 +144,7 @@ describe('Dashboard', () => {
     projectStore.selectProject('proj_missing');
     fixture.detectChanges();
 
-    const envText = fixture.debugElement.queryAll(By.css('.dashboard-env'));
+    const envText = queryAll(fixture, '.dashboard-env');
     expect(envText[0].nativeElement.textContent).toContain('All Projects');
   });
 });

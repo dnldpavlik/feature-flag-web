@@ -1,20 +1,16 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Component } from '@angular/core';
-import { By } from '@angular/platform-browser';
 
 import { CardComponent } from './card';
+import { createComponentFixture, query, getComponent } from '@/app/testing';
 
 describe('CardComponent', () => {
   let fixture: ComponentFixture<CardComponent>;
   let component: CardComponent;
 
   beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [CardComponent],
-    }).compileComponents();
-
-    fixture = TestBed.createComponent(CardComponent);
-    component = fixture.componentInstance;
+    fixture = await createComponentFixture(CardComponent);
+    component = getComponent(fixture);
   });
 
   it('should create', () => {
@@ -37,8 +33,8 @@ describe('CardComponent', () => {
     const hostFixture = TestBed.createComponent(TestHost);
     hostFixture.detectChanges();
 
-    const content = hostFixture.debugElement.query(By.css('p'));
-    expect(content.nativeElement.textContent).toBe('Test content');
+    const content = query(hostFixture, 'p');
+    expect(content?.nativeElement.textContent).toBe('Test content');
   });
 
   describe('padding', () => {

@@ -1,13 +1,20 @@
 import { Location } from '@angular/common';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router, convertToParamMap, provideRouter } from '@angular/router';
-import { By } from '@angular/platform-browser';
 
 import { EnvironmentStore } from '@/app/shared/store/environment.store';
 import { FlagStore } from '@/app/features/flags/store/flag.store';
 import { Flag } from '@/app/features/flags/models/flag.model';
 import { EnvironmentFlagValue } from '@/app/features/flags/models/flag-value.model';
 import { FlagDetailComponent } from './flag-detail';
+import {
+  expectHeading,
+  expectEmptyState,
+  expectExists,
+  expectNotExists,
+  queryAll,
+  injectService,
+} from '@/app/testing';
 
 type FlagDetailInternals = FlagDetailComponent & {
   setDefaultValueFields(flag: Flag): void;
@@ -21,6 +28,7 @@ type FlagStoreInternals = FlagStore & {
 
 describe('FlagDetail', () => {
   let fixture: ComponentFixture<FlagDetailComponent>;
+  let component: FlagDetailComponent;
   let store: FlagStore;
   let router: Router;
   let location: Location;
@@ -49,30 +57,30 @@ describe('FlagDetail', () => {
     }).compileComponents();
 
     fixture = TestBed.createComponent(FlagDetailComponent);
-    store = TestBed.inject(FlagStore);
-    router = TestBed.inject(Router);
-    location = TestBed.inject(Location);
+    component = fixture.componentInstance;
+    store = injectService(FlagStore);
+    router = injectService(Router);
+    location = injectService(Location);
     fixture.detectChanges();
   };
 
   it('should render flag details when flag exists', async () => {
     await build('flag_new_checkout');
 
-    const heading = fixture.debugElement.query(By.css('h1'));
-    expect(heading.nativeElement.textContent).toContain('New Checkout Experience');
+    expectHeading(fixture, 'New Checkout Experience');
 
-    const envRows = fixture.debugElement.queryAll(By.css('.flag-detail__env-row'));
+    const envRows = queryAll(fixture, '.flag-detail__env-row');
     expect(envRows.length).toBeGreaterThan(0);
   });
 
   it('should update flag metadata on save', async () => {
     await build('flag_new_checkout');
 
-    fixture.componentInstance.name = 'Updated Flag';
-    fixture.componentInstance.description = 'Updated description';
-    fixture.componentInstance.tags = 'alpha, beta';
+    component.name = 'Updated Flag';
+    component.description = 'Updated description';
+    component.tags = 'alpha, beta';
 
-    fixture.componentInstance.saveDetails();
+    component.saveDetails();
 
     const updated = store.getFlagById('flag_new_checkout');
     expect(updated?.name).toBe('Updated Flag');
@@ -84,8 +92,8 @@ describe('FlagDetail', () => {
     await build('flag_new_checkout');
 
     const original = store.getFlagById('flag_new_checkout');
-    fixture.componentInstance.name = '  ';
-    fixture.componentInstance.saveDetails();
+    component.name = '  ';
+    component.saveDetails();
 
     const updated = store.getFlagById('flag_new_checkout');
     expect(updated?.name).toBe(original?.name);
@@ -94,27 +102,25 @@ describe('FlagDetail', () => {
   it('should update json default value when valid', async () => {
     await build('flag_checkout_guardrails');
 
-    fixture.componentInstance.jsonValue = '{"limit": 5}';
-    fixture.componentInstance.saveDetails();
+    component.jsonValue = '{"limit": 5}';
+    component.saveDetails();
 
     const updated = store.getFlagById('flag_checkout_guardrails');
     expect(updated?.defaultValue).toEqual({ limit: 5 });
-    expect(fixture.componentInstance.jsonError()).toBeNull();
+    expect(component.jsonError()).toBeNull();
   });
 
   it('should initialize string default value', async () => {
     await build('flag_beta_theme');
 
-    expect(fixture.componentInstance.stringValue).toBe('default');
+    expect(component.stringValue).toBe('default');
   });
 
   it('should initialize json default value string', async () => {
     await build('flag_checkout_guardrails');
 
     const initial = store.getFlagById('flag_checkout_guardrails');
-    expect(fixture.componentInstance.jsonValue).toBe(
-      JSON.stringify(initial?.defaultValue ?? {}, null, 2),
-    );
+    expect(component.jsonValue).toBe(JSON.stringify(initial?.defaultValue ?? {}, null, 2));
   });
 
   it('should set default values for all flag types', async () => {
@@ -125,19 +131,17 @@ describe('FlagDetail', () => {
     const numberFlag = store.getFlagById('flag_search_boost');
     const jsonFlag = store.getFlagById('flag_checkout_guardrails');
 
-    (fixture.componentInstance as FlagDetailInternals).setDefaultValueFields(booleanFlag as Flag);
-    expect(fixture.componentInstance.booleanValue).toBe(false);
+    (component as FlagDetailInternals).setDefaultValueFields(booleanFlag as Flag);
+    expect(component.booleanValue).toBe(false);
 
-    (fixture.componentInstance as FlagDetailInternals).setDefaultValueFields(stringFlag as Flag);
-    expect(fixture.componentInstance.stringValue).toBe('default');
+    (component as FlagDetailInternals).setDefaultValueFields(stringFlag as Flag);
+    expect(component.stringValue).toBe('default');
 
-    (fixture.componentInstance as FlagDetailInternals).setDefaultValueFields(numberFlag as Flag);
-    expect(fixture.componentInstance.numberValue).toBe(1);
+    (component as FlagDetailInternals).setDefaultValueFields(numberFlag as Flag);
+    expect(component.numberValue).toBe(1);
 
-    (fixture.componentInstance as FlagDetailInternals).setDefaultValueFields(jsonFlag as Flag);
-    expect(fixture.componentInstance.jsonValue).toBe(
-      JSON.stringify(jsonFlag?.defaultValue ?? {}, null, 2),
-    );
+    (component as FlagDetailInternals).setDefaultValueFields(jsonFlag as Flag);
+    expect(component.jsonValue).toBe(JSON.stringify(jsonFlag?.defaultValue ?? {}, null, 2));
   });
 
   it('should fall back to defaults for missing default values', async () => {
@@ -172,21 +176,21 @@ describe('FlagDetail', () => {
       type: 'json',
     };
 
-    (fixture.componentInstance as FlagDetailInternals).setDefaultValueFields(fallbackString);
-    expect(fixture.componentInstance.stringValue).toBe('');
+    (component as FlagDetailInternals).setDefaultValueFields(fallbackString);
+    expect(component.stringValue).toBe('');
 
-    (fixture.componentInstance as FlagDetailInternals).setDefaultValueFields(fallbackNumber);
-    expect(fixture.componentInstance.numberValue).toBe(0);
+    (component as FlagDetailInternals).setDefaultValueFields(fallbackNumber);
+    expect(component.numberValue).toBe(0);
 
-    (fixture.componentInstance as FlagDetailInternals).setDefaultValueFields(fallbackJson);
-    expect(fixture.componentInstance.jsonValue).toBe('{}');
+    (component as FlagDetailInternals).setDefaultValueFields(fallbackJson);
+    expect(component.jsonValue).toBe('{}');
   });
 
   it('should update string default value', async () => {
     await build('flag_beta_theme');
 
-    fixture.componentInstance.stringValue = 'new-default';
-    fixture.componentInstance.saveDetails();
+    component.stringValue = 'new-default';
+    component.saveDetails();
 
     const updated = store.getFlagById('flag_beta_theme');
     expect(updated?.defaultValue).toBe('new-default');
@@ -195,8 +199,8 @@ describe('FlagDetail', () => {
   it('should update number default value', async () => {
     await build('flag_search_boost');
 
-    fixture.componentInstance.numberValue = 9;
-    fixture.componentInstance.saveDetails();
+    component.numberValue = 9;
+    component.saveDetails();
 
     const updated = store.getFlagById('flag_search_boost');
     expect(updated?.defaultValue).toBe(9);
@@ -205,8 +209,8 @@ describe('FlagDetail', () => {
   it('should update boolean default value', async () => {
     await build('flag_new_checkout');
 
-    fixture.componentInstance.booleanValue = true;
-    fixture.componentInstance.saveDetails();
+    component.booleanValue = true;
+    component.saveDetails();
 
     const updated = store.getFlagById('flag_new_checkout');
     expect(updated?.defaultValue).toBe(true);
@@ -216,34 +220,33 @@ describe('FlagDetail', () => {
     await build('flag_checkout_guardrails');
 
     const original = store.getFlagById('flag_checkout_guardrails');
-    fixture.componentInstance.jsonValue = 'invalid json';
-    fixture.componentInstance.saveDetails();
+    component.jsonValue = 'invalid json';
+    component.saveDetails();
 
     const updated = store.getFlagById('flag_checkout_guardrails');
     expect(updated?.defaultValue).toEqual(original?.defaultValue);
-    expect(fixture.componentInstance.jsonError()).toBe('Invalid JSON syntax');
+    expect(component.jsonError()).toBe('Invalid JSON syntax');
   });
 
   it('should not accept array json default values', async () => {
     await build('flag_checkout_guardrails');
 
-    fixture.componentInstance.jsonValue = '[1, 2, 3]';
-    fixture.componentInstance.saveDetails();
+    component.jsonValue = '[1, 2, 3]';
+    component.saveDetails();
 
-    expect(fixture.componentInstance.jsonError()).toBe('JSON must be an object');
+    expect(component.jsonError()).toBe('JSON must be an object');
   });
 
   it('should show empty state when flag is missing', async () => {
     await build('missing_flag');
 
-    const empty = fixture.debugElement.query(By.css('app-empty-state'));
-    expect(empty).toBeTruthy();
+    expectEmptyState(fixture);
   });
 
   it('should return an empty environment list when flag is missing', async () => {
     await build('missing_flag');
 
-    const rows = (fixture.componentInstance as FlagDetailInternals).environmentRows();
+    const rows = (component as FlagDetailInternals).environmentRows();
     expect(rows).toEqual([]);
   });
 
@@ -251,7 +254,7 @@ describe('FlagDetail', () => {
     await build('flag_new_checkout');
 
     const envId = 'env_development';
-    fixture.componentInstance.toggleEnvironment(envId, false);
+    component.toggleEnvironment(envId, false);
 
     const updated = store.getFlagById('flag_new_checkout');
     expect(updated?.environmentValues[envId].enabled).toBe(false);
@@ -261,7 +264,7 @@ describe('FlagDetail', () => {
     await build('flag_new_checkout');
 
     const envId = 'env_development';
-    fixture.componentInstance.updateEnvironmentValue(envId, 'false');
+    component.updateEnvironmentValue(envId, 'false');
 
     const updated = store.getFlagById('flag_new_checkout');
     expect(updated?.environmentValues[envId].value).toBe(false);
@@ -271,7 +274,7 @@ describe('FlagDetail', () => {
     await build('flag_beta_theme');
 
     const envId = 'env_development';
-    fixture.componentInstance.updateEnvironmentValue(envId, 'updated');
+    component.updateEnvironmentValue(envId, 'updated');
 
     const updated = store.getFlagById('flag_beta_theme');
     expect(updated?.environmentValues[envId].value).toBe('updated');
@@ -281,7 +284,7 @@ describe('FlagDetail', () => {
     await build('flag_search_boost');
 
     const envId = 'env_development';
-    fixture.componentInstance.updateEnvironmentValue(envId, '4.2');
+    component.updateEnvironmentValue(envId, '4.2');
 
     const updated = store.getFlagById('flag_search_boost');
     expect(updated?.environmentValues[envId].value).toBe(4.2);
@@ -291,7 +294,7 @@ describe('FlagDetail', () => {
     await build('flag_checkout_guardrails');
 
     const envId = 'env_development';
-    fixture.componentInstance.updateEnvironmentValue(envId, '{"limit": 42}');
+    component.updateEnvironmentValue(envId, '{"limit": 42}');
 
     const updated = store.getFlagById('flag_checkout_guardrails');
     expect(updated?.environmentValues[envId].value).toEqual({ limit: 42 });
@@ -309,7 +312,7 @@ describe('FlagDetail', () => {
       }),
     );
 
-    const rows = (fixture.componentInstance as FlagDetailInternals).environmentRows();
+    const rows = (component as FlagDetailInternals).environmentRows();
     const row = rows.find((item) => item.id === 'env_development');
     expect(row?.enabled).toBe(false);
     expect(row?.value).toBe(false);
@@ -320,7 +323,7 @@ describe('FlagDetail', () => {
 
     const envId = 'env_development';
     const original = store.getFlagById('flag_search_boost');
-    fixture.componentInstance.updateEnvironmentValue(envId, 'not-a-number');
+    component.updateEnvironmentValue(envId, 'not-a-number');
 
     const updated = store.getFlagById('flag_search_boost');
     expect(updated?.environmentValues[envId].value).toBe(original?.environmentValues[envId].value);
@@ -331,7 +334,7 @@ describe('FlagDetail', () => {
 
     const envId = 'env_development';
     const original = store.getFlagById('flag_checkout_guardrails');
-    fixture.componentInstance.updateEnvironmentValue(envId, 'not-json');
+    component.updateEnvironmentValue(envId, 'not-json');
 
     const updated = store.getFlagById('flag_checkout_guardrails');
     expect(updated?.environmentValues[envId].value).toEqual(
@@ -346,9 +349,9 @@ describe('FlagDetail', () => {
     const toggleSpy = jest.spyOn(store, 'toggleFlagInEnvironment');
     const envSpy = jest.spyOn(store, 'updateEnvironmentValue');
 
-    fixture.componentInstance.saveDetails();
-    fixture.componentInstance.toggleEnvironment('env_development', true);
-    fixture.componentInstance.updateEnvironmentValue('env_development', 'true');
+    component.saveDetails();
+    component.toggleEnvironment('env_development', true);
+    component.updateEnvironmentValue('env_development', 'true');
 
     expect(updateSpy).not.toHaveBeenCalled();
     expect(toggleSpy).not.toHaveBeenCalled();
@@ -358,29 +361,29 @@ describe('FlagDetail', () => {
   it('should default the flag id when the route param is missing', async () => {
     await build();
 
-    expect((fixture.componentInstance as FlagDetailInternals).flagId()).toBe('');
+    expect((component as FlagDetailInternals).flagId()).toBe('');
   });
 
   it('should discard edits and navigate back on cancel', async () => {
     await build('flag_beta_theme');
 
-    fixture.componentInstance.name = 'Changed Name';
-    fixture.componentInstance.tags = 'one, two';
-    fixture.componentInstance.stringValue = 'temporary';
+    component.name = 'Changed Name';
+    component.tags = 'one, two';
+    component.stringValue = 'temporary';
 
-    fixture.componentInstance.cancelChanges();
+    component.cancelChanges();
 
     const current = store.getFlagById('flag_beta_theme');
-    expect(fixture.componentInstance.name).toBe(current?.name);
-    expect(fixture.componentInstance.tags).toBe(current?.tags.join(', '));
-    expect(fixture.componentInstance.stringValue).toBe(current?.defaultValue);
+    expect(component.name).toBe(current?.name);
+    expect(component.tags).toBe(current?.tags.join(', '));
+    expect(component.stringValue).toBe(current?.defaultValue);
     expect(location.back).toHaveBeenCalled();
   });
 
   it('should navigate back on cancel when flag is missing', async () => {
     await build('missing_flag');
 
-    fixture.componentInstance.cancelChanges();
+    component.cancelChanges();
 
     expect(location.back).toHaveBeenCalled();
   });
@@ -389,7 +392,7 @@ describe('FlagDetail', () => {
     await build('flag_new_checkout');
     const navigateSpy = jest.spyOn(router, 'navigate').mockResolvedValue(true);
 
-    fixture.componentInstance.backToList();
+    component.backToList();
 
     expect(navigateSpy).toHaveBeenCalledWith(['/flags']);
   });
@@ -398,8 +401,7 @@ describe('FlagDetail', () => {
     it('should show delete button when more than one flag exists', async () => {
       await build('flag_new_checkout');
 
-      const deleteBtn = fixture.debugElement.query(By.css('.flag-detail__delete-btn'));
-      expect(deleteBtn).toBeTruthy();
+      expectExists(fixture, '.flag-detail__delete-btn');
     });
 
     it('should hide delete button when only one flag exists', async () => {
@@ -412,8 +414,7 @@ describe('FlagDetail', () => {
       }
       fixture.detectChanges();
 
-      const deleteBtn = fixture.debugElement.query(By.css('.flag-detail__delete-btn'));
-      expect(deleteBtn).toBeFalsy();
+      expectNotExists(fixture, '.flag-detail__delete-btn');
     });
 
     it('should delete flag and navigate to /flags', async () => {
@@ -422,7 +423,7 @@ describe('FlagDetail', () => {
       const navigateSpy = jest.spyOn(router, 'navigate').mockResolvedValue(true);
       const beforeCount = store.flags().length;
 
-      fixture.componentInstance.deleteFlag();
+      component.deleteFlag();
 
       expect(store.flags().length).toBe(beforeCount - 1);
       expect(store.getFlagById('flag_new_checkout')).toBeUndefined();
@@ -433,7 +434,7 @@ describe('FlagDetail', () => {
       await build('missing_flag');
 
       const deleteSpy = jest.spyOn(store, 'deleteFlag');
-      fixture.componentInstance.deleteFlag();
+      component.deleteFlag();
 
       expect(deleteSpy).not.toHaveBeenCalled();
     });
@@ -442,22 +443,22 @@ describe('FlagDetail', () => {
   it('should format json values for display', async () => {
     await build('flag_new_checkout');
 
-    const formatted = fixture.componentInstance.formatJsonValue({ ready: true });
+    const formatted = component.formatJsonValue({ ready: true });
     expect(formatted).toBe(JSON.stringify({ ready: true }));
   });
 
   it('should get description value', async () => {
     await build('flag_new_checkout');
 
-    fixture.componentInstance.description = 'Test description';
-    expect(fixture.componentInstance.description).toBe('Test description');
+    component.description = 'Test description';
+    expect(component.description).toBe('Test description');
   });
 
   it('should toggle environment via event handler', async () => {
     await build('flag_new_checkout');
 
     const envId = 'env_development';
-    fixture.componentInstance.onEnvironmentToggle(envId, false);
+    component.onEnvironmentToggle(envId, false);
 
     const updated = store.getFlagById('flag_new_checkout');
     expect(updated?.environmentValues[envId].enabled).toBe(false);
@@ -468,7 +469,7 @@ describe('FlagDetail', () => {
 
     const envId = 'env_development';
     const event = { target: { value: 'new-value' } } as unknown as Event;
-    fixture.componentInstance.onEnvironmentValueChange(envId, event);
+    component.onEnvironmentValueChange(envId, event);
 
     const updated = store.getFlagById('flag_beta_theme');
     expect(updated?.environmentValues[envId].value).toBe('new-value');

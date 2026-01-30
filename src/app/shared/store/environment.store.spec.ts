@@ -1,6 +1,14 @@
 import { TestBed } from '@angular/core/testing';
 
 import { EnvironmentStore } from './environment.store';
+import {
+  expectItemAdded,
+  expectIdPattern,
+  expectTimestamp,
+  getCountBefore,
+  findByKey,
+  injectService,
+} from '@/app/testing';
 
 describe('EnvironmentStore', () => {
   let store: EnvironmentStore;
@@ -10,7 +18,7 @@ describe('EnvironmentStore', () => {
       providers: [EnvironmentStore],
     });
 
-    store = TestBed.inject(EnvironmentStore);
+    store = injectService(EnvironmentStore);
   });
 
   describe('initial state', () => {
@@ -86,7 +94,7 @@ describe('EnvironmentStore', () => {
 
   describe('addEnvironment', () => {
     it('should add a new environment', () => {
-      const initialCount = store.environments().length;
+      const countBefore = getCountBefore(store.environments);
 
       store.addEnvironment({
         key: 'qa',
@@ -95,7 +103,7 @@ describe('EnvironmentStore', () => {
         order: 3,
       });
 
-      expect(store.environments().length).toBe(initialCount + 1);
+      expectItemAdded(store.environments, countBefore);
     });
 
     it('should set environment properties correctly', () => {
@@ -106,7 +114,7 @@ describe('EnvironmentStore', () => {
         order: 3,
       });
 
-      const qa = store.environments().find((e) => e.key === 'qa');
+      const qa = findByKey(store.environments, 'qa');
       expect(qa).toBeDefined();
       expect(qa?.name).toBe('QA');
       expect(qa?.color).toBe('#8B5CF6');
@@ -121,8 +129,8 @@ describe('EnvironmentStore', () => {
         order: 3,
       });
 
-      const qa = store.environments().find((e) => e.key === 'qa');
-      expect(qa?.id).toMatch(/^env_/);
+      const qa = findByKey(store.environments, 'qa');
+      expectIdPattern(qa!.id, 'env');
     });
 
     it('should set timestamps on new environment', () => {
@@ -133,9 +141,9 @@ describe('EnvironmentStore', () => {
         order: 3,
       });
 
-      const qa = store.environments().find((e) => e.key === 'qa');
-      expect(qa?.createdAt).toBeDefined();
-      expect(qa?.updatedAt).toBeDefined();
+      const qa = findByKey(store.environments, 'qa');
+      expectTimestamp(qa?.createdAt);
+      expectTimestamp(qa?.updatedAt);
     });
 
     it('should default isDefault to false', () => {
@@ -146,7 +154,7 @@ describe('EnvironmentStore', () => {
         order: 3,
       });
 
-      const qa = store.environments().find((e) => e.key === 'qa');
+      const qa = findByKey(store.environments, 'qa');
       expect(qa?.isDefault).toBe(false);
     });
 
@@ -159,7 +167,7 @@ describe('EnvironmentStore', () => {
         isDefault: true,
       });
 
-      const qa = store.environments().find((e) => e.key === 'qa');
+      const qa = findByKey(store.environments, 'qa');
       expect(qa?.isDefault).toBe(true);
     });
   });

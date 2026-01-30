@@ -1,18 +1,24 @@
 import { TestBed } from '@angular/core/testing';
 import { AuditStore } from './audit.store';
+import {
+  injectService,
+  expectHasItems,
+  expectIdPattern,
+  getCountBefore,
+  expectItemAdded,
+} from '@/app/testing';
 
 describe('AuditStore', () => {
   let store: AuditStore;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    store = TestBed.inject(AuditStore);
+    store = injectService(AuditStore);
   });
 
   describe('initial state', () => {
     it('should have mock audit entries', () => {
-      const entries = store.entries();
-      expect(entries.length).toBeGreaterThan(0);
+      expectHasItems(store.entries);
     });
 
     it('should have entries with required properties', () => {
@@ -40,7 +46,7 @@ describe('AuditStore', () => {
 
   describe('logAction', () => {
     it('should add a new entry to the beginning of the list', () => {
-      const initialCount = store.entries().length;
+      const countBefore = getCountBefore(store.entries);
 
       store.logAction({
         action: 'created',
@@ -52,7 +58,7 @@ describe('AuditStore', () => {
         userName: 'Test User',
       });
 
-      expect(store.entries().length).toBe(initialCount + 1);
+      expectItemAdded(store.entries, countBefore);
       expect(store.entries()[0].resourceName).toBe('Test Flag');
     });
 
@@ -67,8 +73,7 @@ describe('AuditStore', () => {
         userName: 'Test User',
       });
 
-      const entry = store.entries()[0];
-      expect(entry.id).toMatch(/^audit_/);
+      expectIdPattern(store.entries()[0].id, 'audit');
     });
 
     it('should set timestamp for new entry', () => {
@@ -115,9 +120,7 @@ describe('AuditStore', () => {
     describe('entriesByAction', () => {
       it('should filter entries by action type', () => {
         const createdEntries = store.entriesByAction('created');
-        expect(
-          createdEntries.every((entry) => entry.action === 'created'),
-        ).toBe(true);
+        expect(createdEntries.every((entry) => entry.action === 'created')).toBe(true);
       });
 
       it('should return empty array if no matches', () => {
@@ -130,9 +133,7 @@ describe('AuditStore', () => {
     describe('entriesByResourceType', () => {
       it('should filter entries by resource type', () => {
         const flagEntries = store.entriesByResourceType('flag');
-        expect(flagEntries.every((entry) => entry.resourceType === 'flag')).toBe(
-          true,
-        );
+        expect(flagEntries.every((entry) => entry.resourceType === 'flag')).toBe(true);
       });
     });
   });

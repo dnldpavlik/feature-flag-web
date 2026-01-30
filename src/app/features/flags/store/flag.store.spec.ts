@@ -2,6 +2,16 @@ import { TestBed } from '@angular/core/testing';
 
 import { EnvironmentStore } from '@/app/shared/store/environment.store';
 import { FlagStore } from './flag.store';
+import {
+  injectService,
+  expectHasItems,
+  expectItemCount,
+  expectIdPattern,
+  getCountBefore,
+  expectItemAdded,
+  expectItemRemoved,
+  expectItemNotExists,
+} from '@/app/testing';
 
 describe('FlagStore', () => {
   let store: FlagStore;
@@ -12,13 +22,13 @@ describe('FlagStore', () => {
       providers: [FlagStore, EnvironmentStore],
     });
 
-    store = TestBed.inject(FlagStore);
-    environmentStore = TestBed.inject(EnvironmentStore);
+    store = injectService(FlagStore);
+    environmentStore = injectService(EnvironmentStore);
   });
 
   describe('initial state', () => {
     it('should seed initial flags', () => {
-      expect(store.flags().length).toBeGreaterThan(0);
+      expectHasItems(store.flags);
       expect(store.totalCount()).toBe(store.flags().length);
     });
 
@@ -36,7 +46,7 @@ describe('FlagStore', () => {
 
   describe('addFlag', () => {
     it('should add a new boolean flag to the list', () => {
-      const beforeCount = store.flags().length;
+      const countBefore = getCountBefore(store.flags);
 
       store.addFlag({
         key: 'test-flag',
@@ -47,9 +57,9 @@ describe('FlagStore', () => {
         tags: ['test'],
       });
 
-      expect(store.flags().length).toBe(beforeCount + 1);
+      expectItemAdded(store.flags, countBefore);
       expect(store.flags()[0].key).toBe('test-flag');
-      expect(store.flags()[0].id).toMatch(/^flag_/);
+      expectIdPattern(store.flags()[0].id, 'flag');
     });
 
     it('should add a new string flag', () => {
@@ -312,12 +322,12 @@ describe('FlagStore', () => {
   describe('deleteFlag', () => {
     it('should remove flag by id', () => {
       const flagToDelete = store.flags()[0];
-      const beforeCount = store.flags().length;
+      const countBefore = getCountBefore(store.flags);
 
       store.deleteFlag(flagToDelete.id);
 
-      expect(store.flags().length).toBe(beforeCount - 1);
-      expect(store.getFlagById(flagToDelete.id)).toBeUndefined();
+      expectItemRemoved(store.flags, countBefore);
+      expectItemNotExists(store.flags, flagToDelete.id);
     });
 
     it('should preserve other flags', () => {
@@ -338,12 +348,12 @@ describe('FlagStore', () => {
         store.deleteFlag(flags[i].id);
       }
 
-      expect(store.flags().length).toBe(1);
+      expectItemCount(store.flags, 1);
 
       // Try to delete the last one
       store.deleteFlag(store.flags()[0].id);
 
-      expect(store.flags().length).toBe(1);
+      expectItemCount(store.flags, 1);
     });
 
     it('should ignore non-existent id', () => {
