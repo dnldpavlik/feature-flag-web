@@ -15,6 +15,9 @@ import {
   expectNotExists,
   queryAll,
   injectService,
+  setFormField,
+  getFormField,
+  setFormFields,
 } from '@/app/testing';
 
 type FlagDetailInternals = FlagDetailComponent & {
@@ -80,9 +83,11 @@ describe('FlagDetail', () => {
   it('should update flag metadata on save', async () => {
     await build('flag_new_checkout');
 
-    component.name = 'Updated Flag';
-    component.description = 'Updated description';
-    component.tags = 'alpha, beta';
+    setFormFields(component, {
+      name: 'Updated Flag',
+      description: 'Updated description',
+      tags: 'alpha, beta',
+    });
 
     component.saveDetails();
 
@@ -96,7 +101,7 @@ describe('FlagDetail', () => {
     await build('flag_new_checkout');
 
     const original = store.getFlagById('flag_new_checkout');
-    component.name = '  ';
+    setFormField(component, 'name', '  ');
     component.saveDetails();
 
     const updated = store.getFlagById('flag_new_checkout');
@@ -108,7 +113,7 @@ describe('FlagDetail', () => {
     projectStore.selectProject('proj_growth');
     fixture.detectChanges();
 
-    component.jsonValue = '{"limit": 5}';
+    setFormField(component, 'jsonValue', '{"limit": 5}');
     component.saveDetails();
 
     const updated = store.getFlagById('flag_checkout_guardrails');
@@ -119,7 +124,7 @@ describe('FlagDetail', () => {
   it('should initialize string default value', async () => {
     await build('flag_beta_theme');
 
-    expect(component.stringValue).toBe('default');
+    expect(getFormField(component, 'stringValue')).toBe('default');
   });
 
   it('should initialize json default value string', async () => {
@@ -128,7 +133,9 @@ describe('FlagDetail', () => {
     fixture.detectChanges();
 
     const initial = store.getFlagById('flag_checkout_guardrails');
-    expect(component.jsonValue).toBe(JSON.stringify(initial?.defaultValue ?? {}, null, 2));
+    expect(getFormField(component, 'jsonValue')).toBe(
+      JSON.stringify(initial?.defaultValue ?? {}, null, 2),
+    );
   });
 
   it('should set default values for all flag types', async () => {
@@ -140,16 +147,18 @@ describe('FlagDetail', () => {
     const jsonFlag = store.getFlagById('flag_checkout_guardrails');
 
     (component as FlagDetailInternals).setDefaultValueFields(booleanFlag as Flag);
-    expect(component.booleanValue).toBe(false);
+    expect(getFormField(component, 'booleanValue')).toBe(false);
 
     (component as FlagDetailInternals).setDefaultValueFields(stringFlag as Flag);
-    expect(component.stringValue).toBe('default');
+    expect(getFormField(component, 'stringValue')).toBe('default');
 
     (component as FlagDetailInternals).setDefaultValueFields(numberFlag as Flag);
-    expect(component.numberValue).toBe(1);
+    expect(getFormField(component, 'numberValue')).toBe(1);
 
     (component as FlagDetailInternals).setDefaultValueFields(jsonFlag as Flag);
-    expect(component.jsonValue).toBe(JSON.stringify(jsonFlag?.defaultValue ?? {}, null, 2));
+    expect(getFormField(component, 'jsonValue')).toBe(
+      JSON.stringify(jsonFlag?.defaultValue ?? {}, null, 2),
+    );
   });
 
   it('should fall back to defaults for missing default values', async () => {
@@ -186,19 +195,19 @@ describe('FlagDetail', () => {
     };
 
     (component as FlagDetailInternals).setDefaultValueFields(fallbackString);
-    expect(component.stringValue).toBe('');
+    expect(getFormField(component, 'stringValue')).toBe('');
 
     (component as FlagDetailInternals).setDefaultValueFields(fallbackNumber);
-    expect(component.numberValue).toBe(0);
+    expect(getFormField(component, 'numberValue')).toBe(0);
 
     (component as FlagDetailInternals).setDefaultValueFields(fallbackJson);
-    expect(component.jsonValue).toBe('{}');
+    expect(getFormField(component, 'jsonValue')).toBe('{}');
   });
 
   it('should update string default value', async () => {
     await build('flag_beta_theme');
 
-    component.stringValue = 'new-default';
+    setFormField(component, 'stringValue', 'new-default');
     component.saveDetails();
 
     const updated = store.getFlagById('flag_beta_theme');
@@ -210,7 +219,7 @@ describe('FlagDetail', () => {
     projectStore.selectProject('proj_growth');
     fixture.detectChanges();
 
-    component.numberValue = 9;
+    setFormField(component, 'numberValue', 9);
     component.saveDetails();
 
     const updated = store.getFlagById('flag_search_boost');
@@ -220,7 +229,7 @@ describe('FlagDetail', () => {
   it('should update boolean default value', async () => {
     await build('flag_new_checkout');
 
-    component.booleanValue = true;
+    setFormField(component, 'booleanValue', true);
     component.saveDetails();
 
     const updated = store.getFlagById('flag_new_checkout');
@@ -233,7 +242,7 @@ describe('FlagDetail', () => {
     fixture.detectChanges();
 
     const original = store.getFlagById('flag_checkout_guardrails');
-    component.jsonValue = 'invalid json';
+    setFormField(component, 'jsonValue', 'invalid json');
     component.saveDetails();
 
     const updated = store.getFlagById('flag_checkout_guardrails');
@@ -246,7 +255,7 @@ describe('FlagDetail', () => {
     projectStore.selectProject('proj_growth');
     fixture.detectChanges();
 
-    component.jsonValue = '[1, 2, 3]';
+    setFormField(component, 'jsonValue', '[1, 2, 3]');
     component.saveDetails();
 
     expect(component.jsonError()).toBe('JSON must be an object');
@@ -390,16 +399,18 @@ describe('FlagDetail', () => {
   it('should discard edits and navigate back on cancel', async () => {
     await build('flag_beta_theme');
 
-    component.name = 'Changed Name';
-    component.tags = 'one, two';
-    component.stringValue = 'temporary';
+    setFormFields(component, {
+      name: 'Changed Name',
+      tags: 'one, two',
+      stringValue: 'temporary',
+    });
 
     component.cancelChanges();
 
     const current = store.getFlagById('flag_beta_theme');
-    expect(component.name).toBe(current?.name);
-    expect(component.tags).toBe(current?.tags.join(', '));
-    expect(component.stringValue).toBe(current?.defaultValue);
+    expect(getFormField(component, 'name')).toBe(current?.name);
+    expect(getFormField(component, 'tags')).toBe(current?.tags.join(', '));
+    expect(getFormField(component, 'stringValue')).toBe(current?.defaultValue);
     expect(location.back).toHaveBeenCalled();
   });
 
@@ -491,11 +502,11 @@ describe('FlagDetail', () => {
     });
   });
 
-  it('should get description value', async () => {
+  it('should set and get description value', async () => {
     await build('flag_new_checkout');
 
-    component.description = 'Test description';
-    expect(component.description).toBe('Test description');
+    setFormField(component, 'description', 'Test description');
+    expect(getFormField(component, 'description')).toBe('Test description');
   });
 
   it('should toggle environment via event handler', async () => {

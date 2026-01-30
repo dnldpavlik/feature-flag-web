@@ -13,6 +13,7 @@ import {
   queryAll,
   injectService,
   getComponent,
+  setFormFields,
 } from '@/app/testing';
 
 describe('EnvironmentList', () => {
@@ -59,9 +60,7 @@ describe('EnvironmentList', () => {
   it('should add a new environment', async () => {
     await build();
 
-    component.name = 'QA';
-    component.key = 'qa';
-    component.color = '#22c55e';
+    setFormFields(component, { name: 'QA', key: 'qa', color: '#22c55e' });
     component.addEnvironment();
     fixture.detectChanges();
 
@@ -95,8 +94,7 @@ describe('EnvironmentList', () => {
   it('should not add when required fields are missing', async () => {
     await build();
 
-    component.name = '';
-    component.key = '';
+    setFormFields(component, { name: '', key: '' });
     component.addEnvironment();
 
     expect(store.environments().length).toBe(3);
@@ -111,23 +109,18 @@ describe('EnvironmentList', () => {
     expectEmptyState(fixture);
   });
 
-  describe('form field accessors', () => {
-    it('should get and set name field', async () => {
+  describe('form fields', () => {
+    it('should set and get form values via helpers', async () => {
       await build();
-      component.name = 'Test Environment';
-      expect(component.name).toBe('Test Environment');
-    });
+      setFormFields(component, {
+        name: 'Test Environment',
+        key: 'test-key',
+        color: '#ff0000',
+      });
 
-    it('should get and set key field', async () => {
-      await build();
-      component.key = 'test-key';
-      expect(component.key).toBe('test-key');
-    });
-
-    it('should get and set color field', async () => {
-      await build();
-      component.color = '#ff0000';
-      expect(component.color).toBe('#ff0000');
+      expect(component.form.get('name')?.value).toBe('Test Environment');
+      expect(component.form.get('key')?.value).toBe('test-key');
+      expect(component.form.get('color')?.value).toBe('#ff0000');
     });
   });
 });

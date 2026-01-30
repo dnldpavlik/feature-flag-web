@@ -11,6 +11,7 @@ import {
   getRowCount,
   injectService,
   getComponent,
+  setFormFields,
 } from '@/app/testing';
 
 describe('ProjectList', () => {
@@ -42,9 +43,11 @@ describe('ProjectList', () => {
   });
 
   it('should add a project', () => {
-    component.name = 'Pricing App';
-    component.key = 'pricing';
-    component.description = 'Pricing tests';
+    setFormFields(component, {
+      name: 'Pricing App',
+      key: 'pricing',
+      description: 'Pricing tests',
+    });
     component.addProject();
     fixture.detectChanges();
 
@@ -54,8 +57,7 @@ describe('ProjectList', () => {
 
   it('should not add a project when required fields are missing', () => {
     const initialCount = store.projects().length;
-    component.name = '';
-    component.key = '';
+    setFormFields(component, { name: '', key: '' });
     component.addProject();
     expect(store.projects().length).toBe(initialCount);
   });
@@ -86,20 +88,17 @@ describe('ProjectList', () => {
     expectEmptyState(fixture);
   });
 
-  describe('form field accessors', () => {
-    it('should get and set name field', () => {
-      component.name = 'Test Project';
-      expect(component.name).toBe('Test Project');
-    });
+  describe('form fields', () => {
+    it('should set and get form values via helpers', () => {
+      setFormFields(component, {
+        name: 'Test Project',
+        key: 'test-key',
+        description: 'Test description',
+      });
 
-    it('should get and set key field', () => {
-      component.key = 'test-key';
-      expect(component.key).toBe('test-key');
-    });
-
-    it('should get and set description field', () => {
-      component.description = 'Test description';
-      expect(component.description).toBe('Test description');
+      expect(component.form.get('name')?.value).toBe('Test Project');
+      expect(component.form.get('key')?.value).toBe('test-key');
+      expect(component.form.get('description')?.value).toBe('Test description');
     });
   });
 });

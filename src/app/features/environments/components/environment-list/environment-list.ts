@@ -13,17 +13,7 @@ import { FormFieldComponent } from '@/app/shared/ui/form-field/form-field';
 import { PageHeaderComponent } from '@/app/shared/ui/page-header/page-header';
 import { SearchStore } from '@/app/shared/store/search.store';
 import { EnvironmentStore } from '@/app/shared/store/environment.store';
-import {
-  hasRequiredFields,
-  getTrimmedValues,
-  createFormFieldAccessors,
-} from '@/app/shared/utils/form.utils';
-
-interface EnvironmentFormFields {
-  name: string;
-  key: string;
-  color: string;
-}
+import { hasRequiredFields, getTrimmedValues } from '@/app/shared/utils/form.utils';
 
 @Component({
   selector: 'app-environment-list',
@@ -68,30 +58,6 @@ export class EnvironmentListComponent {
     color: ['#3b82f6'],
   });
 
-  // Form field accessors for backward compatibility with tests
-  private readonly fields = createFormFieldAccessors<EnvironmentFormFields>(this.form);
-
-  get name(): string {
-    return this.fields.name;
-  }
-  set name(value: string) {
-    this.fields.name = value;
-  }
-
-  get key(): string {
-    return this.fields.key;
-  }
-  set key(value: string) {
-    this.fields.key = value;
-  }
-
-  get color(): string {
-    return this.fields.color;
-  }
-  set color(value: string) {
-    this.fields.color = value;
-  }
-
   protected canAdd(): boolean {
     return hasRequiredFields(this.form, ['name', 'key']);
   }
@@ -100,7 +66,7 @@ export class EnvironmentListComponent {
     if (!this.canAdd()) return;
 
     const { name, key } = getTrimmedValues(this.form, ['name', 'key']);
-    const color = this.color;
+    const { color } = this.form.getRawValue();
     const order = this.environmentStore.environments().length;
 
     this.environmentStore.addEnvironment({ name, key, color, order });

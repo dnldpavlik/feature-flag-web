@@ -13,17 +13,7 @@ import { FormFieldComponent } from '@/app/shared/ui/form-field/form-field';
 import { PageHeaderComponent } from '@/app/shared/ui/page-header/page-header';
 import { SearchStore } from '@/app/shared/store/search.store';
 import { ProjectStore } from '@/app/shared/store/project.store';
-import {
-  hasRequiredFields,
-  getTrimmedValues,
-  createFormFieldAccessors,
-} from '@/app/shared/utils/form.utils';
-
-interface ProjectFormFields {
-  name: string;
-  key: string;
-  description: string;
-}
+import { hasRequiredFields, getTrimmedValues } from '@/app/shared/utils/form.utils';
 
 @Component({
   selector: 'app-project-list',
@@ -66,30 +56,6 @@ export class ProjectListComponent {
     key: [''],
     description: [''],
   });
-
-  // Form field accessors for backward compatibility with tests
-  private readonly fields = createFormFieldAccessors<ProjectFormFields>(this.form);
-
-  get name(): string {
-    return this.fields.name;
-  }
-  set name(value: string) {
-    this.fields.name = value;
-  }
-
-  get key(): string {
-    return this.fields.key;
-  }
-  set key(value: string) {
-    this.fields.key = value;
-  }
-
-  get description(): string {
-    return this.fields.description;
-  }
-  set description(value: string) {
-    this.fields.description = value;
-  }
 
   protected canAdd(): boolean {
     return hasRequiredFields(this.form, ['name', 'key']);

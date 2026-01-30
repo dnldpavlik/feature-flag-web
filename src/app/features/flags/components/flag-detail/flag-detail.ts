@@ -93,56 +93,6 @@ export class FlagDetailComponent {
     });
   });
 
-  // Getter/setters for backward compatibility with tests
-  get name(): string {
-    return this.form.controls.name.value;
-  }
-  set name(value: string) {
-    this.form.controls.name.setValue(value);
-  }
-
-  get description(): string {
-    return this.form.controls.description.value;
-  }
-  set description(value: string) {
-    this.form.controls.description.setValue(value);
-  }
-
-  get tags(): string {
-    return this.form.controls.tags.value;
-  }
-  set tags(value: string) {
-    this.form.controls.tags.setValue(value);
-  }
-
-  get booleanValue(): boolean {
-    return this.form.controls.booleanValue.value;
-  }
-  set booleanValue(value: boolean) {
-    this.form.controls.booleanValue.setValue(value);
-  }
-
-  get stringValue(): string {
-    return this.form.controls.stringValue.value;
-  }
-  set stringValue(value: string) {
-    this.form.controls.stringValue.setValue(value);
-  }
-
-  get numberValue(): number {
-    return this.form.controls.numberValue.value;
-  }
-  set numberValue(value: number) {
-    this.form.controls.numberValue.setValue(value);
-  }
-
-  get jsonValue(): string {
-    return this.form.controls.jsonValue.value;
-  }
-  set jsonValue(value: string) {
-    this.form.controls.jsonValue.setValue(value);
-  }
-
   constructor() {
     effect(() => {
       const current = this.flag();
