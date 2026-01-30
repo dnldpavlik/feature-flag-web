@@ -116,20 +116,8 @@ snyk:dependencies:
     - snyk auth ${SNYK_TOKEN}
   script:
     - echo "=== Snyk Dependency Scan ==="
-    - echo "Scanning npm dependencies for vulnerabilities..."
-    
-    # Test and output results
-    - snyk test 
-        --severity-threshold=medium 
-        --json-file-output=snyk-dependency-results.json 
-        || true
-    
-    # Push results to Snyk dashboard for tracking over time
-    - snyk monitor 
-        --project-name="feature-flags-web" 
-        || true
-    
-    # Human-readable output
+    - snyk test --severity-threshold=medium --json-file-output=snyk-dependency-results.json || true
+    - snyk monitor --project-name="feature-flags-web" || true
     - snyk test --severity-threshold=medium || true
   artifacts:
     when: always
@@ -137,7 +125,6 @@ snyk:dependencies:
       - snyk-dependency-results.json
     expire_in: 30 days
   rules:
-    # Run on weekly schedule
     - if: $SCHEDULED_SECURITY_SCAN == "true"
 
 # -----------------------------------------------------------------------------
