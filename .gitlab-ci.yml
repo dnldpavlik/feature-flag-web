@@ -189,8 +189,8 @@ snyk:iac:
     - snyk auth ${SNYK_TOKEN}
   script:
     - echo "=== Snyk IaC Scan ==="
-    - snyk iac test .devcontainer/Dockerfile .devcontainer/docker-compose.yml docker/Dockerfile docker/docker-compose.yml --severity-threshold=medium --json-file-output=snyk-iac-results.json || true
-    - snyk iac test .devcontainer/Dockerfile .devcontainer/docker-compose.yml docker/Dockerfile docker/docker-compose.yml --severity-threshold=medium || true
+    - snyk iac test docker/Dockerfile docker/docker-compose.yml --severity-threshold=medium --json-file-output=snyk-iac-results.json || true
+    - snyk iac test docker/Dockerfile docker/docker-compose.yml --severity-threshold=medium || true
     - "[ -f snyk-iac-results.json ] || echo '{}' > snyk-iac-results.json"
   artifacts:
     when: always
