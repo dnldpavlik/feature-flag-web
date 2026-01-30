@@ -1,0 +1,7 @@
+#!/usr/bin/env sh
+
+echo "🧪 Running unit tests with coverage..."
+npm run test:coverage
+
+echo "🔍 Running E2E smoke tests..."
+npm run e2e:smoke
