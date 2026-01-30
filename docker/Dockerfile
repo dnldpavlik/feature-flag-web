@@ -25,8 +25,9 @@ RUN addgroup -g 1001 -S nginx-app && \
     chown -R nginx-app:nginx-app /usr/share/nginx/html && \
     chown -R nginx-app:nginx-app /var/cache/nginx && \
     chown -R nginx-app:nginx-app /var/log/nginx && \
-    touch /var/run/nginx.pid && \
-    chown -R nginx-app:nginx-app /var/run/nginx.pid
+    mkdir -p /run && \
+    touch /run/nginx.pid && \
+    chown -R nginx-app:nginx-app /run/nginx.pid
 
 # Switch to non-root user
 USER nginx-app
