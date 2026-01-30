@@ -66,6 +66,15 @@ export {
   setFormFields,
 } from './component.helpers';
 
+// Detail component helpers
+export {
+  type DetailComponentConfig,
+  type DetailComponentTestContext,
+  createMockLocation,
+  createMockActivatedRoute,
+  setupDetailComponentTest,
+} from './detail-component.helpers';
+
 // Mock factories
 export {
   mockId,

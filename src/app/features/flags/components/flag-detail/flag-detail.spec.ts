@@ -1,6 +1,6 @@
 import { Location } from '@angular/common';
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ActivatedRoute, Router, convertToParamMap, provideRouter } from '@angular/router';
+import { ComponentFixture } from '@angular/core/testing';
+import { Router } from '@angular/router';
 
 import { EnvironmentStore } from '@/app/shared/store/environment.store';
 import { ProjectStore } from '@/app/shared/store/project.store';
@@ -18,6 +18,7 @@ import {
   setFormField,
   getFormField,
   setFormFields,
+  setupDetailComponentTest,
 } from '@/app/testing';
 
 type FlagDetailInternals = FlagDetailComponent & {
@@ -38,37 +39,20 @@ describe('FlagDetail', () => {
   let router: Router;
   let location: Location;
 
-  const build = async (flagId?: string) => {
-    TestBed.resetTestingModule();
-    await TestBed.configureTestingModule({
-      imports: [FlagDetailComponent],
-      providers: [
-        FlagStore,
-        EnvironmentStore,
-        ProjectStore,
-        provideRouter([]),
-        {
-          provide: Location,
-          useValue: { back: jest.fn() },
-        },
-        {
-          provide: ActivatedRoute,
-          useValue: {
-            snapshot: {
-              paramMap: convertToParamMap(flagId ? { flagId } : {}),
-            },
-          },
-        },
-      ],
-    }).compileComponents();
+  const ctx = setupDetailComponentTest({
+    component: FlagDetailComponent,
+    paramName: 'flagId',
+    providers: [FlagStore, EnvironmentStore, ProjectStore],
+  });
 
-    fixture = TestBed.createComponent(FlagDetailComponent);
-    component = fixture.componentInstance;
+  const build = async (flagId?: string) => {
+    await ctx.build(flagId);
+    fixture = ctx.fixture;
+    component = ctx.component;
+    router = ctx.router;
+    location = ctx.location;
     store = injectService(FlagStore);
     projectStore = injectService(ProjectStore);
-    router = injectService(Router);
-    location = injectService(Location);
-    fixture.detectChanges();
   };
 
   it('should render flag details when flag exists', async () => {

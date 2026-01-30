@@ -164,20 +164,42 @@ Components handle multiple responsibilities: form management, value type handlin
 ---
 
 ### 6. Unit Test Setup Duplication
-**Status:** `[ ]` Not started
+**Status:** `[x]` Complete
 
 **Files Affected:**
-- Multiple spec files across features
+- `src/app/features/flags/components/flag-detail/flag-detail.spec.ts` (533 → 517 lines) - Refactored
+- Other detail component specs - Not refactored (use observable paramMap pattern)
 
 **Problem:**
-Repetitive TestBed setup and form field testing patterns.
+Repetitive TestBed setup with route parameters, Location mocks, and ActivatedRoute configuration.
 
 **Solution:**
-- Create `ComponentTestFactory` utility
-- Use `describe.each()` for form field tests
-- Consolidate store injection patterns
+Created `src/app/testing/detail-component.helpers.ts` with:
+- `createMockLocation()` - Creates mock Location with trackable `back()` calls
+- `createMockActivatedRoute(paramName, value)` - Creates route snapshot with param
+- `setupDetailComponentTest({ component, paramName, providers })` - Returns context with `build()` function
 
-**Estimated Savings:** ~100 lines
+**Example Usage:**
+```typescript
+const ctx = setupDetailComponentTest({
+  component: FlagDetailComponent,
+  paramName: 'flagId',
+  providers: [FlagStore, EnvironmentStore, ProjectStore],
+});
+
+it('should render details', async () => {
+  await ctx.build('flag_123');
+  expectHeading(ctx.fixture, 'My Flag');
+});
+```
+
+**Refactored Specs:**
+- `flag-detail.spec.ts` - Uses `setupDetailComponentTest()`, reduced build function from 20+ lines to 6 lines
+
+**Not Refactored:**
+- `project-detail.spec.ts`, `environment-detail.spec.ts`, `segment-detail.spec.ts` - Use observable `paramMap` for testing route changes; different pattern not covered by this helper
+
+**Actual Savings:** ~16 lines in flag-detail.spec + reusable helper (100 lines) with full test coverage
 
 ---
 
@@ -228,6 +250,7 @@ Define clear interfaces for store, component, and page object patterns.
 | 2026-01-30 | BaseCrudListPage | Completed | Created base class, refactored 4 E2E page objects |
 | 2026-01-30 | Getter/Setter Pattern | Completed | Removed boilerplate from 3 components, updated tests |
 | 2026-01-30 | Large Component Files | Completed | Created FlagValueInputComponent and flag-form.utils.ts |
+| 2026-01-30 | Unit Test Setup | Completed | Created detail-component.helpers.ts, refactored flag-detail.spec.ts |
 
 ---
 
