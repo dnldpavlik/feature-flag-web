@@ -21,14 +21,14 @@ export class EnvironmentListPage extends BasePage {
   // Locators
   // ============================================================
 
-  /** Create environment button */
+  /** Create environment button (form is always visible, this is the Add button) */
   get createButton(): Locator {
-    return this.button(/create|new environment/i);
+    return this.createForm.getByRole('button', { name: /add environment/i });
   }
 
   /** Environment list/table */
   get environmentList(): Locator {
-    return this.page.locator('[data-testid="environment-list"], app-data-table');
+    return this.page.locator('[data-testid="environment-list"], app-ui-data-table');
   }
 
   /** All environment rows */
@@ -92,12 +92,12 @@ export class EnvironmentListPage extends BasePage {
     return this.createForm.locator('input[type="color"]');
   }
 
-  /** Save button in form */
+  /** Save/Add button in form */
   get saveButton(): Locator {
-    return this.createForm.getByRole('button', { name: /save|create/i });
+    return this.createForm.getByRole('button', { name: /add environment|save|create/i });
   }
 
-  /** Cancel button in form */
+  /** Cancel button in form (may not exist in inline forms) */
   get cancelButton(): Locator {
     return this.createForm.getByRole('button', { name: /cancel/i });
   }
@@ -106,9 +106,10 @@ export class EnvironmentListPage extends BasePage {
   // Actions
   // ============================================================
 
-  /** Click create environment button */
+  /** Click create environment button (form is always visible, this is a no-op) */
   async clickCreate(): Promise<void> {
-    await this.createButton.click();
+    // Form is always visible in inline mode, nothing to click to open it
+    await this.createForm.waitFor({ state: 'visible' });
   }
 
   /** Click on an environment to view details */
@@ -144,9 +145,10 @@ export class EnvironmentListPage extends BasePage {
     await this.saveButton.click();
   }
 
-  /** Cancel the form */
+  /** Cancel the form (clear fields since there's no cancel button in inline form) */
   async cancelForm(): Promise<void> {
-    await this.cancelButton.click();
+    await this.nameInput.clear();
+    await this.keyInput.clear();
   }
 
   /** Create a new environment */

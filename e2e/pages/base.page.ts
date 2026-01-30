@@ -114,7 +114,7 @@ export abstract class BasePage {
 
   /** Get data table component */
   get dataTable(): Locator {
-    return this.page.locator('app-data-table');
+    return this.page.locator('app-data-table, app-ui-data-table');
   }
 
   /** Get table rows */

@@ -56,15 +56,18 @@ test.describe('Navigation Journey', () => {
     test('should highlight active navigation item', async ({ page }) => {
       await page.goto('/flags');
 
-      const flagsLink = page.locator('app-sidebar').getByRole('link', { name: /flags/i });
+      // Wait for Angular routing to settle and routerLinkActive to update
+      await page.waitForLoadState('networkidle');
+      await page.waitForTimeout(500);
 
-      // Should have active/selected state - check for active class or aria attribute
-      const hasActiveClass = await flagsLink.evaluate((el) => {
-        return (
-          el.classList.contains('active') ||
-          el.classList.contains('nav-item--active') ||
-          el.getAttribute('aria-current') === 'page'
-        );
+      const flagsNavItem = page
+        .locator('app-sidebar li')
+        .filter({ hasText: /feature flags/i })
+        .first();
+
+      // Check if the nav item has the active class
+      const hasActiveClass = await flagsNavItem.evaluate((el) => {
+        return el.classList.contains('nav-item--active');
       });
 
       expect(hasActiveClass).toBeTruthy();
@@ -76,7 +79,7 @@ test.describe('Navigation Journey', () => {
       await page.goto('/flags');
 
       // Check if there are any flags to click
-      const flagLinks = page.locator('app-data-table').getByRole('link');
+      const flagLinks = page.locator('app-ui-data-table').getByRole('link');
       if ((await flagLinks.count()) === 0) {
         test.skip();
         return;
@@ -93,7 +96,7 @@ test.describe('Navigation Journey', () => {
     test('should navigate via breadcrumb', async ({ page }) => {
       await page.goto('/flags');
 
-      const flagLinks = page.locator('app-data-table').getByRole('link');
+      const flagLinks = page.locator('app-ui-data-table').getByRole('link');
       if ((await flagLinks.count()) === 0) {
         test.skip();
         return;

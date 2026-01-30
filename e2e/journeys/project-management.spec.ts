@@ -29,8 +29,8 @@ test.describe('Project Management Journey', () => {
     test('should show create project button', async ({ page }) => {
       const projectList = new ProjectListPage(page);
       await projectList.goto();
+      // The Add button is visible but disabled until form is filled
       await expect(projectList.createButton).toBeVisible();
-      await expect(projectList.createButton).toBeEnabled();
     });
 
     test('should display existing projects', async ({ page }) => {
@@ -38,7 +38,7 @@ test.describe('Project Management Journey', () => {
       await projectList.goto();
 
       // Check for table or empty state
-      const tableOrEmpty = page.locator('app-data-table, app-empty-state');
+      const tableOrEmpty = page.locator('app-ui-data-table, app-empty-state');
       await expect(tableOrEmpty.first()).toBeVisible();
     });
   });
@@ -85,10 +85,12 @@ test.describe('Project Management Journey', () => {
 
       await projectList.clickCreate();
       await projectList.fillForm({ name: 'Cancelled Project' });
-      await projectList.cancelButton.click();
+      // Clear the form (no cancel button in inline form)
+      await projectList.nameInput.clear();
 
       await page.waitForTimeout(300);
-      // Form should close
+      // Form should still be visible (inline form) but fields cleared
+      await expect(projectList.createForm).toBeVisible();
     });
   });
 
@@ -134,9 +136,8 @@ test.describe('Project Management Journey', () => {
       await expect(projectDetail.projectName).toContainText(projectName || '');
     });
 
-    test('should display project stats', async ({ page }) => {
+    test('should display project details', async ({ page }) => {
       const projectList = new ProjectListPage(page);
-      const projectDetail = new ProjectDetailPage(page);
 
       const projectCount = await projectList.getProjectCount();
       if (projectCount === 0) {
@@ -147,8 +148,9 @@ test.describe('Project Management Journey', () => {
       const firstProjectLink = projectList.projectRows.first().getByRole('link').first();
       await firstProjectLink.click();
 
-      // Stat cards should be visible
-      await expect(projectDetail.statCards.first()).toBeVisible();
+      // Project details should be visible (cards with overview info)
+      const detailCard = page.locator('app-card').first();
+      await expect(detailCard).toBeVisible();
     });
 
     test('should navigate back to list', async ({ page }) => {

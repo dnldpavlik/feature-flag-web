@@ -17,7 +17,7 @@ export class ProjectDetailPage extends BasePage {
 
   /** Back button */
   get backButton(): Locator {
-    return this.page.locator('[data-testid="back-button"], .back-button');
+    return this.page.locator('[data-testid="back-button"], .back-button, .project-detail__back');
   }
 
   /** Project name heading */

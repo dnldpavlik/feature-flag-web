@@ -52,7 +52,9 @@ export class FlagDetailPage extends BasePage {
 
   /** Environment toggles section */
   get environmentToggles(): Locator {
-    return this.page.locator('[data-testid="environment-toggles"], .flag-detail__environments');
+    return this.page.locator(
+      '[data-testid="environment-toggles"], .flag-detail__environments, .flag-detail__env-table',
+    );
   }
 
   /** Get toggle for specific environment */

@@ -21,14 +21,14 @@ export class ProjectListPage extends BasePage {
   // Locators
   // ============================================================
 
-  /** Create project button */
+  /** Create project button (form is always visible, this is the Add button) */
   get createButton(): Locator {
-    return this.button(/create|new project/i);
+    return this.createForm.getByRole('button', { name: /add project/i });
   }
 
   /** Project list/table */
   get projectList(): Locator {
-    return this.page.locator('[data-testid="project-list"], app-data-table');
+    return this.page.locator('[data-testid="project-list"], app-ui-data-table');
   }
 
   /** All project rows */
@@ -87,12 +87,12 @@ export class ProjectListPage extends BasePage {
     return this.createForm.getByLabel('Description');
   }
 
-  /** Save button */
+  /** Save/Add button */
   get saveButton(): Locator {
-    return this.createForm.getByRole('button', { name: /save|create/i });
+    return this.createForm.getByRole('button', { name: /add project|save|create/i });
   }
 
-  /** Cancel button */
+  /** Cancel button (may not exist in inline forms) */
   get cancelButton(): Locator {
     return this.createForm.getByRole('button', { name: /cancel/i });
   }
@@ -101,9 +101,10 @@ export class ProjectListPage extends BasePage {
   // Actions
   // ============================================================
 
-  /** Click create button */
+  /** Click create button (form is always visible, this is a no-op) */
   async clickCreate(): Promise<void> {
-    await this.createButton.click();
+    // Form is always visible in inline mode, nothing to click to open it
+    await this.createForm.waitFor({ state: 'visible' });
   }
 
   /** Click on a project */

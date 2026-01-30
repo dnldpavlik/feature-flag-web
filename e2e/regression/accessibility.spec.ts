@@ -233,16 +233,22 @@ test.describe('Accessibility Tests', () => {
       await page.goto('/flags');
       await page.waitForURL(/flags/);
 
-      const flagsLink = page.locator('app-sidebar').getByRole('link', { name: /flags/i });
+      // Wait for Angular routing to settle and routerLinkActive to update
+      await page.waitForLoadState('networkidle');
+      await page.waitForTimeout(500);
 
-      // Should have aria-current="page" on the link or active class on parent li
-      const ariaCurrent = await flagsLink.getAttribute('aria-current');
-      const navItem = flagsLink.locator('..');
-      const hasActiveClass = await navItem.evaluate(
-        (el) => el.classList.contains('active') || el.classList.contains('nav-item--active'),
-      );
+      // Check the nav item li element for the active class
+      const flagsNavItem = page
+        .locator('app-sidebar li')
+        .filter({ hasText: /feature flags/i })
+        .first();
 
-      expect(ariaCurrent === 'page' || hasActiveClass).toBeTruthy();
+      // Should have active class on the nav item
+      const hasActiveClass = await flagsNavItem.evaluate((el) => {
+        return el.classList.contains('nav-item--active');
+      });
+
+      expect(hasActiveClass).toBeTruthy();
     });
 
     test('should announce dynamic content changes', async ({ page }) => {

@@ -30,8 +30,8 @@ test.describe('Environment Management Journey', () => {
     test('should show create environment button', async ({ page }) => {
       const envList = new EnvironmentListPage(page);
       await envList.goto();
+      // The Add button is visible but disabled until form is filled
       await expect(envList.createButton).toBeVisible();
-      await expect(envList.createButton).toBeEnabled();
     });
 
     test('should display existing environments', async ({ page }) => {
@@ -39,7 +39,7 @@ test.describe('Environment Management Journey', () => {
       await envList.goto();
 
       // Check for table or empty state
-      const tableOrEmpty = page.locator('app-data-table, app-empty-state');
+      const tableOrEmpty = page.locator('app-ui-data-table, app-empty-state');
       await expect(tableOrEmpty.first()).toBeVisible();
     });
 
@@ -105,10 +105,12 @@ test.describe('Environment Management Journey', () => {
 
       await envList.clickCreate();
       await envList.fillForm({ name: 'Cancelled Env', key: 'cancelled' });
+      // Clear the form (no cancel button in inline form)
       await envList.cancelForm();
 
-      // Form should close
+      // Form should still be visible (inline form) but fields cleared
       await page.waitForTimeout(300);
+      await expect(envList.createForm).toBeVisible();
     });
 
     test('should validate required fields', async ({ page }) => {
@@ -116,11 +118,16 @@ test.describe('Environment Management Journey', () => {
       await envList.goto();
       await envList.clickCreate();
 
-      // Try to submit without filling required fields
-      await envList.submitForm();
+      // Add button should be disabled when form is empty
+      await expect(envList.saveButton).toBeDisabled();
 
-      // Should show validation or stay on form
-      await expect(envList.createForm).toBeVisible();
+      // Fill only name - should still be disabled
+      await envList.nameInput.fill('Test');
+      await expect(envList.saveButton).toBeDisabled();
+
+      // Fill key too - should be enabled
+      await envList.keyInput.fill('test');
+      await expect(envList.saveButton).toBeEnabled();
     });
   });
 

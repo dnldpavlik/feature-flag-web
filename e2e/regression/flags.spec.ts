@@ -281,27 +281,29 @@ test.describe('Flag Regression Tests', () => {
         return;
       }
 
-      const toggle = page.locator('app-toggle input').first();
-      const initialState = await toggle.isChecked();
+      // Toggle input is visually hidden, use the label for clicking
+      const toggleLabel = page.locator('app-toggle label.toggle').first();
+      const toggleInput = page.locator('app-toggle input').first();
+      const initialState = await toggleInput.isChecked();
 
-      // Toggle
-      await toggle.click();
+      // Toggle by clicking label
+      await toggleLabel.click();
       await page.waitForTimeout(500);
 
       // Verify state changed
-      const newState = await toggle.isChecked();
+      const newState = await toggleInput.isChecked();
       expect(newState).toBe(!initialState);
 
       // Refresh page
       await page.reload();
 
       // State should persist
-      const afterReloadState = await toggle.isChecked();
+      const afterReloadState = await toggleInput.isChecked();
       expect(afterReloadState).toBe(newState);
 
       // Restore original state
       if (afterReloadState !== initialState) {
-        await toggle.click();
+        await toggleLabel.click();
       }
     });
 
@@ -363,24 +365,26 @@ test.describe('Flag Regression Tests', () => {
         return;
       }
 
-      const toggle = page.locator('app-toggle input').first();
-      const initialState = await toggle.isChecked();
+      // Toggle input is visually hidden, use the label for clicking
+      const toggleLabel = page.locator('app-toggle label.toggle').first();
+      const toggleInput = page.locator('app-toggle input').first();
+      const initialState = await toggleInput.isChecked();
 
-      // Rapid clicks
-      await toggle.click();
-      await toggle.click();
-      await toggle.click();
+      // Rapid clicks on label
+      await toggleLabel.click();
+      await toggleLabel.click();
+      await toggleLabel.click();
 
       // Wait for any debouncing
       await page.waitForTimeout(1000);
 
       // Final state should be opposite of initial (odd number of clicks)
-      const finalState = await toggle.isChecked();
+      const finalState = await toggleInput.isChecked();
       expect(finalState).toBe(!initialState);
 
       // Restore state
       if (finalState !== initialState) {
-        await toggle.click();
+        await toggleLabel.click();
       }
     });
   });

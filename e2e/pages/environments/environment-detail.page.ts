@@ -17,7 +17,9 @@ export class EnvironmentDetailPage extends BasePage {
 
   /** Back button */
   get backButton(): Locator {
-    return this.page.locator('[data-testid="back-button"], .back-button');
+    return this.page.locator(
+      '[data-testid="back-button"], .back-button, .environment-detail__back',
+    );
   }
 
   /** Environment name heading */
