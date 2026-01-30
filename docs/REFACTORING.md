@@ -139,19 +139,27 @@ Created `e2e/pages/base-crud-list.page.ts` that extends `BasePage` with:
 ---
 
 ### 5. Large Component Files
-**Status:** `[ ]` Not started
+**Status:** `[x]` Complete
 
 **Files Affected:**
-- `src/app/features/flags/components/flag-detail/flag-detail.ts` (288 lines)
-- `src/app/features/flags/components/flag-create/flag-create.ts` (192 lines)
+- `src/app/features/flags/components/flag-detail/flag-detail.ts` (240 → 214 lines) - Refactored
+- `src/app/features/flags/components/flag-create/flag-create.ts` (192 → 126 lines) - Refactored
 
 **Problem:**
 Components handle multiple responsibilities: form management, value type handling, environment state, validation.
 
 **Solution:**
-- Extract `FlagValueInputComponent` for type-specific inputs
-- Create `flag-validation.utils.ts` for validation logic
-- Consider shared form-building service
+- Created `FlagValueInputComponent` (118 lines) for type-specific inputs (boolean, string, number, json)
+- Created `flag-form.utils.ts` (121 lines) with:
+  - `extractDefaultValue()` - Extracts typed value from form data
+  - `buildCreateFlagInput()` - Builds type-safe CreateFlagInput
+  - `parseTags()` - Parses comma-separated tags
+- Both templates now use the shared component instead of duplicating switch statements
+
+**Actual Savings:** Removed ~92 lines from components, added 239 lines of reusable code with full test coverage. Net increase in total lines but significant improvement in:
+- Single Responsibility (each piece has one job)
+- DRY (flag value inputs defined once)
+- Testability (utilities tested independently)
 
 ---
 
@@ -219,6 +227,7 @@ Define clear interfaces for store, component, and page object patterns.
 | 2026-01-30 | Form Utilities | Completed | Created form.utils.ts, added test helpers |
 | 2026-01-30 | BaseCrudListPage | Completed | Created base class, refactored 4 E2E page objects |
 | 2026-01-30 | Getter/Setter Pattern | Completed | Removed boilerplate from 3 components, updated tests |
+| 2026-01-30 | Large Component Files | Completed | Created FlagValueInputComponent and flag-form.utils.ts |
 
 ---
 

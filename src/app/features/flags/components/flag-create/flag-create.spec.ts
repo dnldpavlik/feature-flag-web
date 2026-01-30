@@ -247,32 +247,20 @@ describe('FlagCreate', () => {
     expect(navigateSpy).toHaveBeenCalledWith(['/flags']);
   });
 
-  it('should fall back to default handling for unknown type', () => {
-    component.form.controls.type.setValue('unknown' as 'boolean');
+  it('should render flag value input component', () => {
+    fixture.detectChanges();
 
-    const result = (component as unknown as { getDefaultValue: () => unknown }).getDefaultValue();
-
-    expect(result).toBeUndefined();
+    const valueInput = fixture.debugElement.query(By.css('app-flag-value-input'));
+    expect(valueInput).toBeTruthy();
   });
 
-  it('should show default value input based on type', () => {
+  it('should show checkbox for boolean type', () => {
     component.form.controls.type.setValue('boolean');
     fixture.detectChanges();
 
-    const booleanInput = fixture.debugElement.query(
-      By.css('input[formControlName="booleanValue"]'),
-    );
-    expect(booleanInput).toBeTruthy();
-
-    component.form.controls.type.setValue('string');
-    fixture.detectChanges();
-
-    // String input is inside app-form-field component
-    const stringFormField = fixture.debugElement.queryAll(By.css('app-form-field'));
-    const stringInput = stringFormField.find((el) =>
-      el.nativeElement.querySelector('input.form-field__input:not([type="checkbox"])'),
-    );
-    expect(stringInput).toBeTruthy();
+    // Boolean type shows checkbox inside the value input component
+    const checkbox = fixture.debugElement.query(By.css('input[type="checkbox"]'));
+    expect(checkbox).toBeTruthy();
   });
 
   describe('per-environment toggles', () => {

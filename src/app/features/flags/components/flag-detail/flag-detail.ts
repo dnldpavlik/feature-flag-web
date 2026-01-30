@@ -20,10 +20,9 @@ import { ProjectStore } from '@/app/shared/store/project.store';
 import { Flag, FlagType } from '@/app/features/flags/models/flag.model';
 import { FlagTypeMap } from '@/app/features/flags/models/flag-value.model';
 import { FlagStore } from '@/app/features/flags/store/flag.store';
-import {
-  parseValueForType,
-  validateJsonObject,
-} from '@/app/features/flags/utils/flag-format.utils';
+import { parseValueForType } from '@/app/features/flags/utils/flag-format.utils';
+import { extractDefaultValue, parseTags } from '@/app/features/flags/utils/flag-form.utils';
+import { FlagValueInputComponent } from '../flag-value-input/flag-value-input';
 import { FlagEnvironmentRow } from './flag-detail.types';
 
 @Component({
@@ -32,6 +31,7 @@ import { FlagEnvironmentRow } from './flag-detail.types';
     ButtonComponent,
     CardComponent,
     EmptyStateComponent,
+    FlagValueInputComponent,
     FormFieldComponent,
     ReactiveFormsModule,
     ToggleComponent,
@@ -114,22 +114,19 @@ export class FlagDetailComponent {
     const current = this.flag();
     if (!current) return;
 
-    const { name, description, tags } = this.form.getRawValue();
-    const resolvedTags = tags
-      .split(',')
-      .map((tag) => tag.trim())
-      .filter((tag) => tag.length > 0);
-
-    const defaultValue = this.resolveDefaultValue(current.type);
-    if (defaultValue === null) {
+    const formData = this.form.getRawValue();
+    const result = extractDefaultValue(current.type, formData);
+    if (!result.success) {
+      this.jsonError.set(result.error);
       return;
     }
+    this.jsonError.set(null);
 
     this.store.updateFlagDetails(current.id, {
-      name: name.trim() || current.name,
-      description: description.trim(),
-      tags: resolvedTags,
-      defaultValue,
+      name: formData.name.trim() || current.name,
+      description: formData.description.trim(),
+      tags: parseTags(formData.tags),
+      defaultValue: result.value,
     });
   }
 
@@ -204,27 +201,6 @@ export class FlagDetailComponent {
       case 'json':
         this.form.controls.jsonValue.setValue(JSON.stringify(flag.defaultValue ?? {}, null, 2));
         break;
-    }
-  }
-
-  private resolveDefaultValue(type: FlagType): FlagTypeMap[FlagType] | null {
-    const { booleanValue, stringValue, numberValue, jsonValue } = this.form.getRawValue();
-    switch (type) {
-      case 'boolean':
-        return booleanValue;
-      case 'string':
-        return stringValue;
-      case 'number':
-        return numberValue;
-      case 'json': {
-        const result = validateJsonObject(jsonValue);
-        if (!result.valid) {
-          this.jsonError.set(result.error!);
-          return null;
-        }
-        this.jsonError.set(null);
-        return result.value as FlagTypeMap[FlagType];
-      }
     }
   }
 

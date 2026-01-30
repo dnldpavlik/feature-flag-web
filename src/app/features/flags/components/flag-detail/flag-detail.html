@@ -47,29 +47,14 @@
           Used when an environment does not have an override.
         </p>
 
-        @switch (current.type) {
-          @case ('boolean') {
-            <label class="flag-detail__toggle">
-              <input type="checkbox" formControlName="booleanValue" />
-              <span>{{ form.controls.booleanValue.value ? 'True' : 'False' }}</span>
-            </label>
-          }
-          @case ('string') {
-            <app-form-field label="" [formControl]="form.controls.stringValue" />
-          }
-          @case ('number') {
-            <app-form-field label="" type="number" [formControl]="form.controls.numberValue" />
-          }
-          @case ('json') {
-            <app-form-field
-              label=""
-              type="textarea"
-              [rows]="4"
-              [error]="jsonError()"
-              [formControl]="form.controls.jsonValue"
-            />
-          }
-        }
+        <app-flag-value-input
+          [type]="current.type"
+          [booleanControl]="form.controls.booleanValue"
+          [stringControl]="form.controls.stringValue"
+          [numberControl]="form.controls.numberValue"
+          [jsonControl]="form.controls.jsonValue"
+          [jsonError]="jsonError()"
+        />
       </app-card>
     </div>
 

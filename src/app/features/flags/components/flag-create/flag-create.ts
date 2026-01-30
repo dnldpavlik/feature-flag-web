@@ -8,15 +8,25 @@ import { SelectFieldComponent, SelectOption } from '@/app/shared/ui/select-field
 import { EnvironmentStore } from '@/app/shared/store/environment.store';
 import { ProjectStore } from '@/app/shared/store/project.store';
 import { toKey } from '@/app/shared/utils/url.utils';
-import { CreateFlagInput, FlagType } from '@/app/features/flags/models/flag.model';
-import { FlagTypeMap } from '@/app/features/flags/models/flag-value.model';
-import { getDefaultForType } from '@/app/features/flags/utils/flag-value.utils';
-import { validateJsonObject } from '@/app/features/flags/utils/flag-format.utils';
+import { FlagType } from '@/app/features/flags/models/flag.model';
 import { FlagStore } from '@/app/features/flags/store/flag.store';
+import { FlagValueInputComponent } from '../flag-value-input/flag-value-input';
+import {
+  extractDefaultValue,
+  buildCreateFlagInput,
+  parseTags,
+} from '@/app/features/flags/utils/flag-form.utils';
+import { validateJsonObject } from '@/app/features/flags/utils/flag-format.utils';
 
 @Component({
   selector: 'app-flag-create',
-  imports: [ButtonComponent, FormFieldComponent, SelectFieldComponent, ReactiveFormsModule],
+  imports: [
+    ButtonComponent,
+    FlagValueInputComponent,
+    FormFieldComponent,
+    ReactiveFormsModule,
+    SelectFieldComponent,
+  ],
   templateUrl: './flag-create.html',
   styleUrl: './flag-create.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -76,30 +86,29 @@ export class FlagCreateComponent {
   }
 
   protected createFlag(): void {
-    const { name, key, description, tags } = this.form.getRawValue();
-    const trimmedName = name.trim();
-    const resolvedKey = key.trim() || toKey(trimmedName);
-    const resolvedTags = tags
-      .split(',')
-      .map((tag) => tag.trim())
-      .filter((tag) => tag.length > 0);
+    const formData = this.form.getRawValue();
+    const trimmedName = formData.name.trim();
+    const resolvedKey = formData.key.trim() || toKey(trimmedName);
 
     if (!trimmedName || !resolvedKey) {
       return;
     }
 
-    const defaultValue = this.getDefaultValue();
-    if (defaultValue === null) {
-      return; // Invalid JSON
+    const result = extractDefaultValue(formData.type, formData);
+    if (!result.success) {
+      this.jsonError.set(result.error);
+      return;
     }
 
-    const input = this.buildCreateInput(
-      resolvedKey,
-      trimmedName,
-      description.trim(),
-      resolvedTags,
-      defaultValue,
-    );
+    const input = buildCreateFlagInput({
+      projectId: this.projectStore.selectedProjectId(),
+      type: formData.type,
+      key: resolvedKey,
+      name: trimmedName,
+      description: formData.description.trim(),
+      tags: parseTags(formData.tags),
+      defaultValue: result.value,
+    });
 
     this.store.addFlag(input, this._enabledEnvironments());
     void this.router.navigate(['/flags']);
@@ -113,80 +122,5 @@ export class FlagCreateComponent {
     const jsonValue = this.form.controls.jsonValue.value;
     const result = validateJsonObject(jsonValue);
     this.jsonError.set(result.valid ? null : result.error!);
-  }
-
-  private getDefaultValue(): FlagTypeMap[FlagType] | null {
-    const { type, booleanValue, stringValue, numberValue, jsonValue } = this.form.getRawValue();
-    switch (type) {
-      case 'boolean':
-        return booleanValue;
-      case 'string':
-        return stringValue;
-      case 'number':
-        return numberValue;
-      case 'json': {
-        const result = validateJsonObject(jsonValue);
-        if (!result.valid) {
-          this.jsonError.set(result.error!);
-          return null;
-        }
-        return result.value as FlagTypeMap[FlagType];
-      }
-      default:
-        return getDefaultForType(type);
-    }
-  }
-
-  private buildCreateInput(
-    key: string,
-    name: string,
-    description: string,
-    tags: string[],
-    defaultValue: FlagTypeMap[FlagType],
-  ): CreateFlagInput {
-    const currentType = this.form.controls.type.value;
-    const projectId = this.projectStore.selectedProjectId();
-    switch (currentType) {
-      case 'boolean':
-        return {
-          projectId,
-          key,
-          name,
-          description,
-          tags,
-          type: 'boolean',
-          defaultValue: defaultValue as boolean,
-        };
-      case 'string':
-        return {
-          projectId,
-          key,
-          name,
-          description,
-          tags,
-          type: 'string',
-          defaultValue: defaultValue as string,
-        };
-      case 'number':
-        return {
-          projectId,
-          key,
-          name,
-          description,
-          tags,
-          type: 'number',
-          defaultValue: defaultValue as number,
-        };
-      case 'json':
-        return {
-          projectId,
-          key,
-          name,
-          description,
-          tags,
-          type: 'json',
-          defaultValue: defaultValue as Record<string, unknown>,
-        };
-    }
   }
 }

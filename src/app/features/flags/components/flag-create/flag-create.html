@@ -40,39 +40,16 @@
         >This value will be used as the initial value in all environments.</span
       >
 
-      @switch (form.controls.type.value) {
-        @case ('boolean') {
-          <label class="flag-create__toggle">
-            <input type="checkbox" formControlName="booleanValue" />
-            <span>{{ form.controls.booleanValue.value ? 'True' : 'False' }}</span>
-          </label>
-        }
-        @case ('string') {
-          <app-form-field
-            label=""
-            placeholder="Enter default string value"
-            [formControl]="form.controls.stringValue"
-          />
-        }
-        @case ('number') {
-          <app-form-field
-            label=""
-            type="number"
-            placeholder="0"
-            [formControl]="form.controls.numberValue"
-          />
-        }
-        @case ('json') {
-          <app-form-field
-            label=""
-            type="textarea"
-            [rows]="4"
-            placeholder='{"key": "value"}'
-            [error]="jsonError()"
-            [formControl]="form.controls.jsonValue"
-          />
-        }
-      }
+      <app-flag-value-input
+        [type]="form.controls.type.value"
+        [booleanControl]="form.controls.booleanValue"
+        [stringControl]="form.controls.stringValue"
+        [numberControl]="form.controls.numberValue"
+        [jsonControl]="form.controls.jsonValue"
+        [jsonError]="jsonError()"
+        [stringPlaceholder]="'Enter default string value'"
+        (jsonBlur)="validateJson()"
+      />
     </div>
 
     <div class="flag-create__field">
