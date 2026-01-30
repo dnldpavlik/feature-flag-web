@@ -191,6 +191,19 @@ Additional shared infrastructure:
 - [x] Implement project switcher in header
 - [x] Write component tests
 
+#### Project-Flag Relationship 🔴
+
+- [x] Add `projectId` field to Flag model
+- [x] Add `projectId` to CreateFlagInput type
+- [x] Add `flagsInSelectedProject` computed selector to FlagStore
+- [x] Update FlagCreateComponent to capture selected project
+- [x] Update FlagListComponent to use project-filtered flags
+- [x] Update Dashboard to use project-filtered flags
+- [x] Update FlagDetailComponent to validate project scope
+- [x] Update mock factories with projectId
+- [x] Write unit tests for project-flag filtering
+- [x] Write E2E tests for project-flag scoping
+
 ---
 
 ## Phase 3: Advanced Features (Weeks 5-6)
@@ -368,4 +381,4 @@ Additional shared infrastructure:
 
 ---
 
-_Last updated: 2026-01-29_
+_Last updated: 2026-01-30_

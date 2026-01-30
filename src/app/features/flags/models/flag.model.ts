@@ -4,6 +4,7 @@ export type FlagType = 'boolean' | 'string' | 'number' | 'json';
 
 export interface Flag {
   id: string;
+  projectId: string;
   key: string;
   name: string;
   description: string;
@@ -33,6 +34,7 @@ export type CreateFlagInput =
   | CreateFlagInputBase<'json'>;
 
 interface CreateFlagInputBase<T extends FlagType> {
+  projectId: string;
   key: string;
   name: string;
   description: string;

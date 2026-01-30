@@ -1,86 +1,89 @@
 import { Injectable, computed, signal } from '@angular/core';
 
+import { BaseCrudStore } from '@/app/shared/store/base-crud.store';
+import { createTimestamp } from '@/app/shared/utils/id.utils';
 import { CreateProjectInput, Project } from '@/app/features/projects/models/project.model';
-import { createId, createTimestamp } from '@/app/shared/utils/id.utils';
+
+const INITIAL_PROJECTS: Project[] = [
+  {
+    id: 'proj_default',
+    key: 'default',
+    name: 'Default Project',
+    description: 'Primary feature flag workspace.',
+    isDefault: true,
+    createdAt: createTimestamp(),
+    updatedAt: createTimestamp(),
+  },
+  {
+    id: 'proj_growth',
+    key: 'growth',
+    name: 'Growth Experiments',
+    description: 'Revenue, onboarding, and conversion tests.',
+    isDefault: false,
+    createdAt: createTimestamp(),
+    updatedAt: createTimestamp(),
+  },
+];
 
 @Injectable({ providedIn: 'root' })
-export class ProjectStore {
-  private readonly _projects = signal<Project[]>([
-    {
-      id: 'proj_default',
-      key: 'default',
-      name: 'Default Project',
-      description: 'Primary feature flag workspace.',
-      isDefault: true,
-      createdAt: createTimestamp(),
-      updatedAt: createTimestamp(),
-    },
-    {
-      id: 'proj_growth',
-      key: 'growth',
-      name: 'Growth Experiments',
-      description: 'Revenue, onboarding, and conversion tests.',
-      isDefault: false,
-      createdAt: createTimestamp(),
-      updatedAt: createTimestamp(),
-    },
-  ]);
-
+export class ProjectStore extends BaseCrudStore<Project> {
   private readonly _selectedProjectId = signal<string>('proj_default');
 
-  readonly projects = this._projects.asReadonly();
+  constructor() {
+    super({
+      idPrefix: 'proj',
+      initialData: INITIAL_PROJECTS,
+      allowDeleteLast: false,
+    });
+  }
+
+  /** Alias for items to maintain backward compatibility */
+  readonly projects = this.items;
+
   readonly selectedProjectId = this._selectedProjectId.asReadonly();
 
   readonly selectedProject = computed(() =>
-    this._projects().find((project) => project.id === this._selectedProjectId()),
+    this._items().find((project) => project.id === this._selectedProjectId()),
   );
 
+  /** Add a new project */
   addProject(input: CreateProjectInput): void {
-    const stamp = createTimestamp();
-    const projectId = createId('proj');
-
-    const newProject: Project = {
-      id: projectId,
+    this.addItem({
       key: input.key,
       name: input.name,
       description: input.description,
       isDefault: input.isDefault ?? false,
-      createdAt: stamp,
-      updatedAt: stamp,
-    };
-
-    this._projects.update((projects) => [...projects, newProject]);
+    });
   }
 
+  /** Select a project as the current context */
   selectProject(projectId: string): void {
     this._selectedProjectId.set(projectId);
   }
 
+  /** Set a project as the default */
   setDefaultProject(projectId: string): void {
-    const stamp = createTimestamp();
-    this._projects.update((projects) =>
-      projects.map((project) => ({
-        ...project,
-        isDefault: project.id === projectId,
-        updatedAt: project.id === projectId || project.isDefault ? stamp : project.updatedAt,
-      })),
+    this.updateWhere(
+      (project) => project.id === projectId || project.isDefault,
+      (project) => ({ isDefault: project.id === projectId }),
     );
   }
 
+  /** Delete a project */
   deleteProject(projectId: string): void {
-    const projects = this._projects();
-    if (projects.length <= 1) return;
+    if (this._items().length <= 1) return;
 
-    this._projects.update((current) => current.filter((project) => project.id !== projectId));
+    this.deleteItem(projectId);
 
-    const selected = this._selectedProjectId();
-    if (selected === projectId) {
-      const fallback = this._projects().find((project) => project.isDefault) ?? this._projects()[0];
+    // If we deleted the selected project, fall back to default or first
+    if (this._selectedProjectId() === projectId) {
+      const fallback = this._items().find((project) => project.isDefault) ?? this._items()[0];
       this._selectedProjectId.set(fallback.id);
     }
   }
 
+  /** Find project by ID */
   getProjectById(projectId: string): Project | undefined {
-    return this._projects().find((project) => project.id === projectId);
+    return this.getById(projectId);
   }
 }

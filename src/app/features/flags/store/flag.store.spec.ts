@@ -1,6 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 
 import { EnvironmentStore } from '@/app/shared/store/environment.store';
+import { ProjectStore } from '@/app/shared/store/project.store';
 import { FlagStore } from './flag.store';
 import {
   injectService,
@@ -16,14 +17,16 @@ import {
 describe('FlagStore', () => {
   let store: FlagStore;
   let environmentStore: EnvironmentStore;
+  let projectStore: ProjectStore;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [FlagStore, EnvironmentStore],
+      providers: [FlagStore, EnvironmentStore, ProjectStore],
     });
 
     store = injectService(FlagStore);
     environmentStore = injectService(EnvironmentStore);
+    projectStore = injectService(ProjectStore);
   });
 
   describe('initial state', () => {
@@ -42,6 +45,19 @@ describe('FlagStore', () => {
       expect(flag.environmentValues).toBeDefined();
       expect(typeof flag.environmentValues).toBe('object');
     });
+
+    it('should have flags with projectId', () => {
+      const flag = store.flags()[0];
+      expect(flag.projectId).toBeDefined();
+      expect(flag.projectId).toMatch(/^proj_/);
+    });
+
+    it('should split seed flags between projects', () => {
+      const defaultProjectFlags = store.flags().filter((f) => f.projectId === 'proj_default');
+      const growthProjectFlags = store.flags().filter((f) => f.projectId === 'proj_growth');
+      expect(defaultProjectFlags.length).toBeGreaterThan(0);
+      expect(growthProjectFlags.length).toBeGreaterThan(0);
+    });
   });
 
   describe('addFlag', () => {
@@ -49,6 +65,7 @@ describe('FlagStore', () => {
       const countBefore = getCountBefore(store.flags);
 
       store.addFlag({
+        projectId: 'proj_default',
         key: 'test-flag',
         name: 'Test Flag',
         description: 'A test flag',
@@ -64,6 +81,7 @@ describe('FlagStore', () => {
 
     it('should add a new string flag', () => {
       store.addFlag({
+        projectId: 'proj_default',
         key: 'string-flag',
         name: 'String Flag',
         description: 'A string flag',
@@ -79,6 +97,7 @@ describe('FlagStore', () => {
 
     it('should add a new number flag', () => {
       store.addFlag({
+        projectId: 'proj_default',
         key: 'number-flag',
         name: 'Number Flag',
         description: 'A number flag',
@@ -94,6 +113,7 @@ describe('FlagStore', () => {
 
     it('should add a new json flag', () => {
       store.addFlag({
+        projectId: 'proj_default',
         key: 'json-flag',
         name: 'JSON Flag',
         description: 'A JSON flag',
@@ -109,6 +129,7 @@ describe('FlagStore', () => {
 
     it('should initialize environment values for all environments', () => {
       store.addFlag({
+        projectId: 'proj_default',
         key: 'test-flag',
         name: 'Test Flag',
         description: 'A test flag',
@@ -127,6 +148,7 @@ describe('FlagStore', () => {
 
     it('should set default value in environment values', () => {
       store.addFlag({
+        projectId: 'proj_default',
         key: 'test-flag',
         name: 'Test Flag',
         description: 'A test flag',
@@ -137,6 +159,21 @@ describe('FlagStore', () => {
 
       const flag = store.flags()[0];
       expect(flag.environmentValues['env_development'].value).toBe(true);
+    });
+
+    it('should store projectId on the created flag', () => {
+      store.addFlag({
+        projectId: 'proj_growth',
+        key: 'growth-flag',
+        name: 'Growth Flag',
+        description: 'A flag for growth project',
+        type: 'boolean',
+        defaultValue: false,
+        tags: [],
+      });
+
+      const flag = store.flags()[0];
+      expect(flag.projectId).toBe('proj_growth');
     });
   });
 
@@ -319,6 +356,42 @@ describe('FlagStore', () => {
     });
   });
 
+  describe('project-aware computed selectors', () => {
+    it('should return flags for selected project', () => {
+      projectStore.selectProject('proj_default');
+      const defaultProjectFlags = store.flagsInSelectedProject();
+      expect(defaultProjectFlags.every((f) => f.projectId === 'proj_default')).toBe(true);
+    });
+
+    it('should update flags when project selection changes', () => {
+      projectStore.selectProject('proj_default');
+      const defaultCount = store.flagsInSelectedProject().length;
+
+      projectStore.selectProject('proj_growth');
+      const growthCount = store.flagsInSelectedProject().length;
+
+      // Both should have flags but different ones
+      expect(defaultCount).toBeGreaterThan(0);
+      expect(growthCount).toBeGreaterThan(0);
+    });
+
+    it('should filter enabledFlagsInCurrentEnvironment by project', () => {
+      // Enable a flag in proj_default
+      const defaultFlag = store.flags().find((f) => f.projectId === 'proj_default');
+      store.toggleFlagInEnvironment(defaultFlag!.id, 'env_development', true);
+
+      projectStore.selectProject('proj_default');
+      expect(store.enabledFlagsInCurrentEnvironment().some((f) => f.id === defaultFlag!.id)).toBe(
+        true,
+      );
+
+      projectStore.selectProject('proj_growth');
+      expect(store.enabledFlagsInCurrentEnvironment().some((f) => f.id === defaultFlag!.id)).toBe(
+        false,
+      );
+    });
+  });
+
   describe('deleteFlag', () => {
     it('should remove flag by id', () => {
       const flagToDelete = store.flags()[0];
@@ -377,6 +450,7 @@ describe('FlagStore', () => {
   describe('getValueInEnvironment', () => {
     it('should return value for specific environment', () => {
       store.addFlag({
+        projectId: 'proj_default',
         key: 'test-flag',
         name: 'Test Flag',
         description: 'A test flag',
@@ -397,6 +471,7 @@ describe('FlagStore', () => {
 
     it('should return default value when environment has no specific value', () => {
       store.addFlag({
+        projectId: 'proj_default',
         key: 'new-flag',
         name: 'New Flag',
         description: 'A new flag',

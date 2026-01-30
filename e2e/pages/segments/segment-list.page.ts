@@ -5,8 +5,8 @@
  * @route /segments
  */
 
-import { Locator, expect } from '@playwright/test';
-import { BasePage } from '../base.page';
+import { Locator } from '@playwright/test';
+import { BaseCrudListPage } from '../base-crud-list.page';
 
 export interface SegmentFormData {
   name: string;
@@ -14,7 +14,7 @@ export interface SegmentFormData {
   description?: string;
 }
 
-export class SegmentListPage extends BasePage {
+export class SegmentListPage extends BaseCrudListPage {
   readonly path = '/segments';
 
   // ============================================================
@@ -31,29 +31,18 @@ export class SegmentListPage extends BasePage {
     return this.page.locator('[data-testid="segment-list"], app-data-table');
   }
 
-  /** All segment rows */
+  // Semantic aliases for backward compatibility
   get segmentRows(): Locator {
-    return this.tableRows;
+    return this.itemRows;
   }
 
-  /** Get segment row by name */
   segmentRow(name: string | RegExp): Locator {
-    return this.tableRow(name);
+    return this.itemRow(name);
   }
 
   /** Segment name link */
   segmentLink(name: string): Locator {
-    return this.segmentRow(name).getByRole('link');
-  }
-
-  /** Edit button for a segment */
-  editButton(name: string): Locator {
-    return this.segmentRow(name).getByRole('button', { name: /edit/i });
-  }
-
-  /** Delete button for a segment */
-  deleteButton(name: string): Locator {
-    return this.segmentRow(name).getByRole('button', { name: /delete/i });
+    return this.itemLink(name);
   }
 
   // ============================================================
@@ -104,16 +93,6 @@ export class SegmentListPage extends BasePage {
     await this.segmentLink(name).click();
   }
 
-  /** Click edit for a segment */
-  async clickEdit(name: string): Promise<void> {
-    await this.editButton(name).click();
-  }
-
-  /** Click delete for a segment */
-  async clickDelete(name: string): Promise<void> {
-    await this.deleteButton(name).click();
-  }
-
   /** Fill the form */
   async fillForm(data: SegmentFormData): Promise<void> {
     await this.nameInput.fill(data.name);
@@ -135,32 +114,25 @@ export class SegmentListPage extends BasePage {
 
   /** Delete a segment */
   async deleteSegment(name: string): Promise<void> {
-    await this.clickDelete(name);
-    await this.confirmModal();
+    await this.deleteItem(name);
   }
 
   /** Get segment count */
   async getSegmentCount(): Promise<number> {
-    return this.segmentRows.count();
+    return this.getItemCount();
   }
 
   // ============================================================
   // Assertions
   // ============================================================
 
-  /** Assert page has loaded */
-  async assertPageLoaded(): Promise<void> {
-    await this.assertAtPage();
-    await expect(this.createButton).toBeVisible();
-  }
-
   /** Assert segment exists */
   async assertSegmentExists(name: string | RegExp): Promise<void> {
-    await expect(this.segmentRow(name)).toBeVisible();
+    await this.assertItemExists(name);
   }
 
   /** Assert segment does not exist */
   async assertSegmentNotExists(name: string | RegExp): Promise<void> {
-    await expect(this.segmentRow(name)).not.toBeVisible();
+    await this.assertItemNotExists(name);
   }
 }

@@ -61,6 +61,9 @@ export {
   dispatchBlurEvent,
   getComponent,
   injectService,
+  setFormField,
+  getFormField,
+  setFormFields,
 } from './component.helpers';
 
 // Mock factories

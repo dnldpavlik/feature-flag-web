@@ -1,0 +1,221 @@
+# Refactoring Tracker
+
+This document tracks identified refactoring opportunities and their implementation status.
+
+## Legend
+
+- `[ ]` Not started
+- `[~]` In progress
+- `[x]` Complete
+
+---
+
+## High Priority
+
+### 1. BaseCrudStore - Store Pattern Duplication
+**Status:** `[x]` Complete
+
+**Files Affected:**
+- `src/app/features/flags/store/flag.store.ts` (277 lines) - Not refactored (too specialized)
+- `src/app/features/segments/store/segment.store.ts` (138 → 125 lines) - Refactored
+- `src/app/features/audit/store/audit.store.ts` (152 lines) - Not refactored (append-only pattern)
+- `src/app/shared/store/environment.store.ts` (100 → 97 lines) - Refactored
+- `src/app/shared/store/project.store.ts` (86 → 83 lines) - Refactored
+
+**Problem:**
+All stores repeat identical CRUD patterns:
+- Private signal for state
+- Public readonly selector
+- Computed count property
+- `getById()` method
+- `add()`, `delete()`, `update()` methods with boilerplate
+- Identical timestamp logic
+
+**Solution:**
+Created `BaseCrudStore<T>` base class at `src/app/shared/store/base-crud.store.ts` that handles:
+- Generic signal initialization with configurable initial data
+- Standard CRUD operations (`addItem`, `deleteItem`, `updateItem`)
+- Count computations via computed signal
+- ID-based lookup (`getById`, `exists`)
+- Timestamp management (automatic `createdAt`/`updatedAt`)
+- Bulk updates via `updateWhere` for patterns like `setDefault`
+- Configurable `allowDeleteLast` option
+
+**Refactored Stores:**
+- `SegmentStore` - extends `BaseCrudStore<Segment>`
+- `ProjectStore` - extends `BaseCrudStore<Project>`
+- `EnvironmentStore` - extends `BaseCrudStore<Environment>`
+
+**Not Refactored:**
+- `FlagStore` - Too specialized with environment values, project filtering, and toggle logic
+- `AuditStore` - Append-only pattern doesn't fit CRUD model
+
+**Actual Savings:** ~30 lines per store + standardized patterns + 160 lines of reusable base class with tests
+
+---
+
+### 2. Form Utilities - List Component Duplication
+**Status:** `[x]` Complete
+
+**Files Affected:**
+- `src/app/features/projects/components/project-list/project-list.ts` (110 → 107 lines)
+- `src/app/features/environments/components/environment-list/environment-list.ts` (110 → 108 lines)
+- `src/app/features/flags/components/flag-list/flag-list.ts` (131 lines) - Not changed (different pattern)
+
+**Problem:**
+List components duplicate:
+- Form with getters/setters for test compatibility
+- `canAdd()` validation checking required fields
+- Value extraction and trimming logic
+
+**Solution:**
+Created `src/app/shared/utils/form.utils.ts` with:
+- `hasRequiredFields(form, fields)` - Validates required text fields
+- `getTrimmedValues(form, fields)` - Extracts trimmed values
+- `createFormFieldAccessors(form)` - Creates proxy for getter/setter access
+
+Added test helpers to `src/app/testing/component.helpers.ts`:
+- `setFormField(component, field, value)` - Set individual form field
+- `getFormField(component, field)` - Get form field value
+- `setFormFields(component, values)` - Set multiple fields at once
+
+**Note:** The getter/setter accessors remain for backward compatibility with existing tests, but they now delegate to the utility. Future tests can use `setFormFields()` directly.
+
+**Actual Savings:** Standardized form handling, reduced boilerplate in `canAdd()` and value extraction
+
+---
+
+## Medium Priority
+
+### 3. Form Field Getter/Setter Pattern
+**Status:** `[ ]` Not started
+
+**Files Affected:**
+- `src/app/features/projects/components/project-list/project-list.ts`
+- `src/app/features/environments/components/environment-list/environment-list.ts`
+- `src/app/features/flags/components/flag-detail/flag-detail.ts`
+
+**Problem:**
+Components use manual getter/setter pairs for form field access to support legacy test patterns.
+
+**Solution:**
+Update test infrastructure to work directly with forms or use helper functions.
+
+**Estimated Savings:** ~60 lines per component
+
+---
+
+### 4. BaseCrudListPage - E2E Page Object Duplication
+**Status:** `[x]` Complete
+
+**Files Affected:**
+- `e2e/pages/flags/flag-list.page.ts` (167 → 154 lines) - Refactored
+- `e2e/pages/projects/project-list.page.ts` (180 → 139 lines) - Refactored
+- `e2e/pages/environments/environment-list.page.ts` (221 → 180 lines) - Refactored
+- `e2e/pages/segments/segment-list.page.ts` (167 → 138 lines) - Refactored
+
+**Problem:**
+List page objects duplicated row counting, assertions, delete operations, and page load checks.
+
+**Solution:**
+Created `e2e/pages/base-crud-list.page.ts` that extends `BasePage` with:
+- `itemRows` / `itemRow(name)` - Generic row accessors
+- `itemLink(name)` / `editButton(name)` / `deleteButton(name)` - Row element locators
+- `getItemCount()` / `clickItem(name)` / `deleteItem(name)` - Common actions
+- `assertPageLoaded()` / `assertItemExists(name)` / `assertItemNotExists(name)` - Assertions
+- `assertItemCount(expected)` / `assertIsDefault(name)` / `assertEmptyState()` - More assertions
+
+**Refactored Pages:**
+- `FlagListPage` - Uses generic assertions, keeps flag-specific toggle/badge methods
+- `ProjectListPage` - Uses generic assertions, keeps form-related methods
+- `EnvironmentListPage` - Uses generic assertions, keeps form-related methods
+- `SegmentListPage` - Uses generic assertions, keeps form-related methods
+
+**Actual Savings:** ~124 lines total + standardized patterns + 170 lines of reusable base class
+
+---
+
+### 5. Large Component Files
+**Status:** `[ ]` Not started
+
+**Files Affected:**
+- `src/app/features/flags/components/flag-detail/flag-detail.ts` (288 lines)
+- `src/app/features/flags/components/flag-create/flag-create.ts` (192 lines)
+
+**Problem:**
+Components handle multiple responsibilities: form management, value type handling, environment state, validation.
+
+**Solution:**
+- Extract `FlagValueInputComponent` for type-specific inputs
+- Create `flag-validation.utils.ts` for validation logic
+- Consider shared form-building service
+
+---
+
+### 6. Unit Test Setup Duplication
+**Status:** `[ ]` Not started
+
+**Files Affected:**
+- Multiple spec files across features
+
+**Problem:**
+Repetitive TestBed setup and form field testing patterns.
+
+**Solution:**
+- Create `ComponentTestFactory` utility
+- Use `describe.each()` for form field tests
+- Consolidate store injection patterns
+
+**Estimated Savings:** ~100 lines
+
+---
+
+## Low Priority
+
+### 7. Filter Logic Duplication
+**Status:** `[ ]` Not started
+
+**Problem:**
+Inline filter predicates in list components.
+
+**Solution:**
+Extract filter predicates to pure utility functions with composition helpers.
+
+**Estimated Savings:** ~30 lines
+
+---
+
+### 8. Centralized Time Provider
+**Status:** `[ ]` Not started
+
+**Problem:**
+Direct calls to `createTimestamp()` make time-dependent behavior hard to test.
+
+**Solution:**
+Create injectable `TimeService` that can be mocked in tests.
+
+---
+
+### 9. Missing Interface Abstractions
+**Status:** `[ ]` Not started
+
+**Problem:**
+No interfaces defining contracts for similar entities (`ICrudStore<T>`, etc.).
+
+**Solution:**
+Define clear interfaces for store, component, and page object patterns.
+
+---
+
+## Progress Log
+
+| Date | Item | Action | Notes |
+|------|------|--------|-------|
+| 2026-01-30 | Document | Created | Initial refactoring tracker |
+| 2026-01-30 | BaseCrudStore | Completed | Created base class, refactored 3 stores |
+| 2026-01-30 | Form Utilities | Completed | Created form.utils.ts, added test helpers |
+| 2026-01-30 | BaseCrudListPage | Completed | Created base class, refactored 4 E2E page objects |
+
+---
+
+_Last updated: 2026-01-30_

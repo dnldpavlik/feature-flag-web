@@ -13,6 +13,17 @@ import { FormFieldComponent } from '@/app/shared/ui/form-field/form-field';
 import { PageHeaderComponent } from '@/app/shared/ui/page-header/page-header';
 import { SearchStore } from '@/app/shared/store/search.store';
 import { ProjectStore } from '@/app/shared/store/project.store';
+import {
+  hasRequiredFields,
+  getTrimmedValues,
+  createFormFieldAccessors,
+} from '@/app/shared/utils/form.utils';
+
+interface ProjectFormFields {
+  name: string;
+  key: string;
+  description: string;
+}
 
 @Component({
   selector: 'app-project-list',
@@ -50,61 +61,57 @@ export class ProjectListComponent {
     );
   });
 
-  protected readonly form = this.fb.group({
+  readonly form = this.fb.group({
     name: [''],
     key: [''],
     description: [''],
   });
 
-  // Backward compatibility getters/setters for tests
+  // Form field accessors for backward compatibility with tests
+  private readonly fields = createFormFieldAccessors<ProjectFormFields>(this.form);
+
   get name(): string {
-    return this.form.controls.name.value;
+    return this.fields.name;
   }
   set name(value: string) {
-    this.form.controls.name.setValue(value);
+    this.fields.name = value;
   }
 
   get key(): string {
-    return this.form.controls.key.value;
+    return this.fields.key;
   }
   set key(value: string) {
-    this.form.controls.key.setValue(value);
+    this.fields.key = value;
   }
 
   get description(): string {
-    return this.form.controls.description.value;
+    return this.fields.description;
   }
   set description(value: string) {
-    this.form.controls.description.setValue(value);
+    this.fields.description = value;
   }
 
   protected canAdd(): boolean {
-    const { name, key } = this.form.getRawValue();
-    return name.trim().length > 0 && key.trim().length > 0;
+    return hasRequiredFields(this.form, ['name', 'key']);
   }
 
-  protected addProject(): void {
+  addProject(): void {
     if (!this.canAdd()) return;
 
-    const { name, key, description } = this.form.getRawValue();
-    this.projectStore.addProject({
-      name: name.trim(),
-      key: key.trim(),
-      description: description.trim(),
-    });
-
+    const { name, key, description } = getTrimmedValues(this.form, ['name', 'key', 'description']);
+    this.projectStore.addProject({ name, key, description });
     this.form.reset();
   }
 
-  protected selectProject(projectId: string): void {
+  selectProject(projectId: string): void {
     this.projectStore.selectProject(projectId);
   }
 
-  protected setDefaultProject(projectId: string): void {
+  setDefaultProject(projectId: string): void {
     this.projectStore.setDefaultProject(projectId);
   }
 
-  protected deleteProject(projectId: string): void {
+  deleteProject(projectId: string): void {
     this.projectStore.deleteProject(projectId);
   }
 }

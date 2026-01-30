@@ -5,8 +5,8 @@
  * @route /projects
  */
 
-import { Locator, expect } from '@playwright/test';
-import { BasePage } from '../base.page';
+import { Locator } from '@playwright/test';
+import { BaseCrudListPage } from '../base-crud-list.page';
 
 export interface ProjectFormData {
   name: string;
@@ -14,7 +14,7 @@ export interface ProjectFormData {
   description?: string;
 }
 
-export class ProjectListPage extends BasePage {
+export class ProjectListPage extends BaseCrudListPage {
   readonly path = '/projects';
 
   // ============================================================
@@ -31,36 +31,18 @@ export class ProjectListPage extends BasePage {
     return this.page.locator('[data-testid="project-list"], app-ui-data-table');
   }
 
-  /** All project rows */
+  // Semantic aliases for backward compatibility
   get projectRows(): Locator {
-    return this.tableRows;
+    return this.itemRows;
   }
 
-  /** Get project row by name */
   projectRow(name: string | RegExp): Locator {
-    return this.tableRow(name);
+    return this.itemRow(name);
   }
 
   /** Project name link */
   projectLink(name: string): Locator {
-    return this.projectRow(name).getByRole('link');
-  }
-
-  /** Edit button for a project */
-  editButton(name: string): Locator {
-    return this.projectRow(name).getByRole('button', { name: /edit/i });
-  }
-
-  /** Delete button for a project */
-  deleteButton(name: string): Locator {
-    return this.projectRow(name).getByRole('button', { name: /delete/i });
-  }
-
-  /** Default badge */
-  defaultBadge(name: string): Locator {
-    return this.projectRow(name)
-      .locator('app-badge')
-      .filter({ hasText: /default/i });
+    return this.itemLink(name);
   }
 
   // ============================================================
@@ -112,16 +94,6 @@ export class ProjectListPage extends BasePage {
     await this.projectLink(name).click();
   }
 
-  /** Click edit for a project */
-  async clickEdit(name: string): Promise<void> {
-    await this.editButton(name).click();
-  }
-
-  /** Click delete for a project */
-  async clickDelete(name: string): Promise<void> {
-    await this.deleteButton(name).click();
-  }
-
   /** Fill the form */
   async fillForm(data: ProjectFormData): Promise<void> {
     await this.nameInput.fill(data.name);
@@ -143,37 +115,25 @@ export class ProjectListPage extends BasePage {
 
   /** Delete a project */
   async deleteProject(name: string): Promise<void> {
-    await this.clickDelete(name);
-    await this.confirmModal();
+    await this.deleteItem(name);
   }
 
   /** Get project count */
   async getProjectCount(): Promise<number> {
-    return this.projectRows.count();
+    return this.getItemCount();
   }
 
   // ============================================================
   // Assertions
   // ============================================================
 
-  /** Assert page has loaded */
-  async assertPageLoaded(): Promise<void> {
-    await this.assertAtPage();
-    await expect(this.createButton).toBeVisible();
-  }
-
   /** Assert project exists */
   async assertProjectExists(name: string | RegExp): Promise<void> {
-    await expect(this.projectRow(name)).toBeVisible();
+    await this.assertItemExists(name);
   }
 
   /** Assert project does not exist */
   async assertProjectNotExists(name: string | RegExp): Promise<void> {
-    await expect(this.projectRow(name)).not.toBeVisible();
-  }
-
-  /** Assert project is default */
-  async assertIsDefault(name: string): Promise<void> {
-    await expect(this.defaultBadge(name)).toBeVisible();
+    await this.assertItemNotExists(name);
   }
 }

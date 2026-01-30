@@ -3,6 +3,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router, convertToParamMap, provideRouter } from '@angular/router';
 
 import { EnvironmentStore } from '@/app/shared/store/environment.store';
+import { ProjectStore } from '@/app/shared/store/project.store';
 import { FlagStore } from '@/app/features/flags/store/flag.store';
 import { Flag } from '@/app/features/flags/models/flag.model';
 import { EnvironmentFlagValue } from '@/app/features/flags/models/flag-value.model';
@@ -30,6 +31,7 @@ describe('FlagDetail', () => {
   let fixture: ComponentFixture<FlagDetailComponent>;
   let component: FlagDetailComponent;
   let store: FlagStore;
+  let projectStore: ProjectStore;
   let router: Router;
   let location: Location;
 
@@ -40,6 +42,7 @@ describe('FlagDetail', () => {
       providers: [
         FlagStore,
         EnvironmentStore,
+        ProjectStore,
         provideRouter([]),
         {
           provide: Location,
@@ -59,6 +62,7 @@ describe('FlagDetail', () => {
     fixture = TestBed.createComponent(FlagDetailComponent);
     component = fixture.componentInstance;
     store = injectService(FlagStore);
+    projectStore = injectService(ProjectStore);
     router = injectService(Router);
     location = injectService(Location);
     fixture.detectChanges();
@@ -101,6 +105,8 @@ describe('FlagDetail', () => {
 
   it('should update json default value when valid', async () => {
     await build('flag_checkout_guardrails');
+    projectStore.selectProject('proj_growth');
+    fixture.detectChanges();
 
     component.jsonValue = '{"limit": 5}';
     component.saveDetails();
@@ -118,6 +124,8 @@ describe('FlagDetail', () => {
 
   it('should initialize json default value string', async () => {
     await build('flag_checkout_guardrails');
+    projectStore.selectProject('proj_growth');
+    fixture.detectChanges();
 
     const initial = store.getFlagById('flag_checkout_guardrails');
     expect(component.jsonValue).toBe(JSON.stringify(initial?.defaultValue ?? {}, null, 2));
@@ -149,6 +157,7 @@ describe('FlagDetail', () => {
 
     const fallbackString: Flag = {
       id: 'flag_missing_string',
+      projectId: 'proj_default',
       key: 'missing-string',
       name: 'Missing String',
       description: '',
@@ -198,6 +207,8 @@ describe('FlagDetail', () => {
 
   it('should update number default value', async () => {
     await build('flag_search_boost');
+    projectStore.selectProject('proj_growth');
+    fixture.detectChanges();
 
     component.numberValue = 9;
     component.saveDetails();
@@ -218,6 +229,8 @@ describe('FlagDetail', () => {
 
   it('should not save when json is invalid', async () => {
     await build('flag_checkout_guardrails');
+    projectStore.selectProject('proj_growth');
+    fixture.detectChanges();
 
     const original = store.getFlagById('flag_checkout_guardrails');
     component.jsonValue = 'invalid json';
@@ -230,6 +243,8 @@ describe('FlagDetail', () => {
 
   it('should not accept array json default values', async () => {
     await build('flag_checkout_guardrails');
+    projectStore.selectProject('proj_growth');
+    fixture.detectChanges();
 
     component.jsonValue = '[1, 2, 3]';
     component.saveDetails();
@@ -282,6 +297,8 @@ describe('FlagDetail', () => {
 
   it('should update environment value for number flag', async () => {
     await build('flag_search_boost');
+    projectStore.selectProject('proj_growth');
+    fixture.detectChanges();
 
     const envId = 'env_development';
     component.updateEnvironmentValue(envId, '4.2');
@@ -292,6 +309,8 @@ describe('FlagDetail', () => {
 
   it('should update environment value for json flag', async () => {
     await build('flag_checkout_guardrails');
+    projectStore.selectProject('proj_growth');
+    fixture.detectChanges();
 
     const envId = 'env_development';
     component.updateEnvironmentValue(envId, '{"limit": 42}');
@@ -320,6 +339,8 @@ describe('FlagDetail', () => {
 
   it('should ignore invalid number environment values', async () => {
     await build('flag_search_boost');
+    projectStore.selectProject('proj_growth');
+    fixture.detectChanges();
 
     const envId = 'env_development';
     const original = store.getFlagById('flag_search_boost');
@@ -331,6 +352,8 @@ describe('FlagDetail', () => {
 
   it('should ignore invalid json environment values', async () => {
     await build('flag_checkout_guardrails');
+    projectStore.selectProject('proj_growth');
+    fixture.detectChanges();
 
     const envId = 'env_development';
     const original = store.getFlagById('flag_checkout_guardrails');
@@ -445,6 +468,27 @@ describe('FlagDetail', () => {
 
     const formatted = component.formatJsonValue({ ready: true });
     expect(formatted).toBe(JSON.stringify({ ready: true }));
+  });
+
+  describe('project scope validation', () => {
+    it('should show empty state when flag belongs to different project', async () => {
+      // flag_new_checkout belongs to proj_default
+      await build('flag_new_checkout');
+      // Now switch to a different project
+      projectStore.selectProject('proj_growth');
+      fixture.detectChanges();
+
+      expectEmptyState(fixture);
+    });
+
+    it('should show flag details when flag belongs to selected project', async () => {
+      // flag_new_checkout belongs to proj_default
+      await build('flag_new_checkout');
+      projectStore.selectProject('proj_default');
+      fixture.detectChanges();
+
+      expectHeading(fixture, 'New Checkout Experience');
+    });
   });
 
   it('should get description value', async () => {

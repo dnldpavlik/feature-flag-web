@@ -89,3 +89,57 @@ export function getComponent<T>(fixture: ComponentFixture<T>): T {
 export function injectService<T>(token: Type<T>): T {
   return TestBed.inject(token);
 }
+
+/**
+ * Interface for components with a form property
+ */
+interface ComponentWithForm {
+  form: { get: (field: string) => { value: unknown; setValue: (v: unknown) => void } | null };
+}
+
+/**
+ * Set a form field value on a component.
+ * Works with components that have a `form` property (FormGroup).
+ *
+ * @example
+ * ```typescript
+ * setFormField(component, 'name', 'Test Project');
+ * setFormField(component, 'key', 'test-key');
+ * ```
+ */
+export function setFormField<T extends ComponentWithForm>(
+  component: T,
+  field: string,
+  value: unknown,
+): void {
+  component.form.get(field)?.setValue(value);
+}
+
+/**
+ * Get a form field value from a component.
+ *
+ * @example
+ * ```typescript
+ * const name = getFormField(component, 'name');
+ * ```
+ */
+export function getFormField<T extends ComponentWithForm>(component: T, field: string): unknown {
+  return component.form.get(field)?.value;
+}
+
+/**
+ * Set multiple form field values at once.
+ *
+ * @example
+ * ```typescript
+ * setFormFields(component, { name: 'Test', key: 'test-key', description: 'desc' });
+ * ```
+ */
+export function setFormFields<T extends ComponentWithForm>(
+  component: T,
+  values: Record<string, unknown>,
+): void {
+  for (const [field, value] of Object.entries(values)) {
+    setFormField(component, field, value);
+  }
+}

@@ -20,7 +20,17 @@ import { RecentFlag } from './dashboard.types';
 
 @Component({
   selector: 'app-dashboard',
-  imports: [BadgeComponent, DatePipe, ButtonComponent, DataTableComponent, UiColDirective, EmptyStateComponent, PageHeaderComponent, RouterLink, StatCardComponent],
+  imports: [
+    BadgeComponent,
+    DatePipe,
+    ButtonComponent,
+    DataTableComponent,
+    UiColDirective,
+    EmptyStateComponent,
+    PageHeaderComponent,
+    RouterLink,
+    StatCardComponent,
+  ],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -34,7 +44,7 @@ export class DashboardComponent {
   protected readonly environments = this.environmentStore.sortedEnvironments;
   protected readonly selectedEnvironment = this.environmentStore.selectedEnvironment;
 
-  protected readonly totalFlags = computed(() => this.flagStore.flags().length);
+  protected readonly totalFlags = computed(() => this.flagStore.flagsInSelectedProject().length);
   protected readonly activeFlags = computed(
     () => this.flagStore.enabledFlagsInCurrentEnvironment().length,
   );
@@ -45,7 +55,7 @@ export class DashboardComponent {
   protected readonly searchQuery = computed(() => this.searchStore.query().trim().toLowerCase());
   protected readonly recentFlags = computed<RecentFlag[]>(() => {
     const envId = this.environmentStore.selectedEnvironmentId();
-    return [...this.flagStore.flags()]
+    return [...this.flagStore.flagsInSelectedProject()]
       .map((flag) => ({
         ...flag,
         currentEnabled: isEnabledInEnvironment(flag, envId),

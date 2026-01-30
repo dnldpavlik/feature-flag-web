@@ -16,6 +16,7 @@ import { EmptyStateComponent } from '@/app/shared/ui/empty-state/empty-state';
 import { FormFieldComponent } from '@/app/shared/ui/form-field/form-field';
 import { ToggleComponent } from '@/app/shared/ui/toggle/toggle';
 import { EnvironmentStore } from '@/app/shared/store/environment.store';
+import { ProjectStore } from '@/app/shared/store/project.store';
 import { Flag, FlagType } from '@/app/features/flags/models/flag.model';
 import { FlagTypeMap } from '@/app/features/flags/models/flag-value.model';
 import { FlagStore } from '@/app/features/flags/store/flag.store';
@@ -42,13 +43,22 @@ import { FlagEnvironmentRow } from './flag-detail.types';
 export class FlagDetailComponent {
   private readonly store = inject(FlagStore);
   private readonly environmentStore = inject(EnvironmentStore);
+  private readonly projectStore = inject(ProjectStore);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly location = inject(Location);
   private readonly fb = inject(NonNullableFormBuilder);
 
   protected readonly flagId = signal(this.route.snapshot.paramMap.get('flagId') ?? '');
-  protected readonly flag = computed(() => this.store.getFlagById(this.flagId()));
+  private readonly rawFlag = computed(() => this.store.getFlagById(this.flagId()));
+
+  // Only return flag if it belongs to the selected project
+  protected readonly flag = computed(() => {
+    const flag = this.rawFlag();
+    if (!flag) return undefined;
+    return flag.projectId === this.projectStore.selectedProjectId() ? flag : undefined;
+  });
+
   protected readonly environments = this.environmentStore.sortedEnvironments;
 
   protected readonly form = this.fb.group({

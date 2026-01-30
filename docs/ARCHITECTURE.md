@@ -215,10 +215,12 @@ Each feature has its own store that manages its state using Angular Signals:
 // store/flag.store.ts
 import { Injectable, signal, computed, inject } from '@angular/core';
 import { FlagApiService } from '../services/flag-api.service';
+import { ProjectStore } from '@/app/shared/store/project.store';
 
 @Injectable({ providedIn: 'root' })
 export class FlagStore {
   private readonly api = inject(FlagApiService);
+  private readonly projectStore = inject(ProjectStore);
   private readonly errorHandler = inject(ErrorHandlerService);
 
   // Private writable signals
@@ -233,12 +235,19 @@ export class FlagStore {
   readonly loading = this._loading.asReadonly();
   readonly error = this._error.asReadonly();
 
-  // Computed signals for derived state
-  readonly activeFlags = computed(() => 
-    this._flags().filter(f => f.enabled)
+  // Project-scoped computed selector
+  // Filters flags to only those belonging to the selected project
+  readonly flagsInSelectedProject = computed(() => {
+    const projectId = this.projectStore.selectedProjectId();
+    return this._flags().filter(f => f.projectId === projectId);
+  });
+
+  // Computed signals for derived state (now project-scoped)
+  readonly activeFlags = computed(() =>
+    this.flagsInSelectedProject().filter(f => f.enabled)
   );
 
-  readonly flagCount = computed(() => this._flags().length);
+  readonly flagCount = computed(() => this.flagsInSelectedProject().length);
 
   readonly flagsByTag = computed(() => {
     const flags = this._flags();
@@ -301,6 +310,44 @@ export class FlagStore {
   }
 }
 ```
+
+### Cross-Store Relationships
+
+Stores can depend on other stores to create derived state that spans multiple domains. The most important example is the **project-flag relationship**:
+
+```typescript
+// FlagStore depends on ProjectStore for project-scoped filtering
+@Injectable({ providedIn: 'root' })
+export class FlagStore {
+  private readonly projectStore = inject(ProjectStore);
+
+  // All flags in the system
+  private readonly _flags = signal<Flag[]>([]);
+
+  // Flags filtered by the currently selected project
+  readonly flagsInSelectedProject = computed(() => {
+    const projectId = this.projectStore.selectedProjectId();
+    return this._flags().filter(f => f.projectId === projectId);
+  });
+
+  // When adding a flag, include the project ID from input
+  addFlag(input: CreateFlagInput): void {
+    const newFlag: Flag = {
+      id: createId('flag'),
+      projectId: input.projectId,  // Captured from the selected project
+      // ... other fields
+    };
+    this._flags.update(flags => [newFlag, ...flags]);
+  }
+}
+```
+
+**Key Design Decisions:**
+
+1. **Flags belong to exactly one project** - Each flag has a `projectId` field
+2. **Filtering happens via computed signals** - Components use `flagsInSelectedProject()` instead of `flags()`
+3. **Project context is injected at creation** - When creating a flag, the current project ID is captured
+4. **Detail views validate scope** - Viewing a flag that belongs to a different project shows empty state
 
 ### Component Integration
 

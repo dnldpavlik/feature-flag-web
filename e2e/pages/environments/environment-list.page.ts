@@ -6,7 +6,7 @@
  */
 
 import { Locator, expect } from '@playwright/test';
-import { BasePage } from '../base.page';
+import { BaseCrudListPage } from '../base-crud-list.page';
 
 export interface EnvironmentFormData {
   name: string;
@@ -14,7 +14,7 @@ export interface EnvironmentFormData {
   color?: string;
 }
 
-export class EnvironmentListPage extends BasePage {
+export class EnvironmentListPage extends BaseCrudListPage {
   readonly path = '/environments';
 
   // ============================================================
@@ -31,41 +31,23 @@ export class EnvironmentListPage extends BasePage {
     return this.page.locator('[data-testid="environment-list"], app-ui-data-table');
   }
 
-  /** All environment rows */
+  // Semantic aliases for backward compatibility
   get environmentRows(): Locator {
-    return this.tableRows;
+    return this.itemRows;
   }
 
-  /** Get environment row by name */
   environmentRow(name: string | RegExp): Locator {
-    return this.tableRow(name);
+    return this.itemRow(name);
   }
 
   /** Environment name link */
   environmentLink(name: string): Locator {
-    return this.environmentRow(name).getByRole('link');
+    return this.itemLink(name);
   }
 
   /** Environment color indicator */
   environmentColor(name: string): Locator {
     return this.environmentRow(name).locator('.env-dot, [data-testid="env-color"]');
-  }
-
-  /** Edit button for an environment */
-  editButton(name: string): Locator {
-    return this.environmentRow(name).getByRole('button', { name: /edit/i });
-  }
-
-  /** Delete button for an environment */
-  deleteButton(name: string): Locator {
-    return this.environmentRow(name).getByRole('button', { name: /delete/i });
-  }
-
-  /** Default badge indicator */
-  defaultBadge(name: string): Locator {
-    return this.environmentRow(name)
-      .locator('app-badge')
-      .filter({ hasText: /default/i });
   }
 
   // ============================================================
@@ -117,16 +99,6 @@ export class EnvironmentListPage extends BasePage {
     await this.environmentLink(name).click();
   }
 
-  /** Click edit for an environment */
-  async clickEdit(name: string): Promise<void> {
-    await this.editButton(name).click();
-  }
-
-  /** Click delete for an environment */
-  async clickDelete(name: string): Promise<void> {
-    await this.deleteButton(name).click();
-  }
-
   /** Fill the create/edit form */
   async fillForm(data: EnvironmentFormData): Promise<void> {
     await this.nameInput.fill(data.name);
@@ -169,43 +141,31 @@ export class EnvironmentListPage extends BasePage {
 
   /** Delete an environment */
   async deleteEnvironment(name: string): Promise<void> {
-    await this.clickDelete(name);
-    await this.confirmModal();
+    await this.deleteItem(name);
   }
 
   /** Get count of environments */
   async getEnvironmentCount(): Promise<number> {
-    return this.environmentRows.count();
+    return this.getItemCount();
   }
 
   // ============================================================
   // Assertions
   // ============================================================
 
-  /** Assert page has loaded */
-  async assertPageLoaded(): Promise<void> {
-    await this.assertAtPage();
-    await expect(this.createButton).toBeVisible();
-  }
-
   /** Assert environment exists */
   async assertEnvironmentExists(name: string | RegExp): Promise<void> {
-    await expect(this.environmentRow(name)).toBeVisible();
+    await this.assertItemExists(name);
   }
 
   /** Assert environment does not exist */
   async assertEnvironmentNotExists(name: string | RegExp): Promise<void> {
-    await expect(this.environmentRow(name)).not.toBeVisible();
-  }
-
-  /** Assert environment is default */
-  async assertIsDefault(name: string): Promise<void> {
-    await expect(this.defaultBadge(name)).toBeVisible();
+    await this.assertItemNotExists(name);
   }
 
   /** Assert environment count */
   async assertEnvironmentCount(expected: number): Promise<void> {
-    await expect(this.environmentRows).toHaveCount(expected);
+    await this.assertItemCount(expected);
   }
 
   /** Assert form is visible */

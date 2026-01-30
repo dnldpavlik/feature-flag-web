@@ -2,7 +2,7 @@
 
 Comprehensive feature catalog across all platform components: Rust API backend, Angular web UI, and Android mobile app.
 
-> **Last updated:** 2026-01-27
+> **Last updated:** 2026-01-30
 > **Status legend:** Done | In Progress | Planned
 
 ---
@@ -95,11 +95,17 @@ Comprehensive feature catalog across all platform components: Rust API backend, 
 | Delete project | - | ProjectListComponent | UI Done, API Planned |
 | Project search/filter | - | ProjectListComponent | UI Done |
 | Project switcher (header) | - | BreadcrumbComponent | UI Done |
+| Project-scoped flags | - | FlagStore, FlagListComponent | UI Done, API Planned |
 
 ### Implementation Notes
 
 - Web UI uses local mock store with 2 sample projects (Default Project, Growth Experiments)
-- API does not yet have project endpoints -- flags are currently global
+- **Flags now belong to projects** - each flag has a `projectId` field
+- Flag lists filter by selected project using `flagsInSelectedProject` computed selector
+- Dashboard stats are scoped to the selected project
+- Creating a flag captures the currently selected project ID
+- Flag detail view validates project scope (shows empty state if flag belongs to different project)
+- API does not yet have project endpoints -- flags are currently global in API
 - Prevents deleting the last remaining project in the UI
 
 ---
@@ -433,7 +439,7 @@ Each entry records: resource name, action, resource type, user, details string, 
 |----------|------|-------------|---------|-------|
 | Flag Operations | 11 | 0 | 2 | 13 |
 | Environments | 8 | 0 | 3 | 11 |
-| Projects | 7 | 0 | 0 | 7 |
+| Projects | 8 | 0 | 0 | 8 |
 | Segments | 10 | 0 | 3 | 13 |
 | Targeting Rules | 1 | 0 | 7 | 8 |
 | Settings | 14 | 0 | 0 | 14 |
@@ -445,4 +451,4 @@ Each entry records: resource name, action, resource type, user, details string, 
 | Mobile | 1 | 0 | 7 | 8 |
 | SDK & Integrations | 1 | 0 | 10 | 11 |
 | User Management | 3 | 0 | 7 | 10 |
-| **Total** | **104** | **0** | **63** | **167** |
+| **Total** | **105** | **0** | **63** | **168** |

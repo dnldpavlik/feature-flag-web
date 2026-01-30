@@ -44,6 +44,7 @@ export function createMockItem(prefix = 'item'): MockItem {
  * Flag mock factory
  */
 export interface MockFlag extends MockItem {
+  projectId: string;
   key: string;
   name: string;
   description: string;
@@ -57,6 +58,7 @@ export function createMockFlag(overrides: Partial<MockFlag> = {}): MockFlag {
   const base = createMockItem('flag');
   return {
     ...base,
+    projectId: 'proj_default',
     key: `test-flag-${base.id}`,
     name: 'Test Flag',
     description: 'A test flag for unit tests',

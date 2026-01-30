@@ -13,6 +13,17 @@ import { FormFieldComponent } from '@/app/shared/ui/form-field/form-field';
 import { PageHeaderComponent } from '@/app/shared/ui/page-header/page-header';
 import { SearchStore } from '@/app/shared/store/search.store';
 import { EnvironmentStore } from '@/app/shared/store/environment.store';
+import {
+  hasRequiredFields,
+  getTrimmedValues,
+  createFormFieldAccessors,
+} from '@/app/shared/utils/form.utils';
+
+interface EnvironmentFormFields {
+  name: string;
+  key: string;
+  color: string;
+}
 
 @Component({
   selector: 'app-environment-list',
@@ -51,60 +62,57 @@ export class EnvironmentListComponent {
     );
   });
 
-  protected readonly form = this.fb.group({
+  readonly form = this.fb.group({
     name: [''],
     key: [''],
     color: ['#3b82f6'],
   });
 
-  // Backward compatibility getters/setters for tests
+  // Form field accessors for backward compatibility with tests
+  private readonly fields = createFormFieldAccessors<EnvironmentFormFields>(this.form);
+
   get name(): string {
-    return this.form.controls.name.value;
+    return this.fields.name;
   }
   set name(value: string) {
-    this.form.controls.name.setValue(value);
+    this.fields.name = value;
   }
 
   get key(): string {
-    return this.form.controls.key.value;
+    return this.fields.key;
   }
   set key(value: string) {
-    this.form.controls.key.setValue(value);
+    this.fields.key = value;
   }
 
   get color(): string {
-    return this.form.controls.color.value;
+    return this.fields.color;
   }
   set color(value: string) {
-    this.form.controls.color.setValue(value);
+    this.fields.color = value;
   }
 
   protected canAdd(): boolean {
-    const { name, key } = this.form.getRawValue();
-    return name.trim().length > 0 && key.trim().length > 0;
+    return hasRequiredFields(this.form, ['name', 'key']);
   }
 
-  protected addEnvironment(): void {
+  addEnvironment(): void {
     if (!this.canAdd()) return;
 
-    const { name, key, color } = this.form.getRawValue();
+    const { name, key } = getTrimmedValues(this.form, ['name', 'key']);
+    const color = this.form.get('color')?.value ?? '#3b82f6';
     const order = this.environmentStore.environments().length;
-    this.environmentStore.addEnvironment({
-      name: name.trim(),
-      key: key.trim(),
-      color,
-      order,
-    });
 
+    this.environmentStore.addEnvironment({ name, key, color, order });
     this.form.reset({ name: '', key: '', color: '#3b82f6' });
   }
 
-  protected selectEnvironment(envId: string): void {
+  selectEnvironment(envId: string): void {
     this.environmentStore.selectEnvironment(envId);
     void this.router.navigate(['/environments', envId]);
   }
 
-  protected setDefaultEnvironment(envId: string): void {
+  setDefaultEnvironment(envId: string): void {
     this.environmentStore.setDefaultEnvironment(envId);
   }
 }

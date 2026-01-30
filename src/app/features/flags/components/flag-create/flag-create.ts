@@ -6,6 +6,7 @@ import { ButtonComponent } from '@/app/shared/ui/button/button';
 import { FormFieldComponent } from '@/app/shared/ui/form-field/form-field';
 import { SelectFieldComponent, SelectOption } from '@/app/shared/ui/select-field';
 import { EnvironmentStore } from '@/app/shared/store/environment.store';
+import { ProjectStore } from '@/app/shared/store/project.store';
 import { toKey } from '@/app/shared/utils/url.utils';
 import { CreateFlagInput, FlagType } from '@/app/features/flags/models/flag.model';
 import { FlagTypeMap } from '@/app/features/flags/models/flag-value.model';
@@ -29,6 +30,7 @@ export class FlagCreateComponent {
   ];
   private readonly store = inject(FlagStore);
   private readonly environmentStore = inject(EnvironmentStore);
+  private readonly projectStore = inject(ProjectStore);
   private readonly router = inject(Router);
   private readonly fb = inject(NonNullableFormBuilder);
 
@@ -143,9 +145,11 @@ export class FlagCreateComponent {
     defaultValue: FlagTypeMap[FlagType],
   ): CreateFlagInput {
     const currentType = this.form.controls.type.value;
+    const projectId = this.projectStore.selectedProjectId();
     switch (currentType) {
       case 'boolean':
         return {
+          projectId,
           key,
           name,
           description,
@@ -155,6 +159,7 @@ export class FlagCreateComponent {
         };
       case 'string':
         return {
+          projectId,
           key,
           name,
           description,
@@ -164,6 +169,7 @@ export class FlagCreateComponent {
         };
       case 'number':
         return {
+          projectId,
           key,
           name,
           description,
@@ -173,6 +179,7 @@ export class FlagCreateComponent {
         };
       case 'json':
         return {
+          projectId,
           key,
           name,
           description,

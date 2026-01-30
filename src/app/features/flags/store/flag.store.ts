@@ -1,6 +1,7 @@
 import { Injectable, computed, inject, signal } from '@angular/core';
 
 import { EnvironmentStore } from '@/app/shared/store/environment.store';
+import { ProjectStore } from '@/app/shared/store/project.store';
 import { createId, createTimestamp } from '@/app/shared/utils/id.utils';
 import {
   CreateFlagInput,
@@ -17,10 +18,12 @@ import {
 @Injectable({ providedIn: 'root' })
 export class FlagStore {
   private readonly environmentStore = inject(EnvironmentStore);
+  private readonly projectStore = inject(ProjectStore);
 
   private readonly _flags = signal<Flag[]>([
     {
       id: 'flag_new_checkout',
+      projectId: 'proj_default',
       key: 'new-checkout',
       name: 'New Checkout Experience',
       description: 'Roll out the updated checkout flow by cohort.',
@@ -37,6 +40,7 @@ export class FlagStore {
     },
     {
       id: 'flag_pricing_banner',
+      projectId: 'proj_default',
       key: 'pricing-banner',
       name: 'Pricing Banner',
       description: 'Show the new pricing CTA on marketing pages.',
@@ -53,6 +57,7 @@ export class FlagStore {
     },
     {
       id: 'flag_beta_theme',
+      projectId: 'proj_default',
       key: 'beta-theme',
       name: 'Beta Theme Palette',
       description: 'Preview the new theme tokens in select orgs.',
@@ -69,6 +74,7 @@ export class FlagStore {
     },
     {
       id: 'flag_search_boost',
+      projectId: 'proj_growth',
       key: 'search-boost',
       name: 'Search Boost Weighting',
       description: 'Tune search relevance weighting for enterprise.',
@@ -85,6 +91,7 @@ export class FlagStore {
     },
     {
       id: 'flag_checkout_guardrails',
+      projectId: 'proj_growth',
       key: 'checkout-guardrails',
       name: 'Checkout Guardrails',
       description: 'Ship guardrail config for risky payment methods.',
@@ -121,8 +128,15 @@ export class FlagStore {
 
   readonly currentEnvironmentId = computed(() => this.environmentStore.selectedEnvironmentId());
 
+  readonly flagsInSelectedProject = computed(() => {
+    const projectId = this.projectStore.selectedProjectId();
+    return this._flags().filter((flag) => flag.projectId === projectId);
+  });
+
   readonly enabledFlagsInCurrentEnvironment = computed(() =>
-    this._flags().filter((flag) => isEnabledInEnvironment(flag, this.currentEnvironmentId())),
+    this.flagsInSelectedProject().filter((flag) =>
+      isEnabledInEnvironment(flag, this.currentEnvironmentId()),
+    ),
   );
 
   addFlag(input: CreateFlagInput, initialEnabledEnvironments?: Record<string, boolean>): void {
@@ -143,6 +157,7 @@ export class FlagStore {
 
     const newFlag: Flag = {
       id: flagId,
+      projectId: input.projectId,
       key: input.key,
       name: input.name,
       description: input.description,

@@ -79,7 +79,7 @@ export class FlagListComponent {
 
   protected readonly flagsWithStatus = computed<FlagWithEnvironmentStatus[]>(() => {
     const envId = this.environmentStore.selectedEnvironmentId();
-    return this.flagStore.flags().map((flag) => ({
+    return this.flagStore.flagsInSelectedProject().map((flag) => ({
       ...flag,
       currentEnabled: isEnabledInEnvironment(flag, envId),
       currentValue: getEffectiveValue(flag, envId),
@@ -102,7 +102,7 @@ export class FlagListComponent {
   });
 
   protected readonly filteredCount = computed(() => this.filteredFlags().length);
-  protected readonly totalCount = computed(() => this.flagStore.flags().length);
+  protected readonly totalCount = computed(() => this.flagStore.flagsInSelectedProject().length);
 
   protected onStatusChange(value: string): void {
     this.statusFilter.set(value as StatusFilter);

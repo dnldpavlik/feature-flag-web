@@ -6,9 +6,9 @@
  */
 
 import { Locator, expect } from '@playwright/test';
-import { BasePage } from '../base.page';
+import { BaseCrudListPage } from '../base-crud-list.page';
 
-export class FlagListPage extends BasePage {
+export class FlagListPage extends BaseCrudListPage {
   readonly path = '/flags';
 
   // ============================================================
@@ -25,19 +25,18 @@ export class FlagListPage extends BasePage {
     return this.page.locator('[data-testid="flag-list"], .flag-list');
   }
 
-  /** All flag rows in the table */
+  // Semantic aliases for backward compatibility
   get flagRows(): Locator {
-    return this.tableRows;
+    return this.itemRows;
   }
 
-  /** Get a flag row by name */
   flagRow(name: string | RegExp): Locator {
-    return this.tableRow(name);
+    return this.itemRow(name);
   }
 
   /** Flag name link in a row */
   flagNameLink(name: string): Locator {
-    return this.flagRow(name).getByRole('link').first();
+    return this.itemLink(name);
   }
 
   /** Toggle switch for a flag */
@@ -103,7 +102,7 @@ export class FlagListPage extends BasePage {
 
   /** Get the count of flags displayed */
   async getFlagCount(): Promise<number> {
-    return this.flagRows.count();
+    return this.getItemCount();
   }
 
   /** Search for flags */
@@ -123,20 +122,14 @@ export class FlagListPage extends BasePage {
   // Assertions
   // ============================================================
 
-  /** Assert flag list page has loaded */
-  async assertPageLoaded(): Promise<void> {
-    await this.assertAtPage();
-    await expect(this.createButton).toBeVisible();
-  }
-
   /** Assert a flag exists in the list */
   async assertFlagExists(name: string | RegExp): Promise<void> {
-    await expect(this.flagRow(name)).toBeVisible();
+    await this.assertItemExists(name);
   }
 
   /** Assert a flag does not exist in the list */
   async assertFlagNotExists(name: string | RegExp): Promise<void> {
-    await expect(this.flagRow(name)).not.toBeVisible();
+    await this.assertItemNotExists(name);
   }
 
   /** Assert flag is enabled */
@@ -156,11 +149,6 @@ export class FlagListPage extends BasePage {
 
   /** Assert flag count */
   async assertFlagCount(expected: number): Promise<void> {
-    await expect(this.flagRows).toHaveCount(expected);
-  }
-
-  /** Assert empty state is shown */
-  async assertEmptyState(): Promise<void> {
-    await expect(this.emptyState).toBeVisible();
+    await this.assertItemCount(expected);
   }
 }

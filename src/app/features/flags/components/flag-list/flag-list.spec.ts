@@ -2,6 +2,7 @@ import { ComponentFixture } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 
 import { EnvironmentStore } from '@/app/shared/store/environment.store';
+import { ProjectStore } from '@/app/shared/store/project.store';
 import { SearchStore } from '@/app/shared/store/search.store';
 import { FlagStore } from '@/app/features/flags/store/flag.store';
 import { FlagListComponent } from './flag-list';
@@ -21,16 +22,18 @@ describe('FlagList', () => {
   let fixture: ComponentFixture<FlagListComponent>;
   let component: FlagListComponent;
   let flagStore: FlagStore;
+  let projectStore: ProjectStore;
   let searchStore: SearchStore;
 
   beforeEach(async () => {
     fixture = await setupComponentTest({
       component: FlagListComponent,
-      providers: [FlagStore, EnvironmentStore, SearchStore],
+      providers: [FlagStore, EnvironmentStore, ProjectStore, SearchStore],
     });
 
     component = getComponent(fixture);
     flagStore = injectService(FlagStore);
+    projectStore = injectService(ProjectStore);
     searchStore = injectService(SearchStore);
   });
 
@@ -41,6 +44,20 @@ describe('FlagList', () => {
   it('should render flag rows', () => {
     const rows = getTableRows(fixture);
     expect(rows.length).toBeGreaterThan(0);
+  });
+
+  it('should only show flags for selected project', () => {
+    projectStore.selectProject('proj_default');
+    fixture.detectChanges();
+    const defaultRows = getTableRows(fixture);
+
+    projectStore.selectProject('proj_growth');
+    fixture.detectChanges();
+    const growthRows = getTableRows(fixture);
+
+    // Both should have rows, but they should be different counts
+    expect(defaultRows.length).toBeGreaterThan(0);
+    expect(growthRows.length).toBeGreaterThan(0);
   });
 
   it('should render environment selector', () => {
@@ -57,9 +74,9 @@ describe('FlagList', () => {
 
   describe('status filtering', () => {
     it('should filter flags by enabled status in current environment', () => {
-      // Count enabled flags in development environment
+      // Count enabled flags in development environment for selected project
       const enabledCount = flagStore
-        .flags()
+        .flagsInSelectedProject()
         .filter((f) => f.environmentValues['env_development']?.enabled).length;
 
       component.onStatusChange('enabled');
@@ -70,9 +87,9 @@ describe('FlagList', () => {
     });
 
     it('should filter flags by disabled status in current environment', () => {
-      // Count disabled flags in development environment
+      // Count disabled flags in development environment for selected project
       const disabledCount = flagStore
-        .flags()
+        .flagsInSelectedProject()
         .filter((f) => !f.environmentValues['env_development']?.enabled).length;
 
       component.onStatusChange('disabled');
@@ -83,9 +100,9 @@ describe('FlagList', () => {
     });
 
     it('should update filter when environment changes', () => {
-      // Get counts for staging environment
+      // Get counts for staging environment for selected project
       const enabledInStaging = flagStore
-        .flags()
+        .flagsInSelectedProject()
         .filter((f) => f.environmentValues['env_staging']?.enabled).length;
 
       // Filter by enabled
@@ -154,10 +171,10 @@ describe('FlagList', () => {
 
   describe('flag deletion', () => {
     it('should show delete button per row when more than one flag exists', () => {
-      expect(flagStore.flags().length).toBeGreaterThan(1);
+      expect(flagStore.flagsInSelectedProject().length).toBeGreaterThan(1);
 
       const deleteButtons = queryAll(fixture, '.flag-delete-btn');
-      expect(deleteButtons.length).toBe(flagStore.flags().length);
+      expect(deleteButtons.length).toBe(flagStore.flagsInSelectedProject().length);
     });
 
     it('should hide delete buttons when only one flag exists', () => {

@@ -3,6 +3,7 @@ import { Router, provideRouter } from '@angular/router';
 import { By } from '@angular/platform-browser';
 
 import { EnvironmentStore } from '@/app/shared/store/environment.store';
+import { ProjectStore } from '@/app/shared/store/project.store';
 import { FlagStore } from '@/app/features/flags/store/flag.store';
 import { FlagCreateComponent } from './flag-create';
 
@@ -10,6 +11,7 @@ describe('FlagCreate', () => {
   let fixture: ComponentFixture<FlagCreateComponent>;
   let component: FlagCreateComponent;
   let store: { addFlag: jest.Mock };
+  let projectStore: ProjectStore;
   let router: Router;
 
   beforeEach(async () => {
@@ -17,12 +19,18 @@ describe('FlagCreate', () => {
 
     await TestBed.configureTestingModule({
       imports: [FlagCreateComponent],
-      providers: [provideRouter([]), { provide: FlagStore, useValue: store }, EnvironmentStore],
+      providers: [
+        provideRouter([]),
+        { provide: FlagStore, useValue: store },
+        EnvironmentStore,
+        ProjectStore,
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(FlagCreateComponent);
     component = fixture.componentInstance;
     router = TestBed.inject(Router);
+    projectStore = TestBed.inject(ProjectStore);
     fixture.detectChanges();
   });
 
@@ -47,6 +55,7 @@ describe('FlagCreate', () => {
 
       expect(store.addFlag).toHaveBeenCalledWith(
         {
+          projectId: 'proj_default',
           key: 'new-flag',
           name: 'New Flag',
           description: 'Description',
@@ -70,6 +79,22 @@ describe('FlagCreate', () => {
 
       expect(store.addFlag).toHaveBeenCalledWith(
         expect.objectContaining({ defaultValue: false }),
+        expect.any(Object),
+      );
+    });
+
+    it('should use the selected project when creating a flag', () => {
+      jest.spyOn(router, 'navigate').mockResolvedValue(true);
+      projectStore.selectProject('proj_growth');
+      component.form.patchValue({
+        name: 'Growth Flag',
+        type: 'boolean',
+      });
+
+      component.createFlag();
+
+      expect(store.addFlag).toHaveBeenCalledWith(
+        expect.objectContaining({ projectId: 'proj_growth' }),
         expect.any(Object),
       );
     });

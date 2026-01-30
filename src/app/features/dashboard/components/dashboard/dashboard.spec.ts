@@ -47,8 +47,11 @@ describe('Dashboard', () => {
     expect(cards.length).toBe(4);
   });
 
-  it('should show stat values from the stores', () => {
-    const totalFlags = flagStore.flags().length;
+  it('should show stat values from the stores for selected project', () => {
+    projectStore.selectProject('proj_default');
+    fixture.detectChanges();
+
+    const totalFlags = flagStore.flagsInSelectedProject().length;
     const activeFlags = flagStore.enabledFlagsInCurrentEnvironment().length;
     const inactiveFlags = totalFlags - activeFlags;
     const totalEnvironments = environmentStore.environments().length;
@@ -63,6 +66,19 @@ describe('Dashboard', () => {
     expect(stats).toContainEqual({ value: String(activeFlags), label: 'Active' });
     expect(stats).toContainEqual({ value: String(inactiveFlags), label: 'Inactive' });
     expect(stats).toContainEqual({ value: String(totalEnvironments), label: 'Environments' });
+  });
+
+  it('should update stats when project changes', () => {
+    projectStore.selectProject('proj_default');
+    fixture.detectChanges();
+    const defaultProjectTotal = flagStore.flagsInSelectedProject().length;
+
+    projectStore.selectProject('proj_growth');
+    fixture.detectChanges();
+    const growthProjectTotal = flagStore.flagsInSelectedProject().length;
+
+    expect(defaultProjectTotal).toBeGreaterThan(0);
+    expect(growthProjectTotal).toBeGreaterThan(0);
   });
 
   it('should render recently updated flags', () => {
