@@ -151,14 +151,7 @@ snyk:code:
     - snyk auth ${SNYK_TOKEN}
   script:
     - echo "=== Snyk Code (SAST) Scan ==="
-    - echo "Analyzing source code for security issues..."
-    
-    - snyk code test 
-        --severity-threshold=high 
-        --json-file-output=snyk-code-results.json 
-        || true
-    
-    # Human-readable output
+    - snyk code test --severity-threshold=high --json-file-output=snyk-code-results.json || true
     - snyk code test --severity-threshold=high || true
   artifacts:
     when: always
@@ -179,13 +172,7 @@ snyk:iac:
     - snyk auth ${SNYK_TOKEN}
   script:
     - echo "=== Snyk IaC Scan ==="
-    - echo "Scanning infrastructure files (Dockerfile, docker-compose, etc.)..."
-    
-    - snyk iac test 
-        --severity-threshold=medium 
-        --json-file-output=snyk-iac-results.json 
-        || true
-    
+    - snyk iac test --severity-threshold=medium --json-file-output=snyk-iac-results.json || true
     - snyk iac test --severity-threshold=medium || true
   artifacts:
     when: always
@@ -214,10 +201,7 @@ snyk:summary:
     - echo "=========================================="
     - echo "     Security Scan Summary"
     - echo "=========================================="
-    - echo "Scan completed at $(date -u +"%Y-%m-%dT%H:%M:%SZ")"
-    - echo ""
-    
-    # Summarize each scan result
+    - echo "Scan completed at $(date -u +%Y-%m-%dT%H:%M:%SZ)"
     - |
       for file in snyk-*-results.json; do
         if [ -f "$file" ]; then
@@ -231,11 +215,8 @@ snyk:summary:
           else
             echo "  No vulnerabilities format or scan skipped"
           fi
-          echo ""
         fi
       done
-    
-    - echo "View full results in Snyk dashboard or download artifacts"
     - echo "=========================================="
   artifacts:
     when: always
