@@ -1,8 +1,10 @@
 import { Injectable, computed, signal } from '@angular/core';
 
 import { BaseCrudStore } from '@/app/shared/store/base-crud.store';
-import { createTimestamp } from '@/app/shared/utils/id.utils';
 import { CreateProjectInput, Project } from '@/app/features/projects/models/project.model';
+
+/** Fixed timestamp for seed data */
+const SEED_TIMESTAMP = '2025-01-01T00:00:00.000Z';
 
 const INITIAL_PROJECTS: Project[] = [
   {
@@ -11,8 +13,8 @@ const INITIAL_PROJECTS: Project[] = [
     name: 'Default Project',
     description: 'Primary feature flag workspace.',
     isDefault: true,
-    createdAt: createTimestamp(),
-    updatedAt: createTimestamp(),
+    createdAt: SEED_TIMESTAMP,
+    updatedAt: SEED_TIMESTAMP,
   },
   {
     id: 'proj_growth',
@@ -20,8 +22,8 @@ const INITIAL_PROJECTS: Project[] = [
     name: 'Growth Experiments',
     description: 'Revenue, onboarding, and conversion tests.',
     isDefault: false,
-    createdAt: createTimestamp(),
-    updatedAt: createTimestamp(),
+    createdAt: SEED_TIMESTAMP,
+    updatedAt: SEED_TIMESTAMP,
   },
 ];
 

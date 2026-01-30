@@ -1,12 +1,14 @@
 import { Injectable, computed, signal } from '@angular/core';
 
 import { BaseCrudStore } from '@/app/shared/store/base-crud.store';
-import { createTimestamp } from '@/app/shared/utils/id.utils';
 import {
   CreateEnvironmentInput,
   Environment,
   UpdateEnvironmentInput,
 } from '@/app/features/flags/models/environment.model';
+
+/** Fixed timestamp for seed data */
+const SEED_TIMESTAMP = '2025-01-01T00:00:00.000Z';
 
 const INITIAL_ENVIRONMENTS: Environment[] = [
   {
@@ -16,8 +18,8 @@ const INITIAL_ENVIRONMENTS: Environment[] = [
     color: '#10B981',
     order: 0,
     isDefault: true,
-    createdAt: createTimestamp(),
-    updatedAt: createTimestamp(),
+    createdAt: SEED_TIMESTAMP,
+    updatedAt: SEED_TIMESTAMP,
   },
   {
     id: 'env_staging',
@@ -26,8 +28,8 @@ const INITIAL_ENVIRONMENTS: Environment[] = [
     color: '#F59E0B',
     order: 1,
     isDefault: false,
-    createdAt: createTimestamp(),
-    updatedAt: createTimestamp(),
+    createdAt: SEED_TIMESTAMP,
+    updatedAt: SEED_TIMESTAMP,
   },
   {
     id: 'env_production',
@@ -36,8 +38,8 @@ const INITIAL_ENVIRONMENTS: Environment[] = [
     color: '#EF4444',
     order: 2,
     isDefault: false,
-    createdAt: createTimestamp(),
-    updatedAt: createTimestamp(),
+    createdAt: SEED_TIMESTAMP,
+    updatedAt: SEED_TIMESTAMP,
   },
 ];
 

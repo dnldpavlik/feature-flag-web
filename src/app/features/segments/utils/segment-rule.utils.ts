@@ -1,4 +1,5 @@
-import { createId, createTimestamp } from '@/app/shared/utils/id.utils';
+import { createId } from '@/app/shared/utils/id.utils';
+import { TimeProvider, defaultTimeProvider } from '@/app/core/time/time.service';
 import { Segment } from '../models/segment.model';
 import {
   CreateSegmentRuleInput,
@@ -19,8 +20,11 @@ export interface RuleValidationResult {
 /**
  * Creates a new segment rule from input.
  */
-export const createSegmentRule = (input: CreateSegmentRuleInput): SegmentRule => {
-  const now = createTimestamp();
+export const createSegmentRule = (
+  input: CreateSegmentRuleInput,
+  timeProvider: TimeProvider = defaultTimeProvider,
+): SegmentRule => {
+  const now = timeProvider.now();
   return {
     id: createId('rule'),
     attribute: input.attribute,
@@ -34,11 +38,15 @@ export const createSegmentRule = (input: CreateSegmentRuleInput): SegmentRule =>
 /**
  * Adds a rule to a segment immutably.
  */
-export const addRuleToSegment = (segment: Segment, rule: SegmentRule): Segment => ({
+export const addRuleToSegment = (
+  segment: Segment,
+  rule: SegmentRule,
+  timeProvider: TimeProvider = defaultTimeProvider,
+): Segment => ({
   ...segment,
   rules: [...segment.rules, rule],
   ruleCount: segment.ruleCount + 1,
-  updatedAt: createTimestamp(),
+  updatedAt: timeProvider.now(),
 });
 
 /**
@@ -48,7 +56,8 @@ export const addRuleToSegment = (segment: Segment, rule: SegmentRule): Segment =
 export const updateRuleInSegment = (
   segment: Segment,
   ruleId: string,
-  updates: UpdateSegmentRuleInput
+  updates: UpdateSegmentRuleInput,
+  timeProvider: TimeProvider = defaultTimeProvider,
 ): Segment => {
   const ruleIndex = segment.rules.findIndex((r) => r.id === ruleId);
 
@@ -56,11 +65,12 @@ export const updateRuleInSegment = (
     return segment;
   }
 
+  const now = timeProvider.now();
   const existingRule = segment.rules[ruleIndex];
   const updatedRule: SegmentRule = {
     ...existingRule,
     ...updates,
-    updatedAt: createTimestamp(),
+    updatedAt: now,
   };
 
   const newRules = [...segment.rules];
@@ -69,7 +79,7 @@ export const updateRuleInSegment = (
   return {
     ...segment,
     rules: newRules,
-    updatedAt: createTimestamp(),
+    updatedAt: now,
   };
 };
 
@@ -77,7 +87,11 @@ export const updateRuleInSegment = (
  * Removes a rule from a segment immutably.
  * Returns the segment unchanged if the rule is not found.
  */
-export const removeRuleFromSegment = (segment: Segment, ruleId: string): Segment => {
+export const removeRuleFromSegment = (
+  segment: Segment,
+  ruleId: string,
+  timeProvider: TimeProvider = defaultTimeProvider,
+): Segment => {
   const ruleExists = segment.rules.some((r) => r.id === ruleId);
 
   if (!ruleExists) {
@@ -88,7 +102,7 @@ export const removeRuleFromSegment = (segment: Segment, ruleId: string): Segment
     ...segment,
     rules: segment.rules.filter((r) => r.id !== ruleId),
     ruleCount: segment.ruleCount - 1,
-    updatedAt: createTimestamp(),
+    updatedAt: timeProvider.now(),
   };
 };
 

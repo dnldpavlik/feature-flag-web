@@ -1,6 +1,7 @@
 import { computed, signal, Signal, WritableSignal } from '@angular/core';
 
-import { createId, createTimestamp } from '@/app/shared/utils/id.utils';
+import { createId } from '@/app/shared/utils/id.utils';
+import { TimeProvider, defaultTimeProvider } from '@/app/core/time/time.service';
 
 /**
  * Base interface for all store items.
@@ -22,6 +23,8 @@ export interface BaseCrudStoreConfig<T extends StoreItem> {
   initialData?: T[];
   /** Whether to allow deletion when only one item remains (default: false) */
   allowDeleteLast?: boolean;
+  /** Custom time provider for testing (default: system clock) */
+  timeProvider?: TimeProvider;
 }
 
 /**
@@ -54,6 +57,9 @@ export abstract class BaseCrudStore<T extends StoreItem> {
   /** Whether deletion is allowed when only one item remains */
   protected readonly allowDeleteLast: boolean;
 
+  /** Time provider for generating timestamps */
+  protected readonly timeProvider: TimeProvider;
+
   /** Public readonly signal for store items */
   readonly items: Signal<T[]>;
 
@@ -63,6 +69,7 @@ export abstract class BaseCrudStore<T extends StoreItem> {
   constructor(config: BaseCrudStoreConfig<T>) {
     this.idPrefix = config.idPrefix;
     this.allowDeleteLast = config.allowDeleteLast ?? false;
+    this.timeProvider = config.timeProvider ?? defaultTimeProvider;
     this._items = signal<T[]>(config.initialData ?? []);
     this.items = this._items.asReadonly();
     this.count = computed(() => this._items().length);
@@ -101,7 +108,7 @@ export abstract class BaseCrudStore<T extends StoreItem> {
    * Automatically sets updatedAt timestamp.
    */
   protected updateItem(id: string, updates: Partial<Omit<T, 'id' | 'createdAt'>>): void {
-    const stamp = createTimestamp();
+    const stamp = this.timeProvider.now();
 
     this._items.update((items) =>
       items.map((item) => (item.id === id ? { ...item, ...updates, updatedAt: stamp } : item)),
@@ -117,7 +124,7 @@ export abstract class BaseCrudStore<T extends StoreItem> {
    * @returns The ID of the newly created item
    */
   protected addItem(data: Omit<T, 'id' | 'createdAt' | 'updatedAt'>, prepend = false): string {
-    const stamp = createTimestamp();
+    const stamp = this.timeProvider.now();
     const id = createId(this.idPrefix);
 
     const newItem = {
@@ -140,7 +147,7 @@ export abstract class BaseCrudStore<T extends StoreItem> {
     predicate: (item: T) => boolean,
     updater: (item: T) => Partial<Omit<T, 'id' | 'createdAt'>>,
   ): void {
-    const stamp = createTimestamp();
+    const stamp = this.timeProvider.now();
 
     this._items.update((items) =>
       items.map((item) => {

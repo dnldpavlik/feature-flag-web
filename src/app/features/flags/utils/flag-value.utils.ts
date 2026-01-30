@@ -1,4 +1,4 @@
-import { createTimestamp } from '@/app/shared/utils/id.utils';
+import { TimeProvider, defaultTimeProvider } from '@/app/core/time/time.service';
 import { Flag, FlagType } from '@/app/features/flags/models/flag.model';
 import { EnvironmentFlagValue, FlagTypeMap } from '@/app/features/flags/models/flag-value.model';
 
@@ -61,12 +61,13 @@ export const createEnvironmentValue = <T extends FlagType>(
   environmentId: string,
   type: T,
   value?: FlagTypeMap[T],
+  timeProvider: TimeProvider = defaultTimeProvider,
 ): EnvironmentFlagValue<T> => ({
   environmentId,
   flagId,
   value: value ?? getDefaultForType(type),
   enabled: false,
-  updatedAt: createTimestamp(),
+  updatedAt: timeProvider.now(),
 });
 
 /**
@@ -77,9 +78,10 @@ export const updateFlagEnvironmentValue = <T extends FlagType>(
   environmentId: string,
   value: FlagTypeMap[T],
   enabled?: boolean,
+  timeProvider: TimeProvider = defaultTimeProvider,
 ): Flag => {
   const existingEnvValue = flag.environmentValues[environmentId];
-  const stamp = createTimestamp();
+  const stamp = timeProvider.now();
 
   return {
     ...flag,

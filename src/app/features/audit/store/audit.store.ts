@@ -1,11 +1,7 @@
-import { Injectable, computed, signal } from '@angular/core';
-import { createId, createTimestamp } from '@/app/shared/utils/id.utils';
-import {
-  AuditAction,
-  AuditEntry,
-  AuditResourceType,
-  LogActionInput,
-} from '../models/audit.model';
+import { Injectable, computed, inject, signal } from '@angular/core';
+import { createId } from '@/app/shared/utils/id.utils';
+import { TimeService } from '@/app/core/time/time.service';
+import { AuditAction, AuditEntry, AuditResourceType, LogActionInput } from '../models/audit.model';
 
 const MOCK_AUDIT_ENTRIES: AuditEntry[] = [
   {
@@ -122,6 +118,7 @@ const MOCK_AUDIT_ENTRIES: AuditEntry[] = [
 
 @Injectable({ providedIn: 'root' })
 export class AuditStore {
+  private readonly timeService = inject(TimeService);
   private readonly _entries = signal<AuditEntry[]>(MOCK_AUDIT_ENTRIES);
 
   readonly entries = this._entries.asReadonly();
@@ -132,7 +129,7 @@ export class AuditStore {
     const newEntry: AuditEntry = {
       ...input,
       id: createId('audit'),
-      timestamp: createTimestamp(),
+      timestamp: this.timeService.now(),
     };
 
     this._entries.update((entries) => [newEntry, ...entries]);

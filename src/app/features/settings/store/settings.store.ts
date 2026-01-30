@@ -1,7 +1,8 @@
 import { Injectable, computed, inject, signal } from '@angular/core';
 
 import { ThemeService } from '@/app/core/theme/theme.service';
-import { createId, createTimestamp } from '@/app/shared/utils/id.utils';
+import { TimeService } from '@/app/core/time/time.service';
+import { createId } from '@/app/shared/utils/id.utils';
 import {
   ApiKey,
   CreateApiKeyInput,
@@ -14,6 +15,7 @@ import {
 @Injectable({ providedIn: 'root' })
 export class SettingsStore {
   private readonly themeService = inject(ThemeService);
+  private readonly timeService = inject(TimeService);
 
   // Private state signals
   private readonly _userProfile = signal<UserProfile>({
@@ -43,8 +45,8 @@ export class SettingsStore {
       id: 'key_1',
       name: 'Production SDK Key',
       prefix: 'sk_live_abc1...xyz9',
-      lastUsedAt: createTimestamp(),
-      createdAt: createTimestamp(),
+      lastUsedAt: '2025-01-15T10:30:00.000Z',
+      createdAt: '2025-01-01T00:00:00.000Z',
       expiresAt: null,
       scopes: ['read:flags'],
     },
@@ -53,7 +55,7 @@ export class SettingsStore {
       name: 'CI/CD Pipeline Key',
       prefix: 'sk_live_def2...uvw8',
       lastUsedAt: null,
-      createdAt: createTimestamp(),
+      createdAt: '2025-01-10T00:00:00.000Z',
       expiresAt: '2025-12-31T23:59:59Z',
       scopes: ['read:flags', 'write:flags'],
     },
@@ -114,7 +116,7 @@ export class SettingsStore {
       name: input.name,
       prefix,
       lastUsedAt: null,
-      createdAt: createTimestamp(),
+      createdAt: this.timeService.now(),
       expiresAt: input.expiresAt ?? null,
       scopes: input.scopes,
     };

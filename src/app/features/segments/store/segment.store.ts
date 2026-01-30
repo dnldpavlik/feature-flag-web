@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 
 import { BaseCrudStore } from '@/app/shared/store/base-crud.store';
-import { createTimestamp } from '@/app/shared/utils/id.utils';
 import {
   CreateSegmentRuleInput,
   UpdateSegmentRuleInput,
@@ -20,6 +19,9 @@ export interface UpdateSegmentInput {
   description?: string;
 }
 
+/** Fixed timestamp for seed data */
+const SEED_TIMESTAMP = '2025-01-01T00:00:00.000Z';
+
 const INITIAL_SEGMENTS: Segment[] = [
   {
     id: 'seg_beta',
@@ -33,20 +35,20 @@ const INITIAL_SEGMENTS: Segment[] = [
         attribute: 'email',
         operator: 'contains',
         value: '@company.com',
-        createdAt: '2024-01-01T00:00:00Z',
-        updatedAt: '2024-01-01T00:00:00Z',
+        createdAt: '2024-01-01T00:00:00.000Z',
+        updatedAt: '2024-01-01T00:00:00.000Z',
       },
       {
         id: 'rule_beta2',
         attribute: 'plan',
         operator: 'in',
         value: ['beta', 'early-access'],
-        createdAt: '2024-01-02T00:00:00Z',
-        updatedAt: '2024-01-02T00:00:00Z',
+        createdAt: '2024-01-02T00:00:00.000Z',
+        updatedAt: '2024-01-02T00:00:00.000Z',
       },
     ],
-    createdAt: createTimestamp(),
-    updatedAt: createTimestamp(),
+    createdAt: SEED_TIMESTAMP,
+    updatedAt: SEED_TIMESTAMP,
   },
   {
     id: 'seg_internal',
@@ -60,12 +62,12 @@ const INITIAL_SEGMENTS: Segment[] = [
         attribute: 'email',
         operator: 'ends_with',
         value: '@internal.corp',
-        createdAt: '2024-01-01T00:00:00Z',
-        updatedAt: '2024-01-01T00:00:00Z',
+        createdAt: '2024-01-01T00:00:00.000Z',
+        updatedAt: '2024-01-01T00:00:00.000Z',
       },
     ],
-    createdAt: createTimestamp(),
-    updatedAt: createTimestamp(),
+    createdAt: SEED_TIMESTAMP,
+    updatedAt: SEED_TIMESTAMP,
   },
 ];
 

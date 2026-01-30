@@ -237,13 +237,39 @@ Created `src/app/shared/utils/filter.utils.ts` with:
 ---
 
 ### 8. Centralized Time Provider
-**Status:** `[ ]` Not started
+**Status:** `[x]` Complete
+
+**Files Affected:**
+- `src/app/features/flags/store/flag.store.ts` - Injects `TimeService`
+- `src/app/features/audit/store/audit.store.ts` - Injects `TimeService`
+- `src/app/features/settings/store/settings.store.ts` - Injects `TimeService`
+- `src/app/features/segments/utils/segment-rule.utils.ts` - Accepts optional `TimeProvider`
+- `src/app/features/flags/utils/flag-value.utils.ts` - Accepts optional `TimeProvider`
+- `src/app/shared/store/base-crud.store.ts` - Accepts optional `TimeProvider` in config
+- `src/app/shared/store/environment.store.ts` - Uses fixed timestamp for seed data
+- `src/app/shared/store/project.store.ts` - Uses fixed timestamp for seed data
+- `src/app/features/segments/store/segment.store.ts` - Uses fixed timestamp for seed data
 
 **Problem:**
 Direct calls to `createTimestamp()` make time-dependent behavior hard to test.
 
 **Solution:**
-Create injectable `TimeService` that can be mocked in tests.
+Created `src/app/core/time/time.service.ts` with:
+- `TimeProvider` interface - Contract for time sources
+- `defaultTimeProvider` - Production implementation using system clock
+- `TimeService` - Injectable Angular service implementing `TimeProvider`
+- `createMockTimeProvider(fixedTime)` - Returns fixed timestamp for tests
+- `createControllableTimeProvider(startTime)` - Returns controllable provider with `advance()`, `setTime()`, `getCalls()`
+
+Updated `BaseCrudStore` to accept optional `timeProvider` in config, defaulting to `defaultTimeProvider`.
+
+For stores that don't extend `BaseCrudStore` (FlagStore, AuditStore, SettingsStore), injected `TimeService` directly.
+
+For utility functions, added optional `TimeProvider` parameter with default value.
+
+Replaced dynamic `createTimestamp()` calls in seed data with fixed ISO timestamp strings.
+
+**Actual Savings:** Testable time-dependent behavior, consistent timestamps in tests, ~90 lines of reusable time utilities with full test coverage
 
 ---
 
@@ -270,6 +296,7 @@ Define clear interfaces for store, component, and page object patterns.
 | 2026-01-30 | Large Component Files | Completed | Created FlagValueInputComponent and flag-form.utils.ts |
 | 2026-01-30 | Unit Test Setup | Completed | Created detail-component.helpers.ts, refactored flag-detail.spec.ts |
 | 2026-01-30 | Filter Logic | Completed | Created filter.utils.ts, refactored 4 list components |
+| 2026-01-30 | Time Provider | Completed | Created TimeService, updated stores and utilities |
 
 ---
 

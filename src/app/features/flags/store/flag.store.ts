@@ -1,8 +1,9 @@
 import { Injectable, computed, inject, signal } from '@angular/core';
 
+import { TimeService } from '@/app/core/time/time.service';
 import { EnvironmentStore } from '@/app/shared/store/environment.store';
 import { ProjectStore } from '@/app/shared/store/project.store';
-import { createId, createTimestamp } from '@/app/shared/utils/id.utils';
+import { createId } from '@/app/shared/utils/id.utils';
 import {
   CreateFlagInput,
   Flag,
@@ -15,8 +16,28 @@ import {
   isEnabledInEnvironment,
 } from '@/app/features/flags/utils/flag-value.utils';
 
+/** Fixed timestamp for seed data */
+const SEED_TIMESTAMP = '2025-01-01T00:00:00.000Z';
+
+/** Creates seed environment value with fixed timestamps */
+function createSeedEnvValue<T>(
+  flagId: string,
+  environmentId: string,
+  value: T,
+  enabled: boolean,
+): EnvironmentFlagValue {
+  return {
+    flagId,
+    environmentId,
+    value: value as FlagTypeMap[FlagType],
+    enabled,
+    updatedAt: SEED_TIMESTAMP,
+  };
+}
+
 @Injectable({ providedIn: 'root' })
 export class FlagStore {
+  private readonly timeService = inject(TimeService);
   private readonly environmentStore = inject(EnvironmentStore);
   private readonly projectStore = inject(ProjectStore);
 
@@ -31,12 +52,12 @@ export class FlagStore {
       defaultValue: false,
       tags: ['checkout', 'web'],
       environmentValues: {
-        env_development: createEnvValue('flag_new_checkout', 'env_development', true, true),
-        env_staging: createEnvValue('flag_new_checkout', 'env_staging', true, true),
-        env_production: createEnvValue('flag_new_checkout', 'env_production', false, false),
+        env_development: createSeedEnvValue('flag_new_checkout', 'env_development', true, true),
+        env_staging: createSeedEnvValue('flag_new_checkout', 'env_staging', true, true),
+        env_production: createSeedEnvValue('flag_new_checkout', 'env_production', false, false),
       },
-      createdAt: createTimestamp(),
-      updatedAt: createTimestamp(),
+      createdAt: SEED_TIMESTAMP,
+      updatedAt: SEED_TIMESTAMP,
     },
     {
       id: 'flag_pricing_banner',
@@ -48,12 +69,12 @@ export class FlagStore {
       defaultValue: false,
       tags: ['marketing'],
       environmentValues: {
-        env_development: createEnvValue('flag_pricing_banner', 'env_development', true, true),
-        env_staging: createEnvValue('flag_pricing_banner', 'env_staging', false, false),
-        env_production: createEnvValue('flag_pricing_banner', 'env_production', false, false),
+        env_development: createSeedEnvValue('flag_pricing_banner', 'env_development', true, true),
+        env_staging: createSeedEnvValue('flag_pricing_banner', 'env_staging', false, false),
+        env_production: createSeedEnvValue('flag_pricing_banner', 'env_production', false, false),
       },
-      createdAt: createTimestamp(),
-      updatedAt: createTimestamp(),
+      createdAt: SEED_TIMESTAMP,
+      updatedAt: SEED_TIMESTAMP,
     },
     {
       id: 'flag_beta_theme',
@@ -65,12 +86,12 @@ export class FlagStore {
       defaultValue: 'default',
       tags: ['design', 'beta'],
       environmentValues: {
-        env_development: createEnvValue('flag_beta_theme', 'env_development', 'dark', true),
-        env_staging: createEnvValue('flag_beta_theme', 'env_staging', 'light', true),
-        env_production: createEnvValue('flag_beta_theme', 'env_production', 'default', false),
+        env_development: createSeedEnvValue('flag_beta_theme', 'env_development', 'dark', true),
+        env_staging: createSeedEnvValue('flag_beta_theme', 'env_staging', 'light', true),
+        env_production: createSeedEnvValue('flag_beta_theme', 'env_production', 'default', false),
       },
-      createdAt: createTimestamp(),
-      updatedAt: createTimestamp(),
+      createdAt: SEED_TIMESTAMP,
+      updatedAt: SEED_TIMESTAMP,
     },
     {
       id: 'flag_search_boost',
@@ -82,12 +103,12 @@ export class FlagStore {
       defaultValue: 1.0,
       tags: ['search', 'enterprise'],
       environmentValues: {
-        env_development: createEnvValue('flag_search_boost', 'env_development', 1.5, true),
-        env_staging: createEnvValue('flag_search_boost', 'env_staging', 1.2, false),
-        env_production: createEnvValue('flag_search_boost', 'env_production', 1.0, false),
+        env_development: createSeedEnvValue('flag_search_boost', 'env_development', 1.5, true),
+        env_staging: createSeedEnvValue('flag_search_boost', 'env_staging', 1.2, false),
+        env_production: createSeedEnvValue('flag_search_boost', 'env_production', 1.0, false),
       },
-      createdAt: createTimestamp(),
-      updatedAt: createTimestamp(),
+      createdAt: SEED_TIMESTAMP,
+      updatedAt: SEED_TIMESTAMP,
     },
     {
       id: 'flag_checkout_guardrails',
@@ -99,27 +120,27 @@ export class FlagStore {
       defaultValue: { maxAmount: 1000, requireVerification: false },
       tags: ['risk', 'payments'],
       environmentValues: {
-        env_development: createEnvValue(
+        env_development: createSeedEnvValue(
           'flag_checkout_guardrails',
           'env_development',
           { maxAmount: 10000, requireVerification: false },
           true,
         ),
-        env_staging: createEnvValue(
+        env_staging: createSeedEnvValue(
           'flag_checkout_guardrails',
           'env_staging',
           { maxAmount: 5000, requireVerification: true },
           true,
         ),
-        env_production: createEnvValue(
+        env_production: createSeedEnvValue(
           'flag_checkout_guardrails',
           'env_production',
           { maxAmount: 1000, requireVerification: true },
           true,
         ),
       },
-      createdAt: createTimestamp(),
-      updatedAt: createTimestamp(),
+      createdAt: SEED_TIMESTAMP,
+      updatedAt: SEED_TIMESTAMP,
     },
   ]);
 
@@ -140,7 +161,7 @@ export class FlagStore {
   );
 
   addFlag(input: CreateFlagInput, initialEnabledEnvironments?: Record<string, boolean>): void {
-    const stamp = createTimestamp();
+    const stamp = this.timeService.now();
     const flagId = createId('flag');
     const environments = this.environmentStore.environments();
 
@@ -185,7 +206,7 @@ export class FlagStore {
     flagId: string,
     updates: Partial<Pick<Flag, 'name' | 'description' | 'tags' | 'defaultValue'>>,
   ): void {
-    const stamp = createTimestamp();
+    const stamp = this.timeService.now();
 
     this._flags.update((flags) =>
       flags.map((flag) => {
@@ -204,7 +225,7 @@ export class FlagStore {
       flags.map((flag) => {
         if (flag.id !== input.flagId) return flag;
 
-        const stamp = createTimestamp();
+        const stamp = this.timeService.now();
         const existingEnvValue = flag.environmentValues[input.environmentId];
 
         return {
@@ -230,7 +251,7 @@ export class FlagStore {
       flags.map((flag) => {
         if (flag.id !== flagId) return flag;
 
-        const stamp = createTimestamp();
+        const stamp = this.timeService.now();
         const existingEnvValue = flag.environmentValues[environmentId];
 
         return {
@@ -259,19 +280,4 @@ export class FlagStore {
     if (!flag) return undefined;
     return getEffectiveValue<T>(flag, environmentId);
   }
-}
-
-function createEnvValue<T>(
-  flagId: string,
-  environmentId: string,
-  value: T,
-  enabled: boolean,
-): EnvironmentFlagValue {
-  return {
-    flagId,
-    environmentId,
-    value: value as FlagTypeMap[FlagType],
-    enabled,
-    updatedAt: createTimestamp(),
-  };
 }
