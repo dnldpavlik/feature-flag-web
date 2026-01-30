@@ -61,9 +61,9 @@ export class FlagCreatePage extends BasePage {
     return this.page.locator('[data-testid="environments"], .flag-create__environments');
   }
 
-  /** Create button */
+  /** Create button (form submit button) */
   get createButton(): Locator {
-    return this.button(/create|save/i);
+    return this.form.getByRole('button', { name: /create|save/i });
   }
 
   /** Cancel button */

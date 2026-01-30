@@ -225,17 +225,20 @@ test.describe('Accessibility Tests', () => {
 
       // Navigation should have proper role
       const nav = page.locator('nav, [role="navigation"]');
-      await expect(nav).toBeVisible();
+      // Multiple navs is valid (sidebar nav + breadcrumb nav)
+      await expect(nav.first()).toBeVisible();
     });
 
     test('should indicate current page in navigation', async ({ page }) => {
       await page.goto('/flags');
+      await page.waitForURL(/flags/);
 
       const flagsLink = page.locator('app-sidebar').getByRole('link', { name: /flags/i });
 
-      // Should have aria-current="page" or similar
+      // Should have aria-current="page" on the link or active class on parent li
       const ariaCurrent = await flagsLink.getAttribute('aria-current');
-      const hasActiveClass = await flagsLink.evaluate(
+      const navItem = flagsLink.locator('..');
+      const hasActiveClass = await navItem.evaluate(
         (el) => el.classList.contains('active') || el.classList.contains('nav-item--active'),
       );
 
@@ -257,8 +260,9 @@ test.describe('Accessibility Tests', () => {
     test('should associate errors with form fields', async ({ page }) => {
       await page.goto('/flags/new');
 
-      // Submit empty form to trigger validation
-      const submitButton = page.getByRole('button', { name: /create|save/i });
+      // Submit empty form to trigger validation (use form's submit button)
+      const form = page.locator('form, .flag-create__form');
+      const submitButton = form.getByRole('button', { name: /create|save/i });
       await submitButton.click();
 
       // Check if errors are associated via aria-describedby or aria-errormessage
@@ -287,8 +291,9 @@ test.describe('Accessibility Tests', () => {
     test('should indicate invalid fields', async ({ page }) => {
       await page.goto('/flags/new');
 
-      // Submit to trigger validation
-      const submitButton = page.getByRole('button', { name: /create|save/i });
+      // Submit to trigger validation (use form's submit button, not header button)
+      const form = page.locator('form, .flag-create__form');
+      const submitButton = form.getByRole('button', { name: /create|save/i });
       await submitButton.click();
 
       const nameInput = page.getByLabel('Name');

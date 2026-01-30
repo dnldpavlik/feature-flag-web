@@ -71,6 +71,9 @@ export class FormFieldComponent implements ControlValueAccessor {
   /** Custom id for the input element */
   readonly id = input('');
 
+  /** Whether the field is required */
+  readonly required = input(false);
+
   /** Internal value state */
   protected readonly value = signal('');
 
