@@ -139,8 +139,6 @@ snyk:dependencies:
   rules:
     # Run on weekly schedule
     - if: $SCHEDULED_SECURITY_SCAN == "true"
-  tags:
-    - docker
 
 # -----------------------------------------------------------------------------
 # Snyk Code (SAST) - Static Application Security Testing
@@ -169,8 +167,6 @@ snyk:code:
     expire_in: 30 days
   rules:
     - if: $SCHEDULED_SECURITY_SCAN == "true"
-  tags:
-    - docker
 
 # -----------------------------------------------------------------------------
 # Snyk IaC - Infrastructure as Code Scanning (Dockerfile, etc.)
@@ -198,8 +194,6 @@ snyk:iac:
     expire_in: 30 days
   rules:
     - if: $SCHEDULED_SECURITY_SCAN == "true"
-  tags:
-    - docker
 
 # -----------------------------------------------------------------------------
 # Security Report Summary
@@ -250,8 +244,6 @@ snyk:summary:
     expire_in: 30 days
   rules:
     - if: $SCHEDULED_SECURITY_SCAN == "true"
-  tags:
-    - docker
 
 # =============================================================================
 # Deploy Stage (Placeholder - Enable when deployment target is ready)
