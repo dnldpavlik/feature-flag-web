@@ -43,10 +43,16 @@
     >
     </app-empty-state>
   } @else {
-    <app-ui-data-table [items]="filteredFlags()" ariaLabel="Feature flags" emptyText="No flags match filters.">
+    <app-ui-data-table
+      [items]="filteredFlags()"
+      ariaLabel="Feature flags"
+      emptyText="No flags match filters."
+    >
       <ng-template appUiCol="name" header="Flag" width="28%" let-flag>
         <div class="flag-cell flag-cell--name">
-          <a class="flag-cell__title flag-cell__link" [routerLink]="['/flags', flag.id]">{{ flag.name }}</a>
+          <a class="flag-cell__title flag-cell__link" [routerLink]="['/flags', flag.id]">{{
+            flag.name
+          }}</a>
           <div class="flag-cell__meta text-muted">{{ flag.key }}</div>
           <div class="flag-cell__description text-secondary">{{ flag.description }}</div>
         </div>
@@ -59,7 +65,7 @@
         />
       </ng-template>
       <ng-template appUiCol="value" header="Value" width="16%" [sortable]="false" let-flag>
-        <code class="flag-value">{{ formatValue(flag) }}</code>
+        <code class="flag-value">{{ flag.formattedValue }}</code>
       </ng-template>
       <ng-template appUiCol="type" header="Type" width="10%" let-flag>
         <app-badge variant="info">{{ flag.type }}</app-badge>
@@ -74,7 +80,13 @@
       </ng-template>
       <ng-template appUiCol="actions" header="Actions" [sortable]="false" let-flag>
         @if (totalCount() > 1) {
-          <app-button class="flag-delete-btn" variant="ghost" type="button" (click)="onDeleteFlag(flag.id)">Delete</app-button>
+          <app-button
+            class="flag-delete-btn"
+            variant="ghost"
+            type="button"
+            (click)="onDeleteFlag(flag.id)"
+            >Delete</app-button
+          >
         }
       </ng-template>
     </app-ui-data-table>

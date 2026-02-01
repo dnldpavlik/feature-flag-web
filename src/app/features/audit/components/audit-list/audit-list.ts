@@ -7,31 +7,14 @@ import { UiColDirective } from '@/app/shared/ui/data-table/ui-col.directive';
 import { EmptyStateComponent } from '@/app/shared/ui/empty-state/empty-state';
 import { PageHeaderComponent } from '@/app/shared/ui/page-header/page-header';
 import { ToolbarComponent } from '@/app/shared/ui/toolbar/toolbar';
-import {
-  LabeledSelectComponent,
-  SelectOption,
-} from '@/app/shared/ui/labeled-select/labeled-select';
+import { LabeledSelectComponent } from '@/app/shared/ui/labeled-select/labeled-select';
 import { SearchStore } from '@/app/shared/store/search.store';
 import { AuditStore } from '@/app/features/audit/store/audit.store';
-import { AuditAction, AuditResourceType } from '../../models/audit.model';
-import { ActionFilter, ResourceFilter } from './audit-list.types';
+import { AUDIT_ACTION_OPTIONS, AUDIT_RESOURCE_OPTIONS } from '../../models/audit.model';
+import { ActionFilter, AuditEntryFormatted, ResourceFilter } from './audit-list.types';
 import { textFilter, propertyEquals, matchesAll } from '@/app/shared/utils/filter.utils';
 
-const ACTION_OPTIONS: SelectOption[] = [
-  { value: 'all', label: 'All Actions' },
-  { value: 'created', label: 'Created' },
-  { value: 'updated', label: 'Updated' },
-  { value: 'deleted', label: 'Deleted' },
-  { value: 'toggled', label: 'Toggled' },
-];
-
-const RESOURCE_OPTIONS: SelectOption[] = [
-  { value: 'all', label: 'All Resources' },
-  { value: 'flag', label: 'Flag' },
-  { value: 'segment', label: 'Segment' },
-  { value: 'environment', label: 'Environment' },
-  { value: 'project', label: 'Project' },
-];
+const capitalize = (str: string): string => str.charAt(0).toUpperCase() + str.slice(1);
 
 @Component({
   selector: 'app-audit-list',
@@ -53,15 +36,15 @@ export class AuditListComponent {
   private readonly auditStore = inject(AuditStore);
   private readonly searchStore = inject(SearchStore);
 
-  protected readonly actionOptions = ACTION_OPTIONS;
-  protected readonly resourceOptions = RESOURCE_OPTIONS;
+  protected readonly actionOptions = AUDIT_ACTION_OPTIONS;
+  protected readonly resourceOptions = AUDIT_RESOURCE_OPTIONS;
 
   protected readonly actionFilter = signal<ActionFilter>('all');
   protected readonly resourceFilter = signal<ResourceFilter>('all');
 
   protected readonly searchQuery = computed(() => this.searchStore.query().trim().toLowerCase());
 
-  protected readonly filteredEntries = computed(() => {
+  protected readonly filteredEntries = computed<AuditEntryFormatted[]>(() => {
     const action = this.actionFilter();
     const resource = this.resourceFilter();
     const query = this.searchQuery();
@@ -74,7 +57,12 @@ export class AuditListComponent {
           propertyEquals('resourceType', resource),
           textFilter(['resourceName', 'userName', 'details', 'action', 'resourceType'], query),
         ]),
-      );
+      )
+      .map((entry) => ({
+        ...entry,
+        formattedAction: capitalize(entry.action),
+        formattedResourceType: capitalize(entry.resourceType),
+      }));
   });
 
   protected readonly filteredCount = computed(() => this.filteredEntries().length);
@@ -86,13 +74,5 @@ export class AuditListComponent {
 
   onResourceChange(value: string): void {
     this.resourceFilter.set(value as ResourceFilter);
-  }
-
-  formatAction(action: AuditAction): string {
-    return action.charAt(0).toUpperCase() + action.slice(1);
-  }
-
-  formatResourceType(resourceType: AuditResourceType): string {
-    return resourceType.charAt(0).toUpperCase() + resourceType.slice(1);
   }
 }

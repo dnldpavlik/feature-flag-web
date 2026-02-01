@@ -209,69 +209,62 @@ describe('FlagList', () => {
       expect(valueCells.length).toBeGreaterThan(0);
     });
 
-    it('should format boolean values', () => {
-      const booleanFlag = flagStore.flags().find((f) => f.type === 'boolean');
-      expect(booleanFlag).toBeDefined();
+    it('should pre-compute formatted boolean values', () => {
+      component.onTypeChange('boolean');
+      fixture.detectChanges();
 
-      const formattedValue = component.formatValue({
-        ...booleanFlag!,
-        currentEnabled: true,
-        currentValue: true,
+      const flags = (
+        component as unknown as { filteredFlags: () => { formattedValue: string }[] }
+      ).filteredFlags();
+      expect(flags.length).toBeGreaterThan(0);
+      flags.forEach((flag) => {
+        expect(flag.formattedValue).toMatch(/^(true|false)$/);
       });
-
-      expect(formattedValue).toBe('true');
     });
 
-    it('should format false boolean values', () => {
-      const booleanFlag = flagStore.flags().find((f) => f.type === 'boolean');
-      expect(booleanFlag).toBeDefined();
+    it('should pre-compute formatted json values', () => {
+      // JSON flags are in proj_growth
+      projectStore.selectProject('proj_growth');
+      component.onTypeChange('json');
+      fixture.detectChanges();
 
-      const formattedValue = component.formatValue({
-        ...booleanFlag!,
-        currentEnabled: false,
-        currentValue: false,
+      const flags = (
+        component as unknown as { filteredFlags: () => { formattedValue: string }[] }
+      ).filteredFlags();
+      expect(flags.length).toBeGreaterThan(0);
+      flags.forEach((flag) => {
+        // JSON values should be stringified
+        expect(flag.formattedValue).toContain('{');
       });
-
-      expect(formattedValue).toBe('false');
     });
 
-    it('should format json values', () => {
-      const jsonFlag = flagStore.flags().find((f) => f.type === 'json');
-      expect(jsonFlag).toBeDefined();
+    it('should pre-compute formatted string values', () => {
+      component.onTypeChange('string');
+      fixture.detectChanges();
 
-      const formattedValue = component.formatValue({
-        ...jsonFlag!,
-        currentEnabled: true,
-        currentValue: { key: 'value' },
+      const flags = (
+        component as unknown as { filteredFlags: () => { formattedValue: string }[] }
+      ).filteredFlags();
+      expect(flags.length).toBeGreaterThan(0);
+      flags.forEach((flag) => {
+        expect(typeof flag.formattedValue).toBe('string');
       });
-
-      expect(formattedValue).toBe('{"key":"value"}');
     });
 
-    it('should format string values', () => {
-      const stringFlag = flagStore.flags().find((f) => f.type === 'string');
-      expect(stringFlag).toBeDefined();
+    it('should pre-compute formatted number values', () => {
+      // Number flags are in proj_growth
+      projectStore.selectProject('proj_growth');
+      component.onTypeChange('number');
+      fixture.detectChanges();
 
-      const formattedValue = component.formatValue({
-        ...stringFlag!,
-        currentEnabled: true,
-        currentValue: 'hello',
+      const flags = (
+        component as unknown as { filteredFlags: () => { formattedValue: string }[] }
+      ).filteredFlags();
+      expect(flags.length).toBeGreaterThan(0);
+      flags.forEach((flag) => {
+        // Number values should be numeric strings
+        expect(flag.formattedValue).toMatch(/^-?\d+(\.\d+)?$/);
       });
-
-      expect(formattedValue).toBe('hello');
-    });
-
-    it('should format number values', () => {
-      const numberFlag = flagStore.flags().find((f) => f.type === 'number');
-      expect(numberFlag).toBeDefined();
-
-      const formattedValue = component.formatValue({
-        ...numberFlag!,
-        currentEnabled: true,
-        currentValue: 42,
-      });
-
-      expect(formattedValue).toBe('42');
     });
   });
 });

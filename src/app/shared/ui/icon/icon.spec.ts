@@ -121,6 +121,7 @@ describe('Icon', () => {
     const iconNames = [
       'menu',
       'chevron-right',
+      'close',
       'search',
       'plus',
       'home',

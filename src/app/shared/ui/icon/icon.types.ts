@@ -2,6 +2,7 @@
 export type IconName =
   | 'menu'
   | 'chevron-right'
+  | 'close'
   | 'search'
   | 'plus'
   | 'home'

@@ -25,18 +25,22 @@
         </div>
         <app-button variant="ghost" [routerLink]="['/flags']">View All</app-button>
       </div>
-      @if (filteredRecentFlags().length === 0) {
+      @if (recentFlagsWithHighlights().length === 0) {
         <app-empty-state
           title="No flags match your search"
           message="Try a different term to find recently updated flags."
         >
         </app-empty-state>
       } @else {
-        <app-ui-data-table [items]="filteredRecentFlags()" ariaLabel="Recently updated flags" emptyText="No recent flags.">
+        <app-ui-data-table
+          [items]="recentFlagsWithHighlights()"
+          ariaLabel="Recently updated flags"
+          emptyText="No recent flags."
+        >
           <ng-template appUiCol="name" header="Flag" width="50%" let-flag>
             <div class="recent-flags__flag">
               <a class="recent-flags__link" [routerLink]="['/flags', flag.id]">
-                @for (part of highlightParts(flag.name); track $index) {
+                @for (part of flag.nameParts; track $index) {
                   @if (part.match) {
                     <mark class="recent-flags__highlight">{{ part.text }}</mark>
                   } @else {
@@ -45,7 +49,7 @@
                 }
               </a>
               <span class="text-muted">
-                @for (part of highlightParts(flag.key); track $index) {
+                @for (part of flag.keyParts; track $index) {
                   @if (part.match) {
                     <mark class="recent-flags__highlight">{{ part.text }}</mark>
                   } @else {
@@ -54,7 +58,7 @@
                 }
               </span>
               <span class="recent-flags__description text-secondary">
-                @for (part of highlightParts(flag.description); track $index) {
+                @for (part of flag.descriptionParts; track $index) {
                   @if (part.match) {
                     <mark class="recent-flags__highlight">{{ part.text }}</mark>
                   } @else {
@@ -82,26 +86,7 @@
       title="No feature flags yet"
       message="Create your first feature flag to start controlling your application's features."
     >
-      <svg
-        empty-state-icon
-        width="48"
-        height="48"
-        viewBox="0 0 48 48"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <rect x="4" y="8" width="40" height="32" rx="4" stroke="currentColor" stroke-width="2" />
-        <path d="M4 16h40" stroke="currentColor" stroke-width="2" />
-        <circle cx="10" cy="12" r="2" fill="currentColor" />
-        <circle cx="16" cy="12" r="2" fill="currentColor" />
-        <circle cx="22" cy="12" r="2" fill="currentColor" />
-        <path
-          d="M16 28h16M16 34h10"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-        />
-      </svg>
+      <app-flags-empty-icon empty-state-icon />
       <app-button empty-state-action variant="primary" icon="plus">
         Create Your First Flag
       </app-button>

@@ -2,6 +2,26 @@ import { EnvironmentFlagValue, FlagTypeMap } from './flag-value.model';
 
 export type FlagType = 'boolean' | 'string' | 'number' | 'json';
 
+/**
+ * Flag status filter options for list views.
+ */
+export const FLAG_STATUS_OPTIONS = [
+  { value: 'all', label: 'All' },
+  { value: 'enabled', label: 'Enabled' },
+  { value: 'disabled', label: 'Disabled' },
+] as const;
+
+/**
+ * Flag type filter options for list views.
+ */
+export const FLAG_TYPE_OPTIONS: readonly { value: 'all' | FlagType; label: string }[] = [
+  { value: 'all', label: 'All' },
+  { value: 'boolean', label: 'Boolean' },
+  { value: 'string', label: 'String' },
+  { value: 'number', label: 'Number' },
+  { value: 'json', label: 'JSON' },
+] as const;
+
 export interface Flag {
   id: string;
   projectId: string;

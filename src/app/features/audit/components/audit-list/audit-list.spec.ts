@@ -204,46 +204,102 @@ describe('AuditList', () => {
   });
 
   describe('action badge display', () => {
-    it('should format action for display', () => {
-      const formatted = component.formatAction('created');
-      expect(formatted).toBe('Created');
+    it('should pre-compute formatted action for created entries', () => {
+      component.onActionChange('created');
+      fixture.detectChanges();
+
+      const entries = (
+        component as unknown as { filteredEntries: () => { formattedAction: string }[] }
+      ).filteredEntries();
+      entries.forEach((entry) => {
+        expect(entry.formattedAction).toBe('Created');
+      });
     });
 
-    it('should format updated action', () => {
-      const formatted = component.formatAction('updated');
-      expect(formatted).toBe('Updated');
+    it('should pre-compute formatted action for updated entries', () => {
+      component.onActionChange('updated');
+      fixture.detectChanges();
+
+      const entries = (
+        component as unknown as { filteredEntries: () => { formattedAction: string }[] }
+      ).filteredEntries();
+      entries.forEach((entry) => {
+        expect(entry.formattedAction).toBe('Updated');
+      });
     });
 
-    it('should format deleted action', () => {
-      const formatted = component.formatAction('deleted');
-      expect(formatted).toBe('Deleted');
+    it('should pre-compute formatted action for deleted entries', () => {
+      component.onActionChange('deleted');
+      fixture.detectChanges();
+
+      const entries = (
+        component as unknown as { filteredEntries: () => { formattedAction: string }[] }
+      ).filteredEntries();
+      entries.forEach((entry) => {
+        expect(entry.formattedAction).toBe('Deleted');
+      });
     });
 
-    it('should format toggled action', () => {
-      const formatted = component.formatAction('toggled');
-      expect(formatted).toBe('Toggled');
+    it('should pre-compute formatted action for toggled entries', () => {
+      component.onActionChange('toggled');
+      fixture.detectChanges();
+
+      const entries = (
+        component as unknown as { filteredEntries: () => { formattedAction: string }[] }
+      ).filteredEntries();
+      entries.forEach((entry) => {
+        expect(entry.formattedAction).toBe('Toggled');
+      });
     });
   });
 
   describe('resource type display', () => {
-    it('should format resource type for display', () => {
-      const formatted = component.formatResourceType('flag');
-      expect(formatted).toBe('Flag');
+    it('should pre-compute formatted resource type for flag entries', () => {
+      component.onResourceChange('flag');
+      fixture.detectChanges();
+
+      const entries = (
+        component as unknown as { filteredEntries: () => { formattedResourceType: string }[] }
+      ).filteredEntries();
+      entries.forEach((entry) => {
+        expect(entry.formattedResourceType).toBe('Flag');
+      });
     });
 
-    it('should format segment resource type', () => {
-      const formatted = component.formatResourceType('segment');
-      expect(formatted).toBe('Segment');
+    it('should pre-compute formatted resource type for segment entries', () => {
+      component.onResourceChange('segment');
+      fixture.detectChanges();
+
+      const entries = (
+        component as unknown as { filteredEntries: () => { formattedResourceType: string }[] }
+      ).filteredEntries();
+      entries.forEach((entry) => {
+        expect(entry.formattedResourceType).toBe('Segment');
+      });
     });
 
-    it('should format environment resource type', () => {
-      const formatted = component.formatResourceType('environment');
-      expect(formatted).toBe('Environment');
+    it('should pre-compute formatted resource type for environment entries', () => {
+      component.onResourceChange('environment');
+      fixture.detectChanges();
+
+      const entries = (
+        component as unknown as { filteredEntries: () => { formattedResourceType: string }[] }
+      ).filteredEntries();
+      entries.forEach((entry) => {
+        expect(entry.formattedResourceType).toBe('Environment');
+      });
     });
 
-    it('should format project resource type', () => {
-      const formatted = component.formatResourceType('project');
-      expect(formatted).toBe('Project');
+    it('should pre-compute formatted resource type for project entries', () => {
+      component.onResourceChange('project');
+      fixture.detectChanges();
+
+      const entries = (
+        component as unknown as { filteredEntries: () => { formattedResourceType: string }[] }
+      ).filteredEntries();
+      entries.forEach((entry) => {
+        expect(entry.formattedResourceType).toBe('Project');
+      });
     });
   });
 });

@@ -23,8 +23,8 @@ export class IconComponent {
   /** Computed viewBox based on size - icons are designed for 16 or 20 viewBox */
   protected readonly viewBox = computed(() => {
     const name = this.name();
-    // chevron-right and plus use 16x16 viewBox, others use 20x20
-    return name === 'chevron-right' || name === 'plus' || name === 'search'
+    // chevron-right, close, plus, and search use 16x16 viewBox, others use 20x20
+    return name === 'chevron-right' || name === 'close' || name === 'plus' || name === 'search'
       ? '0 0 16 16'
       : '0 0 20 20';
   });

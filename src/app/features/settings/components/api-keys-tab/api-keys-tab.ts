@@ -1,23 +1,11 @@
 import { DatePipe } from '@angular/common';
-import {
-  ChangeDetectionStrategy,
-  Component,
-  computed,
-  inject,
-  signal,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 
 import { ButtonComponent } from '@/app/shared/ui/button/button';
 import { DataTableComponent } from '@/app/shared/ui/data-table/data-table';
 import { UiColDirective } from '@/app/shared/ui/data-table/ui-col.directive';
 import { SettingsStore } from '../../store/settings.store';
-import { ApiKeyScope } from '../../models/settings.model';
-
-const AVAILABLE_SCOPES: { value: ApiKeyScope; label: string }[] = [
-  { value: 'read:flags', label: 'Read Flags' },
-  { value: 'write:flags', label: 'Write Flags' },
-  { value: 'admin', label: 'Admin' },
-];
+import { API_KEY_SCOPE_OPTIONS, type ApiKeyScope } from '../../models/settings.model';
 
 @Component({
   selector: 'app-api-keys-tab',
@@ -29,9 +17,15 @@ const AVAILABLE_SCOPES: { value: ApiKeyScope; label: string }[] = [
 export class ApiKeysTabComponent {
   private readonly settingsStore = inject(SettingsStore);
 
-  protected readonly apiKeys = computed(() => this.settingsStore.apiKeys());
+  private readonly rawApiKeys = computed(() => this.settingsStore.apiKeys());
+  protected readonly apiKeys = computed(() =>
+    this.rawApiKeys().map((key) => ({
+      ...key,
+      formattedScopes: key.scopes.join(', '),
+    })),
+  );
   protected readonly hasKeys = computed(() => this.apiKeys().length > 0);
-  protected readonly availableScopes = AVAILABLE_SCOPES;
+  protected readonly availableScopes = API_KEY_SCOPE_OPTIONS;
 
   // Create form state
   readonly showCreateForm = signal(false);
@@ -45,7 +39,7 @@ export class ApiKeysTabComponent {
   readonly keyToRevoke = signal<string | null>(null);
 
   protected readonly canSubmit = computed(
-    () => this.newKeyName().trim().length > 0 && this.selectedScopes().length > 0
+    () => this.newKeyName().trim().length > 0 && this.selectedScopes().length > 0,
   );
 
   protected openCreateForm(): void {
@@ -115,9 +109,5 @@ export class ApiKeysTabComponent {
       this.settingsStore.revokeApiKey(keyId);
       this.keyToRevoke.set(null);
     }
-  }
-
-  protected formatScopes(scopes: ApiKeyScope[]): string {
-    return scopes.join(', ');
   }
 }

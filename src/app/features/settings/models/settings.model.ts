@@ -9,6 +9,15 @@ export interface UserProfile {
 /** API key scope permissions */
 export type ApiKeyScope = 'read:flags' | 'write:flags' | 'admin';
 
+/**
+ * Available API key scope options for selection.
+ */
+export const API_KEY_SCOPE_OPTIONS: readonly { value: ApiKeyScope; label: string }[] = [
+  { value: 'read:flags', label: 'Read Flags' },
+  { value: 'write:flags', label: 'Write Flags' },
+  { value: 'admin', label: 'Admin' },
+] as const;
+
 /** API key information */
 export interface ApiKey {
   id: string;

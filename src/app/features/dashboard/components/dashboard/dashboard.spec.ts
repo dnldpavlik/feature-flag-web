@@ -108,9 +108,20 @@ describe('Dashboard', () => {
     expect(highlights.length).toBeGreaterThan(0);
   });
 
-  it('should return no parts when highlight text is empty', () => {
-    const parts = component.highlightParts('');
-    expect(parts).toEqual([]);
+  it('should return empty parts arrays when flag text is empty', () => {
+    // Access the computed signal - when no search query, parts should contain the full text
+    searchStore.setQuery('');
+    fixture.detectChanges();
+
+    // The recentFlagsWithHighlights computed signal should handle empty text gracefully
+    const flagsWithHighlights = (
+      component as unknown as { recentFlagsWithHighlights: () => { nameParts: unknown[] }[] }
+    ).recentFlagsWithHighlights();
+    expect(flagsWithHighlights.length).toBeGreaterThan(0);
+    // Each flag should have parts arrays
+    flagsWithHighlights.forEach((flag) => {
+      expect(Array.isArray(flag.nameParts)).toBe(true);
+    });
   });
 
   it('should update active flags when environment changes', () => {

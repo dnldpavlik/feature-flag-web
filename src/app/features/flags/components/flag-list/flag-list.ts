@@ -18,26 +18,13 @@ import { EnvironmentStore } from '@/app/shared/store/environment.store';
 import { SearchStore } from '@/app/shared/store/search.store';
 import { matchesSearch } from '@/app/shared/utils/search.utils';
 import { FlagStore } from '@/app/features/flags/store/flag.store';
+import { FLAG_STATUS_OPTIONS, FLAG_TYPE_OPTIONS } from '@/app/features/flags/models/flag.model';
 import {
   getEffectiveValue,
   isEnabledInEnvironment,
 } from '@/app/features/flags/utils/flag-value.utils';
 import { formatFlagValue } from '@/app/features/flags/utils/flag-format.utils';
-import { FlagWithEnvironmentStatus, StatusFilter, TypeFilter } from './flag-list.types';
-
-const STATUS_OPTIONS: SelectOption[] = [
-  { value: 'all', label: 'All' },
-  { value: 'enabled', label: 'Enabled' },
-  { value: 'disabled', label: 'Disabled' },
-];
-
-const TYPE_OPTIONS: SelectOption[] = [
-  { value: 'all', label: 'All' },
-  { value: 'boolean', label: 'Boolean' },
-  { value: 'string', label: 'String' },
-  { value: 'number', label: 'Number' },
-  { value: 'json', label: 'JSON' },
-];
+import { FlagWithFormattedValue, StatusFilter, TypeFilter } from './flag-list.types';
 
 @Component({
   selector: 'app-flag-list',
@@ -63,8 +50,8 @@ export class FlagListComponent {
   private readonly environmentStore = inject(EnvironmentStore);
   private readonly searchStore = inject(SearchStore);
 
-  protected readonly statusOptions = STATUS_OPTIONS;
-  protected readonly typeOptions = TYPE_OPTIONS;
+  protected readonly statusOptions = FLAG_STATUS_OPTIONS;
+  protected readonly typeOptions = FLAG_TYPE_OPTIONS;
 
   protected readonly statusFilter = signal<StatusFilter>('all');
   protected readonly typeFilter = signal<TypeFilter>('all');
@@ -77,7 +64,7 @@ export class FlagListComponent {
     this.environments().map((env) => ({ value: env.id, label: env.name })),
   );
 
-  protected readonly flagsWithStatus = computed<FlagWithEnvironmentStatus[]>(() => {
+  private readonly flagsWithStatus = computed(() => {
     const envId = this.environmentStore.selectedEnvironmentId();
     return this.flagStore.flagsInSelectedProject().map((flag) => ({
       ...flag,
@@ -86,19 +73,24 @@ export class FlagListComponent {
     }));
   });
 
-  protected readonly filteredFlags = computed(() => {
+  protected readonly filteredFlags = computed<FlagWithFormattedValue[]>(() => {
     const status = this.statusFilter();
     const type = this.typeFilter();
     const query = this.searchQuery();
 
-    return this.flagsWithStatus().filter((flag) => {
-      const matchesStatus =
-        status === 'all' ||
-        (status === 'enabled' && flag.currentEnabled) ||
-        (status === 'disabled' && !flag.currentEnabled);
-      const matchesType = type === 'all' || flag.type === type;
-      return matchesStatus && matchesType && matchesSearch(flag, query);
-    });
+    return this.flagsWithStatus()
+      .filter((flag) => {
+        const matchesStatus =
+          status === 'all' ||
+          (status === 'enabled' && flag.currentEnabled) ||
+          (status === 'disabled' && !flag.currentEnabled);
+        const matchesType = type === 'all' || flag.type === type;
+        return matchesStatus && matchesType && matchesSearch(flag, query);
+      })
+      .map((flag) => ({
+        ...flag,
+        formattedValue: formatFlagValue(flag.type, flag.currentValue),
+      }));
   });
 
   protected readonly filteredCount = computed(() => this.filteredFlags().length);
@@ -123,9 +115,5 @@ export class FlagListComponent {
 
   protected onDeleteFlag(flagId: string): void {
     this.flagStore.deleteFlag(flagId);
-  }
-
-  protected formatValue(flag: FlagWithEnvironmentStatus): string {
-    return formatFlagValue(flag.type, flag.currentValue);
   }
 }

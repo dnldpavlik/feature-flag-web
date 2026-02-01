@@ -7,10 +7,7 @@
       </p>
     </div>
     @if (!showCreateForm() && !createdSecret()) {
-      <app-button
-        class="api-keys-tab__create-btn"
-        (click)="openCreateForm()"
-      >
+      <app-button class="api-keys-tab__create-btn" (click)="openCreateForm()">
         Create API Key
       </app-button>
     }
@@ -35,11 +32,7 @@
           Copy
         </app-button>
       </div>
-      <app-button
-        variant="secondary"
-        class="api-keys-tab__done-btn"
-        (click)="dismissSecret()"
-      >
+      <app-button variant="secondary" class="api-keys-tab__done-btn" (click)="dismissSecret()">
         Done
       </app-button>
     </div>
@@ -128,24 +121,37 @@
         <span class="api-keys-tab__key-name">{{ key.name }}</span>
       </ng-template>
       <ng-template appUiCol="prefix" header="Key" width="25%" [sortable]="false" let-key>
-        <span class="api-keys-tab__key-prefix"><code>{{ key.prefix }}</code></span>
+        <span class="api-keys-tab__key-prefix"
+          ><code>{{ key.prefix }}</code></span
+        >
       </ng-template>
       <ng-template appUiCol="scopes" header="Scopes" width="20%" [sortable]="false" let-key>
-        <span class="api-keys-tab__key-scopes">{{ formatScopes(key.scopes) }}</span>
+        <span class="api-keys-tab__key-scopes">{{ key.formattedScopes }}</span>
       </ng-template>
       <ng-template appUiCol="createdAt" header="Created" width="15%" let-key>
-        {{ key.createdAt | date:'mediumDate' }}
+        {{ key.createdAt | date: 'mediumDate' }}
       </ng-template>
-      <ng-template appUiCol="actions" header="Actions" width="15%" align="right" [sortable]="false" let-key>
-        <app-button variant="ghost" size="sm" class="api-keys-tab__revoke-btn" (click)="confirmRevoke(key.id)">Revoke</app-button>
+      <ng-template
+        appUiCol="actions"
+        header="Actions"
+        width="15%"
+        align="right"
+        [sortable]="false"
+        let-key
+      >
+        <app-button
+          variant="ghost"
+          size="sm"
+          class="api-keys-tab__revoke-btn"
+          (click)="confirmRevoke(key.id)"
+          >Revoke</app-button
+        >
       </ng-template>
     </app-ui-data-table>
   } @else if (!showCreateForm() && !createdSecret()) {
     <div class="api-keys-tab__empty">
       <p class="api-keys-tab__empty-text">No API keys yet</p>
-      <p class="api-keys-tab__empty-description">
-        Create your first API key to get started.
-      </p>
+      <p class="api-keys-tab__empty-description">Create your first API key to get started.</p>
     </div>
   }
 </div>

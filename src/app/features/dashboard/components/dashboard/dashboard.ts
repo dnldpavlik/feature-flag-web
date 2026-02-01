@@ -7,16 +7,16 @@ import { ButtonComponent } from '@/app/shared/ui/button/button';
 import { DataTableComponent } from '@/app/shared/ui/data-table/data-table';
 import { UiColDirective } from '@/app/shared/ui/data-table/ui-col.directive';
 import { EmptyStateComponent } from '@/app/shared/ui/empty-state/empty-state';
+import { FlagsEmptyIconComponent } from '@/app/shared/ui/flags-empty-icon/flags-empty-icon';
 import { PageHeaderComponent } from '@/app/shared/ui/page-header/page-header';
 import { StatCardComponent } from '@/app/shared/ui/stat-card/stat-card';
 import { EnvironmentStore } from '@/app/shared/store/environment.store';
 import { ProjectStore } from '@/app/shared/store/project.store';
 import { SearchStore } from '@/app/shared/store/search.store';
 import { highlightParts, matchesSearch } from '@/app/shared/utils/search.utils';
-import { HighlightPart } from '@/app/shared/utils/search.types';
 import { FlagStore } from '@/app/features/flags/store/flag.store';
 import { isEnabledInEnvironment } from '@/app/features/flags/utils/flag-value.utils';
-import { RecentFlag } from './dashboard.types';
+import { RecentFlag, RecentFlagWithHighlights } from './dashboard.types';
 
 @Component({
   selector: 'app-dashboard',
@@ -27,6 +27,7 @@ import { RecentFlag } from './dashboard.types';
     DataTableComponent,
     UiColDirective,
     EmptyStateComponent,
+    FlagsEmptyIconComponent,
     PageHeaderComponent,
     RouterLink,
     StatCardComponent,
@@ -70,14 +71,20 @@ export class DashboardComponent {
     return this.recentFlags().filter((flag) => matchesSearch(flag, query));
   });
 
+  protected readonly recentFlagsWithHighlights = computed<RecentFlagWithHighlights[]>(() => {
+    const query = this.searchQuery();
+    return this.filteredRecentFlags().map((flag) => ({
+      ...flag,
+      nameParts: highlightParts(flag.name, query),
+      keyParts: highlightParts(flag.key, query),
+      descriptionParts: highlightParts(flag.description, query),
+    }));
+  });
+
   protected readonly selectedEnvironmentName = computed(
     () => this.selectedEnvironment()?.name ?? 'All Environments',
   );
   protected readonly selectedProjectName = computed(
     () => this.projectStore.selectedProject()?.name ?? 'All Projects',
   );
-
-  protected highlightParts(text: string): HighlightPart[] {
-    return highlightParts(text, this.searchQuery());
-  }
 }

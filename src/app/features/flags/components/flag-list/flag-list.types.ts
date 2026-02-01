@@ -11,3 +11,10 @@ export interface FlagWithEnvironmentStatus extends Flag {
   currentEnabled: boolean;
   currentValue: FlagTypeMap[FlagType];
 }
+
+/**
+ * Extended flag with pre-computed formatted value for template display
+ */
+export interface FlagWithFormattedValue extends FlagWithEnvironmentStatus {
+  formattedValue: string;
+}

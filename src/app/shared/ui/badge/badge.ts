@@ -1,5 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
 
+import { IconComponent } from '../icon/icon';
+
 export type BadgeVariant =
   | 'success'
   | 'warning'
@@ -14,6 +16,7 @@ export type BadgeSize = 'sm' | 'md' | 'lg';
 
 @Component({
   selector: 'app-badge',
+  imports: [IconComponent],
   templateUrl: './badge.html',
   styleUrl: './badge.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

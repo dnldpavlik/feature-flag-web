@@ -33,16 +33,22 @@
     >
     </app-empty-state>
   } @else {
-    <app-ui-data-table [items]="filteredEntries()" ariaLabel="Audit log" emptyText="No audit entries match.">
+    <app-ui-data-table
+      [items]="filteredEntries()"
+      ariaLabel="Audit log"
+      emptyText="No audit entries match."
+    >
       <ng-template appUiCol="timestamp" header="Timestamp" width="20%" let-entry>
-        <span class="audit-cell audit-cell--timestamp text-muted">{{ entry.timestamp | date: 'medium' }}</span>
+        <span class="audit-cell audit-cell--timestamp text-muted">{{
+          entry.timestamp | date: 'medium'
+        }}</span>
       </ng-template>
       <ng-template appUiCol="action" header="Action" width="12%" let-entry>
-        <app-badge [variant]="entry.action">{{ formatAction(entry.action) }}</app-badge>
+        <app-badge [variant]="entry.action">{{ entry.formattedAction }}</app-badge>
       </ng-template>
       <ng-template appUiCol="resource" header="Resource" width="24%" let-entry>
         <div class="audit-cell audit-cell--resource">
-          <app-badge variant="info">{{ formatResourceType(entry.resourceType) }}</app-badge>
+          <app-badge variant="info">{{ entry.formattedResourceType }}</app-badge>
           <span class="audit-cell__name">{{ entry.resourceName }}</span>
         </div>
       </ng-template>
