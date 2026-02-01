@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-This is an Angular 21 application that serves as the web UI for a Feature Flag management system (LaunchDarkly clone). The backend API is written in Rust. This UI provides comprehensive feature flag management capabilities including creation, targeting rules, environments, and analytics.
+This is an Angular 21 application that serves as the web UI for a Feature Flag management system (LaunchDarkly clone). The backend API is written in Rust. This UI provides comprehensive feature flag management capabilities including creation, targeting rules (segments), environments, and a dashboard with usage statistics.
 
 ## Core Development Principles
 
@@ -130,10 +130,9 @@ All components must be standalone. No NgModules for components:
 ```typescript
 @Component({
   selector: 'app-flag-card',
-  standalone: true,
-  imports: [CommonModule, RouterLink, FlagToggleComponent],
-  templateUrl: './flag-card.component.html',
-  styleUrl: './flag-card.component.scss',
+  imports: [RouterLink, FlagToggleComponent],
+  templateUrl: './flag-card.html',
+  styleUrl: './flag-card.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FlagCardComponent {
@@ -141,6 +140,8 @@ export class FlagCardComponent {
   readonly toggled = output<FlagToggleEvent>();
 }
 ```
+
+**Note:** Angular 19+ defaults to standalone, so explicit `standalone: true` is optional. Direct imports are preferred over CommonModule.
 
 ### Inject Function
 
@@ -210,8 +211,13 @@ src/
 │   │   └── time/                 # Time provider abstraction
 │   ├── shared/                   # Shared utilities and components
 │   │   ├── store/                # Cross-feature state (ProjectStore, EnvironmentStore, SearchStore)
-│   │   ├── ui/                   # Shared UI components (buttons, inputs, etc.)
+│   │   ├── ui/                   # Shared UI components (buttons, inputs, icons, etc.)
 │   │   └── utils/                # Pure utility functions
+│   ├── testing/                  # Test utilities and helpers
+│   │   ├── store.helpers.ts      # Store testing utilities (getCountBefore, expectItemAdded, etc.)
+│   │   ├── component.helpers.ts  # Component testing utilities
+│   │   ├── dom.helpers.ts        # DOM query helpers
+│   │   └── mock.factories.ts     # Test data factories
 │   ├── features/                 # Feature modules (lazy-loaded routes)
 │   │   ├── flags/
 │   │   │   ├── components/       # Feature-specific components
@@ -223,7 +229,8 @@ src/
 │   │   ├── projects/
 │   │   ├── segments/             # User segment targeting rules
 │   │   ├── audit/                # Audit log feature
-│   │   ├── settings/             # User settings and preferences
+│   │   ├── settings/             # User settings (profile, preferences, API keys)
+│   │   │   └── store/            # Focused stores: UserProfileStore, PreferencesStore, ApiKeyStore
 │   │   └── dashboard/            # Dashboard overview
 │   ├── layout/                   # App shell components
 │   │   ├── header/
@@ -338,12 +345,13 @@ const err = <E>(error: E): Result<never, E> => ({ success: false, error });
 
 ## File Naming Conventions
 
-- Components: `flag-card.component.ts`, `flag-card.component.html`, `flag-card.component.scss`
+- Components: `flag-card.ts`, `flag-card.html`, `flag-card.scss` (no `.component` suffix)
 - Services: `flag.service.ts`, `flag-api.service.ts`
-- Models/Interfaces: `flag.model.ts`, `flag.types.ts`
-- Utilities: `flag.utils.ts`
-- Tests: `flag-card.component.spec.ts`, `flag.service.spec.ts`
+- Models/Interfaces: `flag.model.ts`, `flag-value.model.ts`
+- Utilities: `flag.utils.ts`, `flag-format.utils.ts`
+- Tests: `flag-card.spec.ts`, `flag.service.spec.ts`
 - Stores: `flag.store.ts`
+- Icon Components: `logo-icon.ts`, `flags-empty-icon.ts`
 
 ## Git Workflow
 
