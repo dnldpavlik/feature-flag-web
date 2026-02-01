@@ -12,13 +12,13 @@
   &__section-title {
     font-size: 1rem;
     font-weight: 600;
-    color: var(--text-primary, #e6edf3);
+    color: var(--text-primary, #f5f2ea);
     margin: 0;
   }
 
   &__section-description {
     font-size: 0.875rem;
-    color: var(--text-secondary, #7d8590);
+    color: var(--text-secondary, #a8a5a0);
     margin: 0;
   }
 
@@ -33,13 +33,13 @@
     align-items: flex-start;
     gap: 0.75rem;
     padding: 1rem;
-    border: 1px solid var(--border-primary, #30363d);
+    border: 1px solid var(--border-primary, #535955);
     border-radius: var(--border-radius, 6px);
     cursor: pointer;
     transition: all var(--transition-fast, 150ms ease);
 
     &:hover {
-      background: var(--bg-hover, #30363d);
+      background: var(--bg-hover, #535955);
     }
 
     input[type='checkbox'] {
@@ -57,12 +57,12 @@
   &__toggle-label {
     font-size: 0.875rem;
     font-weight: 500;
-    color: var(--text-primary, #e6edf3);
+    color: var(--text-primary, #f5f2ea);
   }
 
   &__toggle-description {
     font-size: 0.75rem;
-    color: var(--text-secondary, #7d8590);
+    color: var(--text-secondary, #a8a5a0);
   }
 
   &__options {
@@ -76,13 +76,13 @@
     align-items: flex-start;
     gap: 0.75rem;
     padding: 1rem;
-    border: 1px solid var(--border-primary, #30363d);
+    border: 1px solid var(--border-primary, #535955);
     border-radius: var(--border-radius, 6px);
     cursor: pointer;
     transition: all var(--transition-fast, 150ms ease);
 
     &:hover {
-      background: var(--bg-hover, #30363d);
+      background: var(--bg-hover, #535955);
     }
 
     &:has(input:checked) {
@@ -105,11 +105,11 @@
   &__option-label {
     font-size: 0.875rem;
     font-weight: 500;
-    color: var(--text-primary, #e6edf3);
+    color: var(--text-primary, #f5f2ea);
   }
 
   &__option-description {
     font-size: 0.75rem;
-    color: var(--text-secondary, #7d8590);
+    color: var(--text-secondary, #a8a5a0);
   }
 }

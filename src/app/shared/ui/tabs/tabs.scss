@@ -1,7 +1,7 @@
 .tabs {
   display: flex;
   gap: 0.25rem;
-  border-bottom: 1px solid var(--border-primary, #30363d);
+  border-bottom: 1px solid var(--border-primary, #535955);
   padding: 0 0.5rem;
 
   &__tab {
@@ -11,7 +11,7 @@
     padding: 0.75rem 1rem;
     font-size: 0.875rem;
     font-weight: 500;
-    color: var(--text-secondary, #7d8590);
+    color: var(--text-secondary, #a8a5a0);
     background: transparent;
     border: none;
     border-bottom: 2px solid transparent;
@@ -20,8 +20,8 @@
     transition: all var(--transition-fast, 150ms ease);
 
     &:hover:not(.tabs__tab--disabled, .tabs__tab--active) {
-      color: var(--text-primary, #e6edf3);
-      background: var(--bg-hover, #30363d);
+      color: var(--text-primary, #f5f2ea);
+      background: var(--bg-hover, #535955);
       border-radius: var(--border-radius, 6px) var(--border-radius, 6px) 0 0;
     }
 
@@ -32,7 +32,7 @@
     }
 
     &--active {
-      color: var(--text-primary, #e6edf3);
+      color: var(--text-primary, #f5f2ea);
       border-bottom-color: var(--accent-primary, #8e3d03);
     }
 

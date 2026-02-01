@@ -12,7 +12,7 @@
   width: 100%;
 
   &:hover {
-    background: var(--bg-hover, #30363d);
+    background: var(--bg-hover, #535955);
   }
 
   &:focus-visible {
@@ -60,7 +60,7 @@
   &__name {
     font-size: 0.875rem;
     font-weight: 500;
-    color: var(--text-primary, #e6edf3);
+    color: var(--text-primary, #f5f2ea);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -68,7 +68,7 @@
 
   &__email {
     font-size: 0.75rem;
-    color: var(--text-muted, #484f58);
+    color: var(--text-muted, #535955);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;

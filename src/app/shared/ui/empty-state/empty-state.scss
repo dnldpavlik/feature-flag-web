@@ -4,7 +4,7 @@
   align-items: center;
   justify-content: center;
   background: var(--bg-card, #1a1a18);
-  border: 1px dashed var(--border-primary, #30363d);
+  border: 1px dashed var(--border-primary, #535955);
   border-radius: var(--border-radius-lg, 8px);
   text-align: center;
 
@@ -82,7 +82,7 @@
   }
 
   &__icon {
-    color: var(--text-muted, #484f58);
+    color: var(--text-muted, #535955);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -90,13 +90,13 @@
 
   &__title {
     margin: 0;
-    color: var(--text-primary, #e6edf3);
+    color: var(--text-primary, #f5f2ea);
     font-weight: 600;
   }
 
   &__message {
     margin: 0;
-    color: var(--text-secondary, #7d8590);
+    color: var(--text-secondary, #a8a5a0);
     line-height: 1.5;
   }
 

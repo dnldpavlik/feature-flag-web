@@ -16,7 +16,7 @@
   &__icon {
     position: absolute;
     left: 0.75rem;
-    color: var(--text-muted, #484f58);
+    color: var(--text-muted, #535955);
     pointer-events: none;
     z-index: 1;
   }
@@ -25,9 +25,9 @@
     width: 100%;
     padding: 0.5rem 0.75rem 0.5rem 2.25rem;
     font-size: 0.875rem;
-    color: var(--text-primary, #e6edf3);
+    color: var(--text-primary, #f5f2ea);
     background: var(--bg-primary, #040403);
-    border: 1px solid var(--border-primary, #30363d);
+    border: 1px solid var(--border-primary, #535955);
     border-radius: var(--border-radius, 6px);
     transition: all var(--transition-fast, 150ms ease);
 
@@ -38,7 +38,7 @@
     }
 
     &::placeholder {
-      color: var(--text-muted, #484f58);
+      color: var(--text-muted, #535955);
     }
 
     &:disabled {
@@ -52,9 +52,9 @@
     padding: 0.125rem 0.375rem;
     font-size: 0.75rem;
     font-family: inherit;
-    color: var(--text-muted, #484f58);
-    background: var(--bg-tertiary, #21262d);
-    border: 1px solid var(--border-primary, #30363d);
+    color: var(--text-muted, #535955);
+    background: var(--bg-tertiary, #1a1a18);
+    border: 1px solid var(--border-primary, #535955);
     border-radius: 4px;
     pointer-events: none;
   }

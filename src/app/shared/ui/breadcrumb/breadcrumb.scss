@@ -3,7 +3,7 @@
   align-items: center;
   gap: 0.25rem;
   font-size: 0.875rem;
-  color: var(--text-muted, #484f58);
+  color: var(--text-muted, #535955);
 
   &__item {
     display: inline-flex;
@@ -11,19 +11,19 @@
 
     &--current {
       .breadcrumb__current {
-        color: var(--text-primary, #e6edf3);
+        color: var(--text-primary, #f5f2ea);
         font-weight: 500;
       }
     }
   }
 
   &__link {
-    color: var(--text-muted, #484f58);
+    color: var(--text-muted, #535955);
     text-decoration: none;
     transition: color var(--transition-fast, 150ms ease);
 
     &:hover {
-      color: var(--text-primary, #e6edf3);
+      color: var(--text-primary, #f5f2ea);
       text-decoration: none;
     }
 
@@ -35,23 +35,23 @@
   }
 
   &__current {
-    color: var(--text-muted, #484f58);
+    color: var(--text-muted, #535955);
   }
 
   &__separator {
     display: inline-flex;
     align-items: center;
     opacity: 0.5;
-    color: var(--text-muted, #484f58);
+    color: var(--text-muted, #535955);
   }
 
   &__select {
     min-width: 160px;
     padding: 0.35rem 0.6rem;
     border-radius: var(--border-radius, 6px);
-    border: 1px solid var(--border-primary, #30363d);
+    border: 1px solid var(--border-primary, #535955);
     background: var(--bg-secondary, #0d0d0b);
-    color: var(--text-primary, #e6edf3);
+    color: var(--text-primary, #f5f2ea);
     font-size: 0.875rem;
 
     &:focus {

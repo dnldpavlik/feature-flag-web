@@ -12,13 +12,13 @@
   &__section-title {
     font-size: 1rem;
     font-weight: 600;
-    color: var(--text-primary, #e6edf3);
+    color: var(--text-primary, #f5f2ea);
     margin: 0;
   }
 
   &__section-description {
     font-size: 0.875rem;
-    color: var(--text-secondary, #7d8590);
+    color: var(--text-secondary, #a8a5a0);
     margin: 0;
   }
 
@@ -32,8 +32,8 @@
     width: 80px;
     height: 80px;
     border-radius: 50%;
-    background: var(--bg-tertiary, #21262d);
-    border: 2px solid var(--border-primary, #30363d);
+    background: var(--bg-tertiary, #1a1a18);
+    border: 2px solid var(--border-primary, #535955);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -50,7 +50,7 @@
   &__avatar-initials {
     font-size: 1.5rem;
     font-weight: 600;
-    color: var(--text-primary, #e6edf3);
+    color: var(--text-primary, #f5f2ea);
   }
 
   &__form {
@@ -76,15 +76,15 @@
   &__label {
     font-size: 0.875rem;
     font-weight: 500;
-    color: var(--text-primary, #e6edf3);
+    color: var(--text-primary, #f5f2ea);
   }
 
   &__input {
     padding: 0.625rem 0.75rem;
     font-size: 0.875rem;
-    color: var(--text-primary, #e6edf3);
+    color: var(--text-primary, #f5f2ea);
     background: var(--bg-primary, #040403);
-    border: 1px solid var(--border-primary, #30363d);
+    border: 1px solid var(--border-primary, #535955);
     border-radius: var(--border-radius, 6px);
     outline: none;
     transition: border-color var(--transition-fast, 150ms ease);
@@ -94,7 +94,7 @@
     }
 
     &::placeholder {
-      color: var(--text-tertiary, #484f58);
+      color: var(--text-tertiary, #535955);
     }
   }
 

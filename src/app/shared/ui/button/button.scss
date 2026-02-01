@@ -55,33 +55,33 @@
   }
 
   &--secondary {
-    background: var(--bg-tertiary, #21262d);
-    color: var(--text-primary, #e6edf3);
-    border-color: var(--border-primary, #30363d);
+    background: var(--bg-tertiary, #1a1a18);
+    color: var(--text-primary, #f5f2ea);
+    border-color: var(--border-primary, #535955);
 
     &:hover:not(:disabled) {
-      background: var(--bg-hover, #30363d);
-      border-color: var(--border-primary, #30363d);
+      background: var(--bg-hover, #535955);
+      border-color: var(--border-primary, #535955);
     }
 
     &:focus-visible {
-      outline: 2px solid var(--border-primary, #30363d);
+      outline: 2px solid var(--border-primary, #535955);
       outline-offset: 2px;
     }
   }
 
   &--ghost {
     background: transparent;
-    color: var(--text-secondary, #7d8590);
+    color: var(--text-secondary, #a8a5a0);
     border-color: transparent;
 
     &:hover:not(:disabled) {
-      background: var(--bg-hover, #30363d);
-      color: var(--text-primary, #e6edf3);
+      background: var(--bg-hover, #535955);
+      color: var(--text-primary, #f5f2ea);
     }
 
     &:focus-visible {
-      outline: 2px solid var(--border-primary, #30363d);
+      outline: 2px solid var(--border-primary, #535955);
       outline-offset: 2px;
     }
   }
