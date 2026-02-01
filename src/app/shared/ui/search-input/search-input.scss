@@ -26,7 +26,7 @@
     padding: 0.5rem 0.75rem 0.5rem 2.25rem;
     font-size: 0.875rem;
     color: var(--text-primary, #e6edf3);
-    background: var(--bg-primary, #0d1117);
+    background: var(--bg-primary, #040403);
     border: 1px solid var(--border-primary, #30363d);
     border-radius: var(--border-radius, 6px);
     transition: all var(--transition-fast, 150ms ease);
@@ -42,7 +42,7 @@
     }
 
     &:disabled {
-      background: var(--bg-secondary, #161b22);
+      background: var(--bg-secondary, #0d0d0b);
     }
   }
 

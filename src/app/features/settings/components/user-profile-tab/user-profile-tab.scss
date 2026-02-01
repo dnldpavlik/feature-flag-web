@@ -83,7 +83,7 @@
     padding: 0.625rem 0.75rem;
     font-size: 0.875rem;
     color: var(--text-primary, #e6edf3);
-    background: var(--bg-primary, #0d1117);
+    background: var(--bg-primary, #040403);
     border: 1px solid var(--border-primary, #30363d);
     border-radius: var(--border-radius, 6px);
     outline: none;
@@ -112,7 +112,7 @@
     transition: all var(--transition-fast, 150ms ease);
 
     &:hover:not(:disabled) {
-      background: var(--accent-hover, #3449db);
+      background: var(--accent-hover, #7a3402);
     }
 
     &:disabled {
