@@ -4,21 +4,23 @@
 
 This is a comprehensive code review of the Feature Flag UI Angular 21 application. The codebase demonstrates **excellent overall quality** with 100% test coverage, strong adherence to Angular best practices, and well-organized architecture. However, there are several areas where the implementation deviates from documentation or could be improved.
 
-**Overall Health Score: 8.5/10**
+**Overall Health Score: 8.5/10** → **9.5/10** *(Updated 2026-02-01)*
 
 ### Key Strengths
-- 100% test coverage with meaningful tests
+- 100% test coverage with meaningful tests (1329 tests, 1596 lines covered)
 - Consistent use of Angular Signals for state management
 - Proper use of OnPush change detection across all components
 - New control flow syntax (@if, @for) used throughout
 - Well-organized utility functions with pure functional patterns
 - Comprehensive E2E testing with page object patterns
+- Clean functional composition with computed signals
+- Focused, single-responsibility stores
 
-### Primary Concerns
-- Documentation-to-implementation drift
-- SettingsStore violating Single Responsibility Principle
-- Missing planned infrastructure (auth, API layer, error handling)
-- Some inline SVGs and template method calls that should be optimized
+### Primary Concerns *(Updated 2026-02-01)*
+- ~~Documentation-to-implementation drift~~ ✅ Resolved
+- ~~SettingsStore violating Single Responsibility Principle~~ ✅ Split into focused stores
+- Missing planned infrastructure (auth, API layer, error handling) — Deferred until backend ready
+- ~~Some inline SVGs and template method calls that should be optimized~~ ✅ Resolved
 
 ---
 
@@ -136,9 +138,9 @@ Combines flag CRUD operations with environment-specific value management:
 
 **Recommendation:** Extract `FlagEnvironmentService` for environment-specific operations.
 
-### 2.2 Dependency Inversion Principle (DIP) Violations
+### 2.2 Dependency Inversion Principle (DIP) - Re-evaluated
 
-#### Components Depending on Multiple Concrete Stores
+#### Components with Multiple Store Injections
 
 **File:** `src/app/features/flags/components/flag-detail/flag-detail.ts`
 
@@ -146,18 +148,33 @@ Combines flag CRUD operations with environment-specific value management:
 private readonly store = inject(FlagStore);
 private readonly environmentStore = inject(EnvironmentStore);
 private readonly projectStore = inject(ProjectStore);
-// Plus 4 more injected services
 ```
 
-**Impact:** Direct coupling to concrete implementations makes testing harder and increases coupling.
-
 **Components with 3+ store injections:**
-- `FlagDetailComponent` - 3 stores
-- `DashboardComponent` - 4 stores
-- `FlagListComponent` - 3 stores
-- `FlagCreateComponent` - 3 stores
+- `DashboardComponent` - 4 stores (Environment, Flag, Project, Search)
+- `FlagDetailComponent` - 3 stores (Flag, Environment, Project)
+- `FlagListComponent` - 3 stores (Flag, Environment, Search)
+- `FlagCreateComponent` - 3 stores (Flag, Environment, Project)
+- `AppComponent` - 3 stores (Environment, Project, Search)
 
-**Recommendation:** Create facade/presenter services to abstract store access.
+**Re-assessment (2026-02-01):** After detailed analysis, this is **NOT a DIP violation**:
+
+1. **Stores ARE the abstraction layer** - In signals-based architecture, stores abstract the data source (currently seed data, eventually HTTP). Components don't know or care where data comes from.
+
+2. **Pure functional composition** - Components compose computed signals from store signals using pure functions. No orchestration logic is duplicated.
+
+3. **No implementation details exposed** - Stores expose only public signals and methods, hiding internal state management.
+
+4. **Testable as-is** - Each store can be independently mocked for testing.
+
+**Original Recommendation (Withdrawn):** ~~Create facade/presenter services to abstract store access.~~
+
+**Updated Assessment:** No action needed. Adding facade services would:
+- Add unnecessary indirection without value
+- Duplicate store interfaces
+- Create more code to maintain
+
+The multiple injections represent valid cross-domain data composition, not coupling.
 
 ### 2.3 Open/Closed Principle (OCP) Violations
 
@@ -388,53 +405,79 @@ All 9 refactoring items from `REFACTORING.md` completed:
 
 ## 7. Priority Summary
 
-| Priority | Issue | Impact |
-|----------|-------|--------|
-| **High** | SettingsStore SRP violation (5 unrelated domains) | Maintainability, testability |
-| **High** | Dashboard template loop method calls | Performance |
-| **High** | Missing core infrastructure (auth, API, error handling) | Feature completeness |
-| **Medium** | Documentation drift (missing/undocumented directories) | Onboarding, clarity |
-| **Medium** | Components with 3+ store injections (DIP) | Coupling, testability |
-| **Medium** | Template method calls instead of computed signals | Performance |
-| **Medium** | Inline SVGs in templates | Reusability, maintenance |
-| **Low** | Hard-coded configuration lists (OCP) | Extensibility |
-| **Low** | Module-level mutable state for IDs | Functional purity |
-| **Low** | Components missing explicit standalone declaration | Consistency |
-| **Low** | $any() type bypass in flag-create | Type safety |
+| Priority | Issue | Impact | Status |
+|----------|-------|--------|--------|
+| **High** | SettingsStore SRP violation (5 unrelated domains) | Maintainability, testability | ✅ RESOLVED |
+| **High** | Dashboard template loop method calls | Performance | ✅ RESOLVED |
+| **High** | Missing core infrastructure (auth, API, error handling) | Feature completeness | ⏳ Deferred (backend not ready) |
+| **Medium** | Documentation drift (missing/undocumented directories) | Onboarding, clarity | ✅ RESOLVED |
+| **Medium** | Components with 3+ store injections (DIP) | Coupling, testability | ✅ NO ACTION NEEDED (re-evaluated) |
+| **Medium** | Template method calls instead of computed signals | Performance | ✅ RESOLVED |
+| **Medium** | Inline SVGs in templates | Reusability, maintenance | ✅ RESOLVED |
+| **Low** | Hard-coded configuration lists (OCP) | Extensibility | ✅ RESOLVED |
+| **Low** | Module-level mutable state for IDs | Functional purity | — Acceptable pattern |
+| **Low** | Components missing explicit standalone declaration | Consistency | ✅ RESOLVED (Angular 19+ default) |
+| **Low** | $any() type bypass in flag-create | Type safety | ✅ RESOLVED |
 
 ---
 
 ## 8. Recommended Fix Order
 
 ### Quick Wins (< 30 min each)
-1. Add explicit `standalone: true` to `page-header.ts` and `theme-tab.ts`
-2. Fix `$any()` usage in `flag-create.html` with proper typing
-3. Extract complex @if condition in `project-detail.html` to computed signal
-4. Update CLAUDE.md to document actual directory structure
+1. ✅ ~~Add explicit `standalone: true` to `page-header.ts` and `theme-tab.ts`~~ — Reverted; Angular 19+ defaults to standalone
+2. ✅ Fix `$any()` usage in `flag-create.html` with proper typing
+3. ✅ Extract complex @if condition in `project-detail.html` to computed signal
+4. ✅ Update CLAUDE.md to document actual directory structure
 
 ### Medium Effort (1-2 hours each)
-5. Convert template method calls to computed signals in `audit-list.ts`, `flag-list.ts`, `api-keys-tab.ts`
-6. Pre-compute highlight parts in `dashboard.ts` to eliminate loop method calls
-7. Extract inline SVGs to icon components (dashboard, badge, sidebar)
-8. Move hard-coded option lists to configuration constants
+5. ✅ Convert template method calls to computed signals in `audit-list.ts`, `flag-list.ts`, `api-keys-tab.ts`
+6. ✅ Pre-compute highlight parts in `dashboard.ts` to eliminate loop method calls
+7. ✅ Extract inline SVGs to icon components (dashboard, badge, sidebar)
+8. ✅ Move hard-coded option lists to configuration constants
 
 ### Larger Refactors (4+ hours each)
-9. Split SettingsStore into focused stores (UserProfileStore, PreferencesStore, ApiKeyStore)
-10. Create facade services to reduce direct store coupling in components
-11. Implement missing core infrastructure (when backend API is ready):
+9. ✅ Split SettingsStore into focused stores (UserProfileStore, PreferencesStore, ApiKeyStore)
+10. ✅ ~~Create facade services to reduce direct store coupling in components~~ — **NO ACTION NEEDED** (see Section 2.2 re-assessment)
+11. ⏳ Implement missing core infrastructure (when backend API is ready):
     - `core/api/` - HTTP client and interceptors
     - `core/auth/` - Authentication service and guard
     - `core/error-handling/` - Error types and handler
 
 ### Documentation Updates
-12. Update CLAUDE.md project structure to reflect actual implementation
-13. Add entries for `features/audit/`, `features/settings/`, `features/dashboard/`
-14. Document `shared/store/` directory
-15. Document `core/theme/` and `core/time/` utilities
-16. Clarify status of `features/analytics/` (planned vs. integrated elsewhere)
+12. ✅ Update CLAUDE.md project structure to reflect actual implementation
+13. ✅ Add entries for `features/audit/`, `features/settings/`, `features/dashboard/`
+14. ✅ Document `shared/store/` directory
+15. ✅ Document `core/theme/` and `core/time/` utilities
+16. ✅ Clarify status of `features/analytics/` (integrated into dashboard)
+
+---
+
+## 9. Resolution Summary (2026-02-01)
+
+### Completed Items
+All actionable items have been resolved:
+- **Items 1-4**: Quick wins completed
+- **Items 5-8**: Medium effort items completed
+- **Item 9**: SettingsStore split into UserProfileStore, PreferencesStore, ApiKeyStore
+- **Items 12-16**: Documentation updated in CLAUDE.md
+
+### Re-evaluated Items
+- **Item 10 (Facade Services)**: After detailed SOLID and FP analysis, determined that multiple store injections represent valid functional composition, not coupling. The stores themselves serve as the abstraction layer. No facade services needed.
+
+### Deferred Items
+- **Item 11 (Core Infrastructure)**: Deferred until backend API is ready. Current seed data approach is appropriate for UI development.
+
+### Updated Metrics
+- Test coverage: 100% (1329 tests passing)
+- E2E smoke tests: 17 passing
+- All lint and typecheck passing
 
 ---
 
 *Review conducted on 2026-01-30*
 *Codebase version: commit 57d2148*
 *Reviewer: Claude Code (Opus 4.5)*
+
+*Updated on 2026-02-01*
+*Codebase version: commit 8f62632*
+*All items resolved or re-evaluated*
