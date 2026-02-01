@@ -2,24 +2,24 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 
 import { EnvironmentStore } from '@/app/shared/store/environment.store';
-import { SettingsStore } from '../../store/settings.store';
+import { PreferencesStore } from '../../store/preferences.store';
 import { PreferencesTabComponent } from './preferences-tab';
 
 describe('PreferencesTabComponent', () => {
   let fixture: ComponentFixture<PreferencesTabComponent>;
   let component: PreferencesTabComponent;
-  let settingsStore: SettingsStore;
+  let preferencesStore: PreferencesStore;
   let environmentStore: EnvironmentStore;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [PreferencesTabComponent],
-      providers: [SettingsStore, EnvironmentStore],
+      providers: [PreferencesStore, EnvironmentStore],
     }).compileComponents();
 
     fixture = TestBed.createComponent(PreferencesTabComponent);
     component = fixture.componentInstance;
-    settingsStore = TestBed.inject(SettingsStore);
+    preferencesStore = TestBed.inject(PreferencesStore);
     environmentStore = TestBed.inject(EnvironmentStore);
     fixture.detectChanges();
   });
@@ -30,9 +30,7 @@ describe('PreferencesTabComponent', () => {
 
   describe('default environment selector', () => {
     it('should render environment select', () => {
-      const select = fixture.debugElement.query(
-        By.css('app-labeled-select')
-      );
+      const select = fixture.debugElement.query(By.css('app-labeled-select'));
       expect(select).toBeTruthy();
     });
 
@@ -42,7 +40,7 @@ describe('PreferencesTabComponent', () => {
     });
 
     it('should reflect current default environment', () => {
-      settingsStore.updateProjectPreferences({
+      preferencesStore.updateProjectPreferences({
         defaultEnvironmentId: 'env_staging',
       });
       fixture.detectChanges();
@@ -52,29 +50,23 @@ describe('PreferencesTabComponent', () => {
 
     it('should update store when default environment changes', () => {
       component.onDefaultEnvironmentChange('env_production');
-      expect(settingsStore.projectPreferences().defaultEnvironmentId).toBe(
-        'env_production'
-      );
+      expect(preferencesStore.projectPreferences().defaultEnvironmentId).toBe('env_production');
     });
   });
 
   describe('notification toggles', () => {
     it('should render email on flag change checkbox', () => {
-      const checkbox = fixture.debugElement.query(
-        By.css('input#email-flag-change')
-      );
+      const checkbox = fixture.debugElement.query(By.css('input#email-flag-change'));
       expect(checkbox).toBeTruthy();
     });
 
     it('should render email on API key created checkbox', () => {
-      const checkbox = fixture.debugElement.query(
-        By.css('input#email-api-key')
-      );
+      const checkbox = fixture.debugElement.query(By.css('input#email-api-key'));
       expect(checkbox).toBeTruthy();
     });
 
     it('should reflect current notification settings', () => {
-      settingsStore.updateProjectPreferences({
+      preferencesStore.updateProjectPreferences({
         notifications: {
           emailOnFlagChange: false,
           emailOnApiKeyCreated: true,
@@ -83,100 +75,84 @@ describe('PreferencesTabComponent', () => {
       });
       fixture.detectChanges();
 
-      const flagChangeCheckbox = fixture.debugElement.query(
-        By.css('input#email-flag-change')
-      );
-      const apiKeyCheckbox = fixture.debugElement.query(
-        By.css('input#email-api-key')
-      );
+      const flagChangeCheckbox = fixture.debugElement.query(By.css('input#email-flag-change'));
+      const apiKeyCheckbox = fixture.debugElement.query(By.css('input#email-api-key'));
 
       expect(flagChangeCheckbox.nativeElement.checked).toBe(false);
       expect(apiKeyCheckbox.nativeElement.checked).toBe(true);
     });
 
     it('should update flag change notification setting', () => {
-      const checkbox = fixture.debugElement.query(
-        By.css('input#email-flag-change')
-      );
-      const currentValue =
-        settingsStore.projectPreferences().notifications.emailOnFlagChange;
+      const checkbox = fixture.debugElement.query(By.css('input#email-flag-change'));
+      const currentValue = preferencesStore.projectPreferences().notifications.emailOnFlagChange;
 
       checkbox.nativeElement.click();
       fixture.detectChanges();
 
-      expect(
-        settingsStore.projectPreferences().notifications.emailOnFlagChange
-      ).toBe(!currentValue);
+      expect(preferencesStore.projectPreferences().notifications.emailOnFlagChange).toBe(
+        !currentValue,
+      );
     });
 
     it('should update API key notification setting', () => {
       const checkbox = fixture.debugElement.query(By.css('input#email-api-key'));
-      const currentValue =
-        settingsStore.projectPreferences().notifications.emailOnApiKeyCreated;
+      const currentValue = preferencesStore.projectPreferences().notifications.emailOnApiKeyCreated;
 
       checkbox.nativeElement.click();
       fixture.detectChanges();
 
-      expect(
-        settingsStore.projectPreferences().notifications.emailOnApiKeyCreated
-      ).toBe(!currentValue);
+      expect(preferencesStore.projectPreferences().notifications.emailOnApiKeyCreated).toBe(
+        !currentValue,
+      );
     });
   });
 
   describe('email digest frequency', () => {
     it('should render email digest options', () => {
-      const radios = fixture.debugElement.queryAll(
-        By.css('input[name="email-digest"]')
-      );
+      const radios = fixture.debugElement.queryAll(By.css('input[name="email-digest"]'));
       expect(radios.length).toBe(3);
     });
 
     it('should have none option', () => {
-      const radio = fixture.debugElement.query(
-        By.css('input[name="email-digest"][value="none"]')
-      );
+      const radio = fixture.debugElement.query(By.css('input[name="email-digest"][value="none"]'));
       expect(radio).toBeTruthy();
     });
 
     it('should have daily option', () => {
-      const radio = fixture.debugElement.query(
-        By.css('input[name="email-digest"][value="daily"]')
-      );
+      const radio = fixture.debugElement.query(By.css('input[name="email-digest"][value="daily"]'));
       expect(radio).toBeTruthy();
     });
 
     it('should have weekly option', () => {
       const radio = fixture.debugElement.query(
-        By.css('input[name="email-digest"][value="weekly"]')
+        By.css('input[name="email-digest"][value="weekly"]'),
       );
       expect(radio).toBeTruthy();
     });
 
     it('should reflect current email digest setting', () => {
-      settingsStore.updateProjectPreferences({
+      preferencesStore.updateProjectPreferences({
         notifications: {
-          ...settingsStore.projectPreferences().notifications,
+          ...preferencesStore.projectPreferences().notifications,
           emailDigest: 'daily',
         },
       });
       fixture.detectChanges();
 
       const dailyRadio = fixture.debugElement.query(
-        By.css('input[name="email-digest"][value="daily"]')
+        By.css('input[name="email-digest"][value="daily"]'),
       );
       expect(dailyRadio.nativeElement.checked).toBe(true);
     });
 
     it('should update email digest setting', () => {
       const noneRadio = fixture.debugElement.query(
-        By.css('input[name="email-digest"][value="none"]')
+        By.css('input[name="email-digest"][value="none"]'),
       );
       noneRadio.nativeElement.click();
       fixture.detectChanges();
 
-      expect(
-        settingsStore.projectPreferences().notifications.emailDigest
-      ).toBe('none');
+      expect(preferencesStore.projectPreferences().notifications.emailDigest).toBe('none');
     });
   });
 

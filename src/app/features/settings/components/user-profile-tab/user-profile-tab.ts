@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 
 import { ButtonComponent } from '@/app/shared/ui/button/button';
-import { SettingsStore } from '../../store/settings.store';
+import { UserProfileStore } from '../../store/user-profile.store';
 
 @Component({
   selector: 'app-user-profile-tab',
@@ -11,15 +11,13 @@ import { SettingsStore } from '../../store/settings.store';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class UserProfileTabComponent {
-  private readonly settingsStore = inject(SettingsStore);
+  private readonly userProfileStore = inject(UserProfileStore);
 
-  protected readonly userProfile = computed(() =>
-    this.settingsStore.userProfile()
-  );
+  protected readonly userProfile = computed(() => this.userProfileStore.userProfile());
 
   // Profile form state
-  protected readonly profileName = signal(this.settingsStore.userProfile().name);
-  protected readonly profileEmail = signal(this.settingsStore.userProfile().email);
+  protected readonly profileName = signal(this.userProfileStore.userProfile().name);
+  protected readonly profileEmail = signal(this.userProfileStore.userProfile().email);
 
   // Password form state
   protected readonly currentPassword = signal('');
@@ -53,9 +51,7 @@ export class UserProfileTabComponent {
 
   protected readonly showPasswordError = computed(() => {
     return (
-      this.newPassword().length > 0 &&
-      this.confirmPassword().length > 0 &&
-      !this.passwordsMatch()
+      this.newPassword().length > 0 && this.confirmPassword().length > 0 && !this.passwordsMatch()
     );
   });
 
@@ -85,7 +81,7 @@ export class UserProfileTabComponent {
   }
 
   protected saveProfile(): void {
-    this.settingsStore.updateUserProfile({
+    this.userProfileStore.updateUserProfile({
       name: this.profileName(),
       email: this.profileEmail(),
     });

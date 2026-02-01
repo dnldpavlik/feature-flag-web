@@ -5,7 +5,7 @@ import {
   SelectOption,
 } from '@/app/shared/ui/labeled-select/labeled-select';
 import { EnvironmentStore } from '@/app/shared/store/environment.store';
-import { SettingsStore } from '../../store/settings.store';
+import { PreferencesStore } from '../../store/preferences.store';
 import { EmailDigestFrequency } from '../../models/settings.model';
 
 @Component({
@@ -16,10 +16,12 @@ import { EmailDigestFrequency } from '../../models/settings.model';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PreferencesTabComponent {
-  private readonly settingsStore = inject(SettingsStore);
+  private readonly preferencesStore = inject(PreferencesStore);
   private readonly environmentStore = inject(EnvironmentStore);
 
-  protected readonly projectPreferences = computed(() => this.settingsStore.projectPreferences());
+  protected readonly projectPreferences = computed(() =>
+    this.preferencesStore.projectPreferences(),
+  );
 
   protected readonly environmentOptions = computed((): SelectOption[] =>
     this.environmentStore.environments().map((env) => ({
@@ -35,14 +37,14 @@ export class PreferencesTabComponent {
   protected readonly notifications = computed(() => this.projectPreferences().notifications);
 
   protected onDefaultEnvironmentChange(value: string): void {
-    this.settingsStore.updateProjectPreferences({
+    this.preferencesStore.updateProjectPreferences({
       defaultEnvironmentId: value,
     });
   }
 
   protected onEmailOnFlagChangeToggle(event: Event): void {
     const checked = (event.target as HTMLInputElement).checked;
-    this.settingsStore.updateProjectPreferences({
+    this.preferencesStore.updateProjectPreferences({
       notifications: {
         ...this.notifications(),
         emailOnFlagChange: checked,
@@ -52,7 +54,7 @@ export class PreferencesTabComponent {
 
   protected onEmailOnApiKeyCreatedToggle(event: Event): void {
     const checked = (event.target as HTMLInputElement).checked;
-    this.settingsStore.updateProjectPreferences({
+    this.preferencesStore.updateProjectPreferences({
       notifications: {
         ...this.notifications(),
         emailOnApiKeyCreated: checked,
@@ -61,7 +63,7 @@ export class PreferencesTabComponent {
   }
 
   protected onEmailDigestChange(frequency: EmailDigestFrequency): void {
-    this.settingsStore.updateProjectPreferences({
+    this.preferencesStore.updateProjectPreferences({
       notifications: {
         ...this.notifications(),
         emailDigest: frequency,

@@ -4,7 +4,7 @@ import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@a
 import { ButtonComponent } from '@/app/shared/ui/button/button';
 import { DataTableComponent } from '@/app/shared/ui/data-table/data-table';
 import { UiColDirective } from '@/app/shared/ui/data-table/ui-col.directive';
-import { SettingsStore } from '../../store/settings.store';
+import { ApiKeyStore } from '../../store/api-key.store';
 import { API_KEY_SCOPE_OPTIONS, type ApiKeyScope } from '../../models/settings.model';
 
 @Component({
@@ -15,9 +15,9 @@ import { API_KEY_SCOPE_OPTIONS, type ApiKeyScope } from '../../models/settings.m
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ApiKeysTabComponent {
-  private readonly settingsStore = inject(SettingsStore);
+  private readonly apiKeyStore = inject(ApiKeyStore);
 
-  private readonly rawApiKeys = computed(() => this.settingsStore.apiKeys());
+  private readonly rawApiKeys = computed(() => this.apiKeyStore.apiKeys());
   protected readonly apiKeys = computed(() =>
     this.rawApiKeys().map((key) => ({
       ...key,
@@ -75,7 +75,7 @@ export class ApiKeysTabComponent {
   protected createKey(): void {
     if (!this.canSubmit()) return;
 
-    const result = this.settingsStore.createApiKey({
+    const result = this.apiKeyStore.createApiKey({
       name: this.newKeyName().trim(),
       scopes: this.selectedScopes(),
     });
@@ -106,7 +106,7 @@ export class ApiKeysTabComponent {
   protected revokeKey(): void {
     const keyId = this.keyToRevoke();
     if (keyId) {
-      this.settingsStore.revokeApiKey(keyId);
+      this.apiKeyStore.revokeApiKey(keyId);
       this.keyToRevoke.set(null);
     }
   }

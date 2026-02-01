@@ -1,23 +1,23 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 
-import { SettingsStore } from '../../store/settings.store';
+import { ApiKeyStore } from '../../store/api-key.store';
 import { ApiKeysTabComponent } from './api-keys-tab';
 
 describe('ApiKeysTabComponent', () => {
   let fixture: ComponentFixture<ApiKeysTabComponent>;
   let component: ApiKeysTabComponent;
-  let settingsStore: SettingsStore;
+  let apiKeyStore: ApiKeyStore;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [ApiKeysTabComponent],
-      providers: [SettingsStore],
+      providers: [ApiKeyStore],
     }).compileComponents();
 
     fixture = TestBed.createComponent(ApiKeysTabComponent);
     component = fixture.componentInstance;
-    settingsStore = TestBed.inject(SettingsStore);
+    apiKeyStore = TestBed.inject(ApiKeyStore);
     fixture.detectChanges();
   });
 
@@ -32,64 +32,56 @@ describe('ApiKeysTabComponent', () => {
     });
 
     it('should display existing API keys', () => {
-      const rows = fixture.debugElement.queryAll(
-        By.css('.data-table__body-wrap tbody tr')
-      );
-      expect(rows.length).toBe(settingsStore.apiKeys().length);
+      const rows = fixture.debugElement.queryAll(By.css('.data-table__body-wrap tbody tr'));
+      expect(rows.length).toBe(apiKeyStore.apiKeys().length);
     });
 
     it('should display key name', () => {
-      const firstKey = settingsStore.apiKeys()[0];
+      const firstKey = apiKeyStore.apiKeys()[0];
       const nameCell = fixture.debugElement.query(
-        By.css('.data-table__body-wrap tbody tr .api-keys-tab__key-name')
+        By.css('.data-table__body-wrap tbody tr .api-keys-tab__key-name'),
       );
       expect(nameCell.nativeElement.textContent).toContain(firstKey.name);
     });
 
     it('should display masked key prefix', () => {
-      const firstKey = settingsStore.apiKeys()[0];
+      const firstKey = apiKeyStore.apiKeys()[0];
       const prefixCell = fixture.debugElement.query(
-        By.css('.data-table__body-wrap tbody tr .api-keys-tab__key-prefix')
+        By.css('.data-table__body-wrap tbody tr .api-keys-tab__key-prefix'),
       );
       expect(prefixCell.nativeElement.textContent).toContain(firstKey.prefix);
     });
 
     it('should display scopes', () => {
-      const firstKey = settingsStore.apiKeys()[0];
+      const firstKey = apiKeyStore.apiKeys()[0];
       const scopesCell = fixture.debugElement.query(
-        By.css('.data-table__body-wrap tbody tr .api-keys-tab__key-scopes')
+        By.css('.data-table__body-wrap tbody tr .api-keys-tab__key-scopes'),
       );
-      expect(scopesCell.nativeElement.textContent).toContain(
-        firstKey.scopes[0]
-      );
+      expect(scopesCell.nativeElement.textContent).toContain(firstKey.scopes[0]);
     });
 
     it('should have revoke button for each key', () => {
       const revokeButtons = fixture.debugElement.queryAll(
-        By.css('app-button.api-keys-tab__revoke-btn')
+        By.css('app-button.api-keys-tab__revoke-btn'),
       );
-      expect(revokeButtons.length).toBe(settingsStore.apiKeys().length);
+      expect(revokeButtons.length).toBe(apiKeyStore.apiKeys().length);
     });
   });
 
   describe('create key button', () => {
     it('should render create key button', () => {
-      const button = fixture.debugElement.query(
-        By.css('app-button.api-keys-tab__create-btn')
-      );
+      const button = fixture.debugElement.query(By.css('app-button.api-keys-tab__create-btn'));
       expect(button).toBeTruthy();
     });
 
     it('should show create form when clicked', () => {
       const button = fixture.debugElement.query(
-        By.css('app-button.api-keys-tab__create-btn button')
+        By.css('app-button.api-keys-tab__create-btn button'),
       );
       button.nativeElement.click();
       fixture.detectChanges();
 
-      const form = fixture.debugElement.query(
-        By.css('.api-keys-tab__create-form')
-      );
+      const form = fixture.debugElement.query(By.css('.api-keys-tab__create-form'));
       expect(form).toBeTruthy();
     });
   });
@@ -107,28 +99,24 @@ describe('ApiKeysTabComponent', () => {
 
     it('should render scope checkboxes', () => {
       const checkboxes = fixture.debugElement.queryAll(
-        By.css('input[type="checkbox"].api-keys-tab__scope-checkbox')
+        By.css('input[type="checkbox"].api-keys-tab__scope-checkbox'),
       );
       expect(checkboxes.length).toBe(3); // read:flags, write:flags, admin
     });
 
     it('should have submit button', () => {
-      const button = fixture.debugElement.query(
-        By.css('app-button.api-keys-tab__submit-btn')
-      );
+      const button = fixture.debugElement.query(By.css('app-button.api-keys-tab__submit-btn'));
       expect(button).toBeTruthy();
     });
 
     it('should have cancel button', () => {
-      const button = fixture.debugElement.query(
-        By.css('app-button.api-keys-tab__cancel-btn')
-      );
+      const button = fixture.debugElement.query(By.css('app-button.api-keys-tab__cancel-btn'));
       expect(button).toBeTruthy();
     });
 
     it('should disable submit when name is empty', () => {
       const button = fixture.debugElement.query(
-        By.css('app-button.api-keys-tab__submit-btn button')
+        By.css('app-button.api-keys-tab__submit-btn button'),
       );
       expect(button.nativeElement.disabled).toBe(true);
     });
@@ -140,7 +128,7 @@ describe('ApiKeysTabComponent', () => {
       fixture.detectChanges();
 
       const button = fixture.debugElement.query(
-        By.css('app-button.api-keys-tab__submit-btn button')
+        By.css('app-button.api-keys-tab__submit-btn button'),
       );
       expect(button.nativeElement.disabled).toBe(true);
     });
@@ -150,23 +138,19 @@ describe('ApiKeysTabComponent', () => {
       nameInput.nativeElement.value = 'Test Key';
       nameInput.nativeElement.dispatchEvent(new Event('input'));
 
-      const scopeCheckbox = fixture.debugElement.query(
-        By.css('input[value="read:flags"]')
-      );
+      const scopeCheckbox = fixture.debugElement.query(By.css('input[value="read:flags"]'));
       scopeCheckbox.nativeElement.click();
       fixture.detectChanges();
 
       const button = fixture.debugElement.query(
-        By.css('app-button.api-keys-tab__submit-btn button')
+        By.css('app-button.api-keys-tab__submit-btn button'),
       );
       expect(button.nativeElement.disabled).toBe(false);
     });
 
     it('should remove scope when unchecked', () => {
       // First, check a scope
-      const scopeCheckbox = fixture.debugElement.query(
-        By.css('input[value="read:flags"]')
-      );
+      const scopeCheckbox = fixture.debugElement.query(By.css('input[value="read:flags"]'));
       scopeCheckbox.nativeElement.click();
       fixture.detectChanges();
 
@@ -184,44 +168,40 @@ describe('ApiKeysTabComponent', () => {
       nameInput.nativeElement.value = 'New Test Key';
       nameInput.nativeElement.dispatchEvent(new Event('input'));
 
-      const scopeCheckbox = fixture.debugElement.query(
-        By.css('input[value="read:flags"]')
-      );
+      const scopeCheckbox = fixture.debugElement.query(By.css('input[value="read:flags"]'));
       scopeCheckbox.nativeElement.click();
       fixture.detectChanges();
 
-      const beforeCount = settingsStore.apiKeys().length;
+      const beforeCount = apiKeyStore.apiKeys().length;
       const submitButton = fixture.debugElement.query(
-        By.css('app-button.api-keys-tab__submit-btn button')
+        By.css('app-button.api-keys-tab__submit-btn button'),
       );
       submitButton.nativeElement.click();
       fixture.detectChanges();
 
-      expect(settingsStore.apiKeys().length).toBe(beforeCount + 1);
+      expect(apiKeyStore.apiKeys().length).toBe(beforeCount + 1);
       expect(component.createdSecret()).toBeTruthy();
     });
 
     it('should not create key when validation fails', () => {
       // No name or scope entered
-      const beforeCount = settingsStore.apiKeys().length;
+      const beforeCount = apiKeyStore.apiKeys().length;
 
       // Manually call createKey bypassing button disabled state
       component['createKey']();
       fixture.detectChanges();
 
-      expect(settingsStore.apiKeys().length).toBe(beforeCount);
+      expect(apiKeyStore.apiKeys().length).toBe(beforeCount);
     });
 
     it('should hide form on cancel', () => {
       const cancelButton = fixture.debugElement.query(
-        By.css('app-button.api-keys-tab__cancel-btn button')
+        By.css('app-button.api-keys-tab__cancel-btn button'),
       );
       cancelButton.nativeElement.click();
       fixture.detectChanges();
 
-      const form = fixture.debugElement.query(
-        By.css('.api-keys-tab__create-form')
-      );
+      const form = fixture.debugElement.query(By.css('.api-keys-tab__create-form'));
       expect(form).toBeFalsy();
     });
   });
@@ -235,21 +215,17 @@ describe('ApiKeysTabComponent', () => {
       nameInput.nativeElement.value = 'Secret Key';
       nameInput.nativeElement.dispatchEvent(new Event('input'));
 
-      const scopeCheckbox = fixture.debugElement.query(
-        By.css('input[value="read:flags"]')
-      );
+      const scopeCheckbox = fixture.debugElement.query(By.css('input[value="read:flags"]'));
       scopeCheckbox.nativeElement.click();
       fixture.detectChanges();
 
       const submitButton = fixture.debugElement.query(
-        By.css('app-button.api-keys-tab__submit-btn button')
+        By.css('app-button.api-keys-tab__submit-btn button'),
       );
       submitButton.nativeElement.click();
       fixture.detectChanges();
 
-      const secretDisplay = fixture.debugElement.query(
-        By.css('.api-keys-tab__secret-display')
-      );
+      const secretDisplay = fixture.debugElement.query(By.css('.api-keys-tab__secret-display'));
       expect(secretDisplay).toBeTruthy();
     });
 
@@ -257,9 +233,7 @@ describe('ApiKeysTabComponent', () => {
       component.createdSecret.set('sk_live_abc123');
       fixture.detectChanges();
 
-      const copyButton = fixture.debugElement.query(
-        By.css('app-button.api-keys-tab__copy-btn')
-      );
+      const copyButton = fixture.debugElement.query(By.css('app-button.api-keys-tab__copy-btn'));
       expect(copyButton).toBeTruthy();
     });
 
@@ -294,9 +268,7 @@ describe('ApiKeysTabComponent', () => {
       component.createdSecret.set('sk_live_abc123');
       fixture.detectChanges();
 
-      const warning = fixture.debugElement.query(
-        By.css('.api-keys-tab__secret-warning')
-      );
+      const warning = fixture.debugElement.query(By.css('.api-keys-tab__secret-warning'));
       expect(warning).toBeTruthy();
     });
 
@@ -304,9 +276,7 @@ describe('ApiKeysTabComponent', () => {
       component.createdSecret.set('sk_live_abc123');
       fixture.detectChanges();
 
-      const doneButton = fixture.debugElement.query(
-        By.css('app-button.api-keys-tab__done-btn')
-      );
+      const doneButton = fixture.debugElement.query(By.css('app-button.api-keys-tab__done-btn'));
       expect(doneButton).toBeTruthy();
     });
 
@@ -315,7 +285,7 @@ describe('ApiKeysTabComponent', () => {
       fixture.detectChanges();
 
       const doneButton = fixture.debugElement.query(
-        By.css('app-button.api-keys-tab__done-btn button')
+        By.css('app-button.api-keys-tab__done-btn button'),
       );
       doneButton.nativeElement.click();
       fixture.detectChanges();
@@ -327,72 +297,68 @@ describe('ApiKeysTabComponent', () => {
   describe('revoke confirmation', () => {
     it('should show confirmation when revoke clicked', () => {
       const revokeButton = fixture.debugElement.query(
-        By.css('app-button.api-keys-tab__revoke-btn button')
+        By.css('app-button.api-keys-tab__revoke-btn button'),
       );
       revokeButton.nativeElement.click();
       fixture.detectChanges();
 
-      const confirmation = fixture.debugElement.query(
-        By.css('.api-keys-tab__confirm-revoke')
-      );
+      const confirmation = fixture.debugElement.query(By.css('.api-keys-tab__confirm-revoke'));
       expect(confirmation).toBeTruthy();
     });
 
     it('should revoke key on confirm', () => {
-      const firstKeyId = settingsStore.apiKeys()[0].id;
-      const beforeCount = settingsStore.apiKeys().length;
+      const firstKeyId = apiKeyStore.apiKeys()[0].id;
+      const beforeCount = apiKeyStore.apiKeys().length;
 
       component.keyToRevoke.set(firstKeyId);
       fixture.detectChanges();
 
       const confirmButton = fixture.debugElement.query(
-        By.css('app-button.api-keys-tab__confirm-revoke-btn button')
+        By.css('app-button.api-keys-tab__confirm-revoke-btn button'),
       );
       confirmButton.nativeElement.click();
       fixture.detectChanges();
 
-      expect(settingsStore.apiKeys().length).toBe(beforeCount - 1);
-      expect(settingsStore.apiKeys().find((k) => k.id === firstKeyId)).toBeUndefined();
+      expect(apiKeyStore.apiKeys().length).toBe(beforeCount - 1);
+      expect(apiKeyStore.apiKeys().find((k) => k.id === firstKeyId)).toBeUndefined();
     });
 
     it('should cancel revoke on cancel', () => {
-      const firstKeyId = settingsStore.apiKeys()[0].id;
-      const beforeCount = settingsStore.apiKeys().length;
+      const firstKeyId = apiKeyStore.apiKeys()[0].id;
+      const beforeCount = apiKeyStore.apiKeys().length;
 
       component.keyToRevoke.set(firstKeyId);
       fixture.detectChanges();
 
       const cancelButton = fixture.debugElement.query(
-        By.css('app-button.api-keys-tab__cancel-revoke-btn button')
+        By.css('app-button.api-keys-tab__cancel-revoke-btn button'),
       );
       cancelButton.nativeElement.click();
       fixture.detectChanges();
 
-      expect(settingsStore.apiKeys().length).toBe(beforeCount);
+      expect(apiKeyStore.apiKeys().length).toBe(beforeCount);
       expect(component.keyToRevoke()).toBeNull();
     });
 
     it('should not revoke when keyToRevoke is null', () => {
-      const beforeCount = settingsStore.apiKeys().length;
+      const beforeCount = apiKeyStore.apiKeys().length;
 
       component.keyToRevoke.set(null);
       component['revokeKey']();
       fixture.detectChanges();
 
-      expect(settingsStore.apiKeys().length).toBe(beforeCount);
+      expect(apiKeyStore.apiKeys().length).toBe(beforeCount);
     });
   });
 
   describe('empty state', () => {
     it('should show empty state when no keys exist', () => {
       // Revoke all existing keys
-      const keys = [...settingsStore.apiKeys()];
-      keys.forEach((key) => settingsStore.revokeApiKey(key.id));
+      const keys = [...apiKeyStore.apiKeys()];
+      keys.forEach((key) => apiKeyStore.revokeApiKey(key.id));
       fixture.detectChanges();
 
-      const emptyState = fixture.debugElement.query(
-        By.css('.api-keys-tab__empty')
-      );
+      const emptyState = fixture.debugElement.query(By.css('.api-keys-tab__empty'));
       expect(emptyState).toBeTruthy();
     });
   });

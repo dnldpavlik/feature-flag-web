@@ -1,44 +1,12 @@
 import { Injectable, computed, inject, signal } from '@angular/core';
 
-import { ThemeService } from '@/app/core/theme/theme.service';
 import { TimeService } from '@/app/core/time/time.service';
 import { createId } from '@/app/shared/utils/id.utils';
-import {
-  ApiKey,
-  CreateApiKeyInput,
-  CreateApiKeyResult,
-  ProjectPreferences,
-  ThemePreferences,
-  UserProfile,
-} from '../models/settings.model';
+import { ApiKey, CreateApiKeyInput, CreateApiKeyResult } from '../models/settings.model';
 
 @Injectable({ providedIn: 'root' })
-export class SettingsStore {
-  private readonly themeService = inject(ThemeService);
+export class ApiKeyStore {
   private readonly timeService = inject(TimeService);
-
-  // Private state signals
-  private readonly _userProfile = signal<UserProfile>({
-    id: 'user_1',
-    name: 'John Doe',
-    email: 'john.doe@example.com',
-    avatarUrl: null,
-  });
-
-  private readonly _projectPreferences = signal<ProjectPreferences>({
-    defaultEnvironmentId: 'env_development',
-    notifications: {
-      emailOnFlagChange: true,
-      emailOnApiKeyCreated: true,
-      emailDigest: 'weekly',
-    },
-  });
-
-  private readonly _themePreferences = signal<ThemePreferences>({
-    mode: 'system',
-    reducedMotion: false,
-    compactMode: false,
-  });
 
   private readonly _apiKeys = signal<ApiKey[]>([
     {
@@ -64,46 +32,11 @@ export class SettingsStore {
   private readonly _loading = signal(false);
   private readonly _error = signal<string | null>(null);
 
-  // Public readonly selectors
-  readonly userProfile = this._userProfile.asReadonly();
-  readonly projectPreferences = this._projectPreferences.asReadonly();
-  readonly themePreferences = this._themePreferences.asReadonly();
   readonly apiKeys = this._apiKeys.asReadonly();
   readonly loading = this._loading.asReadonly();
   readonly error = this._error.asReadonly();
 
-  // Computed selectors
   readonly apiKeyCount = computed(() => this._apiKeys().length);
-
-  /** Resolved active theme - delegates to ThemeService */
-  readonly activeThemeMode = computed(() => this.themeService.activeTheme());
-
-  // Actions
-  updateUserProfile(updates: Partial<Omit<UserProfile, 'id'>>): void {
-    this._userProfile.update((profile) => ({
-      ...profile,
-      ...updates,
-    }));
-  }
-
-  updateProjectPreferences(updates: Partial<ProjectPreferences>): void {
-    this._projectPreferences.update((prefs) => ({
-      ...prefs,
-      ...updates,
-    }));
-  }
-
-  updateThemePreferences(updates: Partial<ThemePreferences>): void {
-    this._themePreferences.update((prefs) => ({
-      ...prefs,
-      ...updates,
-    }));
-
-    // Sync mode with ThemeService
-    if (updates.mode) {
-      this.themeService.setMode(updates.mode);
-    }
-  }
 
   createApiKey(input: CreateApiKeyInput): CreateApiKeyResult {
     const keyId = createId('key');
@@ -138,7 +71,7 @@ export class SettingsStore {
     this._loading.set(loading);
   }
 
-  setError(error: string): void {
+  setError(error: string | null): void {
     this._error.set(error);
   }
 
@@ -150,9 +83,7 @@ export class SettingsStore {
 /** Generate a random alphanumeric string */
 function generateRandomString(length: number): string {
   const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-  let result = '';
-  for (let i = 0; i < length; i++) {
-    result += chars.charAt(Math.floor(Math.random() * chars.length));
-  }
-  return result;
+  return Array.from({ length }, () => chars.charAt(Math.floor(Math.random() * chars.length))).join(
+    '',
+  );
 }

@@ -1,23 +1,23 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 
-import { SettingsStore } from '../../store/settings.store';
+import { UserProfileStore } from '../../store/user-profile.store';
 import { UserProfileTabComponent } from './user-profile-tab';
 
 describe('UserProfileTabComponent', () => {
   let fixture: ComponentFixture<UserProfileTabComponent>;
   let component: UserProfileTabComponent;
-  let settingsStore: SettingsStore;
+  let userProfileStore: UserProfileStore;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [UserProfileTabComponent],
-      providers: [SettingsStore],
+      providers: [UserProfileStore],
     }).compileComponents();
 
     fixture = TestBed.createComponent(UserProfileTabComponent);
     component = fixture.componentInstance;
-    settingsStore = TestBed.inject(SettingsStore);
+    userProfileStore = TestBed.inject(UserProfileStore);
     fixture.detectChanges();
   });
 
@@ -38,28 +38,24 @@ describe('UserProfileTabComponent', () => {
 
     it('should display current name from store', () => {
       const input = fixture.debugElement.query(By.css('input#profile-name'));
-      expect(input.nativeElement.value).toBe(settingsStore.userProfile().name);
+      expect(input.nativeElement.value).toBe(userProfileStore.userProfile().name);
     });
 
     it('should display current email from store', () => {
       const input = fixture.debugElement.query(By.css('input#profile-email'));
-      expect(input.nativeElement.value).toBe(settingsStore.userProfile().email);
+      expect(input.nativeElement.value).toBe(userProfileStore.userProfile().email);
     });
 
     it('should have save button', () => {
-      const button = fixture.debugElement.query(
-        By.css('app-button.user-profile-tab__save-btn')
-      );
+      const button = fixture.debugElement.query(By.css('app-button.user-profile-tab__save-btn'));
       expect(button).toBeTruthy();
     });
 
     it('should update store when profile form is saved', () => {
       const nameInput = fixture.debugElement.query(By.css('input#profile-name'));
-      const emailInput = fixture.debugElement.query(
-        By.css('input#profile-email')
-      );
+      const emailInput = fixture.debugElement.query(By.css('input#profile-email'));
       const saveButton = fixture.debugElement.query(
-        By.css('app-button.user-profile-tab__save-btn button')
+        By.css('app-button.user-profile-tab__save-btn button'),
       );
 
       nameInput.nativeElement.value = 'New Name';
@@ -71,37 +67,31 @@ describe('UserProfileTabComponent', () => {
       saveButton.nativeElement.click();
       fixture.detectChanges();
 
-      expect(settingsStore.userProfile().name).toBe('New Name');
-      expect(settingsStore.userProfile().email).toBe('new@example.com');
+      expect(userProfileStore.userProfile().name).toBe('New Name');
+      expect(userProfileStore.userProfile().email).toBe('new@example.com');
     });
   });
 
   describe('avatar section', () => {
     it('should render avatar placeholder', () => {
-      const avatar = fixture.debugElement.query(
-        By.css('.user-profile-tab__avatar')
-      );
+      const avatar = fixture.debugElement.query(By.css('.user-profile-tab__avatar'));
       expect(avatar).toBeTruthy();
     });
 
     it('should show initials when no avatar', () => {
-      settingsStore.updateUserProfile({ avatarUrl: null, name: 'John Doe' });
+      userProfileStore.updateUserProfile({ avatarUrl: null, name: 'John Doe' });
       fixture.detectChanges();
 
-      const initials = fixture.debugElement.query(
-        By.css('.user-profile-tab__avatar-initials')
-      );
+      const initials = fixture.debugElement.query(By.css('.user-profile-tab__avatar-initials'));
       expect(initials).toBeTruthy();
       expect(initials.nativeElement.textContent.trim()).toBe('JD');
     });
 
     it('should show first two characters for single-word name', () => {
-      settingsStore.updateUserProfile({ avatarUrl: null, name: 'Admin' });
+      userProfileStore.updateUserProfile({ avatarUrl: null, name: 'Admin' });
       fixture.detectChanges();
 
-      const initials = fixture.debugElement.query(
-        By.css('.user-profile-tab__avatar-initials')
-      );
+      const initials = fixture.debugElement.query(By.css('.user-profile-tab__avatar-initials'));
       expect(initials).toBeTruthy();
       expect(initials.nativeElement.textContent.trim()).toBe('AD');
     });
@@ -109,9 +99,7 @@ describe('UserProfileTabComponent', () => {
 
   describe('password change form', () => {
     it('should render current password input', () => {
-      const input = fixture.debugElement.query(
-        By.css('input#current-password')
-      );
+      const input = fixture.debugElement.query(By.css('input#current-password'));
       expect(input).toBeTruthy();
       expect(input.nativeElement.type).toBe('password');
     });
@@ -123,37 +111,29 @@ describe('UserProfileTabComponent', () => {
     });
 
     it('should render confirm password input', () => {
-      const input = fixture.debugElement.query(
-        By.css('input#confirm-password')
-      );
+      const input = fixture.debugElement.query(By.css('input#confirm-password'));
       expect(input).toBeTruthy();
       expect(input.nativeElement.type).toBe('password');
     });
 
     it('should have change password button', () => {
       const button = fixture.debugElement.query(
-        By.css('app-button.user-profile-tab__password-btn')
+        By.css('app-button.user-profile-tab__password-btn'),
       );
       expect(button).toBeTruthy();
     });
 
     it('should disable change password button when fields are empty', () => {
       const button = fixture.debugElement.query(
-        By.css('app-button.user-profile-tab__password-btn button')
+        By.css('app-button.user-profile-tab__password-btn button'),
       );
       expect(button.nativeElement.disabled).toBe(true);
     });
 
     it('should enable change password button when all fields are filled', () => {
-      const currentPassword = fixture.debugElement.query(
-        By.css('input#current-password')
-      );
-      const newPassword = fixture.debugElement.query(
-        By.css('input#new-password')
-      );
-      const confirmPassword = fixture.debugElement.query(
-        By.css('input#confirm-password')
-      );
+      const currentPassword = fixture.debugElement.query(By.css('input#current-password'));
+      const newPassword = fixture.debugElement.query(By.css('input#new-password'));
+      const confirmPassword = fixture.debugElement.query(By.css('input#confirm-password'));
 
       currentPassword.nativeElement.value = 'oldPassword123';
       currentPassword.nativeElement.dispatchEvent(new Event('input'));
@@ -164,18 +144,14 @@ describe('UserProfileTabComponent', () => {
       fixture.detectChanges();
 
       const button = fixture.debugElement.query(
-        By.css('app-button.user-profile-tab__password-btn button')
+        By.css('app-button.user-profile-tab__password-btn button'),
       );
       expect(button.nativeElement.disabled).toBe(false);
     });
 
     it('should show error when passwords do not match', () => {
-      const newPassword = fixture.debugElement.query(
-        By.css('input#new-password')
-      );
-      const confirmPassword = fixture.debugElement.query(
-        By.css('input#confirm-password')
-      );
+      const newPassword = fixture.debugElement.query(By.css('input#new-password'));
+      const confirmPassword = fixture.debugElement.query(By.css('input#confirm-password'));
 
       newPassword.nativeElement.value = 'newPassword456';
       newPassword.nativeElement.dispatchEvent(new Event('input'));
@@ -183,25 +159,15 @@ describe('UserProfileTabComponent', () => {
       confirmPassword.nativeElement.dispatchEvent(new Event('input'));
       fixture.detectChanges();
 
-      const error = fixture.debugElement.query(
-        By.css('.user-profile-tab__password-error')
-      );
+      const error = fixture.debugElement.query(By.css('.user-profile-tab__password-error'));
       expect(error).toBeTruthy();
-      expect(error.nativeElement.textContent).toContain(
-        'Passwords do not match'
-      );
+      expect(error.nativeElement.textContent).toContain('Passwords do not match');
     });
 
     it('should clear form fields when password change succeeds', () => {
-      const currentPassword = fixture.debugElement.query(
-        By.css('input#current-password')
-      );
-      const newPassword = fixture.debugElement.query(
-        By.css('input#new-password')
-      );
-      const confirmPassword = fixture.debugElement.query(
-        By.css('input#confirm-password')
-      );
+      const currentPassword = fixture.debugElement.query(By.css('input#current-password'));
+      const newPassword = fixture.debugElement.query(By.css('input#new-password'));
+      const confirmPassword = fixture.debugElement.query(By.css('input#confirm-password'));
 
       currentPassword.nativeElement.value = 'oldPassword123';
       currentPassword.nativeElement.dispatchEvent(new Event('input'));
@@ -212,7 +178,7 @@ describe('UserProfileTabComponent', () => {
       fixture.detectChanges();
 
       const button = fixture.debugElement.query(
-        By.css('app-button.user-profile-tab__password-btn button')
+        By.css('app-button.user-profile-tab__password-btn button'),
       );
       button.nativeElement.click();
       fixture.detectChanges();
@@ -250,9 +216,7 @@ describe('UserProfileTabComponent', () => {
     });
 
     it('should have label for email', () => {
-      const label = fixture.debugElement.query(
-        By.css('label[for="profile-email"]')
-      );
+      const label = fixture.debugElement.query(By.css('label[for="profile-email"]'));
       expect(label).toBeTruthy();
     });
   });
