@@ -9,37 +9,47 @@
 // Light Theme (Default)
 // -----------------------------------------------------------------------------
 :root {
-  // Background colors
-  --bg-primary: #fff;
-  --bg-secondary: #f6f8fa;
-  --bg-tertiary: #eaeef2;
-  --bg-sidebar: #f6f8fa;
-  --bg-header: #fff;
-  --bg-card: #fff;
-  --bg-hover: #eaeef2;
-  --bg-active: #dde2e8;
+  // Background colors (warm whites)
+  --bg-primary: #fffcf5;
+  --bg-secondary: #faf7f0;
+  --bg-tertiary: #f2efea;
+  --bg-sidebar: #faf7f0;
+  --bg-header: #fffcf5;
+  --bg-card: #fffcf5;
+  --bg-hover: #f2efea;
+  --bg-active: #e8e5e0;
 
-  // Text colors
-  --text-primary: #1f2328;
-  --text-secondary: #59636e;
-  --text-muted: #848d97;
-  --text-link: #0969da;
+  // Text colors (from dark palette values)
+  --text-primary: #040403;
+  --text-secondary: #262725;
+  --text-muted: #535955;
+  --text-link: #8e3d03;
 
   // Border colors
-  --border-primary: #d1d9e0;
-  --border-secondary: #e4e8ec;
+  --border-primary: #d4d1ca;
+  --border-secondary: #e8e5e0;
 
-  // Accent colors (LaunchDarkly-inspired purple/blue)
-  --accent-primary: #405bff;
-  --accent-secondary: #6366f1;
-  --accent-hover: #3449e3;
-  --accent-gradient: linear-gradient(135deg, #405bff 0%, #6366f1 100%);
+  // Accent colors (darker for light bg contrast - WCAG AA)
+  --accent-primary: #8e3d03;
+  --accent-secondary: #ca7a28;
+  --accent-hover: #7a3402;
+  --accent-gradient: linear-gradient(135deg, #ca7a28 0%, #8e3d03 100%);
 
   // Status colors
   --color-success: #1a7f37;
-  --color-warning: #9a6700;
+  --color-warning: #8e3d03;
   --color-error: #d1242f;
-  --color-info: #0969da;
+  --color-info: #ca7a28;
+
+  // Status badge colors (audit log)
+  --status-success-bg: #dcfce7;
+  --status-success-text: #166534;
+  --status-info-bg: #dbeafe;
+  --status-info-text: #1e40af;
+  --status-error-bg: #fee2e2;
+  --status-error-text: #991b1b;
+  --status-warning-bg: #fef3c7;
+  --status-warning-text: #92400e;
 
   // Sizing
   --sidebar-width: 240px;
@@ -62,41 +72,51 @@
 // -----------------------------------------------------------------------------
 [data-theme='dark'] {
   // Background colors
-  --bg-primary: #0f1218;
-  --bg-secondary: #161b22;
-  --bg-tertiary: #1c2128;
-  --bg-sidebar: #0d1117;
-  --bg-header: #161b22;
-  --bg-card: #1c2128;
-  --bg-hover: #262c36;
-  --bg-active: #2d333b;
+  --bg-primary: #040403;
+  --bg-secondary: #0d0d0b;
+  --bg-tertiary: #1a1a18;
+  --bg-sidebar: #040403;
+  --bg-header: #0d0d0b;
+  --bg-card: #1a1a18;
+  --bg-hover: #262725;
+  --bg-active: #353432;
 
   // Text colors
-  --text-primary: #e6edf3;
-  --text-secondary: #8b949e;
-  --text-muted: #6e7681;
-  --text-link: #58a6ff;
+  --text-primary: #f5f2ea;
+  --text-secondary: #a8a5a0;
+  --text-muted: #535955;
+  --text-link: #e4bb4f;
 
   // Border colors
-  --border-primary: #30363d;
-  --border-secondary: #21262d;
+  --border-primary: #535955;
+  --border-secondary: #353432;
 
   // Accent colors
-  --accent-primary: #405bff;
-  --accent-secondary: #6366f1;
-  --accent-hover: #5865f2;
-  --accent-gradient: linear-gradient(135deg, #405bff 0%, #6366f1 100%);
+  --accent-primary: #8e3d03;
+  --accent-secondary: #ca7a28;
+  --accent-hover: #7a3402;
+  --accent-gradient: linear-gradient(135deg, #ca7a28 0%, #8e3d03 100%);
 
-  // Status colors
-  --color-success: #3fb950;
-  --color-warning: #d29922;
-  --color-error: #f85149;
-  --color-info: #58a6ff;
+  // Status colors (functional but warm-tinted)
+  --color-success: #5cb85c;
+  --color-warning: #ca7a28;
+  --color-error: #d9534f;
+  --color-info: #e4bb4f;
 
-  // Shadows (darker for dark theme)
-  --shadow-sm: 0 1px 2px rgb(0 0 0 / 30%);
-  --shadow-md: 0 4px 6px rgb(0 0 0 / 40%);
-  --shadow-lg: 0 10px 20px rgb(0 0 0 / 50%);
+  // Status badge colors (audit log) - muted for dark theme
+  --status-success-bg: #1a2e1a;
+  --status-success-text: #6fcf6f;
+  --status-info-bg: #1f2520;
+  --status-info-text: #c9a033;
+  --status-error-bg: #2e1a1a;
+  --status-error-text: #e87070;
+  --status-warning-bg: #2a2215;
+  --status-warning-text: #dba94d;
+
+  // Shadows (deeper for dark theme)
+  --shadow-sm: 0 1px 2px rgb(0 0 0 / 40%);
+  --shadow-md: 0 4px 6px rgb(0 0 0 / 50%);
+  --shadow-lg: 0 10px 20px rgb(0 0 0 / 60%);
 }
 
 // -----------------------------------------------------------------------------

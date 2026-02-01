@@ -7,6 +7,10 @@
     color: var(--text-primary, #e6edf3);
   }
 
+  &--active .nav-item__icon {
+    color: var(--accent-secondary);
+  }
+
   &__link {
     display: flex;
     align-items: center;
