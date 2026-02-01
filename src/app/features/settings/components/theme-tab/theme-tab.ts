@@ -5,8 +5,6 @@ import { ThemeMode } from '../../models/settings.model';
 
 @Component({
   selector: 'app-theme-tab',
-  standalone: true,
-  imports: [],
   templateUrl: './theme-tab.html',
   styleUrl: './theme-tab.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
