@@ -52,7 +52,7 @@ export class SelectFieldComponent implements ControlValueAccessor {
   readonly label = input.required<string>();
 
   /** Available options for the select */
-  readonly options = input.required<SelectOption[]>();
+  readonly options = input.required<readonly SelectOption[]>();
 
   /** Placeholder text (shown as first disabled option) */
   readonly placeholder = input('');

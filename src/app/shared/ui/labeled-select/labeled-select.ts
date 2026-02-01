@@ -17,7 +17,7 @@ export class LabeledSelectComponent {
   readonly label = input.required<string>();
 
   /** The options to display in the select dropdown */
-  readonly options = input.required<SelectOption[]>();
+  readonly options = input.required<readonly SelectOption[]>();
 
   /** The currently selected value */
   readonly value = input<string>('');
