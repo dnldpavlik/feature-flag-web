@@ -64,7 +64,7 @@
 .recent-flags__highlight {
   padding: 0 0.15rem;
   border-radius: 4px;
-  background: color-mix(in srgb, var(--accent-primary, #405bff) 25%, transparent);
+  background: color-mix(in srgb, var(--accent-primary, #8e3d03) 25%, transparent);
   color: var(--text-primary, #e6edf3);
 }
 
@@ -76,4 +76,3 @@
     text-decoration: underline;
   }
 }
-

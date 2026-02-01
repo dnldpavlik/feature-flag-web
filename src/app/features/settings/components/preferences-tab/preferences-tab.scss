@@ -44,7 +44,7 @@
 
     input[type='checkbox'] {
       margin-top: 0.125rem;
-      accent-color: var(--accent-primary, #405bff);
+      accent-color: var(--accent-primary, #8e3d03);
     }
   }
 
@@ -86,13 +86,13 @@
     }
 
     &:has(input:checked) {
-      border-color: var(--accent-primary, #405bff);
-      background: rgb(64 91 255 / 10%);
+      border-color: var(--accent-primary, #8e3d03);
+      background: rgb(142 61 3 / 10%);
     }
 
     input[type='radio'] {
       margin-top: 0.125rem;
-      accent-color: var(--accent-primary, #405bff);
+      accent-color: var(--accent-primary, #8e3d03);
     }
   }
 

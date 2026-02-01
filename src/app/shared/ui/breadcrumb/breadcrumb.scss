@@ -28,7 +28,7 @@
     }
 
     &:focus-visible {
-      outline: 2px solid var(--accent-primary, #405bff);
+      outline: 2px solid var(--accent-primary, #8e3d03);
       outline-offset: 2px;
       border-radius: 2px;
     }
@@ -56,8 +56,8 @@
 
     &:focus {
       outline: none;
-      border-color: var(--accent-primary, #405bff);
-      box-shadow: 0 0 0 3px rgb(64 91 255 / 20%);
+      border-color: var(--accent-primary, #8e3d03);
+      box-shadow: 0 0 0 3px rgb(142 61 3 / 20%);
     }
   }
 }

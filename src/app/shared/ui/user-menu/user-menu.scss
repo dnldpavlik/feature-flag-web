@@ -16,7 +16,7 @@
   }
 
   &:focus-visible {
-    outline: 2px solid var(--accent-primary, #405bff);
+    outline: 2px solid var(--accent-primary, #8e3d03);
     outline-offset: 2px;
   }
 
@@ -29,7 +29,7 @@
     width: 32px;
     height: 32px;
     border-radius: 50%;
-    background: var(--accent-primary, #405bff);
+    background: var(--accent-primary, #8e3d03);
     display: flex;
     align-items: center;
     justify-content: center;

@@ -26,14 +26,14 @@
     }
 
     &:focus-visible {
-      outline: 2px solid var(--accent-primary, #405bff);
+      outline: 2px solid var(--accent-primary, #8e3d03);
       outline-offset: -2px;
       border-radius: var(--border-radius, 6px) var(--border-radius, 6px) 0 0;
     }
 
     &--active {
       color: var(--text-primary, #e6edf3);
-      border-bottom-color: var(--accent-primary, #405bff);
+      border-bottom-color: var(--accent-primary, #8e3d03);
     }
 
     &--disabled {

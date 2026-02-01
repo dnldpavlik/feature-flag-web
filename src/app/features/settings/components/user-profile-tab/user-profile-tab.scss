@@ -90,7 +90,7 @@
     transition: border-color var(--transition-fast, 150ms ease);
 
     &:focus {
-      border-color: var(--accent-primary, #405bff);
+      border-color: var(--accent-primary, #8e3d03);
     }
 
     &::placeholder {
@@ -105,7 +105,7 @@
     font-size: 0.875rem;
     font-weight: 500;
     color: white;
-    background: var(--accent-primary, #405bff);
+    background: var(--accent-primary, #8e3d03);
     border: none;
     border-radius: var(--border-radius, 6px);
     cursor: pointer;

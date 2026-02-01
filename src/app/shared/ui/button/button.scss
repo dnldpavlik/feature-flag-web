@@ -39,9 +39,9 @@
 
   // Variants
   &--primary {
-    background: var(--accent-primary, #405bff);
+    background: var(--accent-primary, #8e3d03);
     color: white;
-    border-color: var(--accent-primary, #405bff);
+    border-color: var(--accent-primary, #8e3d03);
 
     &:hover:not(:disabled) {
       background: var(--accent-hover, #3449db);
@@ -49,7 +49,7 @@
     }
 
     &:focus-visible {
-      outline: 2px solid var(--accent-primary, #405bff);
+      outline: 2px solid var(--accent-primary, #8e3d03);
       outline-offset: 2px;
     }
   }
