@@ -77,7 +77,8 @@ export class FlagCreateComponent {
     }));
   }
 
-  protected onEnvironmentToggle(envId: string, checked: boolean): void {
+  protected onEnvironmentToggle(envId: string, event: Event): void {
+    const checked = (event.target as HTMLInputElement).checked;
     this.toggleEnvironment(envId, checked);
   }
 

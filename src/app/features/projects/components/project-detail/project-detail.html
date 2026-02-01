@@ -15,7 +15,7 @@
             Make Default
           </app-button>
         }
-        @if (project.id && project.id !== 'proj_default' && project.id !== selectedProjectId()) {
+        @if (canDelete()) {
           <app-button variant="ghost" type="button" (click)="deleteProject()">Delete</app-button>
         }
       </div>

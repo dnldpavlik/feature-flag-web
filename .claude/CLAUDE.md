@@ -205,31 +205,29 @@ Use `@defer` for performance optimization:
 ```
 src/
 ├── app/
-│   ├── core/                     # Singleton services, guards, interceptors
-│   │   ├── auth/
-│   │   ├── api/
-│   │   ├── error-handling/
-│   │   └── config/
-│   ├── shared/                   # Shared utilities, pipes, directives
-│   │   ├── utils/                # Pure utility functions
-│   │   ├── pipes/
-│   │   ├── directives/
-│   │   └── ui/                   # Shared UI components (buttons, inputs, etc.)
+│   ├── core/                     # Singleton services and utilities
+│   │   ├── theme/                # Theme service (dark/light mode)
+│   │   └── time/                 # Time provider abstraction
+│   ├── shared/                   # Shared utilities and components
+│   │   ├── store/                # Cross-feature state (ProjectStore, EnvironmentStore, SearchStore)
+│   │   ├── ui/                   # Shared UI components (buttons, inputs, etc.)
+│   │   └── utils/                # Pure utility functions
 │   ├── features/                 # Feature modules (lazy-loaded routes)
 │   │   ├── flags/
 │   │   │   ├── components/       # Feature-specific components
-│   │   │   ├── services/         # Feature-specific services
 │   │   │   ├── models/           # Feature-specific interfaces/types
 │   │   │   ├── store/            # Feature state management
+│   │   │   ├── utils/            # Feature-specific utilities
 │   │   │   └── flags.routes.ts
 │   │   ├── environments/
 │   │   ├── projects/
-│   │   ├── targeting/
-│   │   └── analytics/
+│   │   ├── segments/             # User segment targeting rules
+│   │   ├── audit/                # Audit log feature
+│   │   ├── settings/             # User settings and preferences
+│   │   └── dashboard/            # Dashboard overview
 │   ├── layout/                   # App shell components
 │   │   ├── header/
-│   │   ├── sidebar/
-│   │   └── footer/
+│   │   └── sidebar/
 │   └── app.routes.ts
 ├── styles/                       # Global SCSS
 │   ├── _variables.scss
@@ -238,6 +236,11 @@ src/
 │   └── main.scss
 └── environments/
 ```
+
+**Note:** The following are planned but not yet implemented:
+- `core/auth/` - Authentication service and guards (when backend API ready)
+- `core/api/` - HTTP client and interceptors (when backend API ready)
+- `core/error-handling/` - Centralized error handling (when backend API ready)
 
 ## API Integration
 

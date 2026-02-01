@@ -28,6 +28,11 @@ export class ProjectDetailComponent {
   protected readonly project = computed(() => this.projectStore.getProjectById(this.projectId()));
   protected readonly selectedProjectId = this.projectStore.selectedProjectId;
 
+  protected readonly canDelete = computed(() => {
+    const project = this.project();
+    return project?.id && project.id !== 'proj_default' && project.id !== this.selectedProjectId();
+  });
+
   protected selectProject(): void {
     const project = this.project();
     if (!project) return;
