@@ -16,6 +16,7 @@ import {
   queryAll,
   injectService,
   getComponent,
+  MOCK_API_PROVIDERS,
 } from '@/app/testing';
 
 describe('FlagList', () => {
@@ -28,13 +29,18 @@ describe('FlagList', () => {
   beforeEach(async () => {
     fixture = await setupComponentTest({
       component: FlagListComponent,
-      providers: [FlagStore, EnvironmentStore, ProjectStore, SearchStore],
+      providers: [FlagStore, EnvironmentStore, ProjectStore, SearchStore, ...MOCK_API_PROVIDERS],
     });
 
     component = getComponent(fixture);
     flagStore = injectService(FlagStore);
     projectStore = injectService(ProjectStore);
     searchStore = injectService(SearchStore);
+    const environmentStore = injectService(EnvironmentStore);
+    await projectStore.loadProjects();
+    await environmentStore.loadEnvironments();
+    await flagStore.loadFlags();
+    fixture.detectChanges();
   });
 
   it('should render the feature flags heading', () => {
@@ -148,21 +154,23 @@ describe('FlagList', () => {
   });
 
   describe('flag toggling', () => {
-    it('should toggle flag enabled state in current environment', () => {
+    it('should toggle flag enabled state in current environment', async () => {
       const flag = flagStore.flags()[0];
       const initialEnabled = flag.environmentValues['env_development']?.enabled ?? false;
 
       component.onToggleFlag(flag.id, !initialEnabled);
+      await fixture.whenStable();
 
       const updated = flagStore.getFlagById(flag.id);
       expect(updated?.environmentValues['env_development'].enabled).toBe(!initialEnabled);
     });
 
-    it('should only affect current environment when toggling', () => {
+    it('should only affect current environment when toggling', async () => {
       const flag = flagStore.flags()[0];
       const stagingEnabled = flag.environmentValues['env_staging']?.enabled;
 
       component.onToggleFlag(flag.id, true);
+      await fixture.whenStable();
 
       const updated = flagStore.getFlagById(flag.id);
       expect(updated?.environmentValues['env_staging'].enabled).toBe(stagingEnabled);
@@ -177,11 +185,11 @@ describe('FlagList', () => {
       expect(deleteButtons.length).toBe(flagStore.flagsInSelectedProject().length);
     });
 
-    it('should hide delete buttons when only one flag exists', () => {
+    it('should hide delete buttons when only one flag exists', async () => {
       // Delete all but one flag
       const flags = flagStore.flags();
       for (let i = 0; i < flags.length - 1; i++) {
-        flagStore.deleteFlag(flags[i].id);
+        await flagStore.deleteFlag(flags[i].id);
       }
       fixture.detectChanges();
 
@@ -189,11 +197,12 @@ describe('FlagList', () => {
       expect(deleteButtons.length).toBe(0);
     });
 
-    it('should remove the flag when delete is clicked', () => {
+    it('should remove the flag when delete is clicked', async () => {
       const beforeCount = flagStore.flags().length;
       const flagToDelete = flagStore.flags()[0];
 
       component.onDeleteFlag(flagToDelete.id);
+      await fixture.whenStable();
       fixture.detectChanges();
 
       expect(flagStore.flags().length).toBe(beforeCount - 1);

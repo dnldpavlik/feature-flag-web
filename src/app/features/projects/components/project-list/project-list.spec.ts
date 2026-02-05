@@ -12,6 +12,7 @@ import {
   injectService,
   getComponent,
   setFormFields,
+  MOCK_API_PROVIDERS,
 } from '@/app/testing';
 
 describe('ProjectList', () => {
@@ -23,13 +24,14 @@ describe('ProjectList', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [ProjectListComponent],
-      providers: [ProjectStore, SearchStore, provideRouter([])],
+      providers: [ProjectStore, SearchStore, provideRouter([]), ...MOCK_API_PROVIDERS],
     }).compileComponents();
 
     fixture = TestBed.createComponent(ProjectListComponent);
     component = getComponent(fixture);
     store = injectService(ProjectStore);
     searchStore = injectService(SearchStore);
+    await store.loadProjects();
     fixture.detectChanges();
   });
 
@@ -38,28 +40,32 @@ describe('ProjectList', () => {
   });
 
   it('should render project rows', () => {
+    fixture.detectChanges();
     const rows = getTableRows(fixture);
     expect(rows.length).toBe(store.projects().length);
   });
 
-  it('should add a project', () => {
+  it('should call addProject on the store', () => {
+    const addSpy = jest.spyOn(store, 'addProject').mockResolvedValue();
     setFormFields(component, {
       name: 'Pricing App',
       key: 'pricing',
       description: 'Pricing tests',
     });
     component.addProject();
-    fixture.detectChanges();
 
-    const rows = getTableRows(fixture);
-    expect(rows.length).toBe(store.projects().length);
+    expect(addSpy).toHaveBeenCalledWith({
+      name: 'Pricing App',
+      key: 'pricing',
+      description: 'Pricing tests',
+    });
   });
 
   it('should not add a project when required fields are missing', () => {
-    const initialCount = store.projects().length;
+    const addSpy = jest.spyOn(store, 'addProject').mockResolvedValue();
     setFormFields(component, { name: '', key: '' });
     component.addProject();
-    expect(store.projects().length).toBe(initialCount);
+    expect(addSpy).not.toHaveBeenCalled();
   });
 
   it('should select a project', () => {

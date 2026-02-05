@@ -1,4 +1,5 @@
 import { computed, signal, Signal, WritableSignal } from '@angular/core';
+import { Observable, firstValueFrom } from 'rxjs';
 
 import { createId } from '@/app/shared/utils/id.utils';
 import { TimeProvider, defaultTimeProvider } from '@/app/core/time/time.service';
@@ -48,6 +49,12 @@ export interface BaseCrudStoreConfig<T extends StoreItem> {
  * ```
  */
 export abstract class BaseCrudStore<T extends StoreItem> {
+  /** Loading state signal */
+  protected readonly _loading: WritableSignal<boolean>;
+
+  /** Error state signal */
+  protected readonly _error: WritableSignal<string | null>;
+
   /** Internal writable signal for store items */
   protected readonly _items: WritableSignal<T[]>;
 
@@ -60,6 +67,12 @@ export abstract class BaseCrudStore<T extends StoreItem> {
   /** Time provider for generating timestamps */
   protected readonly timeProvider: TimeProvider;
 
+  /** Public readonly loading signal */
+  readonly loading: Signal<boolean>;
+
+  /** Public readonly error signal */
+  readonly error: Signal<string | null>;
+
   /** Public readonly signal for store items */
   readonly items: Signal<T[]>;
 
@@ -70,7 +83,11 @@ export abstract class BaseCrudStore<T extends StoreItem> {
     this.idPrefix = config.idPrefix;
     this.allowDeleteLast = config.allowDeleteLast ?? false;
     this.timeProvider = config.timeProvider ?? defaultTimeProvider;
+    this._loading = signal(false);
+    this._error = signal<string | null>(null);
     this._items = signal<T[]>(config.initialData ?? []);
+    this.loading = this._loading.asReadonly();
+    this.error = this._error.asReadonly();
     this.items = this._items.asReadonly();
     this.count = computed(() => this._items().length);
   }
@@ -171,5 +188,24 @@ export abstract class BaseCrudStore<T extends StoreItem> {
    */
   protected clearItems(): void {
     this._items.set([]);
+  }
+
+  /**
+   * Load items from an API observable.
+   * Handles loading state, error state, and sets items on success.
+   */
+  protected async loadFromApi(source: Observable<T[]>): Promise<void> {
+    this._loading.set(true);
+    this._error.set(null);
+
+    try {
+      const items = await firstValueFrom(source);
+      this._items.set(items);
+    } catch (e) {
+      const message = e instanceof Error ? e.message : 'Failed to load data';
+      this._error.set(message);
+    } finally {
+      this._loading.set(false);
+    }
   }
 }

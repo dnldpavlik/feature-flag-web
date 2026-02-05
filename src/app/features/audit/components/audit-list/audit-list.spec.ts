@@ -11,6 +11,7 @@ import {
   query,
   injectService,
   getComponent,
+  MOCK_API_PROVIDERS,
 } from '@/app/testing';
 
 describe('AuditList', () => {
@@ -22,13 +23,14 @@ describe('AuditList', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [AuditListComponent],
-      providers: [AuditStore, SearchStore],
+      providers: [AuditStore, SearchStore, ...MOCK_API_PROVIDERS],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(AuditListComponent);
-    component = getComponent(fixture);
     auditStore = injectService(AuditStore);
     searchStore = injectService(SearchStore);
+    await auditStore.loadEntries();
+    fixture = TestBed.createComponent(AuditListComponent);
+    component = getComponent(fixture);
     fixture.detectChanges();
   });
 

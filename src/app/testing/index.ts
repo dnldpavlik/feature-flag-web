@@ -75,6 +75,14 @@ export {
   setupDetailComponentTest,
 } from './detail-component.helpers';
 
+// Mock API providers
+export {
+  MOCK_API_PROVIDERS,
+  MOCK_PROJECTS,
+  MOCK_ENVIRONMENTS,
+  MOCK_FLAGS,
+} from './mock-api.providers';
+
 // Mock factories
 export {
   mockId,

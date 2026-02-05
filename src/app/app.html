@@ -1,10 +1,6 @@
 <div class="app-shell">
   <!-- Sidebar -->
-  <app-sidebar
-    [navItems]="navItems"
-    [environments]="environments()"
-    [currentUser]="currentUser"
-  />
+  <app-sidebar [navItems]="navItems" [environments]="environments()" [currentUser]="currentUser" />
 
   <!-- Main Content Area -->
   <div class="main-wrapper">
@@ -17,3 +13,5 @@
     </main>
   </div>
 </div>
+
+<app-toast />

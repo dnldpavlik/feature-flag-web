@@ -42,13 +42,13 @@ export class ProjectDetailComponent {
   protected makeDefault(): void {
     const project = this.project();
     if (!project) return;
-    this.projectStore.setDefaultProject(project.id);
+    void this.projectStore.setDefaultProject(project.id);
   }
 
   protected deleteProject(): void {
     const project = this.project();
     if (!project) return;
-    this.projectStore.deleteProject(project.id);
+    void this.projectStore.deleteProject(project.id);
     void this.router.navigate(['/projects']);
   }
 

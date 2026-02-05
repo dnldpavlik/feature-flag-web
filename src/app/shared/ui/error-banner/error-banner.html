@@ -1,0 +1,9 @@
+<div class="error-banner" role="alert">
+  <div class="error-banner__content">
+    <app-icon name="error" [size]="20" />
+    <span class="error-banner__message">{{ message() }}</span>
+  </div>
+  @if (retryable()) {
+    <app-button variant="secondary" size="sm" (click)="onRetry()"> Retry </app-button>
+  }
+</div>

@@ -1,44 +1,123 @@
 import { TestBed } from '@angular/core/testing';
+import { of, throwError } from 'rxjs';
 
 import { ProjectStore } from './project.store';
-import {
-  expectSignal,
-  expectHasItems,
-  expectIdPattern,
-  expectItemAdded,
-  getCountBefore,
-  findByKey,
-  injectService,
-} from '@/app/testing';
+import { ProjectApi } from '@/app/features/projects/api/project.api';
+import { AuditStore } from '@/app/features/audit/store/audit.store';
+import { Project } from '@/app/features/projects/models/project.model';
+import { expectSignal, injectService, expectEmpty, MOCK_API_PROVIDERS } from '@/app/testing';
+
+const SEED_TIMESTAMP = '2025-01-01T00:00:00.000Z';
+
+const MOCK_PROJECTS: Project[] = [
+  {
+    id: 'proj_default',
+    key: 'default',
+    name: 'Default Project',
+    description: 'Primary feature flag workspace.',
+    isDefault: true,
+    createdAt: SEED_TIMESTAMP,
+    updatedAt: SEED_TIMESTAMP,
+  },
+  {
+    id: 'proj_growth',
+    key: 'growth',
+    name: 'Growth Experiments',
+    description: 'Revenue, onboarding, and conversion tests.',
+    isDefault: false,
+    createdAt: SEED_TIMESTAMP,
+    updatedAt: SEED_TIMESTAMP,
+  },
+];
+
+function createMockApi(): jest.Mocked<ProjectApi> {
+  return {
+    getAll: jest.fn().mockReturnValue(of(MOCK_PROJECTS)),
+    getById: jest.fn().mockReturnValue(of(MOCK_PROJECTS[0])),
+    create: jest.fn(),
+    update: jest.fn(),
+    delete: jest.fn().mockReturnValue(of(undefined)),
+    setDefault: jest.fn().mockReturnValue(of(MOCK_PROJECTS[0])),
+  } as unknown as jest.Mocked<ProjectApi>;
+}
 
 describe('ProjectStore', () => {
   let store: ProjectStore;
+  let mockApi: jest.Mocked<ProjectApi>;
 
   beforeEach(() => {
+    mockApi = createMockApi();
+
     TestBed.configureTestingModule({
-      providers: [ProjectStore],
+      providers: [
+        ProjectStore,
+        AuditStore,
+        { provide: ProjectApi, useValue: mockApi },
+        ...MOCK_API_PROVIDERS.filter((p) => (p as { provide: unknown }).provide !== ProjectApi),
+      ],
     });
 
     store = injectService(ProjectStore);
   });
 
   describe('initial state', () => {
-    it('should seed with pre-configured projects', () => {
-      expectHasItems(store.projects);
-    });
-
-    it('should include a default project', () => {
-      const defaultProject = store.projects().find((p) => p.isDefault);
-      expect(defaultProject).toBeDefined();
+    it('should start with empty projects', () => {
+      expectEmpty(store.projects);
     });
 
     it('should provide readonly projects signal', () => {
       expectSignal(store.projects);
     });
+
+    it('should start with loading false', () => {
+      expect(store.loading()).toBe(false);
+    });
+
+    it('should start with no error', () => {
+      expect(store.error()).toBeNull();
+    });
+  });
+
+  describe('loadProjects', () => {
+    it('should load projects from API', async () => {
+      await store.loadProjects();
+
+      expect(store.projects()).toEqual(MOCK_PROJECTS);
+      expect(store.projects()).toHaveLength(2);
+    });
+
+    it('should auto-select the default project', async () => {
+      await store.loadProjects();
+
+      expect(store.selectedProjectId()).toBe('proj_default');
+    });
+
+    it('should auto-select the first project if no default exists', async () => {
+      const projectsNoDefault = MOCK_PROJECTS.map((p) => ({ ...p, isDefault: false }));
+      mockApi.getAll.mockReturnValue(of(projectsNoDefault));
+
+      await store.loadProjects();
+
+      expect(store.selectedProjectId()).toBe('proj_default');
+    });
+
+    it('should set loading to false after load', async () => {
+      await store.loadProjects();
+
+      expect(store.loading()).toBe(false);
+    });
+
+    it('should set error on API failure', async () => {
+      mockApi.getAll.mockReturnValue(throwError(() => new Error('Network error')));
+
+      await store.loadProjects();
+
+      expect(store.error()).toBe('Network error');
+    });
   });
 
   describe('selectProject', () => {
-    it('should update selectedProjectId when valid project is selected', () => {
+    it('should update selectedProjectId', () => {
       store.selectProject('proj_growth');
       expect(store.selectedProjectId()).toBe('proj_growth');
     });
@@ -50,84 +129,120 @@ describe('ProjectStore', () => {
     });
   });
 
+  describe('addProject', () => {
+    it('should add project returned from API to the store', async () => {
+      const newProject: Project = {
+        id: 'proj_new',
+        key: 'pricing',
+        name: 'Pricing Optimization',
+        description: 'Pricing experiments.',
+        isDefault: false,
+        createdAt: SEED_TIMESTAMP,
+        updatedAt: SEED_TIMESTAMP,
+      };
+      mockApi.create.mockReturnValue(of(newProject));
+
+      await store.addProject({
+        key: 'pricing',
+        name: 'Pricing Optimization',
+        description: 'Pricing experiments.',
+      });
+
+      expect(store.projects()).toHaveLength(1);
+      expect(store.projects()[0]).toEqual(newProject);
+    });
+
+    it('should call API with the input', async () => {
+      mockApi.create.mockReturnValue(of({ ...MOCK_PROJECTS[0], id: 'proj_new', key: 'test' }));
+
+      const input = { key: 'test', name: 'Test', description: 'Desc' };
+      await store.addProject(input);
+
+      expect(mockApi.create).toHaveBeenCalledWith(input);
+    });
+
+    it('should not add project on API failure', async () => {
+      mockApi.create.mockReturnValue(throwError(() => new Error('fail')));
+
+      await store.addProject({ key: 'fail', name: 'Fail', description: 'Fails' });
+
+      expect(store.projects()).toHaveLength(0);
+    });
+  });
+
   describe('setDefaultProject', () => {
-    it('should mark the specified project as default', () => {
-      store.setDefaultProject('proj_growth');
-      const defaults = store.projects().filter((project) => project.isDefault);
-      expect(defaults.length).toBe(1);
+    beforeEach(async () => {
+      await store.loadProjects();
+    });
+
+    it('should call API and update locally', async () => {
+      await store.setDefaultProject('proj_growth');
+
+      expect(mockApi.setDefault).toHaveBeenCalledWith('proj_growth');
+      const defaults = store.projects().filter((p) => p.isDefault);
+      expect(defaults).toHaveLength(1);
       expect(defaults[0].id).toBe('proj_growth');
     });
 
-    it('should remove default status from previous default project', () => {
-      store.setDefaultProject('proj_growth');
+    it('should remove default status from previous default', async () => {
+      await store.setDefaultProject('proj_growth');
+
       const previousDefault = store.projects().find((p) => p.id === 'proj_default');
       expect(previousDefault?.isDefault).toBe(false);
     });
 
-    it('should not update timestamps for unrelated projects', () => {
-      store.addProject({
-        key: 'labs',
-        name: 'Labs',
-        description: 'R&D experiments.',
-      });
+    it('should not update locally on API failure', async () => {
+      mockApi.setDefault.mockReturnValue(throwError(() => new Error('fail')));
 
-      const labsBefore = findByKey(store.projects, 'labs');
-      store.setDefaultProject('proj_growth');
-      const labsAfter = findByKey(store.projects, 'labs');
+      await store.setDefaultProject('proj_growth');
 
-      expect(labsAfter?.updatedAt).toBe(labsBefore?.updatedAt);
+      const defaultProj = store.projects().find((p) => p.isDefault);
+      expect(defaultProj?.id).toBe('proj_default');
     });
   });
 
-  describe('addProject', () => {
-    it('should add a new project to the store', () => {
-      const countBefore = getCountBefore(store.projects);
-
-      store.addProject({
-        key: 'pricing',
-        name: 'Pricing Optimization',
-        description: 'Pricing and packaging experiments.',
-      });
-
-      expectItemAdded(store.projects, countBefore);
+  describe('deleteProject', () => {
+    beforeEach(async () => {
+      await store.loadProjects();
     });
 
-    it('should create project with provided key', () => {
-      store.addProject({
-        key: 'unique-key',
-        name: 'Test Project',
-        description: 'Description',
-      });
+    it('should call API and remove project from store', async () => {
+      await store.deleteProject('proj_growth');
 
-      const project = findByKey(store.projects, 'unique-key');
-      expect(project?.key).toBe('unique-key');
+      expect(mockApi.delete).toHaveBeenCalledWith('proj_growth');
+      expect(store.projects()).toHaveLength(1);
+      expect(store.projects().find((p) => p.id === 'proj_growth')).toBeUndefined();
     });
 
-    it('should respect isDefault flag when adding a project', () => {
-      store.addProject({
-        key: 'ops',
-        name: 'Operations',
-        description: 'Internal ops tooling.',
-        isDefault: true,
-      });
+    it('should not delete when only one project remains', async () => {
+      await store.deleteProject('proj_growth');
+      await store.deleteProject('proj_default');
 
-      const project = findByKey(store.projects, 'ops');
-      expect(project?.isDefault).toBe(true);
+      expect(store.projects()).toHaveLength(1);
     });
 
-    it('should generate unique id for new project', () => {
-      store.addProject({
-        key: 'new-proj',
-        name: 'New Project',
-        description: 'Test',
-      });
+    it('should fall back to default project when selected project is deleted', async () => {
+      store.selectProject('proj_growth');
 
-      const project = findByKey(store.projects, 'new-proj');
-      expectIdPattern(project!.id, 'proj');
+      await store.deleteProject('proj_growth');
+
+      expect(store.selectedProjectId()).toBe('proj_default');
+    });
+
+    it('should not remove project on API failure', async () => {
+      mockApi.delete.mockReturnValue(throwError(() => new Error('fail')));
+
+      await store.deleteProject('proj_growth');
+
+      expect(store.projects()).toHaveLength(2);
     });
   });
 
   describe('getProjectById', () => {
+    beforeEach(async () => {
+      await store.loadProjects();
+    });
+
     it('should return project when id exists', () => {
       const project = store.getProjectById('proj_default');
       expect(project?.key).toBe('default');
@@ -136,68 +251,108 @@ describe('ProjectStore', () => {
     it('should return undefined when project id does not exist', () => {
       expect(store.getProjectById('proj_missing')).toBeUndefined();
     });
+  });
 
-    it('should return newly added project by id', () => {
-      store.addProject({
-        key: 'findable',
-        name: 'Findable Project',
-        description: 'Test',
-      });
+  describe('selectedProject', () => {
+    it('should return the selected project', async () => {
+      await store.loadProjects();
 
-      const added = findByKey(store.projects, 'findable');
-      const found = store.getProjectById(added!.id);
-      expect(found?.name).toBe('Findable Project');
+      expect(store.selectedProject()?.id).toBe('proj_default');
+    });
+
+    it('should update when selection changes', async () => {
+      await store.loadProjects();
+      store.selectProject('proj_growth');
+
+      expect(store.selectedProject()?.id).toBe('proj_growth');
     });
   });
 
-  describe('deleteProject', () => {
-    it('should remove project from store', () => {
-      const initialCount = store.projects().length;
-      store.addProject({
-        key: 'deletable',
-        name: 'Deletable',
-        description: 'Will be deleted',
-      });
-      const project = findByKey(store.projects, 'deletable');
+  describe('audit logging', () => {
+    let auditStore: AuditStore;
 
-      store.deleteProject(project!.id);
-
-      expect(store.projects().length).toBe(initialCount);
-    });
-
-    it('should not delete when only one project remains', () => {
-      store.deleteProject('proj_growth');
-      store.deleteProject('proj_default');
-
-      expect(store.projects().length).toBe(1);
-    });
-
-    it('should fall back to default project when selected project is deleted', () => {
-      store.addProject({
-        key: 'ops',
-        name: 'Operations',
-        description: 'Ops tooling.',
-        isDefault: true,
+    beforeEach(async () => {
+      TestBed.resetTestingModule();
+      TestBed.configureTestingModule({
+        providers: [
+          ProjectStore,
+          AuditStore,
+          { provide: ProjectApi, useValue: mockApi },
+          ...MOCK_API_PROVIDERS.filter((p) => (p as { provide: unknown }).provide !== ProjectApi),
+        ],
       });
 
-      store.selectProject('proj_growth');
-      store.deleteProject('proj_growth');
-
-      expect(store.selectedProjectId()).toBe('proj_default');
+      store = injectService(ProjectStore);
+      auditStore = injectService(AuditStore);
+      jest.spyOn(auditStore, 'logAction');
     });
 
-    it('should fall back to first project when no default exists after deletion', () => {
-      store.setDefaultProject('proj_missing');
-      store.selectProject('proj_growth');
-      store.deleteProject('proj_growth');
+    it('should log audit entry when project is created', async () => {
+      const newProject: Project = {
+        id: 'proj_new',
+        key: 'audit-test',
+        name: 'Audit Test Project',
+        description: 'Testing audit',
+        isDefault: false,
+        createdAt: SEED_TIMESTAMP,
+        updatedAt: SEED_TIMESTAMP,
+      };
+      mockApi.create.mockReturnValue(of(newProject));
 
-      expect(store.selectedProjectId()).toBe('proj_default');
+      await store.addProject({
+        key: 'audit-test',
+        name: 'Audit Test Project',
+        description: 'Testing audit',
+      });
+
+      expect(auditStore.logAction).toHaveBeenCalledWith(
+        expect.objectContaining({
+          action: 'created',
+          resourceType: 'project',
+          resourceName: 'Audit Test Project',
+        }),
+      );
     });
 
-    it('should ignore deletion of non-existent project id', () => {
-      const initialCount = store.projects().length;
-      store.deleteProject('proj_nonexistent');
-      expect(store.projects().length).toBe(initialCount);
+    it('should log audit entry when project is deleted', async () => {
+      await store.loadProjects();
+
+      await store.deleteProject('proj_growth');
+
+      expect(auditStore.logAction).toHaveBeenCalledWith(
+        expect.objectContaining({
+          action: 'deleted',
+          resourceType: 'project',
+          resourceId: 'proj_growth',
+          resourceName: 'Growth Experiments',
+        }),
+      );
+    });
+
+    it('should include user info in audit entry', async () => {
+      const newProject: Project = {
+        id: 'proj_user',
+        key: 'user-test',
+        name: 'User Test',
+        description: 'Testing user info',
+        isDefault: false,
+        createdAt: SEED_TIMESTAMP,
+        updatedAt: SEED_TIMESTAMP,
+      };
+      mockApi.create.mockReturnValue(of(newProject));
+
+      await store.addProject({
+        key: 'user-test',
+        name: 'User Test',
+        description: 'Testing user info',
+      });
+
+      expect(auditStore.logAction).toHaveBeenCalledWith(
+        expect.objectContaining({
+          userId: expect.any(String),
+          userName: expect.any(String),
+        }),
+      );
     });
   });
 });

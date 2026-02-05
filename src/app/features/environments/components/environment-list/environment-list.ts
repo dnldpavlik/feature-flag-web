@@ -59,14 +59,14 @@ export class EnvironmentListComponent {
     return hasRequiredFields(this.form, ['name', 'key']);
   }
 
-  addEnvironment(): void {
+  async addEnvironment(): Promise<void> {
     if (!this.canAdd()) return;
 
     const { name, key } = getTrimmedValues(this.form, ['name', 'key']);
     const { color } = this.form.getRawValue();
     const order = this.environmentStore.environments().length;
 
-    this.environmentStore.addEnvironment({ name, key, color, order });
+    await this.environmentStore.addEnvironment({ name, key, color, order });
     this.form.reset({ name: '', key: '', color: '#3b82f6' });
   }
 
@@ -76,6 +76,6 @@ export class EnvironmentListComponent {
   }
 
   setDefaultEnvironment(envId: string): void {
-    this.environmentStore.setDefaultEnvironment(envId);
+    void this.environmentStore.setDefaultEnvironment(envId);
   }
 }

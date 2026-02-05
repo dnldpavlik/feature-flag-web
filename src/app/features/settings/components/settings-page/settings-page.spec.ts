@@ -1,19 +1,25 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 
+import { EnvironmentStore } from '@/app/shared/store/environment.store';
 import { SettingsPageComponent } from './settings-page';
+import { MOCK_API_PROVIDERS, injectService } from '@/app/testing';
 
 describe('SettingsPageComponent', () => {
   let fixture: ComponentFixture<SettingsPageComponent>;
   let component: SettingsPageComponent;
+  let environmentStore: EnvironmentStore;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [SettingsPageComponent],
+      providers: [...MOCK_API_PROVIDERS],
     }).compileComponents();
 
     fixture = TestBed.createComponent(SettingsPageComponent);
     component = fixture.componentInstance;
+    environmentStore = injectService(EnvironmentStore);
+    await environmentStore.loadEnvironments();
     fixture.detectChanges();
   });
 
@@ -88,9 +94,7 @@ describe('SettingsPageComponent', () => {
 
   describe('tab content', () => {
     it('should show profile tab content by default', () => {
-      const profileTab = fixture.debugElement.query(
-        By.css('app-user-profile-tab')
-      );
+      const profileTab = fixture.debugElement.query(By.css('app-user-profile-tab'));
       expect(profileTab).toBeTruthy();
     });
 
@@ -120,20 +124,14 @@ describe('SettingsPageComponent', () => {
 
     it('should hide other tab content when switching', () => {
       // Start on profile
-      expect(
-        fixture.debugElement.query(By.css('app-user-profile-tab'))
-      ).toBeTruthy();
+      expect(fixture.debugElement.query(By.css('app-user-profile-tab'))).toBeTruthy();
 
       // Switch to preferences
       component.onTabChange('preferences');
       fixture.detectChanges();
 
-      expect(
-        fixture.debugElement.query(By.css('app-user-profile-tab'))
-      ).toBeFalsy();
-      expect(
-        fixture.debugElement.query(By.css('app-preferences-tab'))
-      ).toBeTruthy();
+      expect(fixture.debugElement.query(By.css('app-user-profile-tab'))).toBeFalsy();
+      expect(fixture.debugElement.query(By.css('app-preferences-tab'))).toBeTruthy();
     });
   });
 });

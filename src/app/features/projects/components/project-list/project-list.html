@@ -1,7 +1,11 @@
 <section class="projects-page">
   <app-page-header title="Projects" description="Create and manage workspaces for each product." />
 
-  @if (projects().length === 0) {
+  @if (loading()) {
+    <app-loading-spinner label="Loading projects..." />
+  } @else if (error()) {
+    <app-error-banner [message]="error()!" (retry)="retry()" />
+  } @else if (projects().length === 0) {
     <app-empty-state
       title="No projects yet"
       message="Create your first project to organize environments and flags."

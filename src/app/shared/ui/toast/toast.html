@@ -1,0 +1,29 @@
+@if (toasts().length > 0) {
+  <div class="toast-container" aria-live="polite">
+    @for (toast of toasts(); track toast.id) {
+      <div class="toast toast--{{ toast.variant }}" role="alert">
+        <app-icon
+          [name]="
+            toast.variant === 'success'
+              ? 'check'
+              : toast.variant === 'error'
+                ? 'error'
+                : toast.variant === 'warning'
+                  ? 'warning'
+                  : 'info'
+          "
+          [size]="16"
+        />
+        <span class="toast__message">{{ toast.message }}</span>
+        <button
+          class="toast__dismiss"
+          type="button"
+          aria-label="Dismiss notification"
+          (click)="dismiss(toast.id)"
+        >
+          <app-icon name="close" [size]="14" />
+        </button>
+      </div>
+    }
+  </div>
+}

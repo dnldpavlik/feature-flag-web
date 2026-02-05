@@ -5,6 +5,7 @@ import { BehaviorSubject } from 'rxjs';
 
 import { ProjectStore } from '@/app/shared/store/project.store';
 import { ProjectDetailComponent } from './project-detail';
+import { MOCK_API_PROVIDERS } from '@/app/testing';
 
 describe('ProjectDetail', () => {
   let fixture: ComponentFixture<ProjectDetailComponent>;
@@ -17,6 +18,7 @@ describe('ProjectDetail', () => {
       imports: [ProjectDetailComponent],
       providers: [
         ProjectStore,
+        ...MOCK_API_PROVIDERS,
         provideRouter([]),
         {
           provide: ActivatedRoute,
@@ -33,6 +35,7 @@ describe('ProjectDetail', () => {
     fixture = TestBed.createComponent(ProjectDetailComponent);
     store = TestBed.inject(ProjectStore);
     router = TestBed.inject(Router);
+    await store.loadProjects();
     fixture.detectChanges();
 
     return { paramMap$ };

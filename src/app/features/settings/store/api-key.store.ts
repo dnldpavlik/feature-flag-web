@@ -1,34 +1,16 @@
 import { Injectable, computed, inject, signal } from '@angular/core';
+import { firstValueFrom } from 'rxjs';
 
-import { TimeService } from '@/app/core/time/time.service';
-import { createId } from '@/app/shared/utils/id.utils';
+import { ToastService } from '@/app/shared/ui/toast/toast.service';
+import { ApiKeyApi } from '../api/api-key.api';
 import { ApiKey, CreateApiKeyInput, CreateApiKeyResult } from '../models/settings.model';
 
 @Injectable({ providedIn: 'root' })
 export class ApiKeyStore {
-  private readonly timeService = inject(TimeService);
+  private readonly api = inject(ApiKeyApi);
+  private readonly toast = inject(ToastService);
 
-  private readonly _apiKeys = signal<ApiKey[]>([
-    {
-      id: 'key_1',
-      name: 'Production SDK Key',
-      prefix: 'sk_live_abc1...xyz9',
-      lastUsedAt: '2025-01-15T10:30:00.000Z',
-      createdAt: '2025-01-01T00:00:00.000Z',
-      expiresAt: null,
-      scopes: ['read:flags'],
-    },
-    {
-      id: 'key_2',
-      name: 'CI/CD Pipeline Key',
-      prefix: 'sk_live_def2...uvw8',
-      lastUsedAt: null,
-      createdAt: '2025-01-10T00:00:00.000Z',
-      expiresAt: '2025-12-31T23:59:59Z',
-      scopes: ['read:flags', 'write:flags'],
-    },
-  ]);
-
+  private readonly _apiKeys = signal<ApiKey[]>([]);
   private readonly _loading = signal(false);
   private readonly _error = signal<string | null>(null);
 
@@ -38,29 +20,40 @@ export class ApiKeyStore {
 
   readonly apiKeyCount = computed(() => this._apiKeys().length);
 
-  createApiKey(input: CreateApiKeyInput): CreateApiKeyResult {
-    const keyId = createId('key');
-    const secretBase = generateRandomString(32);
-    const secret = `sk_live_${secretBase}`;
-    const prefix = `sk_live_${secretBase.slice(0, 4)}...${secretBase.slice(-4)}`;
-
-    const newKey: ApiKey = {
-      id: keyId,
-      name: input.name,
-      prefix,
-      lastUsedAt: null,
-      createdAt: this.timeService.now(),
-      expiresAt: input.expiresAt ?? null,
-      scopes: input.scopes,
-    };
-
-    this._apiKeys.update((keys) => [...keys, newKey]);
-
-    return { key: newKey, secret };
+  async loadApiKeys(): Promise<void> {
+    this._loading.set(true);
+    this._error.set(null);
+    try {
+      const keys = await firstValueFrom(this.api.getAll());
+      this._apiKeys.set(keys);
+    } catch {
+      this._error.set('Failed to load API keys');
+      this.toast.error('Failed to load API keys');
+    } finally {
+      this._loading.set(false);
+    }
   }
 
-  revokeApiKey(keyId: string): void {
-    this._apiKeys.update((keys) => keys.filter((k) => k.id !== keyId));
+  async createApiKey(input: CreateApiKeyInput): Promise<CreateApiKeyResult | null> {
+    try {
+      const result = await firstValueFrom(this.api.create(input));
+      this._apiKeys.update((keys) => [...keys, result.key]);
+      this.toast.success('API key created');
+      return result;
+    } catch {
+      this.toast.error('Failed to create API key');
+      return null;
+    }
+  }
+
+  async revokeApiKey(keyId: string): Promise<void> {
+    try {
+      await firstValueFrom(this.api.revoke(keyId));
+      this._apiKeys.update((keys) => keys.filter((k) => k.id !== keyId));
+      this.toast.success('API key revoked');
+    } catch {
+      this.toast.error('Failed to revoke API key');
+    }
   }
 
   getApiKeyById(keyId: string): ApiKey | undefined {
@@ -78,12 +71,4 @@ export class ApiKeyStore {
   clearError(): void {
     this._error.set(null);
   }
-}
-
-/** Generate a random alphanumeric string */
-function generateRandomString(length: number): string {
-  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-  return Array.from({ length }, () => chars.charAt(Math.floor(Math.random() * chars.length))).join(
-    '',
-  );
 }

@@ -137,6 +137,7 @@ describe('flag-value.utils', () => {
           flagId: 'flag_1',
           value: 'dev-value',
           enabled: true,
+          segmentKeys: [],
           updatedAt: '2024-01-01T00:00:00Z',
         },
         env_staging: {
@@ -144,6 +145,7 @@ describe('flag-value.utils', () => {
           flagId: 'flag_1',
           value: 'staging-value',
           enabled: false,
+          segmentKeys: [],
           updatedAt: '2024-01-01T00:00:00Z',
         },
       },
@@ -183,6 +185,7 @@ describe('flag-value.utils', () => {
           flagId: 'flag_1',
           value: true,
           enabled: true,
+          segmentKeys: [],
           updatedAt: '2024-01-01T00:00:00Z',
         },
         env_staging: {
@@ -190,6 +193,7 @@ describe('flag-value.utils', () => {
           flagId: 'flag_1',
           value: true,
           enabled: false,
+          segmentKeys: [],
           updatedAt: '2024-01-01T00:00:00Z',
         },
       },
@@ -263,6 +267,12 @@ describe('flag-value.utils', () => {
 
       expect(result.value).toEqual({});
     });
+
+    it('should initialize segmentKeys to empty array', () => {
+      const result = createEnvironmentValue('flag_1', 'env_dev', 'boolean', true);
+
+      expect(result.segmentKeys).toEqual([]);
+    });
   });
 
   describe('updateFlagEnvironmentValue', () => {
@@ -296,6 +306,7 @@ describe('flag-value.utils', () => {
             flagId: 'flag_1',
             value: 10,
             enabled: true,
+            segmentKeys: ['beta-users'],
             updatedAt: '2024-01-01T00:00:00Z',
           },
         },
@@ -316,6 +327,7 @@ describe('flag-value.utils', () => {
             flagId: 'flag_1',
             value: 10,
             enabled: true,
+            segmentKeys: ['vip-users'],
             updatedAt: '2024-01-01T00:00:00Z',
           },
         },
@@ -325,6 +337,32 @@ describe('flag-value.utils', () => {
 
       expect(updated.environmentValues['env_dev'].value).toBe(99);
       expect(updated.environmentValues['env_dev'].enabled).toBe(true);
+    });
+
+    it('should preserve segmentKeys when updating environment value', () => {
+      const flagWithValues: Flag = {
+        ...mockFlag,
+        environmentValues: {
+          env_dev: {
+            environmentId: 'env_dev',
+            flagId: 'flag_1',
+            value: 10,
+            enabled: true,
+            segmentKeys: ['beta-users', 'vip-users'],
+            updatedAt: '2024-01-01T00:00:00Z',
+          },
+        },
+      };
+
+      const updated = updateFlagEnvironmentValue(flagWithValues, 'env_dev', 99);
+
+      expect(updated.environmentValues['env_dev'].segmentKeys).toEqual(['beta-users', 'vip-users']);
+    });
+
+    it('should default segmentKeys to empty array for new environment value', () => {
+      const updated = updateFlagEnvironmentValue(mockFlag, 'env_dev', 42);
+
+      expect(updated.environmentValues['env_dev'].segmentKeys).toEqual([]);
     });
 
     it('should update enabled state when provided', () => {

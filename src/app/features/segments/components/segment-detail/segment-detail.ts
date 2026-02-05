@@ -5,7 +5,8 @@ import { map } from 'rxjs';
 
 import { ButtonComponent } from '@/app/shared/ui/button/button';
 import { CreateSegmentRuleInput, UpdateSegmentRuleInput } from '../../models/segment-rule.model';
-import { SegmentStore, UpdateSegmentInput } from '../../store/segment.store';
+import { UpdateSegmentInput } from '../../api/segment.api';
+import { SegmentStore } from '../../store/segment.store';
 import { RuleBuilderComponent } from '../rule-builder/rule-builder';
 import { RuleRowComponent } from '../rule-row/rule-row';
 
@@ -21,7 +22,7 @@ export class SegmentDetailComponent {
   private readonly segmentStore = inject(SegmentStore);
 
   private readonly segmentId = toSignal(
-    this.route.paramMap.pipe(map((params) => params.get('segmentId') ?? ''))
+    this.route.paramMap.pipe(map((params) => params.get('segmentId') ?? '')),
   );
 
   protected readonly segment = computed(() => {

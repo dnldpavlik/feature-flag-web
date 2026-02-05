@@ -23,6 +23,7 @@ export interface EnvironmentFlagValue<T extends FlagType = FlagType> {
   flagId: string;
   enabled: boolean;
   value: FlagTypeMap[T];
+  segmentKeys: string[];
   updatedAt: string;
 }
 

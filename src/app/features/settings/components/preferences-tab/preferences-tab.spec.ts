@@ -4,6 +4,7 @@ import { By } from '@angular/platform-browser';
 import { EnvironmentStore } from '@/app/shared/store/environment.store';
 import { PreferencesStore } from '../../store/preferences.store';
 import { PreferencesTabComponent } from './preferences-tab';
+import { MOCK_API_PROVIDERS } from '@/app/testing';
 
 describe('PreferencesTabComponent', () => {
   let fixture: ComponentFixture<PreferencesTabComponent>;
@@ -14,13 +15,14 @@ describe('PreferencesTabComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [PreferencesTabComponent],
-      providers: [PreferencesStore, EnvironmentStore],
+      providers: [PreferencesStore, EnvironmentStore, ...MOCK_API_PROVIDERS],
     }).compileComponents();
 
     fixture = TestBed.createComponent(PreferencesTabComponent);
     component = fixture.componentInstance;
     preferencesStore = TestBed.inject(PreferencesStore);
     environmentStore = TestBed.inject(EnvironmentStore);
+    await environmentStore.loadEnvironments();
     fixture.detectChanges();
   });
 

@@ -1,3 +1,5 @@
+import { of, throwError, delay, Observable } from 'rxjs';
+
 import { BaseCrudStore, StoreItem, BaseCrudStoreConfig } from './base-crud.store';
 
 interface TestItem extends StoreItem {
@@ -15,6 +17,10 @@ class TestStore extends BaseCrudStore<TestItem> {
   }
 
   // Expose protected methods for testing
+  load(source: Observable<TestItem[]>): Promise<void> {
+    return this.loadFromApi(source);
+  }
+
   add(data: Omit<TestItem, 'id' | 'createdAt' | 'updatedAt'>, prepend = false): string {
     return this.addItem(data, prepend);
   }
@@ -51,6 +57,14 @@ describe('BaseCrudStore', () => {
   });
 
   describe('initialization', () => {
+    it('should start with loading false', () => {
+      expect(store.loading()).toBe(false);
+    });
+
+    it('should start with error null', () => {
+      expect(store.error()).toBeNull();
+    });
+
     it('should start with empty items by default', () => {
       expect(store.items()).toEqual([]);
       expect(store.count()).toBe(0);
@@ -325,6 +339,87 @@ describe('BaseCrudStore', () => {
 
       expect(store.items()).toEqual([]);
       expect(store.count()).toBe(0);
+    });
+  });
+
+  describe('loadFromApi', () => {
+    const mockItems: TestItem[] = [
+      {
+        id: 'api_1',
+        name: 'From API',
+        value: 100,
+        createdAt: '2024-01-01',
+        updatedAt: '2024-01-01',
+      },
+      {
+        id: 'api_2',
+        name: 'Also API',
+        value: 200,
+        createdAt: '2024-01-01',
+        updatedAt: '2024-01-01',
+      },
+    ];
+
+    it('should set loading to true during load', async () => {
+      jest.useFakeTimers();
+      const source$ = of(mockItems).pipe(delay(100));
+      const promise = store.load(source$);
+
+      expect(store.loading()).toBe(true);
+
+      jest.advanceTimersByTime(100);
+      await promise;
+      jest.useRealTimers();
+    });
+
+    it('should set items from API response', async () => {
+      await store.load(of(mockItems));
+
+      expect(store.items()).toEqual(mockItems);
+      expect(store.count()).toBe(2);
+    });
+
+    it('should set loading to false after success', async () => {
+      await store.load(of(mockItems));
+
+      expect(store.loading()).toBe(false);
+    });
+
+    it('should clear previous error on new load', async () => {
+      // First trigger an error
+      await store.load(throwError(() => new Error('fail')));
+      expect(store.error()).toBe('fail');
+
+      // Then load successfully
+      await store.load(of(mockItems));
+      expect(store.error()).toBeNull();
+    });
+
+    it('should set error message on failure', async () => {
+      await store.load(throwError(() => new Error('Network error')));
+
+      expect(store.error()).toBe('Network error');
+    });
+
+    it('should set loading to false after failure', async () => {
+      await store.load(throwError(() => new Error('fail')));
+
+      expect(store.loading()).toBe(false);
+    });
+
+    it('should not modify items on failure', async () => {
+      store.add({ name: 'Existing', value: 1 });
+      const existingItems = store.items();
+
+      await store.load(throwError(() => new Error('fail')));
+
+      expect(store.items()).toEqual(existingItems);
+    });
+
+    it('should handle non-Error thrown values', async () => {
+      await store.load(throwError(() => 'string error'));
+
+      expect(store.error()).toBe('Failed to load data');
     });
   });
 

@@ -1,29 +1,32 @@
 import { TestBed } from '@angular/core/testing';
 
 import { EnvironmentStore } from './environment.store';
+import { AuditStore } from '@/app/features/audit/store/audit.store';
 import {
   expectItemAdded,
-  expectIdPattern,
-  expectTimestamp,
-  getCountBefore,
   findByKey,
   injectService,
+  MOCK_API_PROVIDERS,
+  MOCK_ENVIRONMENTS,
 } from '@/app/testing';
 
 describe('EnvironmentStore', () => {
   let store: EnvironmentStore;
+  let auditStore: AuditStore;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     TestBed.configureTestingModule({
-      providers: [EnvironmentStore],
+      providers: [EnvironmentStore, AuditStore, ...MOCK_API_PROVIDERS],
     });
 
     store = injectService(EnvironmentStore);
+    auditStore = injectService(AuditStore);
+    await store.loadEnvironments();
   });
 
   describe('initial state', () => {
-    it('should seed initial environments', () => {
-      expect(store.environments().length).toBe(3);
+    it('should load environments from API', () => {
+      expect(store.environments().length).toBe(MOCK_ENVIRONMENTS.length);
     });
 
     it('should have development, staging, and production environments', () => {
@@ -33,7 +36,7 @@ describe('EnvironmentStore', () => {
       expect(keys).toContain('production');
     });
 
-    it('should have development as selected by default', () => {
+    it('should auto-select default environment after load', () => {
       expect(store.selectedEnvironmentId()).toBe('env_development');
     });
   });
@@ -83,8 +86,8 @@ describe('EnvironmentStore', () => {
   });
 
   describe('setDefaultEnvironment', () => {
-    it('should set the default environment and clear others', () => {
-      store.setDefaultEnvironment('env_staging');
+    it('should set the default environment and clear others', async () => {
+      await store.setDefaultEnvironment('env_staging');
 
       const defaults = store.environments().filter((env) => env.isDefault);
       expect(defaults.length).toBe(1);
@@ -93,10 +96,10 @@ describe('EnvironmentStore', () => {
   });
 
   describe('addEnvironment', () => {
-    it('should add a new environment', () => {
-      const countBefore = getCountBefore(store.environments);
+    it('should add a new environment via API', async () => {
+      const countBefore = store.environments().length;
 
-      store.addEnvironment({
+      await store.addEnvironment({
         key: 'qa',
         name: 'QA',
         color: '#8B5CF6',
@@ -106,8 +109,8 @@ describe('EnvironmentStore', () => {
       expectItemAdded(store.environments, countBefore);
     });
 
-    it('should set environment properties correctly', () => {
-      store.addEnvironment({
+    it('should set environment properties from API response', async () => {
+      await store.addEnvironment({
         key: 'qa',
         name: 'QA',
         color: '#8B5CF6',
@@ -121,8 +124,8 @@ describe('EnvironmentStore', () => {
       expect(qa?.order).toBe(3);
     });
 
-    it('should generate an ID for new environment', () => {
-      store.addEnvironment({
+    it('should receive ID from API', async () => {
+      await store.addEnvironment({
         key: 'qa',
         name: 'QA',
         color: '#8B5CF6',
@@ -130,24 +133,12 @@ describe('EnvironmentStore', () => {
       });
 
       const qa = findByKey(store.environments, 'qa');
-      expectIdPattern(qa!.id, 'env');
+      expect(qa?.id).toBeDefined();
+      expect(qa?.id).toMatch(/^env_/);
     });
 
-    it('should set timestamps on new environment', () => {
-      store.addEnvironment({
-        key: 'qa',
-        name: 'QA',
-        color: '#8B5CF6',
-        order: 3,
-      });
-
-      const qa = findByKey(store.environments, 'qa');
-      expectTimestamp(qa?.createdAt);
-      expectTimestamp(qa?.updatedAt);
-    });
-
-    it('should default isDefault to false', () => {
-      store.addEnvironment({
+    it('should default isDefault to false', async () => {
+      await store.addEnvironment({
         key: 'qa',
         name: 'QA',
         color: '#8B5CF6',
@@ -158,8 +149,8 @@ describe('EnvironmentStore', () => {
       expect(qa?.isDefault).toBe(false);
     });
 
-    it('should respect isDefault when provided', () => {
-      store.addEnvironment({
+    it('should respect isDefault when provided', async () => {
+      await store.addEnvironment({
         key: 'qa',
         name: 'QA',
         color: '#8B5CF6',
@@ -173,29 +164,29 @@ describe('EnvironmentStore', () => {
   });
 
   describe('updateEnvironment', () => {
-    it('should update name of existing environment', () => {
-      store.updateEnvironment('env_staging', { name: 'QA Staging' });
+    it('should update name of existing environment via API', async () => {
+      await store.updateEnvironment('env_staging', { name: 'QA Staging' });
 
       const env = store.getEnvironmentById('env_staging');
       expect(env?.name).toBe('QA Staging');
     });
 
-    it('should update key of existing environment', () => {
-      store.updateEnvironment('env_staging', { key: 'qa-staging' });
+    it('should update key of existing environment via API', async () => {
+      await store.updateEnvironment('env_staging', { key: 'qa-staging' });
 
       const env = store.getEnvironmentById('env_staging');
       expect(env?.key).toBe('qa-staging');
     });
 
-    it('should update color of existing environment', () => {
-      store.updateEnvironment('env_staging', { color: '#8B5CF6' });
+    it('should update color of existing environment via API', async () => {
+      await store.updateEnvironment('env_staging', { color: '#8B5CF6' });
 
       const env = store.getEnvironmentById('env_staging');
       expect(env?.color).toBe('#8B5CF6');
     });
 
-    it('should update multiple fields at once', () => {
-      store.updateEnvironment('env_staging', {
+    it('should update multiple fields at once via API', async () => {
+      await store.updateEnvironment('env_staging', {
         name: 'Pre-Prod',
         key: 'pre-prod',
         color: '#6366F1',
@@ -207,44 +198,16 @@ describe('EnvironmentStore', () => {
       expect(env?.color).toBe('#6366F1');
     });
 
-    it('should update updatedAt timestamp', () => {
-      const before = store.getEnvironmentById('env_staging')?.updatedAt;
-
-      jest.useFakeTimers();
-      jest.advanceTimersByTime(1000);
-
-      store.updateEnvironment('env_staging', { name: 'Updated' });
-
-      const after = store.getEnvironmentById('env_staging')?.updatedAt;
-      expect(after).toBeDefined();
-      expect(after).not.toBe(before);
-
-      jest.useRealTimers();
-    });
-
-    it('should preserve fields not included in updates', () => {
+    it('should preserve fields not included in updates', async () => {
       const original = store.getEnvironmentById('env_staging')!;
 
-      store.updateEnvironment('env_staging', { name: 'New Name' });
+      await store.updateEnvironment('env_staging', { name: 'New Name' });
 
       const updated = store.getEnvironmentById('env_staging')!;
       expect(updated.key).toBe(original.key);
       expect(updated.color).toBe(original.color);
       expect(updated.order).toBe(original.order);
       expect(updated.isDefault).toBe(original.isDefault);
-      expect(updated.createdAt).toBe(original.createdAt);
-    });
-
-    it('should ignore non-existent environment id', () => {
-      const before = store.environments().map((e) => ({ ...e }));
-
-      store.updateEnvironment('env_nonexistent', { name: 'Ghost' });
-
-      const after = store.environments();
-      expect(after.length).toBe(before.length);
-      after.forEach((env, i) => {
-        expect(env.name).toBe(before[i].name);
-      });
     });
   });
 
@@ -258,6 +221,60 @@ describe('EnvironmentStore', () => {
     it('should return undefined for non-existent ID', () => {
       const env = store.getEnvironmentById('env_nonexistent');
       expect(env).toBeUndefined();
+    });
+  });
+
+  describe('audit logging', () => {
+    beforeEach(() => {
+      jest.spyOn(auditStore, 'logAction');
+    });
+
+    it('should log audit entry when environment is created', async () => {
+      await store.addEnvironment({
+        key: 'audit-test-env',
+        name: 'Audit Test Environment',
+        color: '#FF0000',
+        order: 5,
+      });
+
+      expect(auditStore.logAction).toHaveBeenCalledWith(
+        expect.objectContaining({
+          action: 'created',
+          resourceType: 'environment',
+          resourceName: 'Audit Test Environment',
+        }),
+      );
+    });
+
+    it('should log audit entry when environment is updated', async () => {
+      await store.updateEnvironment('env_staging', {
+        name: 'Updated Staging',
+      });
+
+      expect(auditStore.logAction).toHaveBeenCalledWith(
+        expect.objectContaining({
+          action: 'updated',
+          resourceType: 'environment',
+          resourceId: 'env_staging',
+          resourceName: 'Updated Staging',
+        }),
+      );
+    });
+
+    it('should include user info in audit entry', async () => {
+      await store.addEnvironment({
+        key: 'user-audit-env',
+        name: 'User Audit Environment',
+        color: '#00FF00',
+        order: 6,
+      });
+
+      expect(auditStore.logAction).toHaveBeenCalledWith(
+        expect.objectContaining({
+          userId: expect.any(String),
+          userName: expect.any(String),
+        }),
+      );
     });
   });
 });

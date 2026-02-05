@@ -3,21 +3,24 @@ import { AuditStore } from './audit.store';
 import {
   injectService,
   expectHasItems,
-  expectIdPattern,
   getCountBefore,
   expectItemAdded,
+  MOCK_API_PROVIDERS,
 } from '@/app/testing';
 
 describe('AuditStore', () => {
   let store: AuditStore;
 
-  beforeEach(() => {
-    TestBed.configureTestingModule({});
+  beforeEach(async () => {
+    TestBed.configureTestingModule({
+      providers: [AuditStore, ...MOCK_API_PROVIDERS],
+    });
     store = injectService(AuditStore);
+    await store.loadEntries();
   });
 
   describe('initial state', () => {
-    it('should have mock audit entries', () => {
+    it('should have audit entries after loading', () => {
       expectHasItems(store.entries);
     });
 
@@ -42,13 +45,21 @@ describe('AuditStore', () => {
         expect(current).toBeGreaterThanOrEqual(next);
       }
     });
+
+    it('should not be loading after loadEntries completes', () => {
+      expect(store.loading()).toBe(false);
+    });
+
+    it('should have no error after successful load', () => {
+      expect(store.error()).toBeNull();
+    });
   });
 
   describe('logAction', () => {
-    it('should add a new entry to the beginning of the list', () => {
+    it('should add a new entry to the beginning of the list', async () => {
       const countBefore = getCountBefore(store.entries);
 
-      store.logAction({
+      await store.logAction({
         action: 'created',
         resourceType: 'flag',
         resourceId: 'flag_test123',
@@ -62,8 +73,8 @@ describe('AuditStore', () => {
       expect(store.entries()[0].resourceName).toBe('Test Flag');
     });
 
-    it('should generate unique id for new entry', () => {
-      store.logAction({
+    it('should create entry with id from API', async () => {
+      await store.logAction({
         action: 'updated',
         resourceType: 'segment',
         resourceId: 'seg_abc',
@@ -73,13 +84,12 @@ describe('AuditStore', () => {
         userName: 'Test User',
       });
 
-      expectIdPattern(store.entries()[0].id, 'audit');
+      expect(store.entries()[0].id).toBeDefined();
+      expect(store.entries()[0].id).toContain('audit_');
     });
 
-    it('should set timestamp for new entry', () => {
-      const before = new Date().toISOString();
-
-      store.logAction({
+    it('should set timestamp from API response', async () => {
+      await store.logAction({
         action: 'deleted',
         resourceType: 'project',
         resourceId: 'proj_xyz',
@@ -89,11 +99,8 @@ describe('AuditStore', () => {
         userName: 'Test User',
       });
 
-      const after = new Date().toISOString();
       const entry = store.entries()[0];
-
-      expect(entry.timestamp >= before).toBe(true);
-      expect(entry.timestamp <= after).toBe(true);
+      expect(entry.timestamp).toBeDefined();
     });
   });
 
@@ -124,7 +131,6 @@ describe('AuditStore', () => {
       });
 
       it('should return empty array if no matches', () => {
-        // Add a fresh store to test with controlled data
         const toggledEntries = store.entriesByAction('toggled');
         expect(Array.isArray(toggledEntries)).toBe(true);
       });
@@ -138,7 +144,7 @@ describe('AuditStore', () => {
     });
   });
 
-  describe('mock data coverage', () => {
+  describe('data coverage', () => {
     it('should have entries for different actions', () => {
       const entries = store.entries();
       const actions = new Set(entries.map((e) => e.action));

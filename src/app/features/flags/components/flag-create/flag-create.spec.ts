@@ -6,6 +6,7 @@ import { EnvironmentStore } from '@/app/shared/store/environment.store';
 import { ProjectStore } from '@/app/shared/store/project.store';
 import { FlagStore } from '@/app/features/flags/store/flag.store';
 import { FlagCreateComponent } from './flag-create';
+import { MOCK_API_PROVIDERS } from '@/app/testing';
 
 describe('FlagCreate', () => {
   let fixture: ComponentFixture<FlagCreateComponent>;
@@ -24,6 +25,7 @@ describe('FlagCreate', () => {
         { provide: FlagStore, useValue: store },
         EnvironmentStore,
         ProjectStore,
+        ...MOCK_API_PROVIDERS,
       ],
     }).compileComponents();
 
@@ -31,6 +33,9 @@ describe('FlagCreate', () => {
     component = fixture.componentInstance;
     router = TestBed.inject(Router);
     projectStore = TestBed.inject(ProjectStore);
+    const environmentStore = TestBed.inject(EnvironmentStore);
+    await projectStore.loadProjects();
+    await environmentStore.loadEnvironments();
     fixture.detectChanges();
   });
 

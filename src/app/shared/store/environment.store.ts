@@ -1,56 +1,29 @@
-import { Injectable, computed, signal } from '@angular/core';
+import { inject, Injectable, computed, signal } from '@angular/core';
+import { firstValueFrom } from 'rxjs';
 
+import { EnvironmentApi } from '@/app/features/environments/api/environment.api';
 import { BaseCrudStore } from '@/app/shared/store/base-crud.store';
+import { ToastService } from '@/app/shared/ui/toast/toast.service';
+import { AuditStore } from '@/app/features/audit/store/audit.store';
+import { UserProfileStore } from '@/app/features/settings/store/user-profile.store';
 import {
   CreateEnvironmentInput,
   Environment,
   UpdateEnvironmentInput,
 } from '@/app/features/flags/models/environment.model';
 
-/** Fixed timestamp for seed data */
-const SEED_TIMESTAMP = '2025-01-01T00:00:00.000Z';
-
-const INITIAL_ENVIRONMENTS: Environment[] = [
-  {
-    id: 'env_development',
-    key: 'development',
-    name: 'Development',
-    color: '#10B981',
-    order: 0,
-    isDefault: true,
-    createdAt: SEED_TIMESTAMP,
-    updatedAt: SEED_TIMESTAMP,
-  },
-  {
-    id: 'env_staging',
-    key: 'staging',
-    name: 'Staging',
-    color: '#F59E0B',
-    order: 1,
-    isDefault: false,
-    createdAt: SEED_TIMESTAMP,
-    updatedAt: SEED_TIMESTAMP,
-  },
-  {
-    id: 'env_production',
-    key: 'production',
-    name: 'Production',
-    color: '#EF4444',
-    order: 2,
-    isDefault: false,
-    createdAt: SEED_TIMESTAMP,
-    updatedAt: SEED_TIMESTAMP,
-  },
-];
-
 @Injectable({ providedIn: 'root' })
 export class EnvironmentStore extends BaseCrudStore<Environment> {
-  private readonly _selectedEnvironmentId = signal<string>('env_development');
+  private readonly api = inject(EnvironmentApi);
+  private readonly toast = inject(ToastService);
+  private readonly auditStore = inject(AuditStore);
+  private readonly userProfileStore = inject(UserProfileStore);
+  private readonly _selectedEnvironmentId = signal<string>('');
 
   constructor() {
     super({
       idPrefix: 'env',
-      initialData: INITIAL_ENVIRONMENTS,
+      initialData: [],
       allowDeleteLast: false,
     });
   }
@@ -70,37 +43,91 @@ export class EnvironmentStore extends BaseCrudStore<Environment> {
 
   readonly defaultEnvironment = computed(() => this._items().find((e) => e.isDefault));
 
+  /** Load environments from API */
+  async loadEnvironments(): Promise<void> {
+    await this.loadFromApi(this.api.getAll());
+
+    // Auto-select default environment if none selected
+    if (!this._selectedEnvironmentId() && this._items().length > 0) {
+      const defaultEnv = this._items().find((e) => e.isDefault) ?? this._items()[0];
+      this._selectedEnvironmentId.set(defaultEnv.id);
+    }
+  }
+
   /** Select an environment as the current context */
   selectEnvironment(environmentId: string): void {
     this._selectedEnvironmentId.set(environmentId);
   }
 
-  /** Set an environment as the default */
-  setDefaultEnvironment(environmentId: string): void {
-    this.updateWhere(
-      (env) => env.id === environmentId || env.isDefault,
-      (env) => ({ isDefault: env.id === environmentId }),
-    );
+  /** Set an environment as the default via API */
+  async setDefaultEnvironment(environmentId: string): Promise<void> {
+    try {
+      await firstValueFrom(this.api.setDefault(environmentId));
+      this.updateWhere(
+        (env) => env.id === environmentId || env.isDefault,
+        (env) => ({ isDefault: env.id === environmentId }),
+      );
+      this.toast.success('Default environment updated');
+    } catch {
+      this.toast.error('Failed to set default environment');
+    }
   }
 
-  /** Add a new environment */
-  addEnvironment(input: CreateEnvironmentInput): void {
-    this.addItem({
-      key: input.key,
-      name: input.name,
-      color: input.color,
-      order: input.order,
-      isDefault: input.isDefault ?? false,
-    });
+  /** Add a new environment via API */
+  async addEnvironment(input: CreateEnvironmentInput): Promise<void> {
+    try {
+      const created = await firstValueFrom(this.api.create(input));
+      this._items.update((items) => [...items, created]);
+      this.toast.success('Environment created');
+      this.logAuditAction(
+        'created',
+        created.id,
+        created.name,
+        `Created environment "${created.key}"`,
+      );
+    } catch {
+      this.toast.error('Failed to create environment');
+    }
   }
 
-  /** Update environment properties */
-  updateEnvironment(envId: string, updates: UpdateEnvironmentInput): void {
-    this.updateItem(envId, updates);
+  /** Update environment properties via API */
+  async updateEnvironment(envId: string, updates: UpdateEnvironmentInput): Promise<void> {
+    try {
+      const updated = await firstValueFrom(this.api.update(envId, updates));
+      this.updateItem(envId, updated);
+      this.toast.success('Environment updated');
+      const changedFields = Object.keys(updates).join(', ');
+      this.logAuditAction(
+        'updated',
+        envId,
+        updated.name,
+        `Updated environment fields: ${changedFields}`,
+      );
+    } catch {
+      this.toast.error('Failed to update environment');
+    }
   }
 
   /** Find environment by ID */
   getEnvironmentById(id: string): Environment | undefined {
     return this.getById(id);
+  }
+
+  private logAuditAction(
+    action: 'created' | 'updated' | 'deleted',
+    resourceId: string,
+    resourceName: string,
+    details: string,
+  ): void {
+    const user = this.userProfileStore.userProfile();
+    this.auditStore.logAction({
+      action,
+      resourceType: 'environment',
+      resourceId,
+      resourceName,
+      details,
+      userId: user.id,
+      userName: user.name,
+    });
   }
 }

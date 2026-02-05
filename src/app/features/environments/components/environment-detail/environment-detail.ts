@@ -74,7 +74,7 @@ export class EnvironmentDetailComponent {
     this.isEditing.set(false);
   }
 
-  protected saveEdit(): void {
+  protected async saveEdit(): Promise<void> {
     const env = this.environment();
     if (!env) return;
 
@@ -84,7 +84,7 @@ export class EnvironmentDetailComponent {
       color: this.editColor().trim() || env.color,
     };
 
-    this.environmentStore.updateEnvironment(env.id, updates);
+    await this.environmentStore.updateEnvironment(env.id, updates);
     this.isEditing.set(false);
   }
 
@@ -109,7 +109,7 @@ export class EnvironmentDetailComponent {
   protected makeDefault(): void {
     const env = this.environment();
     if (!env) return;
-    this.environmentStore.setDefaultEnvironment(env.id);
+    void this.environmentStore.setDefaultEnvironment(env.id);
   }
 
   protected backToList(): void {

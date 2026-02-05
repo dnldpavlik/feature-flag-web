@@ -72,15 +72,17 @@ export class ApiKeysTabComponent {
     return this.selectedScopes().includes(scope);
   }
 
-  protected createKey(): void {
+  protected async createKey(): Promise<void> {
     if (!this.canSubmit()) return;
 
-    const result = this.apiKeyStore.createApiKey({
+    const result = await this.apiKeyStore.createApiKey({
       name: this.newKeyName().trim(),
       scopes: this.selectedScopes(),
     });
 
-    this.createdSecret.set(result.secret);
+    if (result) {
+      this.createdSecret.set(result.secret);
+    }
     this.closeCreateForm();
   }
 
@@ -103,10 +105,10 @@ export class ApiKeysTabComponent {
     this.keyToRevoke.set(null);
   }
 
-  protected revokeKey(): void {
+  protected async revokeKey(): Promise<void> {
     const keyId = this.keyToRevoke();
     if (keyId) {
-      this.apiKeyStore.revokeApiKey(keyId);
+      await this.apiKeyStore.revokeApiKey(keyId);
       this.keyToRevoke.set(null);
     }
   }

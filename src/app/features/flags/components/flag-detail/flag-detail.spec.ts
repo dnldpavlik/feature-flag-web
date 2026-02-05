@@ -19,6 +19,7 @@ import {
   getFormField,
   setFormFields,
   setupDetailComponentTest,
+  MOCK_API_PROVIDERS,
 } from '@/app/testing';
 
 type FlagDetailInternals = FlagDetailComponent & {
@@ -42,7 +43,7 @@ describe('FlagDetail', () => {
   const ctx = setupDetailComponentTest({
     component: FlagDetailComponent,
     paramName: 'flagId',
-    providers: [FlagStore, EnvironmentStore, ProjectStore],
+    providers: [FlagStore, EnvironmentStore, ProjectStore, ...MOCK_API_PROVIDERS],
   });
 
   const build = async (flagId?: string) => {
@@ -53,6 +54,11 @@ describe('FlagDetail', () => {
     location = ctx.location;
     store = injectService(FlagStore);
     projectStore = injectService(ProjectStore);
+    const environmentStore = injectService(EnvironmentStore);
+    await projectStore.loadProjects();
+    await environmentStore.loadEnvironments();
+    await store.loadFlags();
+    fixture.detectChanges();
   };
 
   it('should render flag details when flag exists', async () => {
@@ -74,6 +80,7 @@ describe('FlagDetail', () => {
     });
 
     component.saveDetails();
+    await fixture.whenStable();
 
     const updated = store.getFlagById('flag_new_checkout');
     expect(updated?.name).toBe('Updated Flag');
@@ -99,6 +106,7 @@ describe('FlagDetail', () => {
 
     setFormField(component, 'jsonValue', '{"limit": 5}');
     component.saveDetails();
+    await fixture.whenStable();
 
     const updated = store.getFlagById('flag_checkout_guardrails');
     expect(updated?.defaultValue).toEqual({ limit: 5 });
@@ -193,6 +201,7 @@ describe('FlagDetail', () => {
 
     setFormField(component, 'stringValue', 'new-default');
     component.saveDetails();
+    await fixture.whenStable();
 
     const updated = store.getFlagById('flag_beta_theme');
     expect(updated?.defaultValue).toBe('new-default');
@@ -205,6 +214,7 @@ describe('FlagDetail', () => {
 
     setFormField(component, 'numberValue', 9);
     component.saveDetails();
+    await fixture.whenStable();
 
     const updated = store.getFlagById('flag_search_boost');
     expect(updated?.defaultValue).toBe(9);
@@ -215,6 +225,7 @@ describe('FlagDetail', () => {
 
     setFormField(component, 'booleanValue', true);
     component.saveDetails();
+    await fixture.whenStable();
 
     const updated = store.getFlagById('flag_new_checkout');
     expect(updated?.defaultValue).toBe(true);
@@ -263,6 +274,7 @@ describe('FlagDetail', () => {
 
     const envId = 'env_development';
     component.toggleEnvironment(envId, false);
+    await fixture.whenStable();
 
     const updated = store.getFlagById('flag_new_checkout');
     expect(updated?.environmentValues[envId].enabled).toBe(false);
@@ -273,6 +285,7 @@ describe('FlagDetail', () => {
 
     const envId = 'env_development';
     component.updateEnvironmentValue(envId, 'false');
+    await fixture.whenStable();
 
     const updated = store.getFlagById('flag_new_checkout');
     expect(updated?.environmentValues[envId].value).toBe(false);
@@ -283,6 +296,7 @@ describe('FlagDetail', () => {
 
     const envId = 'env_development';
     component.updateEnvironmentValue(envId, 'updated');
+    await fixture.whenStable();
 
     const updated = store.getFlagById('flag_beta_theme');
     expect(updated?.environmentValues[envId].value).toBe('updated');
@@ -295,6 +309,7 @@ describe('FlagDetail', () => {
 
     const envId = 'env_development';
     component.updateEnvironmentValue(envId, '4.2');
+    await fixture.whenStable();
 
     const updated = store.getFlagById('flag_search_boost');
     expect(updated?.environmentValues[envId].value).toBe(4.2);
@@ -307,6 +322,7 @@ describe('FlagDetail', () => {
 
     const envId = 'env_development';
     component.updateEnvironmentValue(envId, '{"limit": 42}');
+    await fixture.whenStable();
 
     const updated = store.getFlagById('flag_checkout_guardrails');
     expect(updated?.environmentValues[envId].value).toEqual({ limit: 42 });
@@ -428,7 +444,7 @@ describe('FlagDetail', () => {
       // Delete all but one flag
       const flags = store.flags();
       for (let i = 0; i < flags.length - 1; i++) {
-        store.deleteFlag(flags[i].id);
+        await store.deleteFlag(flags[i].id);
       }
       fixture.detectChanges();
 
@@ -442,6 +458,7 @@ describe('FlagDetail', () => {
       const beforeCount = store.flags().length;
 
       component.deleteFlag();
+      await fixture.whenStable();
 
       expect(store.flags().length).toBe(beforeCount - 1);
       expect(store.getFlagById('flag_new_checkout')).toBeUndefined();
@@ -498,6 +515,7 @@ describe('FlagDetail', () => {
 
     const envId = 'env_development';
     component.onEnvironmentToggle(envId, false);
+    await fixture.whenStable();
 
     const updated = store.getFlagById('flag_new_checkout');
     expect(updated?.environmentValues[envId].enabled).toBe(false);
@@ -509,6 +527,7 @@ describe('FlagDetail', () => {
     const envId = 'env_development';
     const event = { target: { value: 'new-value' } } as unknown as Event;
     component.onEnvironmentValueChange(envId, event);
+    await fixture.whenStable();
 
     const updated = store.getFlagById('flag_beta_theme');
     expect(updated?.environmentValues[envId].value).toBe('new-value');

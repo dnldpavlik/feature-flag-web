@@ -13,6 +13,7 @@ import {
   queryAll,
   injectService,
   getComponent,
+  MOCK_API_PROVIDERS,
 } from '@/app/testing';
 
 describe('SegmentList', () => {
@@ -24,13 +25,14 @@ describe('SegmentList', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [SegmentListComponent],
-      providers: [provideRouter([]), SegmentStore, SearchStore],
+      providers: [provideRouter([]), SegmentStore, SearchStore, ...MOCK_API_PROVIDERS],
     }).compileComponents();
 
     fixture = TestBed.createComponent(SegmentListComponent);
     component = getComponent(fixture);
     store = injectService(SegmentStore);
     searchStore = injectService(SearchStore);
+    await store.loadSegments();
     fixture.detectChanges();
   });
 
@@ -43,28 +45,31 @@ describe('SegmentList', () => {
     expect(rows.length).toBe(store.segments().length);
   });
 
-  it('should add a segment', () => {
+  it('should add a segment', async () => {
     component.name = 'VIP Customers';
     component.key = 'vip-customers';
     component.description = 'High-value customers.';
     component.addSegment();
+    await fixture.whenStable();
     fixture.detectChanges();
 
     const rows = getTableRows(fixture);
     expect(rows.length).toBe(store.segments().length);
   });
 
-  it('should not add a segment when required fields are missing', () => {
+  it('should not add a segment when required fields are missing', async () => {
     const initialCount = store.segments().length;
     component.name = '';
     component.key = '';
     component.addSegment();
+    await fixture.whenStable();
     expect(store.segments().length).toBe(initialCount);
   });
 
-  it('should delete a segment', () => {
+  it('should delete a segment', async () => {
     const deleteSpy = jest.spyOn(store, 'deleteSegment');
     component.deleteSegment('seg_beta');
+    await fixture.whenStable();
     expect(deleteSpy).toHaveBeenCalledWith('seg_beta');
   });
 

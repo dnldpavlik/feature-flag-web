@@ -3,6 +3,7 @@ import { By } from '@angular/platform-browser';
 
 import { ApiKeyStore } from '../../store/api-key.store';
 import { ApiKeysTabComponent } from './api-keys-tab';
+import { MOCK_API_PROVIDERS } from '@/app/testing';
 
 describe('ApiKeysTabComponent', () => {
   let fixture: ComponentFixture<ApiKeysTabComponent>;
@@ -12,12 +13,13 @@ describe('ApiKeysTabComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [ApiKeysTabComponent],
-      providers: [ApiKeyStore],
+      providers: [ApiKeyStore, ...MOCK_API_PROVIDERS],
     }).compileComponents();
 
+    apiKeyStore = TestBed.inject(ApiKeyStore);
+    await apiKeyStore.loadApiKeys();
     fixture = TestBed.createComponent(ApiKeysTabComponent);
     component = fixture.componentInstance;
-    apiKeyStore = TestBed.inject(ApiKeyStore);
     fixture.detectChanges();
   });
 
@@ -163,7 +165,7 @@ describe('ApiKeysTabComponent', () => {
       expect(component['selectedScopes']()).not.toContain('read:flags');
     });
 
-    it('should create key and show secret on submit', () => {
+    it('should create key and show secret on submit', async () => {
       const nameInput = fixture.debugElement.query(By.css('input#key-name'));
       nameInput.nativeElement.value = 'New Test Key';
       nameInput.nativeElement.dispatchEvent(new Event('input'));
@@ -173,22 +175,20 @@ describe('ApiKeysTabComponent', () => {
       fixture.detectChanges();
 
       const beforeCount = apiKeyStore.apiKeys().length;
-      const submitButton = fixture.debugElement.query(
-        By.css('app-button.api-keys-tab__submit-btn button'),
-      );
-      submitButton.nativeElement.click();
+      // Call the method directly to properly await the async operation
+      await component['createKey']();
       fixture.detectChanges();
 
       expect(apiKeyStore.apiKeys().length).toBe(beforeCount + 1);
       expect(component.createdSecret()).toBeTruthy();
     });
 
-    it('should not create key when validation fails', () => {
+    it('should not create key when validation fails', async () => {
       // No name or scope entered
       const beforeCount = apiKeyStore.apiKeys().length;
 
       // Manually call createKey bypassing button disabled state
-      component['createKey']();
+      await component['createKey']();
       fixture.detectChanges();
 
       expect(apiKeyStore.apiKeys().length).toBe(beforeCount);
@@ -207,7 +207,7 @@ describe('ApiKeysTabComponent', () => {
   });
 
   describe('secret display', () => {
-    it('should show secret after key creation', () => {
+    it('should show secret after key creation', async () => {
       component.showCreateForm.set(true);
       fixture.detectChanges();
 
@@ -219,10 +219,8 @@ describe('ApiKeysTabComponent', () => {
       scopeCheckbox.nativeElement.click();
       fixture.detectChanges();
 
-      const submitButton = fixture.debugElement.query(
-        By.css('app-button.api-keys-tab__submit-btn button'),
-      );
-      submitButton.nativeElement.click();
+      // Call the method directly to properly await the async operation
+      await component['createKey']();
       fixture.detectChanges();
 
       const secretDisplay = fixture.debugElement.query(By.css('.api-keys-tab__secret-display'));
@@ -306,7 +304,7 @@ describe('ApiKeysTabComponent', () => {
       expect(confirmation).toBeTruthy();
     });
 
-    it('should revoke key on confirm', () => {
+    it('should revoke key on confirm', async () => {
       const firstKeyId = apiKeyStore.apiKeys()[0].id;
       const beforeCount = apiKeyStore.apiKeys().length;
 
@@ -317,6 +315,7 @@ describe('ApiKeysTabComponent', () => {
         By.css('app-button.api-keys-tab__confirm-revoke-btn button'),
       );
       confirmButton.nativeElement.click();
+      await fixture.whenStable();
       fixture.detectChanges();
 
       expect(apiKeyStore.apiKeys().length).toBe(beforeCount - 1);
@@ -340,11 +339,11 @@ describe('ApiKeysTabComponent', () => {
       expect(component.keyToRevoke()).toBeNull();
     });
 
-    it('should not revoke when keyToRevoke is null', () => {
+    it('should not revoke when keyToRevoke is null', async () => {
       const beforeCount = apiKeyStore.apiKeys().length;
 
       component.keyToRevoke.set(null);
-      component['revokeKey']();
+      await component['revokeKey']();
       fixture.detectChanges();
 
       expect(apiKeyStore.apiKeys().length).toBe(beforeCount);
@@ -352,10 +351,12 @@ describe('ApiKeysTabComponent', () => {
   });
 
   describe('empty state', () => {
-    it('should show empty state when no keys exist', () => {
+    it('should show empty state when no keys exist', async () => {
       // Revoke all existing keys
       const keys = [...apiKeyStore.apiKeys()];
-      keys.forEach((key) => apiKeyStore.revokeApiKey(key.id));
+      for (const key of keys) {
+        await apiKeyStore.revokeApiKey(key.id);
+      }
       fixture.detectChanges();
 
       const emptyState = fixture.debugElement.query(By.css('.api-keys-tab__empty'));

@@ -16,6 +16,7 @@ import {
   queryAll,
   injectService,
   getComponent,
+  MOCK_API_PROVIDERS,
 } from '@/app/testing';
 
 describe('Dashboard', () => {
@@ -29,6 +30,7 @@ describe('Dashboard', () => {
   beforeEach(async () => {
     fixture = await setupComponentTest({
       component: DashboardComponent,
+      providers: [...MOCK_API_PROVIDERS],
     });
 
     component = getComponent(fixture);
@@ -36,6 +38,10 @@ describe('Dashboard', () => {
     flagStore = injectService(FlagStore);
     projectStore = injectService(ProjectStore);
     searchStore = injectService(SearchStore);
+    await projectStore.loadProjects();
+    await environmentStore.loadEnvironments();
+    await flagStore.loadFlags();
+    fixture.detectChanges();
   });
 
   it('should render the welcome heading', () => {

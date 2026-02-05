@@ -8,7 +8,7 @@ import { SearchInputComponent } from '@/app/shared/ui/search-input/search-input'
 import { ProjectStore } from '@/app/shared/store/project.store';
 import { SearchStore } from '@/app/shared/store/search.store';
 import { HeaderComponent } from './header';
-import { expectExists, query, injectService } from '@/app/testing';
+import { expectExists, query, injectService, MOCK_API_PROVIDERS } from '@/app/testing';
 
 @Component({
   selector: 'app-header-host',
@@ -44,7 +44,7 @@ describe('Header', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [HeaderHostComponent],
-      providers: [provideRouter([]), ProjectStore],
+      providers: [provideRouter([]), ProjectStore, ...MOCK_API_PROVIDERS],
     }).compileComponents();
 
     fixture = TestBed.createComponent(HeaderHostComponent);

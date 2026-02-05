@@ -7,6 +7,7 @@ import { EnvironmentStore } from '@/app/shared/store/environment.store';
 import { ProjectStore } from '@/app/shared/store/project.store';
 import { SearchStore } from '@/app/shared/store/search.store';
 import { AppComponent } from './app';
+import { MOCK_API_PROVIDERS } from '@/app/testing';
 
 @Component({ template: '' })
 class DummyComponent {}
@@ -46,6 +47,7 @@ describe('AppComponent', () => {
         EnvironmentStore,
         ProjectStore,
         SearchStore,
+        ...MOCK_API_PROVIDERS,
       ],
     }).compileComponents();
 
@@ -55,6 +57,8 @@ describe('AppComponent', () => {
     searchStore = TestBed.inject(SearchStore);
     projectStore = TestBed.inject(ProjectStore);
     environmentStore = TestBed.inject(EnvironmentStore);
+    await projectStore.loadProjects();
+    await environmentStore.loadEnvironments();
     fixture.detectChanges();
   });
 

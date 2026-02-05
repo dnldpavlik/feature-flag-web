@@ -5,6 +5,7 @@ import { BehaviorSubject } from 'rxjs';
 
 import { EnvironmentStore } from '@/app/shared/store/environment.store';
 import { FlagStore } from '@/app/features/flags/store/flag.store';
+import { MOCK_API_PROVIDERS } from '@/app/testing';
 import { EnvironmentDetailComponent } from './environment-detail';
 
 describe('EnvironmentDetail', () => {
@@ -20,6 +21,7 @@ describe('EnvironmentDetail', () => {
       providers: [
         EnvironmentStore,
         FlagStore,
+        ...MOCK_API_PROVIDERS,
         provideRouter([]),
         {
           provide: ActivatedRoute,
@@ -37,6 +39,7 @@ describe('EnvironmentDetail', () => {
     store = TestBed.inject(EnvironmentStore);
     flagStore = TestBed.inject(FlagStore);
     router = TestBed.inject(Router);
+    await store.loadEnvironments();
     fixture.detectChanges();
 
     return { paramMap$ };
@@ -137,9 +140,7 @@ describe('EnvironmentDetail', () => {
   describe('inline editing', () => {
     const clickButton = (label: string) => {
       const buttons = fixture.debugElement.queryAll(By.css('app-button, button'));
-      const target = buttons.find((b) =>
-        b.nativeElement.textContent.trim().includes(label),
-      );
+      const target = buttons.find((b) => b.nativeElement.textContent.trim().includes(label));
       target?.triggerEventHandler('click', null);
       target?.nativeElement.click?.();
       fixture.detectChanges();
@@ -149,9 +150,7 @@ describe('EnvironmentDetail', () => {
       await build('env_staging');
 
       const buttons = fixture.debugElement.queryAll(By.css('app-button'));
-      const editBtn = buttons.find((b) =>
-        b.nativeElement.textContent.trim().includes('Edit'),
-      );
+      const editBtn = buttons.find((b) => b.nativeElement.textContent.trim().includes('Edit'));
       expect(editBtn).toBeTruthy();
     });
 
@@ -159,9 +158,7 @@ describe('EnvironmentDetail', () => {
       await build('env_staging');
       clickButton('Edit');
 
-      const editForm = fixture.debugElement.query(
-        By.css('.environment-detail__edit-form'),
-      );
+      const editForm = fixture.debugElement.query(By.css('.environment-detail__edit-form'));
       expect(editForm).toBeTruthy();
     });
 
@@ -169,15 +166,9 @@ describe('EnvironmentDetail', () => {
       await build('env_staging');
       clickButton('Edit');
 
-      const nameInput = fixture.debugElement.query(
-        By.css('.environment-detail__name-input'),
-      );
-      const keyInput = fixture.debugElement.query(
-        By.css('.environment-detail__key-input'),
-      );
-      const colorInput = fixture.debugElement.query(
-        By.css('.environment-detail__color-input'),
-      );
+      const nameInput = fixture.debugElement.query(By.css('.environment-detail__name-input'));
+      const keyInput = fixture.debugElement.query(By.css('.environment-detail__key-input'));
+      const colorInput = fixture.debugElement.query(By.css('.environment-detail__color-input'));
       expect(nameInput.nativeElement.value).toBe('Staging');
       expect(keyInput.nativeElement.value).toBe('staging');
       expect(colorInput.nativeElement.value).toBe('#F59E0B');
@@ -187,21 +178,18 @@ describe('EnvironmentDetail', () => {
       await build('env_staging');
       clickButton('Edit');
 
-      const nameInput = fixture.debugElement.query(
-        By.css('.environment-detail__name-input'),
-      );
+      const nameInput = fixture.debugElement.query(By.css('.environment-detail__name-input'));
       nameInput.nativeElement.value = 'QA Staging';
       nameInput.nativeElement.dispatchEvent(new Event('input'));
       fixture.detectChanges();
 
-      clickButton('Save Changes');
+      await fixture.componentInstance.saveEdit();
+      fixture.detectChanges();
 
       const env = store.getEnvironmentById('env_staging');
       expect(env?.name).toBe('QA Staging');
 
-      const editForm = fixture.debugElement.query(
-        By.css('.environment-detail__edit-form'),
-      );
+      const editForm = fixture.debugElement.query(By.css('.environment-detail__edit-form'));
       expect(editForm).toBeFalsy();
     });
 
@@ -209,9 +197,7 @@ describe('EnvironmentDetail', () => {
       await build('env_staging');
       clickButton('Edit');
 
-      const nameInput = fixture.debugElement.query(
-        By.css('.environment-detail__name-input'),
-      );
+      const nameInput = fixture.debugElement.query(By.css('.environment-detail__name-input'));
       nameInput.nativeElement.value = 'Changed';
       nameInput.nativeElement.dispatchEvent(new Event('input'));
       fixture.detectChanges();
@@ -221,9 +207,7 @@ describe('EnvironmentDetail', () => {
       const env = store.getEnvironmentById('env_staging');
       expect(env?.name).toBe('Staging');
 
-      const editForm = fixture.debugElement.query(
-        By.css('.environment-detail__edit-form'),
-      );
+      const editForm = fixture.debugElement.query(By.css('.environment-detail__edit-form'));
       expect(editForm).toBeFalsy();
     });
 
@@ -231,15 +215,11 @@ describe('EnvironmentDetail', () => {
       await build('env_staging');
       clickButton('Edit');
 
-      const nameInput = fixture.debugElement.query(
-        By.css('.environment-detail__name-input'),
-      );
+      const nameInput = fixture.debugElement.query(By.css('.environment-detail__name-input'));
       nameInput.nativeElement.value = '   ';
       nameInput.nativeElement.dispatchEvent(new Event('input'));
 
-      const keyInput = fixture.debugElement.query(
-        By.css('.environment-detail__key-input'),
-      );
+      const keyInput = fixture.debugElement.query(By.css('.environment-detail__key-input'));
       keyInput.nativeElement.value = '   ';
       keyInput.nativeElement.dispatchEvent(new Event('input'));
       fixture.detectChanges();
@@ -255,14 +235,13 @@ describe('EnvironmentDetail', () => {
       await build('env_staging');
       clickButton('Edit');
 
-      const colorInput = fixture.debugElement.query(
-        By.css('.environment-detail__color-input'),
-      );
+      const colorInput = fixture.debugElement.query(By.css('.environment-detail__color-input'));
       colorInput.nativeElement.value = '#8B5CF6';
       colorInput.nativeElement.dispatchEvent(new Event('input'));
       fixture.detectChanges();
 
-      clickButton('Save Changes');
+      await fixture.componentInstance.saveEdit();
+      fixture.detectChanges();
 
       const env = store.getEnvironmentById('env_staging');
       expect(env?.color).toBe('#8B5CF6');
@@ -290,9 +269,7 @@ describe('EnvironmentDetail', () => {
       const originalColor = store.getEnvironmentById('env_staging')?.color;
       clickButton('Edit');
 
-      const colorInput = fixture.debugElement.query(
-        By.css('.environment-detail__color-input'),
-      );
+      const colorInput = fixture.debugElement.query(By.css('.environment-detail__color-input'));
       colorInput.nativeElement.value = '   ';
       colorInput.nativeElement.dispatchEvent(new Event('input'));
       fixture.detectChanges();

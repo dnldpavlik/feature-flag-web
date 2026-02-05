@@ -12,12 +12,16 @@ import { filter, map } from 'rxjs';
 
 import { ThemeService } from './core/theme/theme.service';
 import { BreadcrumbItem } from './shared/ui/breadcrumb/breadcrumb';
+import { ToastComponent } from './shared/ui/toast/toast';
 import { HeaderComponent } from './layout/header/header';
 import { SidebarComponent } from './layout/sidebar/sidebar';
 import { NAV_ITEMS } from './layout/nav.config';
 import { SearchStore } from './shared/store/search.store';
 import { EnvironmentStore } from './shared/store/environment.store';
 import { ProjectStore } from './shared/store/project.store';
+import { FlagStore } from './features/flags/store/flag.store';
+import { SegmentStore } from './features/segments/store/segment.store';
+import { AuditStore } from './features/audit/store/audit.store';
 import { getSectionLabel } from './shared/utils/url.utils';
 
 interface SidebarEnvironment {
@@ -28,7 +32,7 @@ interface SidebarEnvironment {
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, HeaderComponent, SidebarComponent],
+  imports: [RouterOutlet, HeaderComponent, SidebarComponent, ToastComponent],
   templateUrl: './app.html',
   styleUrl: './app.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -36,6 +40,9 @@ interface SidebarEnvironment {
 export class AppComponent {
   private readonly environmentStore = inject(EnvironmentStore);
   private readonly projectStore = inject(ProjectStore);
+  private readonly flagStore = inject(FlagStore);
+  private readonly segmentStore = inject(SegmentStore);
+  private readonly auditStore = inject(AuditStore);
   private readonly searchStore = inject(SearchStore);
   private readonly router = inject(Router);
 
@@ -82,11 +89,24 @@ export class AppComponent {
   );
 
   constructor() {
+    // Load initial data from API
+    void this.initializeStores();
+
     // Clear search when navigating
     effect(() => {
       this.currentUrl();
       this.searchStore.clear();
     });
+  }
+
+  private async initializeStores(): Promise<void> {
+    await Promise.all([this.projectStore.loadProjects(), this.environmentStore.loadEnvironments()]);
+    // Load flags, segments, and audit after projects/environments
+    await Promise.all([
+      this.flagStore.loadFlags(),
+      this.segmentStore.loadSegments(),
+      this.auditStore.loadEntries(),
+    ]);
   }
 
   toggleSidebar(): void {

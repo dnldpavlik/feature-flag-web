@@ -1,82 +1,28 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
+import { firstValueFrom } from 'rxjs';
 
 import { BaseCrudStore } from '@/app/shared/store/base-crud.store';
+import { ToastService } from '@/app/shared/ui/toast/toast.service';
+import { AuditStore } from '@/app/features/audit/store/audit.store';
+import { UserProfileStore } from '@/app/features/settings/store/user-profile.store';
 import {
   CreateSegmentRuleInput,
   UpdateSegmentRuleInput,
 } from '@/app/features/segments/models/segment-rule.model';
 import { CreateSegmentInput, Segment } from '@/app/features/segments/models/segment.model';
-import {
-  addRuleToSegment,
-  createSegmentRule,
-  removeRuleFromSegment,
-  updateRuleInSegment,
-} from '../utils/segment-rule.utils';
-
-export interface UpdateSegmentInput {
-  name?: string;
-  key?: string;
-  description?: string;
-}
-
-/** Fixed timestamp for seed data */
-const SEED_TIMESTAMP = '2025-01-01T00:00:00.000Z';
-
-const INITIAL_SEGMENTS: Segment[] = [
-  {
-    id: 'seg_beta',
-    key: 'beta-testers',
-    name: 'Beta Testers',
-    description: 'Internal and external testers for early feature access.',
-    ruleCount: 2,
-    rules: [
-      {
-        id: 'rule_beta1',
-        attribute: 'email',
-        operator: 'contains',
-        value: '@company.com',
-        createdAt: '2024-01-01T00:00:00.000Z',
-        updatedAt: '2024-01-01T00:00:00.000Z',
-      },
-      {
-        id: 'rule_beta2',
-        attribute: 'plan',
-        operator: 'in',
-        value: ['beta', 'early-access'],
-        createdAt: '2024-01-02T00:00:00.000Z',
-        updatedAt: '2024-01-02T00:00:00.000Z',
-      },
-    ],
-    createdAt: SEED_TIMESTAMP,
-    updatedAt: SEED_TIMESTAMP,
-  },
-  {
-    id: 'seg_internal',
-    key: 'internal-users',
-    name: 'Internal Users',
-    description: 'Employees and trusted partners.',
-    ruleCount: 1,
-    rules: [
-      {
-        id: 'rule_int1',
-        attribute: 'email',
-        operator: 'ends_with',
-        value: '@internal.corp',
-        createdAt: '2024-01-01T00:00:00.000Z',
-        updatedAt: '2024-01-01T00:00:00.000Z',
-      },
-    ],
-    createdAt: SEED_TIMESTAMP,
-    updatedAt: SEED_TIMESTAMP,
-  },
-];
+import { SegmentApi, UpdateSegmentInput } from '../api/segment.api';
 
 @Injectable({ providedIn: 'root' })
 export class SegmentStore extends BaseCrudStore<Segment> {
+  private readonly api = inject(SegmentApi);
+  private readonly toast = inject(ToastService);
+  private readonly auditStore = inject(AuditStore);
+  private readonly userProfileStore = inject(UserProfileStore);
+
   constructor() {
     super({
       idPrefix: 'seg',
-      initialData: INITIAL_SEGMENTS,
+      initialData: [],
       allowDeleteLast: false,
     });
   }
@@ -87,57 +33,120 @@ export class SegmentStore extends BaseCrudStore<Segment> {
   /** Alias for count to maintain backward compatibility */
   readonly segmentCount = this.count;
 
+  /** Load segments from API */
+  async loadSegments(): Promise<void> {
+    await this.loadFromApi(this.api.getAll());
+  }
+
   /** Find segment by ID */
   getSegmentById(segmentId: string): Segment | undefined {
     return this.getById(segmentId);
   }
 
-  /** Add a new segment */
-  addSegment(input: CreateSegmentInput): void {
-    this.addItem({
-      key: input.key,
-      name: input.name,
-      description: input.description,
-      ruleCount: 0,
-      rules: [],
+  /** Add a new segment via API */
+  async addSegment(input: CreateSegmentInput): Promise<void> {
+    try {
+      const created = await firstValueFrom(this.api.create(input));
+      this._items.update((items) => [...items, created]);
+      this.toast.success('Segment created');
+      this.logAuditAction('created', created.id, created.name, `Created segment "${created.key}"`);
+    } catch {
+      this.toast.error('Failed to create segment');
+    }
+  }
+
+  /** Update segment properties via API */
+  async updateSegment(segmentId: string, updates: UpdateSegmentInput): Promise<void> {
+    try {
+      const updated = await firstValueFrom(this.api.update(segmentId, updates));
+      this.updateItem(segmentId, updated);
+      this.toast.success('Segment updated');
+      const changedFields = Object.keys(updates).join(', ');
+      this.logAuditAction(
+        'updated',
+        segmentId,
+        updated.name,
+        `Updated segment fields: ${changedFields}`,
+      );
+    } catch {
+      this.toast.error('Failed to update segment');
+    }
+  }
+
+  /** Delete a segment via API */
+  async deleteSegment(segmentId: string): Promise<void> {
+    if (this._items().length <= 1) return;
+
+    const segment = this.getById(segmentId);
+    if (!segment) return;
+
+    try {
+      await firstValueFrom(this.api.delete(segmentId));
+      this.deleteItem(segmentId);
+      this.toast.success('Segment deleted');
+      this.logAuditAction('deleted', segmentId, segment.name, `Deleted segment "${segment.key}"`);
+    } catch {
+      this.toast.error('Failed to delete segment');
+    }
+  }
+
+  /** Add a rule to a segment via API */
+  async addRule(segmentId: string, input: CreateSegmentRuleInput): Promise<void> {
+    try {
+      const updated = await firstValueFrom(this.api.addRule(segmentId, input));
+      this._items.update((segments) =>
+        segments.map((segment) => (segment.id === segmentId ? updated : segment)),
+      );
+      this.toast.success('Rule added');
+    } catch {
+      this.toast.error('Failed to add rule');
+    }
+  }
+
+  /** Update a rule within a segment via API */
+  async updateRule(
+    segmentId: string,
+    ruleId: string,
+    updates: UpdateSegmentRuleInput,
+  ): Promise<void> {
+    try {
+      const updated = await firstValueFrom(this.api.updateRule(segmentId, ruleId, updates));
+      this._items.update((segments) =>
+        segments.map((segment) => (segment.id === segmentId ? updated : segment)),
+      );
+    } catch {
+      this.toast.error('Failed to update rule');
+    }
+  }
+
+  /** Remove a rule from a segment via API */
+  async removeRule(segmentId: string, ruleId: string): Promise<void> {
+    try {
+      const updated = await firstValueFrom(this.api.deleteRule(segmentId, ruleId));
+      this._items.update((segments) =>
+        segments.map((segment) => (segment.id === segmentId ? updated : segment)),
+      );
+      this.toast.success('Rule removed');
+    } catch {
+      this.toast.error('Failed to remove rule');
+    }
+  }
+
+  private logAuditAction(
+    action: 'created' | 'updated' | 'deleted',
+    resourceId: string,
+    resourceName: string,
+    details: string,
+  ): void {
+    const user = this.userProfileStore.userProfile();
+    this.auditStore.logAction({
+      action,
+      resourceType: 'segment',
+      resourceId,
+      resourceName,
+      details,
+      userId: user.id,
+      userName: user.name,
     });
-  }
-
-  /** Update segment properties */
-  updateSegment(segmentId: string, updates: UpdateSegmentInput): void {
-    this.updateItem(segmentId, updates);
-  }
-
-  /** Delete a segment */
-  deleteSegment(segmentId: string): void {
-    this.deleteItem(segmentId);
-  }
-
-  /** Add a rule to a segment */
-  addRule(segmentId: string, input: CreateSegmentRuleInput): void {
-    const rule = createSegmentRule(input);
-    this._items.update((segments) =>
-      segments.map((segment) =>
-        segment.id === segmentId ? addRuleToSegment(segment, rule) : segment,
-      ),
-    );
-  }
-
-  /** Update a rule within a segment */
-  updateRule(segmentId: string, ruleId: string, updates: UpdateSegmentRuleInput): void {
-    this._items.update((segments) =>
-      segments.map((segment) =>
-        segment.id === segmentId ? updateRuleInSegment(segment, ruleId, updates) : segment,
-      ),
-    );
-  }
-
-  /** Remove a rule from a segment */
-  removeRule(segmentId: string, ruleId: string): void {
-    this._items.update((segments) =>
-      segments.map((segment) =>
-        segment.id === segmentId ? removeRuleFromSegment(segment, ruleId) : segment,
-      ),
-    );
   }
 }

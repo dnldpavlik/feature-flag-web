@@ -14,6 +14,7 @@ import {
   injectService,
   getComponent,
   setFormFields,
+  MOCK_API_PROVIDERS,
 } from '@/app/testing';
 
 describe('EnvironmentList', () => {
@@ -26,7 +27,7 @@ describe('EnvironmentList', () => {
   const build = async () => {
     await TestBed.configureTestingModule({
       imports: [EnvironmentListComponent],
-      providers: [EnvironmentStore, SearchStore, provideRouter([])],
+      providers: [EnvironmentStore, SearchStore, provideRouter([]), ...MOCK_API_PROVIDERS],
     }).compileComponents();
 
     fixture = TestBed.createComponent(EnvironmentListComponent);
@@ -34,6 +35,7 @@ describe('EnvironmentList', () => {
     store = injectService(EnvironmentStore);
     router = injectService(Router);
     searchStore = injectService(SearchStore);
+    await store.loadEnvironments();
     fixture.detectChanges();
   };
 
@@ -61,7 +63,7 @@ describe('EnvironmentList', () => {
     await build();
 
     setFormFields(component, { name: 'QA', key: 'qa', color: '#22c55e' });
-    component.addEnvironment();
+    await component.addEnvironment();
     fixture.detectChanges();
 
     expect(store.environments().length).toBe(4);

@@ -1,5 +1,5 @@
 import { DatePipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, OnInit } from '@angular/core';
 import { NonNullableFormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 
@@ -9,7 +9,9 @@ import { CardComponent } from '@/app/shared/ui/card/card';
 import { DataTableComponent } from '@/app/shared/ui/data-table/data-table';
 import { UiColDirective } from '@/app/shared/ui/data-table/ui-col.directive';
 import { EmptyStateComponent } from '@/app/shared/ui/empty-state/empty-state';
+import { ErrorBannerComponent } from '@/app/shared/ui/error-banner/error-banner';
 import { FormFieldComponent } from '@/app/shared/ui/form-field/form-field';
+import { LoadingSpinnerComponent } from '@/app/shared/ui/loading-spinner/loading-spinner';
 import { PageHeaderComponent } from '@/app/shared/ui/page-header/page-header';
 import { SearchStore } from '@/app/shared/store/search.store';
 import { ProjectStore } from '@/app/shared/store/project.store';
@@ -25,7 +27,9 @@ import { textFilter } from '@/app/shared/utils/filter.utils';
     DataTableComponent,
     DatePipe,
     EmptyStateComponent,
+    ErrorBannerComponent,
     FormFieldComponent,
+    LoadingSpinnerComponent,
     PageHeaderComponent,
     ReactiveFormsModule,
     RouterLink,
@@ -35,12 +39,14 @@ import { textFilter } from '@/app/shared/utils/filter.utils';
   styleUrl: './project-list.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ProjectListComponent {
+export class ProjectListComponent implements OnInit {
   private readonly projectStore = inject(ProjectStore);
   private readonly searchStore = inject(SearchStore);
   private readonly fb = inject(NonNullableFormBuilder);
 
   protected readonly projects = this.projectStore.projects;
+  protected readonly loading = this.projectStore.loading;
+  protected readonly error = this.projectStore.error;
   protected readonly selectedProjectId = this.projectStore.selectedProjectId;
   protected readonly searchQuery = computed(() => this.searchStore.query().trim().toLowerCase());
   protected readonly filteredProjects = computed(() => {
@@ -54,6 +60,10 @@ export class ProjectListComponent {
     description: [''],
   });
 
+  ngOnInit(): void {
+    void this.projectStore.loadProjects();
+  }
+
   protected canAdd(): boolean {
     return hasRequiredFields(this.form, ['name', 'key']);
   }
@@ -62,7 +72,7 @@ export class ProjectListComponent {
     if (!this.canAdd()) return;
 
     const { name, key, description } = getTrimmedValues(this.form, ['name', 'key', 'description']);
-    this.projectStore.addProject({ name, key, description });
+    void this.projectStore.addProject({ name, key, description });
     this.form.reset();
   }
 
@@ -71,10 +81,14 @@ export class ProjectListComponent {
   }
 
   setDefaultProject(projectId: string): void {
-    this.projectStore.setDefaultProject(projectId);
+    void this.projectStore.setDefaultProject(projectId);
   }
 
   deleteProject(projectId: string): void {
-    this.projectStore.deleteProject(projectId);
+    void this.projectStore.deleteProject(projectId);
+  }
+
+  protected retry(): void {
+    void this.projectStore.loadProjects();
   }
 }

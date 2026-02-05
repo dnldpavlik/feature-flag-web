@@ -67,6 +67,7 @@ export const createEnvironmentValue = <T extends FlagType>(
   flagId,
   value: value ?? getDefaultForType(type),
   enabled: false,
+  segmentKeys: [],
   updatedAt: timeProvider.now(),
 });
 
@@ -92,6 +93,7 @@ export const updateFlagEnvironmentValue = <T extends FlagType>(
         flagId: flag.id,
         value,
         enabled: enabled ?? existingEnvValue?.enabled ?? false,
+        segmentKeys: existingEnvValue?.segmentKeys ?? [],
         updatedAt: stamp,
       },
     },

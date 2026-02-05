@@ -5,6 +5,7 @@ import { of } from 'rxjs';
 
 import { SegmentStore } from '../../store/segment.store';
 import { SegmentDetailComponent } from './segment-detail';
+import { MOCK_API_PROVIDERS } from '@/app/testing';
 
 describe('SegmentDetailComponent', () => {
   let component: SegmentDetailComponent;
@@ -34,10 +35,12 @@ describe('SegmentDetailComponent', () => {
         provideRouter([]),
         { provide: ActivatedRoute, useValue: mockActivatedRoute },
         SegmentStore,
+        ...MOCK_API_PROVIDERS,
       ],
     }).compileComponents();
 
     store = TestBed.inject(SegmentStore);
+    await store.loadSegments();
     fixture = TestBed.createComponent(SegmentDetailComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
@@ -102,7 +105,7 @@ describe('SegmentDetailComponent', () => {
   });
 
   describe('rule interactions', () => {
-    it('should add rule when rule builder emits ruleAdded', () => {
+    it('should add rule when rule builder emits ruleAdded', async () => {
       const segment = store.getSegmentById('seg_beta')!;
       const initialRuleCount = segment.rules.length;
 
@@ -112,13 +115,14 @@ describe('SegmentDetailComponent', () => {
         operator: 'equals',
         value: 'US',
       });
+      await fixture.whenStable();
       fixture.detectChanges();
 
       const updatedSegment = store.getSegmentById('seg_beta')!;
       expect(updatedSegment.rules.length).toBe(initialRuleCount + 1);
     });
 
-    it('should update rule when rule row emits updated', () => {
+    it('should update rule when rule row emits updated', async () => {
       const segment = store.getSegmentById('seg_beta')!;
       const ruleToUpdate = segment.rules[0];
 
@@ -126,6 +130,7 @@ describe('SegmentDetailComponent', () => {
       ruleRows[0].triggerEventHandler('updated', {
         value: '@updated.com',
       });
+      await fixture.whenStable();
       fixture.detectChanges();
 
       const updatedSegment = store.getSegmentById('seg_beta')!;
@@ -133,13 +138,14 @@ describe('SegmentDetailComponent', () => {
       expect(updatedRule?.value).toBe('@updated.com');
     });
 
-    it('should remove rule when rule row emits removed', () => {
+    it('should remove rule when rule row emits removed', async () => {
       const segment = store.getSegmentById('seg_beta')!;
       const initialRuleCount = segment.rules.length;
       const ruleToRemove = segment.rules[0];
 
       const ruleRows = fixture.debugElement.queryAll(By.css('app-rule-row'));
       ruleRows[0].triggerEventHandler('removed', ruleToRemove.id);
+      await fixture.whenStable();
       fixture.detectChanges();
 
       const updatedSegment = store.getSegmentById('seg_beta')!;
@@ -165,7 +171,7 @@ describe('SegmentDetailComponent', () => {
       expect(nameInput.nativeElement.value).toBe('Beta Testers');
     });
 
-    it('should save changes when save clicked', () => {
+    it('should save changes when save clicked', async () => {
       clickButton('Edit');
       fixture.detectChanges();
 
@@ -175,6 +181,7 @@ describe('SegmentDetailComponent', () => {
       fixture.detectChanges();
 
       clickButton('Save Changes');
+      await fixture.whenStable();
       fixture.detectChanges();
 
       const segment = store.getSegmentById('seg_beta')!;
@@ -199,7 +206,7 @@ describe('SegmentDetailComponent', () => {
       expect(segment.name).toBe(originalName);
     });
 
-    it('should update key input value', () => {
+    it('should update key input value', async () => {
       clickButton('Edit');
       fixture.detectChanges();
 
@@ -209,13 +216,14 @@ describe('SegmentDetailComponent', () => {
       fixture.detectChanges();
 
       clickButton('Save Changes');
+      await fixture.whenStable();
       fixture.detectChanges();
 
       const segment = store.getSegmentById('seg_beta')!;
       expect(segment.key).toBe('new-key');
     });
 
-    it('should update description input value', () => {
+    it('should update description input value', async () => {
       clickButton('Edit');
       fixture.detectChanges();
 
@@ -225,6 +233,7 @@ describe('SegmentDetailComponent', () => {
       fixture.detectChanges();
 
       clickButton('Save Changes');
+      await fixture.whenStable();
       fixture.detectChanges();
 
       const segment = store.getSegmentById('seg_beta')!;
@@ -247,9 +256,12 @@ describe('SegmentDetailComponent', () => {
           provideRouter([]),
           { provide: ActivatedRoute, useValue: notFoundRoute },
           SegmentStore,
+          ...MOCK_API_PROVIDERS,
         ],
       }).compileComponents();
 
+      const newStore = TestBed.inject(SegmentStore);
+      await newStore.loadSegments();
       const newFixture = TestBed.createComponent(SegmentDetailComponent);
       newFixture.detectChanges();
 
@@ -275,9 +287,12 @@ describe('SegmentDetailComponent', () => {
           provideRouter([]),
           { provide: ActivatedRoute, useValue: nullRoute },
           SegmentStore,
+          ...MOCK_API_PROVIDERS,
         ],
       }).compileComponents();
 
+      const nullStore = TestBed.inject(SegmentStore);
+      await nullStore.loadSegments();
       const nullFixture = TestBed.createComponent(SegmentDetailComponent);
       nullComponent = nullFixture.componentInstance;
       nullFixture.detectChanges();
@@ -302,20 +317,18 @@ describe('SegmentDetailComponent', () => {
           attribute: 'email',
           operator: 'contains',
           value: 'test',
-        })
+        }),
       ).not.toThrow();
     });
 
     it('should return early from onRuleUpdated when segmentId is null', () => {
       expect(() =>
-        (nullComponent as never)['onRuleUpdated']('rule_1', { value: 'test' })
+        (nullComponent as never)['onRuleUpdated']('rule_1', { value: 'test' }),
       ).not.toThrow();
     });
 
     it('should return early from onRuleRemoved when segmentId is null', () => {
-      expect(() =>
-        (nullComponent as never)['onRuleRemoved']('rule_1')
-      ).not.toThrow();
+      expect(() => (nullComponent as never)['onRuleRemoved']('rule_1')).not.toThrow();
     });
   });
 });

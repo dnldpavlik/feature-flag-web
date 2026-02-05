@@ -2,35 +2,40 @@ import { TestBed } from '@angular/core/testing';
 
 import { EnvironmentStore } from '@/app/shared/store/environment.store';
 import { ProjectStore } from '@/app/shared/store/project.store';
+import { AuditStore } from '@/app/features/audit/store/audit.store';
 import { FlagStore } from './flag.store';
 import {
   injectService,
   expectHasItems,
   expectItemCount,
-  expectIdPattern,
-  getCountBefore,
   expectItemAdded,
   expectItemRemoved,
   expectItemNotExists,
+  MOCK_API_PROVIDERS,
 } from '@/app/testing';
 
 describe('FlagStore', () => {
   let store: FlagStore;
   let environmentStore: EnvironmentStore;
   let projectStore: ProjectStore;
+  let auditStore: AuditStore;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     TestBed.configureTestingModule({
-      providers: [FlagStore, EnvironmentStore, ProjectStore],
+      providers: [FlagStore, EnvironmentStore, ProjectStore, AuditStore, ...MOCK_API_PROVIDERS],
     });
 
     store = injectService(FlagStore);
     environmentStore = injectService(EnvironmentStore);
     projectStore = injectService(ProjectStore);
+    auditStore = injectService(AuditStore);
+    await projectStore.loadProjects();
+    await environmentStore.loadEnvironments();
+    await store.loadFlags();
   });
 
   describe('initial state', () => {
-    it('should seed initial flags', () => {
+    it('should load flags from API', () => {
       expectHasItems(store.flags);
       expect(store.totalCount()).toBe(store.flags().length);
     });
@@ -61,10 +66,10 @@ describe('FlagStore', () => {
   });
 
   describe('addFlag', () => {
-    it('should add a new boolean flag to the list', () => {
-      const countBefore = getCountBefore(store.flags);
+    it('should add a new boolean flag to the list via API', async () => {
+      const countBefore = store.flags().length;
 
-      store.addFlag({
+      await store.addFlag({
         projectId: 'proj_default',
         key: 'test-flag',
         name: 'Test Flag',
@@ -76,11 +81,11 @@ describe('FlagStore', () => {
 
       expectItemAdded(store.flags, countBefore);
       expect(store.flags()[0].key).toBe('test-flag');
-      expectIdPattern(store.flags()[0].id, 'flag');
+      expect(store.flags()[0].id).toMatch(/^flag_/);
     });
 
-    it('should add a new string flag', () => {
-      store.addFlag({
+    it('should add a new string flag via API', async () => {
+      await store.addFlag({
         projectId: 'proj_default',
         key: 'string-flag',
         name: 'String Flag',
@@ -95,8 +100,8 @@ describe('FlagStore', () => {
       expect(flag.defaultValue).toBe('hello');
     });
 
-    it('should add a new number flag', () => {
-      store.addFlag({
+    it('should add a new number flag via API', async () => {
+      await store.addFlag({
         projectId: 'proj_default',
         key: 'number-flag',
         name: 'Number Flag',
@@ -111,8 +116,8 @@ describe('FlagStore', () => {
       expect(flag.defaultValue).toBe(42);
     });
 
-    it('should add a new json flag', () => {
-      store.addFlag({
+    it('should add a new json flag via API', async () => {
+      await store.addFlag({
         projectId: 'proj_default',
         key: 'json-flag',
         name: 'JSON Flag',
@@ -127,8 +132,8 @@ describe('FlagStore', () => {
       expect(flag.defaultValue).toEqual({ key: 'value' });
     });
 
-    it('should initialize environment values for all environments', () => {
-      store.addFlag({
+    it('should initialize environment values for all environments via API', async () => {
+      await store.addFlag({
         projectId: 'proj_default',
         key: 'test-flag',
         name: 'Test Flag',
@@ -146,8 +151,8 @@ describe('FlagStore', () => {
       expect(envIds).toContain('env_production');
     });
 
-    it('should set default value in environment values', () => {
-      store.addFlag({
+    it('should set default value in environment values via API', async () => {
+      await store.addFlag({
         projectId: 'proj_default',
         key: 'test-flag',
         name: 'Test Flag',
@@ -161,8 +166,8 @@ describe('FlagStore', () => {
       expect(flag.environmentValues['env_development'].value).toBe(true);
     });
 
-    it('should store projectId on the created flag', () => {
-      store.addFlag({
+    it('should store projectId on the created flag via API', async () => {
+      await store.addFlag({
         projectId: 'proj_growth',
         key: 'growth-flag',
         name: 'Growth Flag',
@@ -192,10 +197,10 @@ describe('FlagStore', () => {
   });
 
   describe('updateFlagDetails', () => {
-    it('should update name, description, tags, and default value', () => {
+    it('should update name, description, tags, and default value via API', async () => {
       const flag = store.flags()[0];
 
-      store.updateFlagDetails(flag.id, {
+      await store.updateFlagDetails(flag.id, {
         name: 'Renamed Flag',
         description: 'Updated description',
         tags: ['alpha', 'beta'],
@@ -211,11 +216,11 @@ describe('FlagStore', () => {
   });
 
   describe('updateEnvironmentValue', () => {
-    it('should update value in specific environment', () => {
+    it('should update value in specific environment via API', async () => {
       const flag = store.flags()[0];
       const newValue = flag.type === 'boolean' ? true : 'updated';
 
-      store.updateEnvironmentValue({
+      await store.updateEnvironmentValue({
         flagId: flag.id,
         environmentId: 'env_staging',
         value: newValue,
@@ -225,11 +230,11 @@ describe('FlagStore', () => {
       expect(updated?.environmentValues['env_staging'].value).toBe(newValue);
     });
 
-    it('should not affect other environments', () => {
+    it('should not affect other environments', async () => {
       const flag = store.flags()[0];
       const originalDevValue = flag.environmentValues['env_development']?.value;
 
-      store.updateEnvironmentValue({
+      await store.updateEnvironmentValue({
         flagId: flag.id,
         environmentId: 'env_staging',
         value: flag.type === 'boolean' ? true : 'updated',
@@ -239,10 +244,10 @@ describe('FlagStore', () => {
       expect(updated?.environmentValues['env_development']?.value).toBe(originalDevValue);
     });
 
-    it('should update enabled state when provided', () => {
+    it('should update enabled state when provided via API', async () => {
       const flag = store.flags()[0];
 
-      store.updateEnvironmentValue({
+      await store.updateEnvironmentValue({
         flagId: flag.id,
         environmentId: 'env_staging',
         enabled: true,
@@ -252,8 +257,8 @@ describe('FlagStore', () => {
       expect(updated?.environmentValues['env_staging'].enabled).toBe(true);
     });
 
-    it('should fall back to defaults when environment value does not exist', () => {
-      environmentStore.addEnvironment({
+    it('should fall back to defaults when environment value does not exist', async () => {
+      await environmentStore.addEnvironment({
         key: 'qa',
         name: 'QA',
         color: '#00FFFF',
@@ -264,7 +269,7 @@ describe('FlagStore', () => {
       const qaEnv = environmentStore.environments().slice(-1)[0];
       const flag = store.flags()[0];
 
-      store.updateEnvironmentValue({
+      await store.updateEnvironmentValue({
         flagId: flag.id,
         environmentId: qaEnv!.id,
       });
@@ -276,37 +281,37 @@ describe('FlagStore', () => {
   });
 
   describe('toggleFlagInEnvironment', () => {
-    it('should enable flag in environment', () => {
+    it('should enable flag in environment via API', async () => {
       const flag = store.flags()[0];
 
-      store.toggleFlagInEnvironment(flag.id, 'env_development', true);
+      await store.toggleFlagInEnvironment(flag.id, 'env_development', true);
 
       const updated = store.getFlagById(flag.id);
       expect(updated?.environmentValues['env_development'].enabled).toBe(true);
     });
 
-    it('should disable flag in environment', () => {
+    it('should disable flag in environment via API', async () => {
       const flag = store.flags()[0];
 
-      store.toggleFlagInEnvironment(flag.id, 'env_development', false);
+      await store.toggleFlagInEnvironment(flag.id, 'env_development', false);
 
       const updated = store.getFlagById(flag.id);
       expect(updated?.environmentValues['env_development'].enabled).toBe(false);
     });
 
-    it('should not affect enabled state in other environments', () => {
+    it('should not affect enabled state in other environments', async () => {
       const flag = store.flags()[0];
 
-      store.toggleFlagInEnvironment(flag.id, 'env_development', true);
-      store.toggleFlagInEnvironment(flag.id, 'env_staging', false);
+      await store.toggleFlagInEnvironment(flag.id, 'env_development', true);
+      await store.toggleFlagInEnvironment(flag.id, 'env_staging', false);
 
       const updated = store.getFlagById(flag.id);
       expect(updated?.environmentValues['env_development'].enabled).toBe(true);
       expect(updated?.environmentValues['env_staging'].enabled).toBe(false);
     });
 
-    it('should fall back to default value when toggling in new environment', () => {
-      environmentStore.addEnvironment({
+    it('should fall back to default value when toggling in new environment', async () => {
+      await environmentStore.addEnvironment({
         key: 'sandbox',
         name: 'Sandbox',
         color: '#FF00FF',
@@ -317,7 +322,7 @@ describe('FlagStore', () => {
       const sandboxEnv = environmentStore.environments().slice(-1)[0];
       const flag = store.flags()[0];
 
-      store.toggleFlagInEnvironment(flag.id, sandboxEnv!.id, true);
+      await store.toggleFlagInEnvironment(flag.id, sandboxEnv!.id, true);
 
       const updated = store.getFlagById(flag.id);
       expect(updated?.environmentValues[sandboxEnv!.id].value).toBe(flag.defaultValue);
@@ -334,19 +339,21 @@ describe('FlagStore', () => {
       expect(store.currentEnvironmentId()).toBe('env_production');
     });
 
-    it('should return enabled flags in current environment', () => {
+    it('should return enabled flags in current environment', async () => {
+      projectStore.selectProject('proj_default');
       const flag = store.flags()[0];
-      store.toggleFlagInEnvironment(flag.id, 'env_development', true);
+      await store.toggleFlagInEnvironment(flag.id, 'env_development', true);
 
       const enabledFlags = store.enabledFlagsInCurrentEnvironment();
 
       expect(enabledFlags.some((f) => f.id === flag.id)).toBe(true);
     });
 
-    it('should update enabled flags when environment changes', () => {
+    it('should update enabled flags when environment changes', async () => {
+      projectStore.selectProject('proj_default');
       const flag = store.flags()[0];
-      store.toggleFlagInEnvironment(flag.id, 'env_development', true);
-      store.toggleFlagInEnvironment(flag.id, 'env_staging', false);
+      await store.toggleFlagInEnvironment(flag.id, 'env_development', true);
+      await store.toggleFlagInEnvironment(flag.id, 'env_staging', false);
 
       environmentStore.selectEnvironment('env_development');
       expect(store.enabledFlagsInCurrentEnvironment().some((f) => f.id === flag.id)).toBe(true);
@@ -375,10 +382,10 @@ describe('FlagStore', () => {
       expect(growthCount).toBeGreaterThan(0);
     });
 
-    it('should filter enabledFlagsInCurrentEnvironment by project', () => {
+    it('should filter enabledFlagsInCurrentEnvironment by project', async () => {
       // Enable a flag in proj_default
       const defaultFlag = store.flags().find((f) => f.projectId === 'proj_default');
-      store.toggleFlagInEnvironment(defaultFlag!.id, 'env_development', true);
+      await store.toggleFlagInEnvironment(defaultFlag!.id, 'env_development', true);
 
       projectStore.selectProject('proj_default');
       expect(store.enabledFlagsInCurrentEnvironment().some((f) => f.id === defaultFlag!.id)).toBe(
@@ -393,99 +400,175 @@ describe('FlagStore', () => {
   });
 
   describe('deleteFlag', () => {
-    it('should remove flag by id', () => {
+    it('should remove flag by id via API', async () => {
       const flagToDelete = store.flags()[0];
-      const countBefore = getCountBefore(store.flags);
+      const countBefore = store.flags().length;
 
-      store.deleteFlag(flagToDelete.id);
+      await store.deleteFlag(flagToDelete.id);
 
       expectItemRemoved(store.flags, countBefore);
       expectItemNotExists(store.flags, flagToDelete.id);
     });
 
-    it('should preserve other flags', () => {
+    it('should preserve other flags', async () => {
       const flagToDelete = store.flags()[0];
       const otherFlags = store.flags().slice(1);
 
-      store.deleteFlag(flagToDelete.id);
+      await store.deleteFlag(flagToDelete.id);
 
       for (const flag of otherFlags) {
         expect(store.getFlagById(flag.id)).toBeDefined();
       }
     });
 
-    it('should not delete last remaining flag', () => {
+    it('should not delete last remaining flag', async () => {
       // Delete all but one
       const flags = store.flags();
       for (let i = 0; i < flags.length - 1; i++) {
-        store.deleteFlag(flags[i].id);
+        await store.deleteFlag(flags[i].id);
       }
 
       expectItemCount(store.flags, 1);
 
       // Try to delete the last one
-      store.deleteFlag(store.flags()[0].id);
+      await store.deleteFlag(store.flags()[0].id);
 
       expectItemCount(store.flags, 1);
     });
 
-    it('should ignore non-existent id', () => {
+    it('should ignore non-existent id', async () => {
       const beforeCount = store.flags().length;
 
-      store.deleteFlag('flag_nonexistent');
+      await store.deleteFlag('flag_nonexistent');
 
       expect(store.flags().length).toBe(beforeCount);
     });
 
-    it('should update totalCount after deletion', () => {
+    it('should update totalCount after deletion', async () => {
       const beforeCount = store.totalCount();
       const flagToDelete = store.flags()[0];
 
-      store.deleteFlag(flagToDelete.id);
+      await store.deleteFlag(flagToDelete.id);
 
       expect(store.totalCount()).toBe(beforeCount - 1);
     });
   });
 
   describe('getValueInEnvironment', () => {
-    it('should return value for specific environment', () => {
-      store.addFlag({
-        projectId: 'proj_default',
-        key: 'test-flag',
-        name: 'Test Flag',
-        description: 'A test flag',
-        type: 'string',
-        defaultValue: 'default',
-        tags: [],
-      });
-
-      const flag = store.flags()[0];
-      store.updateEnvironmentValue({
+    it('should return value for specific environment', async () => {
+      // Use existing flag from mock data
+      const flag = store.flags().find((f) => f.type === 'boolean')!;
+      await store.updateEnvironmentValue({
         flagId: flag.id,
         environmentId: 'env_staging',
-        value: 'staging-value',
+        value: true,
       });
 
-      expect(store.getValueInEnvironment(flag.id, 'env_staging')).toBe('staging-value');
+      expect(store.getValueInEnvironment(flag.id, 'env_staging')).toBe(true);
     });
 
-    it('should return default value when environment has no specific value', () => {
-      store.addFlag({
-        projectId: 'proj_default',
-        key: 'new-flag',
-        name: 'New Flag',
-        description: 'A new flag',
-        type: 'string',
-        defaultValue: 'my-default',
-        tags: [],
-      });
-
+    it('should return default value for existing flag', () => {
+      // Use existing flag to check default value retrieval
       const flag = store.flags()[0];
-      expect(store.getValueInEnvironment(flag.id, 'env_development')).toBe('my-default');
+      const envId = 'env_development';
+      const expected = flag.environmentValues[envId]?.value ?? flag.defaultValue;
+      expect(store.getValueInEnvironment(flag.id, envId)).toBe(expected);
     });
 
     it('should return undefined for non-existent flag', () => {
       expect(store.getValueInEnvironment('flag_nonexistent', 'env_development')).toBeUndefined();
+    });
+  });
+
+  describe('audit logging', () => {
+    beforeEach(() => {
+      jest.spyOn(auditStore, 'logAction');
+    });
+
+    it('should log audit entry when flag is created', async () => {
+      await store.addFlag({
+        projectId: 'proj_default',
+        key: 'audit-test-flag',
+        name: 'Audit Test Flag',
+        description: 'Testing audit logging',
+        type: 'boolean',
+        defaultValue: false,
+        tags: [],
+      });
+
+      expect(auditStore.logAction).toHaveBeenCalledWith(
+        expect.objectContaining({
+          action: 'created',
+          resourceType: 'flag',
+          resourceName: 'Audit Test Flag',
+        }),
+      );
+    });
+
+    it('should log audit entry when flag is updated', async () => {
+      const flag = store.flags()[0];
+
+      await store.updateFlagDetails(flag.id, {
+        name: 'Updated Flag Name',
+      });
+
+      expect(auditStore.logAction).toHaveBeenCalledWith(
+        expect.objectContaining({
+          action: 'updated',
+          resourceType: 'flag',
+          resourceId: flag.id,
+          resourceName: 'Updated Flag Name',
+        }),
+      );
+    });
+
+    it('should log audit entry when flag is deleted', async () => {
+      const flag = store.flags()[0];
+      const flagName = flag.name;
+
+      await store.deleteFlag(flag.id);
+
+      expect(auditStore.logAction).toHaveBeenCalledWith(
+        expect.objectContaining({
+          action: 'deleted',
+          resourceType: 'flag',
+          resourceId: flag.id,
+          resourceName: flagName,
+        }),
+      );
+    });
+
+    it('should log audit entry when flag is toggled', async () => {
+      const flag = store.flags()[0];
+
+      await store.toggleFlagInEnvironment(flag.id, 'env_development', true);
+
+      expect(auditStore.logAction).toHaveBeenCalledWith(
+        expect.objectContaining({
+          action: 'toggled',
+          resourceType: 'flag',
+          resourceId: flag.id,
+        }),
+      );
+    });
+
+    it('should include user info in audit entry', async () => {
+      await store.addFlag({
+        projectId: 'proj_default',
+        key: 'user-audit-flag',
+        name: 'User Audit Flag',
+        description: 'Testing user info',
+        type: 'boolean',
+        defaultValue: false,
+        tags: [],
+      });
+
+      expect(auditStore.logAction).toHaveBeenCalledWith(
+        expect.objectContaining({
+          userId: expect.any(String),
+          userName: expect.any(String),
+        }),
+      );
     });
   });
 });

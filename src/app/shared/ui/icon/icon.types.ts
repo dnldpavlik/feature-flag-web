@@ -10,4 +10,8 @@ export type IconName =
   | 'folder'
   | 'users'
   | 'list'
-  | 'settings';
+  | 'settings'
+  | 'check'
+  | 'error'
+  | 'warning'
+  | 'info';
