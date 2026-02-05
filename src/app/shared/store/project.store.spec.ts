@@ -329,6 +329,22 @@ describe('ProjectStore', () => {
       );
     });
 
+    it('should log audit entry when project is set as default', async () => {
+      await store.loadProjects();
+
+      await store.setDefaultProject('proj_growth');
+
+      expect(auditStore.logAction).toHaveBeenCalledWith(
+        expect.objectContaining({
+          action: 'updated',
+          resourceType: 'project',
+          resourceId: 'proj_growth',
+          resourceName: 'Growth Experiments',
+          details: 'Set as default project',
+        }),
+      );
+    });
+
     it('should include user info in audit entry', async () => {
       const newProject: Project = {
         id: 'proj_user',

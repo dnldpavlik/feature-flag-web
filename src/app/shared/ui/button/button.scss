@@ -86,6 +86,22 @@
     }
   }
 
+  &--danger {
+    background: var(--color-danger, #dc2626);
+    color: white;
+    border-color: var(--color-danger, #dc2626);
+
+    &:hover:not(:disabled) {
+      background: var(--color-danger-hover, #b91c1c);
+      border-color: var(--color-danger-hover, #b91c1c);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--color-danger, #dc2626);
+      outline-offset: 2px;
+    }
+  }
+
   // Loading state
   &--loading {
     position: relative;

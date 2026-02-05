@@ -1,5 +1,12 @@
 import { DatePipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, inject, OnInit } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  inject,
+  OnInit,
+  signal,
+} from '@angular/core';
 import { NonNullableFormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 
@@ -15,6 +22,7 @@ import { LoadingSpinnerComponent } from '@/app/shared/ui/loading-spinner/loading
 import { PageHeaderComponent } from '@/app/shared/ui/page-header/page-header';
 import { SearchStore } from '@/app/shared/store/search.store';
 import { ProjectStore } from '@/app/shared/store/project.store';
+import { FlagStore } from '@/app/features/flags/store/flag.store';
 import { hasRequiredFields, getTrimmedValues } from '@/app/shared/utils/form.utils';
 import { textFilter } from '@/app/shared/utils/filter.utils';
 
@@ -42,6 +50,7 @@ import { textFilter } from '@/app/shared/utils/filter.utils';
 export class ProjectListComponent implements OnInit {
   private readonly projectStore = inject(ProjectStore);
   private readonly searchStore = inject(SearchStore);
+  private readonly flagStore = inject(FlagStore);
   private readonly fb = inject(NonNullableFormBuilder);
 
   protected readonly projects = this.projectStore.projects;
@@ -53,6 +62,10 @@ export class ProjectListComponent implements OnInit {
     const query = this.searchQuery();
     return this.projects().filter(textFilter(['name', 'key', 'description'], query));
   });
+
+  // Delete confirmation state
+  readonly projectToDelete = signal<string | null>(null);
+  readonly deleteConfirmationFlagCount = signal(0);
 
   readonly form = this.fb.group({
     name: [''],
@@ -84,8 +97,37 @@ export class ProjectListComponent implements OnInit {
     void this.projectStore.setDefaultProject(projectId);
   }
 
+  /** @deprecated Use requestDeleteProject instead */
   deleteProject(projectId: string): void {
-    void this.projectStore.deleteProject(projectId);
+    this.requestDeleteProject(projectId);
+  }
+
+  /** Request to delete a project - shows confirmation dialog */
+  requestDeleteProject(projectId: string): void {
+    const flags = this.flagStore.getFlagsByProjectId(projectId);
+    this.projectToDelete.set(projectId);
+    this.deleteConfirmationFlagCount.set(flags.length);
+  }
+
+  /** Cancel the delete confirmation */
+  cancelDelete(): void {
+    this.projectToDelete.set(null);
+    this.deleteConfirmationFlagCount.set(0);
+  }
+
+  /** Confirm and execute the delete */
+  async confirmDelete(): Promise<void> {
+    const projectId = this.projectToDelete();
+    if (!projectId) return;
+
+    // Delete all flags first
+    await this.flagStore.deleteFlagsByProjectId(projectId);
+
+    // Then delete the project
+    await this.projectStore.deleteProject(projectId);
+
+    // Clear confirmation state
+    this.cancelDelete();
   }
 
   protected retry(): void {

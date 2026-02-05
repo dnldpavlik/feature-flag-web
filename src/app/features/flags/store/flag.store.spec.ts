@@ -571,4 +571,63 @@ describe('FlagStore', () => {
       );
     });
   });
+
+  describe('getFlagsByProjectId', () => {
+    it('should return all flags for the given project', () => {
+      const defaultProjectFlags = store.getFlagsByProjectId('proj_default');
+      expect(defaultProjectFlags.length).toBeGreaterThan(0);
+      expect(defaultProjectFlags.every((f) => f.projectId === 'proj_default')).toBe(true);
+    });
+
+    it('should return empty array for project with no flags', () => {
+      const flags = store.getFlagsByProjectId('proj_nonexistent');
+      expect(flags).toEqual([]);
+    });
+
+    it('should return different flags for different projects', () => {
+      const defaultFlags = store.getFlagsByProjectId('proj_default');
+      const growthFlags = store.getFlagsByProjectId('proj_growth');
+
+      expect(defaultFlags.length).toBeGreaterThan(0);
+      expect(growthFlags.length).toBeGreaterThan(0);
+
+      const defaultIds = new Set(defaultFlags.map((f) => f.id));
+      const growthIds = new Set(growthFlags.map((f) => f.id));
+
+      // No overlap between projects
+      for (const id of growthIds) {
+        expect(defaultIds.has(id)).toBe(false);
+      }
+    });
+  });
+
+  describe('deleteFlagsByProjectId', () => {
+    it('should delete all flags for the given project', async () => {
+      const defaultFlagsBefore = store.getFlagsByProjectId('proj_default');
+      expect(defaultFlagsBefore.length).toBeGreaterThan(0);
+
+      await store.deleteFlagsByProjectId('proj_default');
+
+      const defaultFlagsAfter = store.getFlagsByProjectId('proj_default');
+      expect(defaultFlagsAfter.length).toBe(0);
+    });
+
+    it('should not delete flags from other projects', async () => {
+      const growthFlagsBefore = store.getFlagsByProjectId('proj_growth');
+      const growthCount = growthFlagsBefore.length;
+
+      await store.deleteFlagsByProjectId('proj_default');
+
+      const growthFlagsAfter = store.getFlagsByProjectId('proj_growth');
+      expect(growthFlagsAfter.length).toBe(growthCount);
+    });
+
+    it('should do nothing for project with no flags', async () => {
+      const totalBefore = store.flags().length;
+
+      await store.deleteFlagsByProjectId('proj_nonexistent');
+
+      expect(store.flags().length).toBe(totalBefore);
+    });
+  });
 });

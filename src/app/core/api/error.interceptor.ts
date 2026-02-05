@@ -24,6 +24,11 @@ function extractErrorMessage(error: HttpErrorResponse): string {
   }
 
   if (isApiError(error.error)) {
+    // Check for database constraint violations and provide friendly messages
+    const message = error.error.message.toLowerCase();
+    if (message.includes('foreign key constraint') || message.includes('violates')) {
+      return 'This item cannot be deleted because it has related data. Please delete related items first.';
+    }
     return error.error.message;
   }
 
@@ -37,6 +42,10 @@ function extractErrorMessage(error: HttpErrorResponse): string {
 
   if (error.status === 404) {
     return 'The requested resource was not found.';
+  }
+
+  if (error.status === 409) {
+    return 'This operation conflicts with existing data.';
   }
 
   if (error.status >= 500) {

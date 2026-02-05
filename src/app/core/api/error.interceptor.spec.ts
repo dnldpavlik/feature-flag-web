@@ -94,6 +94,40 @@ describe('errorInterceptor', () => {
     expect(toastService.toasts()[0].message).toContain('server error');
   });
 
+  it('should show conflict message for 409', () => {
+    http.get('/api/v1/projects').subscribe({ error: jest.fn() });
+
+    const req = httpTesting.expectOne('/api/v1/projects');
+    req.flush('Conflict', { status: 409, statusText: 'Conflict' });
+
+    expect(toastService.toasts()[0].message).toContain('conflicts');
+  });
+
+  it('should show friendly message for foreign key constraint errors', () => {
+    http.delete('/api/v1/projects/123').subscribe({ error: jest.fn() });
+
+    const req = httpTesting.expectOne('/api/v1/projects/123');
+    req.flush(
+      { error: 'CONSTRAINT_ERROR', message: 'foreign key constraint "fk_project" violated' },
+      { status: 400, statusText: 'Bad Request' },
+    );
+
+    expect(toastService.toasts()[0].message).toContain('cannot be deleted');
+    expect(toastService.toasts()[0].message).toContain('related data');
+  });
+
+  it('should show friendly message for violates constraint errors', () => {
+    http.delete('/api/v1/projects/123').subscribe({ error: jest.fn() });
+
+    const req = httpTesting.expectOne('/api/v1/projects/123');
+    req.flush(
+      { error: 'DB_ERROR', message: 'update or delete on table "projects" violates foreign key' },
+      { status: 400, statusText: 'Bad Request' },
+    );
+
+    expect(toastService.toasts()[0].message).toContain('cannot be deleted');
+  });
+
   it('should re-throw the error so callers can handle it', () => {
     const errorSpy = jest.fn();
     http.get('/api/v1/projects').subscribe({ error: errorSpy });

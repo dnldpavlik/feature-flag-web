@@ -111,6 +111,31 @@ export class FlagStore {
     return this._flags().find((f) => f.id === id);
   }
 
+  /** Get all flags for a specific project */
+  getFlagsByProjectId(projectId: string): Flag[] {
+    return this._flags().filter((f) => f.projectId === projectId);
+  }
+
+  /** Delete all flags for a specific project (for cascade delete) */
+  async deleteFlagsByProjectId(projectId: string): Promise<void> {
+    const flagsToDelete = this.getFlagsByProjectId(projectId);
+    for (const flag of flagsToDelete) {
+      try {
+        await firstValueFrom(this.api.delete(flag.id));
+        this._flags.update((flags) => flags.filter((f) => f.id !== flag.id));
+        this.logAuditAction(
+          'deleted',
+          flag.id,
+          flag.name,
+          `Deleted flag "${flag.key}" (project deleted)`,
+        );
+      } catch {
+        // Continue deleting other flags even if one fails
+        this.toast.error(`Failed to delete flag "${flag.name}"`);
+      }
+    }
+  }
+
   /** Update flag details via API */
   async updateFlagDetails(
     flagId: string,

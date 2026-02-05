@@ -61,7 +61,7 @@
             >
           }
           @if (projects().length > 1) {
-            <app-button variant="ghost" type="button" (click)="deleteProject(project.id)"
+            <app-button variant="ghost" type="button" (click)="requestDeleteProject(project.id)"
               >Delete</app-button
             >
           }
@@ -94,4 +94,27 @@
       Add Project
     </app-button>
   </app-card>
+
+  @if (projectToDelete()) {
+    <div class="delete-confirmation-overlay">
+      <app-card class="delete-confirmation" padding="lg">
+        <h3>Delete Project?</h3>
+        @if (deleteConfirmationFlagCount() > 0) {
+          <p class="delete-confirmation__warning">
+            This project contains <strong>{{ deleteConfirmationFlagCount() }}</strong> flag(s). All
+            flags will be permanently deleted.
+          </p>
+        } @else {
+          <p>Are you sure you want to delete this project?</p>
+        }
+        <p class="text-muted">This action cannot be undone.</p>
+        <div class="delete-confirmation__actions">
+          <app-button variant="ghost" type="button" (click)="cancelDelete()">Cancel</app-button>
+          <app-button variant="danger" type="button" (click)="confirmDelete()">
+            Delete Project
+          </app-button>
+        </div>
+      </app-card>
+    </div>
+  }
 </section>

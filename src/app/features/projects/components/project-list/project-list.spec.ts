@@ -3,6 +3,7 @@ import { provideRouter } from '@angular/router';
 
 import { ProjectStore } from '@/app/shared/store/project.store';
 import { SearchStore } from '@/app/shared/store/search.store';
+import { FlagStore } from '@/app/features/flags/store/flag.store';
 import { ProjectListComponent } from './project-list';
 import {
   expectHeading,
@@ -20,18 +21,21 @@ describe('ProjectList', () => {
   let component: ProjectListComponent;
   let store: ProjectStore;
   let searchStore: SearchStore;
+  let flagStore: FlagStore;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [ProjectListComponent],
-      providers: [ProjectStore, SearchStore, provideRouter([]), ...MOCK_API_PROVIDERS],
+      providers: [ProjectStore, SearchStore, FlagStore, provideRouter([]), ...MOCK_API_PROVIDERS],
     }).compileComponents();
 
     fixture = TestBed.createComponent(ProjectListComponent);
     component = getComponent(fixture);
     store = injectService(ProjectStore);
     searchStore = injectService(SearchStore);
+    flagStore = injectService(FlagStore);
     await store.loadProjects();
+    await flagStore.loadFlags();
     fixture.detectChanges();
   });
 
@@ -80,10 +84,55 @@ describe('ProjectList', () => {
     expect(defaultSpy).toHaveBeenCalledWith('proj_growth');
   });
 
-  it('should delete a project', () => {
-    const deleteSpy = jest.spyOn(store, 'deleteProject');
-    component.deleteProject('proj_growth');
-    expect(deleteSpy).toHaveBeenCalledWith('proj_growth');
+  describe('deleteProject', () => {
+    it('should show confirmation when project has flags', () => {
+      // proj_default has flags
+      component.requestDeleteProject('proj_default');
+
+      expect(component.projectToDelete()).toBe('proj_default');
+      expect(component.deleteConfirmationFlagCount()).toBeGreaterThan(0);
+    });
+
+    it('should show confirmation even when project has no flags', () => {
+      // Create a project with no flags
+      const emptyProjectId = 'proj_empty';
+      jest.spyOn(flagStore, 'getFlagsByProjectId').mockReturnValue([]);
+
+      component.requestDeleteProject(emptyProjectId);
+
+      expect(component.projectToDelete()).toBe(emptyProjectId);
+      expect(component.deleteConfirmationFlagCount()).toBe(0);
+    });
+
+    it('should cancel delete when cancelDelete is called', () => {
+      component.requestDeleteProject('proj_default');
+      expect(component.projectToDelete()).toBe('proj_default');
+
+      component.cancelDelete();
+
+      expect(component.projectToDelete()).toBeNull();
+    });
+
+    it('should delete flags first then project when confirmed', async () => {
+      const deleteFlagsSpy = jest.spyOn(flagStore, 'deleteFlagsByProjectId').mockResolvedValue();
+      const deleteProjectSpy = jest.spyOn(store, 'deleteProject').mockResolvedValue();
+
+      component.requestDeleteProject('proj_default');
+      await component.confirmDelete();
+
+      expect(deleteFlagsSpy).toHaveBeenCalledWith('proj_default');
+      expect(deleteProjectSpy).toHaveBeenCalledWith('proj_default');
+    });
+
+    it('should clear confirmation state after delete', async () => {
+      jest.spyOn(flagStore, 'deleteFlagsByProjectId').mockResolvedValue();
+      jest.spyOn(store, 'deleteProject').mockResolvedValue();
+
+      component.requestDeleteProject('proj_default');
+      await component.confirmDelete();
+
+      expect(component.projectToDelete()).toBeNull();
+    });
   });
 
   it('should filter projects by the search query', () => {

@@ -64,12 +64,16 @@ export class ProjectStore extends BaseCrudStore<Project> {
 
   /** Set a project as the default via API */
   async setDefaultProject(projectId: string): Promise<void> {
+    const project = this.getById(projectId);
+    if (!project) return;
+
     try {
       await firstValueFrom(this.api.setDefault(projectId));
       this.updateWhere(
-        (project) => project.id === projectId || project.isDefault,
-        (project) => ({ isDefault: project.id === projectId }),
+        (p) => p.id === projectId || p.isDefault,
+        (p) => ({ isDefault: p.id === projectId }),
       );
+      this.logAuditAction('updated', projectId, project.name, `Set as default project`);
     } catch {
       // Error toast handled by error interceptor
     }
