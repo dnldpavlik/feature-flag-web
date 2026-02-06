@@ -2,7 +2,18 @@
   "permissions": {
     "allow": [
       "Bash(grep:*)",
-      "Bash(dir:*)"
+      "Bash(dir:*)",
+      "Bash(comm -23:*)",
+      "Bash(ls -la \"D:\\\\Projects\\\\feature-flags-web\\\\src\\\\environments\"\" 2>&1 || echo \"Directory check complete \")",
+      "Bash(npx jest --no-coverage)",
+      "Bash(npx jest:*)",
+      "Bash(npx eslint:*)",
+      "Bash(npx tsc:*)",
+      "Bash(npm run test:*)",
+      "Bash(npm run lint:*)",
+      "Bash(npm test:*)",
+      "Bash(npm run typecheck:*)",
+      "Bash(npm run build:*)"
     ]
   }
 }
