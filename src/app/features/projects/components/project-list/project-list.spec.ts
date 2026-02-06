@@ -133,6 +133,33 @@ describe('ProjectList', () => {
 
       expect(component.projectToDelete()).toBeNull();
     });
+
+    it('should call requestDeleteProject from deprecated deleteProject method', () => {
+      const requestSpy = jest.spyOn(component, 'requestDeleteProject');
+      component.deleteProject('proj_default');
+      expect(requestSpy).toHaveBeenCalledWith('proj_default');
+    });
+
+    it('should do nothing when confirmDelete is called without projectToDelete', async () => {
+      const deleteFlagsSpy = jest.spyOn(flagStore, 'deleteFlagsByProjectId');
+      const deleteProjectSpy = jest.spyOn(store, 'deleteProject');
+
+      // Ensure no project is selected for deletion
+      expect(component.projectToDelete()).toBeNull();
+
+      await component.confirmDelete();
+
+      expect(deleteFlagsSpy).not.toHaveBeenCalled();
+      expect(deleteProjectSpy).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('error handling', () => {
+    it('should call loadProjects on retry', () => {
+      const loadSpy = jest.spyOn(store, 'loadProjects').mockResolvedValue();
+      component['retry']();
+      expect(loadSpy).toHaveBeenCalled();
+    });
   });
 
   it('should filter projects by the search query', () => {

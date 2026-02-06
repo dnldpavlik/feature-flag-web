@@ -1,6 +1,9 @@
 import { TestBed } from '@angular/core/testing';
+import { throwError } from 'rxjs';
 
 import { AuditStore } from '@/app/features/audit/store/audit.store';
+import { ToastService } from '@/app/shared/ui/toast/toast.service';
+import { SegmentApi } from '../api/segment.api';
 import { CreateSegmentRuleInput } from '../models/segment-rule.model';
 import { SegmentStore } from './segment.store';
 import {
@@ -12,6 +15,7 @@ import {
   findByKey,
   injectService,
   MOCK_API_PROVIDERS,
+  MOCK_SEGMENTS,
 } from '@/app/testing';
 
 describe('SegmentStore', () => {
@@ -420,6 +424,100 @@ describe('SegmentStore', () => {
           userName: expect.any(String),
         }),
       );
+    });
+  });
+
+  describe('error handling', () => {
+    let toastService: ToastService;
+    let segmentApi: SegmentApi;
+
+    beforeEach(async () => {
+      toastService = injectService(ToastService);
+      segmentApi = injectService(SegmentApi);
+      // Ensure segments are loaded before each error test
+      jest.restoreAllMocks();
+      await store.loadSegments();
+    });
+
+    it('should show toast when addSegment fails', async () => {
+      jest.spyOn(toastService, 'error');
+      jest
+        .spyOn(segmentApi, 'create')
+        .mockReturnValue(throwError(() => new Error('Create failed')));
+
+      await store.addSegment({
+        key: 'fail-segment',
+        name: 'Fail Segment',
+        description: 'Will fail',
+      });
+
+      expect(toastService.error).toHaveBeenCalledWith('Failed to create segment');
+    });
+
+    it('should show toast when updateSegment fails', async () => {
+      jest.spyOn(toastService, 'error');
+      jest
+        .spyOn(segmentApi, 'update')
+        .mockReturnValue(throwError(() => new Error('Update failed')));
+      const segmentId = MOCK_SEGMENTS[0].id;
+
+      await store.updateSegment(segmentId, { name: 'New Name' });
+
+      expect(toastService.error).toHaveBeenCalledWith('Failed to update segment');
+    });
+
+    it('should show toast when deleteSegment fails', async () => {
+      jest.spyOn(toastService, 'error');
+      jest
+        .spyOn(segmentApi, 'delete')
+        .mockReturnValue(throwError(() => new Error('Delete failed')));
+      const segmentId = MOCK_SEGMENTS[0].id;
+
+      await store.deleteSegment(segmentId);
+
+      expect(toastService.error).toHaveBeenCalledWith('Failed to delete segment');
+    });
+
+    it('should show toast when addRule fails', async () => {
+      jest.spyOn(toastService, 'error');
+      jest
+        .spyOn(segmentApi, 'addRule')
+        .mockReturnValue(throwError(() => new Error('Add rule failed')));
+      const segmentId = MOCK_SEGMENTS[0].id;
+
+      await store.addRule(segmentId, {
+        attribute: 'email',
+        operator: 'contains',
+        value: '@test.com',
+      });
+
+      expect(toastService.error).toHaveBeenCalledWith('Failed to add rule');
+    });
+
+    it('should show toast when updateRule fails', async () => {
+      jest.spyOn(toastService, 'error');
+      jest
+        .spyOn(segmentApi, 'updateRule')
+        .mockReturnValue(throwError(() => new Error('Update rule failed')));
+      const segment = MOCK_SEGMENTS[0];
+      const ruleId = segment.rules[0].id;
+
+      await store.updateRule(segment.id, ruleId, { value: 'new-value' });
+
+      expect(toastService.error).toHaveBeenCalledWith('Failed to update rule');
+    });
+
+    it('should show toast when removeRule fails', async () => {
+      jest.spyOn(toastService, 'error');
+      jest
+        .spyOn(segmentApi, 'deleteRule')
+        .mockReturnValue(throwError(() => new Error('Remove rule failed')));
+      const segment = MOCK_SEGMENTS[0];
+      const ruleId = segment.rules[0].id;
+
+      await store.removeRule(segment.id, ruleId);
+
+      expect(toastService.error).toHaveBeenCalledWith('Failed to remove rule');
     });
   });
 });

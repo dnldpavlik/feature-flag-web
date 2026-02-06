@@ -1,7 +1,10 @@
 import { TestBed } from '@angular/core/testing';
+import { of, throwError } from 'rxjs';
 
 import { EnvironmentStore } from './environment.store';
 import { AuditStore } from '@/app/features/audit/store/audit.store';
+import { ToastService } from '@/app/shared/ui/toast/toast.service';
+import { EnvironmentApi } from '@/app/features/environments/api/environment.api';
 import {
   expectItemAdded,
   findByKey,
@@ -276,5 +279,75 @@ describe('EnvironmentStore', () => {
         }),
       );
     });
+  });
+
+  describe('error handling', () => {
+    let toastService: ToastService;
+    let environmentApi: EnvironmentApi;
+
+    beforeEach(async () => {
+      toastService = injectService(ToastService);
+      environmentApi = injectService(EnvironmentApi);
+      jest.restoreAllMocks();
+      await store.loadEnvironments();
+    });
+
+    it('should show toast when setDefaultEnvironment fails', async () => {
+      jest.spyOn(toastService, 'error');
+      jest
+        .spyOn(environmentApi, 'setDefault')
+        .mockReturnValue(throwError(() => new Error('Set default failed')));
+
+      await store.setDefaultEnvironment('env_staging');
+
+      expect(toastService.error).toHaveBeenCalledWith('Failed to set default environment');
+    });
+
+    it('should show toast when addEnvironment fails', async () => {
+      jest.spyOn(toastService, 'error');
+      jest
+        .spyOn(environmentApi, 'create')
+        .mockReturnValue(throwError(() => new Error('Create failed')));
+
+      await store.addEnvironment({
+        key: 'fail-env',
+        name: 'Fail Env',
+        color: '#000000',
+        order: 10,
+      });
+
+      expect(toastService.error).toHaveBeenCalledWith('Failed to create environment');
+    });
+
+    it('should show toast when updateEnvironment fails', async () => {
+      jest.spyOn(toastService, 'error');
+      jest
+        .spyOn(environmentApi, 'update')
+        .mockReturnValue(throwError(() => new Error('Update failed')));
+
+      await store.updateEnvironment('env_staging', { name: 'New Name' });
+
+      expect(toastService.error).toHaveBeenCalledWith('Failed to update environment');
+    });
+  });
+});
+
+describe('EnvironmentStore (isolated)', () => {
+  it('should auto-select first environment when no default exists', async () => {
+    // Create isolated test with fresh module
+    const envsNoDefault = MOCK_ENVIRONMENTS.map((e) => ({ ...e, isDefault: false }));
+
+    TestBed.configureTestingModule({
+      providers: [EnvironmentStore, AuditStore, ...MOCK_API_PROVIDERS],
+    });
+
+    const environmentApi = injectService(EnvironmentApi);
+    jest.spyOn(environmentApi, 'getAll').mockReturnValue(of(envsNoDefault));
+
+    const freshStore = injectService(EnvironmentStore);
+    await freshStore.loadEnvironments();
+
+    // Should select first environment since none is default
+    expect(freshStore.selectedEnvironmentId()).toBe('env_development');
   });
 });

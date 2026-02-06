@@ -40,6 +40,7 @@ describe('EnvironmentDetail', () => {
     flagStore = TestBed.inject(FlagStore);
     router = TestBed.inject(Router);
     await store.loadEnvironments();
+    await flagStore.loadFlags();
     fixture.detectChanges();
 
     return { paramMap$ };
@@ -278,6 +279,22 @@ describe('EnvironmentDetail', () => {
 
       const env = store.getEnvironmentById('env_staging');
       expect(env?.color).toBe(originalColor);
+    });
+
+    it('should update key via onKeyInput', async () => {
+      await build('env_staging');
+      clickButton('Edit');
+
+      // Call the protected method directly via type assertion
+      const component = fixture.componentInstance as unknown as {
+        onKeyInput: (event: Event) => void;
+        editKey: () => string;
+      };
+      const mockEvent = { target: { value: 'new-key' } } as unknown as Event;
+      component.onKeyInput(mockEvent);
+      fixture.detectChanges();
+
+      expect(component.editKey()).toBe('new-key');
     });
   });
 });

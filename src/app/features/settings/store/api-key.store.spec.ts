@@ -1,5 +1,8 @@
 import { TestBed } from '@angular/core/testing';
+import { throwError } from 'rxjs';
 
+import { ToastService } from '@/app/shared/ui/toast/toast.service';
+import { ApiKeyApi } from '../api/api-key.api';
 import { ApiKeyStore } from './api-key.store';
 import { CreateApiKeyInput } from '../models/settings.model';
 import {
@@ -8,6 +11,7 @@ import {
   expectItemAdded,
   expectItemRemoved,
   MOCK_API_PROVIDERS,
+  MOCK_API_KEYS,
 } from '@/app/testing';
 
 describe('ApiKeyStore', () => {
@@ -195,6 +199,52 @@ describe('ApiKeyStore', () => {
       store.setError('An error');
       store.clearError();
       expect(store.error()).toBeNull();
+    });
+  });
+
+  describe('API error handling', () => {
+    let toastService: ToastService;
+    let apiKeyApi: ApiKeyApi;
+
+    beforeEach(async () => {
+      toastService = injectService(ToastService);
+      apiKeyApi = injectService(ApiKeyApi);
+      jest.restoreAllMocks();
+      await store.loadApiKeys();
+    });
+
+    it('should set error state and show toast when loadApiKeys fails', async () => {
+      jest.spyOn(toastService, 'error');
+      jest.spyOn(apiKeyApi, 'getAll').mockReturnValue(throwError(() => new Error('Load failed')));
+
+      await store.loadApiKeys();
+
+      expect(store.error()).toBe('Failed to load API keys');
+      expect(store.loading()).toBe(false);
+      expect(toastService.error).toHaveBeenCalledWith('Failed to load API keys');
+    });
+
+    it('should show toast and return null when createApiKey fails', async () => {
+      jest.spyOn(toastService, 'error');
+      jest.spyOn(apiKeyApi, 'create').mockReturnValue(throwError(() => new Error('Create failed')));
+
+      const result = await store.createApiKey({
+        name: 'Fail Key',
+        scopes: ['read:flags'],
+      });
+
+      expect(result).toBeNull();
+      expect(toastService.error).toHaveBeenCalledWith('Failed to create API key');
+    });
+
+    it('should show toast when revokeApiKey fails', async () => {
+      jest.spyOn(toastService, 'error');
+      jest.spyOn(apiKeyApi, 'revoke').mockReturnValue(throwError(() => new Error('Revoke failed')));
+      const keyId = MOCK_API_KEYS[0].id;
+
+      await store.revokeApiKey(keyId);
+
+      expect(toastService.error).toHaveBeenCalledWith('Failed to revoke API key');
     });
   });
 });

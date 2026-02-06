@@ -194,6 +194,23 @@ describe('ApiKeysTabComponent', () => {
       expect(apiKeyStore.apiKeys().length).toBe(beforeCount);
     });
 
+    it('should not set createdSecret when createApiKey returns null', async () => {
+      jest.spyOn(apiKeyStore, 'createApiKey').mockResolvedValue(null);
+
+      const nameInput = fixture.debugElement.query(By.css('input#key-name'));
+      nameInput.nativeElement.value = 'Test Key';
+      nameInput.nativeElement.dispatchEvent(new Event('input'));
+
+      const scopeCheckbox = fixture.debugElement.query(By.css('input[value="read:flags"]'));
+      scopeCheckbox.nativeElement.click();
+      fixture.detectChanges();
+
+      await component['createKey']();
+      fixture.detectChanges();
+
+      expect(component.createdSecret()).toBeNull();
+    });
+
     it('should hide form on cancel', () => {
       const cancelButton = fixture.debugElement.query(
         By.css('app-button.api-keys-tab__cancel-btn button'),

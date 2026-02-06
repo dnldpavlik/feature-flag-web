@@ -199,6 +199,14 @@ describe('ProjectStore', () => {
       const defaultProj = store.projects().find((p) => p.isDefault);
       expect(defaultProj?.id).toBe('proj_default');
     });
+
+    it('should do nothing when project does not exist', async () => {
+      await store.setDefaultProject('proj_nonexistent');
+
+      expect(mockApi.setDefault).not.toHaveBeenCalled();
+      const defaultProj = store.projects().find((p) => p.isDefault);
+      expect(defaultProj?.id).toBe('proj_default');
+    });
   });
 
   describe('deleteProject', () => {
@@ -229,11 +237,32 @@ describe('ProjectStore', () => {
       expect(store.selectedProjectId()).toBe('proj_default');
     });
 
+    it('should fall back to first project when no default exists after delete', async () => {
+      // Make all projects non-default
+      const projectsNoDefault = MOCK_PROJECTS.map((p) => ({ ...p, isDefault: false }));
+      mockApi.getAll.mockReturnValue(of(projectsNoDefault));
+      await store.loadProjects();
+
+      // Select and delete the first project
+      store.selectProject('proj_default');
+      await store.deleteProject('proj_default');
+
+      // Should fall back to first remaining project (proj_growth)
+      expect(store.selectedProjectId()).toBe('proj_growth');
+    });
+
     it('should not remove project on API failure', async () => {
       mockApi.delete.mockReturnValue(throwError(() => new Error('fail')));
 
       await store.deleteProject('proj_growth');
 
+      expect(store.projects()).toHaveLength(2);
+    });
+
+    it('should do nothing when project does not exist', async () => {
+      await store.deleteProject('proj_nonexistent');
+
+      expect(mockApi.delete).not.toHaveBeenCalled();
       expect(store.projects()).toHaveLength(2);
     });
   });

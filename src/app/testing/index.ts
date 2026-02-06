@@ -81,6 +81,8 @@ export {
   MOCK_PROJECTS,
   MOCK_ENVIRONMENTS,
   MOCK_FLAGS,
+  MOCK_SEGMENTS,
+  MOCK_API_KEYS,
 } from './mock-api.providers';
 
 // Mock factories

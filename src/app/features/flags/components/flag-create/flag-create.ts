@@ -58,6 +58,9 @@ export class FlagCreateComponent {
 
   protected readonly jsonError = signal<string | null>(null);
 
+  // Selected project for display
+  protected readonly selectedProject = this.projectStore.selectedProject;
+
   // Per-environment enabled state
   protected readonly environments = this.environmentStore.sortedEnvironments;
   private readonly _enabledEnvironments = signal<Record<string, boolean>>({});

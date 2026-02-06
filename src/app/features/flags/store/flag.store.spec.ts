@@ -1,8 +1,11 @@
 import { TestBed } from '@angular/core/testing';
+import { throwError } from 'rxjs';
 
 import { EnvironmentStore } from '@/app/shared/store/environment.store';
 import { ProjectStore } from '@/app/shared/store/project.store';
 import { AuditStore } from '@/app/features/audit/store/audit.store';
+import { ToastService } from '@/app/shared/ui/toast/toast.service';
+import { FlagApi } from '@/app/features/flags/api/flag.api';
 import { FlagStore } from './flag.store';
 import {
   injectService,
@@ -12,6 +15,7 @@ import {
   expectItemRemoved,
   expectItemNotExists,
   MOCK_API_PROVIDERS,
+  MOCK_FLAGS,
 } from '@/app/testing';
 
 describe('FlagStore', () => {
@@ -552,6 +556,19 @@ describe('FlagStore', () => {
       );
     });
 
+    it('should use environment ID in audit log when environment not found', async () => {
+      const flag = store.flags()[0];
+      const unknownEnvId = 'env_unknown_12345';
+
+      await store.toggleFlagInEnvironment(flag.id, unknownEnvId, true);
+
+      expect(auditStore.logAction).toHaveBeenCalledWith(
+        expect.objectContaining({
+          details: expect.stringContaining(unknownEnvId),
+        }),
+      );
+    });
+
     it('should include user info in audit entry', async () => {
       await store.addFlag({
         projectId: 'proj_default',
@@ -628,6 +645,173 @@ describe('FlagStore', () => {
       await store.deleteFlagsByProjectId('proj_nonexistent');
 
       expect(store.flags().length).toBe(totalBefore);
+    });
+  });
+
+  describe('addFlag with enabledEnvironments', () => {
+    it('should call toggleFlagInEnvironment for enabled environments', async () => {
+      const toggleSpy = jest.spyOn(store, 'toggleFlagInEnvironment');
+
+      await store.addFlag(
+        {
+          projectId: 'proj_default',
+          key: 'env-enabled-flag',
+          name: 'Env Enabled Flag',
+          description: 'A flag with environments enabled',
+          type: 'boolean',
+          defaultValue: false,
+          tags: [],
+        },
+        { env_development: true, env_staging: true, env_production: false },
+      );
+
+      // Should call toggle for dev and staging (both true), but not production (false)
+      expect(toggleSpy).toHaveBeenCalledTimes(2);
+      expect(toggleSpy).toHaveBeenCalledWith(expect.any(String), 'env_development', true);
+      expect(toggleSpy).toHaveBeenCalledWith(expect.any(String), 'env_staging', true);
+    });
+
+    it('should not call toggleFlagInEnvironment when no environments are enabled', async () => {
+      const toggleSpy = jest.spyOn(store, 'toggleFlagInEnvironment');
+
+      await store.addFlag(
+        {
+          projectId: 'proj_default',
+          key: 'no-toggle-flag',
+          name: 'No Toggle Flag',
+          description: 'A flag with no environments enabled',
+          type: 'boolean',
+          defaultValue: false,
+          tags: [],
+        },
+        { env_development: false, env_staging: false },
+      );
+
+      expect(toggleSpy).not.toHaveBeenCalled();
+    });
+
+    it('should work without enabledEnvironments parameter', async () => {
+      const countBefore = store.flags().length;
+
+      await store.addFlag({
+        projectId: 'proj_default',
+        key: 'no-env-flag',
+        name: 'No Env Flag',
+        description: 'A flag without environment settings',
+        type: 'boolean',
+        defaultValue: false,
+        tags: [],
+      });
+
+      expectItemAdded(store.flags, countBefore);
+    });
+  });
+
+  describe('error handling', () => {
+    let toastService: ToastService;
+    let flagApi: FlagApi;
+
+    beforeEach(async () => {
+      toastService = injectService(ToastService);
+      flagApi = injectService(FlagApi);
+      jest.spyOn(toastService, 'error');
+      // Ensure flags are loaded before each error test
+      jest.restoreAllMocks();
+      await store.loadFlags();
+    });
+
+    it('should set error state when loadFlags fails', async () => {
+      jest.spyOn(flagApi, 'getAll').mockReturnValue(throwError(() => new Error('Network error')));
+
+      await store.loadFlags();
+
+      expect(store.error()).toBe('Network error');
+      expect(store.loading()).toBe(false);
+    });
+
+    it('should use default message when loadFlags fails without Error', async () => {
+      jest.spyOn(flagApi, 'getAll').mockReturnValue(throwError(() => 'string error'));
+
+      await store.loadFlags();
+
+      expect(store.error()).toBe('Failed to load flags');
+    });
+
+    it('should show toast when addFlag fails', async () => {
+      jest.spyOn(toastService, 'error');
+      jest.spyOn(flagApi, 'create').mockReturnValue(throwError(() => new Error('Create failed')));
+
+      await store.addFlag({
+        projectId: 'proj_default',
+        key: 'fail-flag',
+        name: 'Fail Flag',
+        description: 'Will fail',
+        type: 'boolean',
+        defaultValue: false,
+        tags: [],
+      });
+
+      expect(toastService.error).toHaveBeenCalledWith('Failed to create flag');
+    });
+
+    it('should show toast when deleteFlag fails', async () => {
+      jest.spyOn(toastService, 'error');
+      jest.spyOn(flagApi, 'delete').mockReturnValue(throwError(() => new Error('Delete failed')));
+      // Use MOCK_FLAGS to get a valid flag ID
+      const flagId = MOCK_FLAGS[0].id;
+
+      await store.deleteFlag(flagId);
+
+      expect(toastService.error).toHaveBeenCalledWith('Failed to delete flag');
+    });
+
+    it('should show toast when deleteFlagsByProjectId fails for a flag', async () => {
+      jest.spyOn(toastService, 'error');
+      // Get the flag name before mocking
+      const flag = MOCK_FLAGS.find((f) => f.projectId === 'proj_default')!;
+      jest.spyOn(flagApi, 'delete').mockReturnValue(throwError(() => new Error('Delete failed')));
+
+      await store.deleteFlagsByProjectId('proj_default');
+
+      expect(toastService.error).toHaveBeenCalledWith(`Failed to delete flag "${flag.name}"`);
+    });
+
+    it('should show toast when updateFlagDetails fails', async () => {
+      jest.spyOn(toastService, 'error');
+      jest.spyOn(flagApi, 'update').mockReturnValue(throwError(() => new Error('Update failed')));
+      const flagId = MOCK_FLAGS[0].id;
+
+      await store.updateFlagDetails(flagId, { name: 'New Name' });
+
+      expect(toastService.error).toHaveBeenCalledWith('Failed to update flag');
+    });
+
+    it('should show toast when updateEnvironmentValue fails', async () => {
+      jest.spyOn(toastService, 'error');
+      jest
+        .spyOn(flagApi, 'updateEnvironmentValue')
+        .mockReturnValue(throwError(() => new Error('Update failed')));
+      const flagId = MOCK_FLAGS[0].id;
+
+      await store.updateEnvironmentValue({
+        flagId,
+        environmentId: 'env_development',
+        value: true,
+      });
+
+      expect(toastService.error).toHaveBeenCalledWith('Failed to update environment value');
+    });
+
+    it('should show toast when toggleFlagInEnvironment fails', async () => {
+      jest.spyOn(toastService, 'error');
+      jest
+        .spyOn(flagApi, 'updateEnvironmentValue')
+        .mockReturnValue(throwError(() => new Error('Toggle failed')));
+      const flagId = MOCK_FLAGS[0].id;
+
+      await store.toggleFlagInEnvironment(flagId, 'env_development', true);
+
+      expect(toastService.error).toHaveBeenCalledWith('Failed to toggle flag');
     });
   });
 });

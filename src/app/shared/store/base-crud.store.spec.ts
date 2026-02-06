@@ -25,6 +25,11 @@ class TestStore extends BaseCrudStore<TestItem> {
     return this.addItem(data, prepend);
   }
 
+  // Add without prepend parameter to test default branch
+  addWithDefault(data: Omit<TestItem, 'id' | 'createdAt' | 'updatedAt'>): string {
+    return this.addItem(data);
+  }
+
   update(id: string, updates: Partial<Omit<TestItem, 'id' | 'createdAt'>>): void {
     this.updateItem(id, updates);
   }
@@ -133,6 +138,24 @@ describe('BaseCrudStore', () => {
       const items = store.items();
       expect(items[0].name).toBe('Second');
       expect(items[1].name).toBe('First');
+    });
+
+    it('should append items when prepend is explicitly false', () => {
+      store.add({ name: 'First', value: 1 }, false);
+      store.add({ name: 'Second', value: 2 }, false);
+
+      const items = store.items();
+      expect(items[0].name).toBe('First');
+      expect(items[1].name).toBe('Second');
+    });
+
+    it('should append items when prepend parameter is omitted', () => {
+      store.addWithDefault({ name: 'First', value: 1 });
+      store.addWithDefault({ name: 'Second', value: 2 });
+
+      const items = store.items();
+      expect(items[0].name).toBe('First');
+      expect(items[1].name).toBe('Second');
     });
 
     it('should update count signal', () => {

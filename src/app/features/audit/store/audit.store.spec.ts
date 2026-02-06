@@ -1,4 +1,8 @@
 import { TestBed } from '@angular/core/testing';
+import { throwError } from 'rxjs';
+
+import { ToastService } from '@/app/shared/ui/toast/toast.service';
+import { AuditApi } from '../api/audit.api';
 import { AuditStore } from './audit.store';
 import {
   injectService,
@@ -155,6 +159,46 @@ describe('AuditStore', () => {
       const entries = store.entries();
       const resourceTypes = new Set(entries.map((e) => e.resourceType));
       expect(resourceTypes.size).toBeGreaterThanOrEqual(3);
+    });
+  });
+
+  describe('error handling', () => {
+    let toastService: ToastService;
+    let auditApi: AuditApi;
+
+    beforeEach(async () => {
+      toastService = injectService(ToastService);
+      auditApi = injectService(AuditApi);
+      jest.restoreAllMocks();
+      await store.loadEntries();
+    });
+
+    it('should set error state and show toast when loadEntries fails', async () => {
+      jest.spyOn(toastService, 'error');
+      jest.spyOn(auditApi, 'getAll').mockReturnValue(throwError(() => new Error('Load failed')));
+
+      await store.loadEntries();
+
+      expect(store.error()).toBe('Failed to load audit entries');
+      expect(store.loading()).toBe(false);
+      expect(toastService.error).toHaveBeenCalledWith('Failed to load audit entries');
+    });
+
+    it('should show toast when logAction fails', async () => {
+      jest.spyOn(toastService, 'error');
+      jest.spyOn(auditApi, 'create').mockReturnValue(throwError(() => new Error('Create failed')));
+
+      await store.logAction({
+        action: 'created',
+        resourceType: 'flag',
+        resourceId: 'flag_test',
+        resourceName: 'Test Flag',
+        details: 'Test',
+        userId: 'user_123',
+        userName: 'Test User',
+      });
+
+      expect(toastService.error).toHaveBeenCalledWith('Failed to log audit entry');
     });
   });
 });
