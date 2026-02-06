@@ -3,8 +3,7 @@ import { firstValueFrom } from 'rxjs';
 
 import { BaseCrudStore } from '@/app/shared/store/base-crud.store';
 import { ToastService } from '@/app/shared/ui/toast/toast.service';
-import { AuditStore } from '@/app/features/audit/store/audit.store';
-import { UserProfileStore } from '@/app/features/settings/store/user-profile.store';
+import { AuditLogger } from '@/app/features/audit/services/audit-logger.service';
 import {
   CreateSegmentRuleInput,
   UpdateSegmentRuleInput,
@@ -16,8 +15,7 @@ import { SegmentApi, UpdateSegmentInput } from '../api/segment.api';
 export class SegmentStore extends BaseCrudStore<Segment> {
   private readonly api = inject(SegmentApi);
   private readonly toast = inject(ToastService);
-  private readonly auditStore = inject(AuditStore);
-  private readonly userProfileStore = inject(UserProfileStore);
+  private readonly logAudit = inject(AuditLogger).forResource('segment');
 
   constructor() {
     super({
@@ -49,7 +47,12 @@ export class SegmentStore extends BaseCrudStore<Segment> {
       const created = await firstValueFrom(this.api.create(input));
       this._items.update((items) => [...items, created]);
       this.toast.success('Segment created');
-      this.logAuditAction('created', created.id, created.name, `Created segment "${created.key}"`);
+      this.logAudit({
+        action: 'created',
+        resourceId: created.id,
+        resourceName: created.name,
+        details: `Created segment "${created.key}"`,
+      });
     } catch {
       this.toast.error('Failed to create segment');
     }
@@ -62,12 +65,12 @@ export class SegmentStore extends BaseCrudStore<Segment> {
       this.updateItem(segmentId, updated);
       this.toast.success('Segment updated');
       const changedFields = Object.keys(updates).join(', ');
-      this.logAuditAction(
-        'updated',
-        segmentId,
-        updated.name,
-        `Updated segment fields: ${changedFields}`,
-      );
+      this.logAudit({
+        action: 'updated',
+        resourceId: segmentId,
+        resourceName: updated.name,
+        details: `Updated segment fields: ${changedFields}`,
+      });
     } catch {
       this.toast.error('Failed to update segment');
     }
@@ -84,7 +87,12 @@ export class SegmentStore extends BaseCrudStore<Segment> {
       await firstValueFrom(this.api.delete(segmentId));
       this.deleteItem(segmentId);
       this.toast.success('Segment deleted');
-      this.logAuditAction('deleted', segmentId, segment.name, `Deleted segment "${segment.key}"`);
+      this.logAudit({
+        action: 'deleted',
+        resourceId: segmentId,
+        resourceName: segment.name,
+        details: `Deleted segment "${segment.key}"`,
+      });
     } catch {
       this.toast.error('Failed to delete segment');
     }
@@ -130,23 +138,5 @@ export class SegmentStore extends BaseCrudStore<Segment> {
     } catch {
       this.toast.error('Failed to remove rule');
     }
-  }
-
-  private logAuditAction(
-    action: 'created' | 'updated' | 'deleted',
-    resourceId: string,
-    resourceName: string,
-    details: string,
-  ): void {
-    const user = this.userProfileStore.userProfile();
-    this.auditStore.logAction({
-      action,
-      resourceType: 'segment',
-      resourceId,
-      resourceName,
-      details,
-      userId: user.id,
-      userName: user.name,
-    });
   }
 }

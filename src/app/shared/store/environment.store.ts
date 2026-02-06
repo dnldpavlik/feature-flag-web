@@ -4,8 +4,7 @@ import { firstValueFrom } from 'rxjs';
 import { EnvironmentApi } from '@/app/features/environments/api/environment.api';
 import { BaseCrudStore } from '@/app/shared/store/base-crud.store';
 import { ToastService } from '@/app/shared/ui/toast/toast.service';
-import { AuditStore } from '@/app/features/audit/store/audit.store';
-import { UserProfileStore } from '@/app/features/settings/store/user-profile.store';
+import { AuditLogger } from '@/app/features/audit/services/audit-logger.service';
 import {
   CreateEnvironmentInput,
   Environment,
@@ -16,8 +15,7 @@ import {
 export class EnvironmentStore extends BaseCrudStore<Environment> {
   private readonly api = inject(EnvironmentApi);
   private readonly toast = inject(ToastService);
-  private readonly auditStore = inject(AuditStore);
-  private readonly userProfileStore = inject(UserProfileStore);
+  private readonly logAudit = inject(AuditLogger).forResource('environment');
   private readonly _selectedEnvironmentId = signal<string>('');
 
   constructor() {
@@ -79,12 +77,12 @@ export class EnvironmentStore extends BaseCrudStore<Environment> {
       const created = await firstValueFrom(this.api.create(input));
       this._items.update((items) => [...items, created]);
       this.toast.success('Environment created');
-      this.logAuditAction(
-        'created',
-        created.id,
-        created.name,
-        `Created environment "${created.key}"`,
-      );
+      this.logAudit({
+        action: 'created',
+        resourceId: created.id,
+        resourceName: created.name,
+        details: `Created environment "${created.key}"`,
+      });
     } catch {
       this.toast.error('Failed to create environment');
     }
@@ -97,12 +95,12 @@ export class EnvironmentStore extends BaseCrudStore<Environment> {
       this.updateItem(envId, updated);
       this.toast.success('Environment updated');
       const changedFields = Object.keys(updates).join(', ');
-      this.logAuditAction(
-        'updated',
-        envId,
-        updated.name,
-        `Updated environment fields: ${changedFields}`,
-      );
+      this.logAudit({
+        action: 'updated',
+        resourceId: envId,
+        resourceName: updated.name,
+        details: `Updated environment fields: ${changedFields}`,
+      });
     } catch {
       this.toast.error('Failed to update environment');
     }
@@ -111,23 +109,5 @@ export class EnvironmentStore extends BaseCrudStore<Environment> {
   /** Find environment by ID */
   getEnvironmentById(id: string): Environment | undefined {
     return this.getById(id);
-  }
-
-  private logAuditAction(
-    action: 'created' | 'updated' | 'deleted',
-    resourceId: string,
-    resourceName: string,
-    details: string,
-  ): void {
-    const user = this.userProfileStore.userProfile();
-    this.auditStore.logAction({
-      action,
-      resourceType: 'environment',
-      resourceId,
-      resourceName,
-      details,
-      userId: user.id,
-      userName: user.name,
-    });
   }
 }

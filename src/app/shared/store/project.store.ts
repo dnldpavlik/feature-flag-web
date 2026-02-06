@@ -5,15 +5,13 @@ import { BaseCrudStore } from '@/app/shared/store/base-crud.store';
 import { CreateProjectInput, Project } from '@/app/features/projects/models/project.model';
 import { ProjectApi } from '@/app/features/projects/api/project.api';
 import { ToastService } from '@/app/shared/ui/toast/toast.service';
-import { AuditStore } from '@/app/features/audit/store/audit.store';
-import { UserProfileStore } from '@/app/features/settings/store/user-profile.store';
+import { AuditLogger } from '@/app/features/audit/services/audit-logger.service';
 
 @Injectable({ providedIn: 'root' })
 export class ProjectStore extends BaseCrudStore<Project> {
   private readonly api = inject(ProjectApi);
   private readonly toast = inject(ToastService);
-  private readonly auditStore = inject(AuditStore);
-  private readonly userProfileStore = inject(UserProfileStore);
+  private readonly logAudit = inject(AuditLogger).forResource('project');
 
   private readonly _selectedProjectId = signal<string>('');
 
@@ -51,7 +49,12 @@ export class ProjectStore extends BaseCrudStore<Project> {
       const project = await firstValueFrom(this.api.create(input));
       this._items.update((items) => [...items, project]);
       this.toast.success(`Project "${project.name}" created`);
-      this.logAuditAction('created', project.id, project.name, `Created project "${project.key}"`);
+      this.logAudit({
+        action: 'created',
+        resourceId: project.id,
+        resourceName: project.name,
+        details: `Created project "${project.key}"`,
+      });
     } catch {
       // Error toast handled by error interceptor
     }
@@ -73,7 +76,12 @@ export class ProjectStore extends BaseCrudStore<Project> {
         (p) => p.id === projectId || p.isDefault,
         (p) => ({ isDefault: p.id === projectId }),
       );
-      this.logAuditAction('updated', projectId, project.name, `Set as default project`);
+      this.logAudit({
+        action: 'updated',
+        resourceId: projectId,
+        resourceName: project.name,
+        details: `Set as default project`,
+      });
     } catch {
       // Error toast handled by error interceptor
     }
@@ -97,7 +105,12 @@ export class ProjectStore extends BaseCrudStore<Project> {
       }
 
       this.toast.success('Project deleted');
-      this.logAuditAction('deleted', projectId, project.name, `Deleted project "${project.key}"`);
+      this.logAudit({
+        action: 'deleted',
+        resourceId: projectId,
+        resourceName: project.name,
+        details: `Deleted project "${project.key}"`,
+      });
     } catch {
       // Error toast handled by error interceptor
     }
@@ -106,23 +119,5 @@ export class ProjectStore extends BaseCrudStore<Project> {
   /** Find project by ID */
   getProjectById(projectId: string): Project | undefined {
     return this.getById(projectId);
-  }
-
-  private logAuditAction(
-    action: 'created' | 'updated' | 'deleted',
-    resourceId: string,
-    resourceName: string,
-    details: string,
-  ): void {
-    const user = this.userProfileStore.userProfile();
-    this.auditStore.logAction({
-      action,
-      resourceType: 'project',
-      resourceId,
-      resourceName,
-      details,
-      userId: user.id,
-      userName: user.name,
-    });
   }
 }

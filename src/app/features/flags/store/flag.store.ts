@@ -4,8 +4,7 @@ import { firstValueFrom } from 'rxjs';
 import { EnvironmentStore } from '@/app/shared/store/environment.store';
 import { ProjectStore } from '@/app/shared/store/project.store';
 import { ToastService } from '@/app/shared/ui/toast/toast.service';
-import { AuditStore } from '@/app/features/audit/store/audit.store';
-import { UserProfileStore } from '@/app/features/settings/store/user-profile.store';
+import { AuditLogger } from '@/app/features/audit/services/audit-logger.service';
 import {
   CreateFlagInput,
   Flag,
@@ -25,8 +24,7 @@ export class FlagStore {
   private readonly toast = inject(ToastService);
   private readonly environmentStore = inject(EnvironmentStore);
   private readonly projectStore = inject(ProjectStore);
-  private readonly auditStore = inject(AuditStore);
-  private readonly userProfileStore = inject(UserProfileStore);
+  private readonly logAudit = inject(AuditLogger).forResource('flag');
 
   private readonly _flags = signal<Flag[]>([]);
   private readonly _loading = signal(false);
@@ -85,7 +83,12 @@ export class FlagStore {
       }
 
       this.toast.success('Flag created');
-      this.logAuditAction('created', created.id, created.name, `Created ${created.type} flag`);
+      this.logAudit({
+        action: 'created',
+        resourceId: created.id,
+        resourceName: created.name,
+        details: `Created ${created.type} flag`,
+      });
     } catch {
       this.toast.error('Failed to create flag');
     }
@@ -101,7 +104,12 @@ export class FlagStore {
       await firstValueFrom(this.api.delete(flagId));
       this._flags.update((flags) => flags.filter((f) => f.id !== flagId));
       this.toast.success('Flag deleted');
-      this.logAuditAction('deleted', flagId, flag.name, `Deleted flag "${flag.key}"`);
+      this.logAudit({
+        action: 'deleted',
+        resourceId: flagId,
+        resourceName: flag.name,
+        details: `Deleted flag "${flag.key}"`,
+      });
     } catch {
       this.toast.error('Failed to delete flag');
     }
@@ -123,12 +131,12 @@ export class FlagStore {
       try {
         await firstValueFrom(this.api.delete(flag.id));
         this._flags.update((flags) => flags.filter((f) => f.id !== flag.id));
-        this.logAuditAction(
-          'deleted',
-          flag.id,
-          flag.name,
-          `Deleted flag "${flag.key}" (project deleted)`,
-        );
+        this.logAudit({
+          action: 'deleted',
+          resourceId: flag.id,
+          resourceName: flag.name,
+          details: `Deleted flag "${flag.key}" (project deleted)`,
+        });
       } catch {
         // Continue deleting other flags even if one fails
         this.toast.error(`Failed to delete flag "${flag.name}"`);
@@ -146,7 +154,12 @@ export class FlagStore {
       this._flags.update((flags) => flags.map((flag) => (flag.id === flagId ? updated : flag)));
       this.toast.success('Flag updated');
       const changedFields = Object.keys(updates).join(', ');
-      this.logAuditAction('updated', flagId, updated.name, `Updated flag fields: ${changedFields}`);
+      this.logAudit({
+        action: 'updated',
+        resourceId: flagId,
+        resourceName: updated.name,
+        details: `Updated flag fields: ${changedFields}`,
+      });
     } catch {
       this.toast.error('Failed to update flag');
     }
@@ -182,12 +195,12 @@ export class FlagStore {
       this._flags.update((flags) => flags.map((flag) => (flag.id === flagId ? updated : flag)));
       const env = this.environmentStore.getEnvironmentById(environmentId);
       const state = enabled ? 'Enabled' : 'Disabled';
-      this.logAuditAction(
-        'toggled',
-        flagId,
-        updated.name,
-        `${state} flag in ${env?.name ?? environmentId}`,
-      );
+      this.logAudit({
+        action: 'toggled',
+        resourceId: flagId,
+        resourceName: updated.name,
+        details: `${state} flag in ${env?.name ?? environmentId}`,
+      });
     } catch {
       this.toast.error('Failed to toggle flag');
     }
@@ -200,23 +213,5 @@ export class FlagStore {
     const flag = this.getFlagById(flagId);
     if (!flag) return undefined;
     return getEffectiveValue<T>(flag, environmentId);
-  }
-
-  private logAuditAction(
-    action: 'created' | 'updated' | 'deleted' | 'toggled',
-    resourceId: string,
-    resourceName: string,
-    details: string,
-  ): void {
-    const user = this.userProfileStore.userProfile();
-    this.auditStore.logAction({
-      action,
-      resourceType: 'flag',
-      resourceId,
-      resourceName,
-      details,
-      userId: user.id,
-      userName: user.name,
-    });
   }
 }
