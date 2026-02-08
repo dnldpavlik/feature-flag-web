@@ -182,7 +182,21 @@ export class FlagStore {
         }),
       );
       this._flags.update((flags) =>
-        flags.map((flag) => (flag.id === input.flagId ? updated : flag)),
+        flags.map((flag) => {
+          if (flag.id !== input.flagId) return flag;
+          const merged = this.mergeFlag(flag, updated);
+          return {
+            ...merged,
+            environmentValues: {
+              ...merged.environmentValues,
+              [input.environmentId]: {
+                ...(merged.environmentValues[input.environmentId] ?? {}),
+                ...(input.value !== undefined ? { value: input.value } : {}),
+                ...(input.enabled !== undefined ? { enabled: input.enabled } : {}),
+              },
+            },
+          };
+        }),
       );
     } catch {
       this.toast.error('Failed to update environment value');
@@ -200,7 +214,22 @@ export class FlagStore {
       const updated = await firstValueFrom(
         this.api.updateEnvironmentValue(flagId, environmentId, { enabled }),
       );
-      this._flags.update((flags) => flags.map((flag) => (flag.id === flagId ? updated : flag)));
+      this._flags.update((flags) =>
+        flags.map((flag) => {
+          if (flag.id !== flagId) return flag;
+          const merged = this.mergeFlag(flag, updated);
+          return {
+            ...merged,
+            environmentValues: {
+              ...merged.environmentValues,
+              [environmentId]: {
+                ...(merged.environmentValues[environmentId] ?? {}),
+                enabled,
+              },
+            },
+          };
+        }),
+      );
       const env = this.environmentStore.getEnvironmentById(environmentId);
       const state = enabled ? 'Enabled' : 'Disabled';
       this.logAudit({
@@ -212,6 +241,19 @@ export class FlagStore {
     } catch {
       this.toast.error('Failed to toggle flag');
     }
+  }
+
+  /** Merge API response into existing flag, preserving fields the response may omit */
+  private mergeFlag(existing: Flag, updated: Flag): Flag {
+    return {
+      ...existing,
+      ...updated,
+      name: updated.name || existing.name,
+      environmentValues: {
+        ...existing.environmentValues,
+        ...(updated.environmentValues ?? {}),
+      },
+    };
   }
 
   getValueInEnvironment<T extends FlagType>(

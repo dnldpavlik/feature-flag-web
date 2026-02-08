@@ -322,6 +322,52 @@ describe('FlagStore', () => {
       expect(updated?.environmentValues['env_staging'].enabled).toBe(false);
     });
 
+    it('should preserve flag name when toggle response lacks name', async () => {
+      const flag = store.flags()[0];
+      const originalName = flag.name;
+      const flagApi = TestBed.inject(FlagApi);
+      const responseWithoutName = {
+        ...flag,
+        name: undefined,
+        environmentValues: {
+          ...flag.environmentValues,
+          env_development: {
+            ...flag.environmentValues['env_development'],
+            enabled: true,
+            updatedAt: new Date().toISOString(),
+          },
+        },
+      };
+      jest
+        .spyOn(flagApi, 'updateEnvironmentValue')
+        .mockReturnValueOnce(of(responseWithoutName as unknown as Flag));
+
+      await store.toggleFlagInEnvironment(flag.id, 'env_development', true);
+
+      const updated = store.getFlagById(flag.id);
+      expect(updated?.name).toBe(originalName);
+      expect(updated?.environmentValues['env_development'].enabled).toBe(true);
+    });
+
+    it('should apply enabled state even when response lacks environmentValues', async () => {
+      const flag = store.flags()[0];
+      const originalEnabled = flag.environmentValues['env_development'].enabled;
+      const flagApi = TestBed.inject(FlagApi);
+      const responseWithoutEnvValues = {
+        id: flag.id,
+        updatedAt: new Date().toISOString(),
+      };
+      jest
+        .spyOn(flagApi, 'updateEnvironmentValue')
+        .mockReturnValueOnce(of(responseWithoutEnvValues as unknown as Flag));
+
+      await store.toggleFlagInEnvironment(flag.id, 'env_development', !originalEnabled);
+
+      const updated = store.getFlagById(flag.id);
+      expect(updated?.environmentValues['env_development'].enabled).toBe(!originalEnabled);
+      expect(updated?.environmentValues['env_staging']).toBeDefined();
+    });
+
     it('should fall back to default value when toggling in new environment', async () => {
       await environmentStore.addEnvironment({
         key: 'sandbox',
