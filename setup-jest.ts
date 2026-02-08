@@ -1,6 +1,6 @@
 /**
  * Jest Setup File
- * 
+ *
  * This file is run before each test file.
  */
 
@@ -9,10 +9,17 @@ import '@testing-library/jest-dom';
 
 setupZoneTestEnv();
 
+// Clear localStorage between tests to prevent state leaks
+beforeEach(() => {
+  if (typeof localStorage !== 'undefined') {
+    localStorage.clear();
+  }
+});
+
 // Mock window.matchMedia
 Object.defineProperty(window, 'matchMedia', {
   writable: true,
-  value: jest.fn().mockImplementation(query => ({
+  value: jest.fn().mockImplementation((query) => ({
     matches: false,
     media: query,
     onchange: null,
@@ -53,23 +60,8 @@ const originalWarn = console.warn;
 console.warn = (...args: unknown[]) => {
   // Filter out known Angular warnings that don't affect tests
   const message = args[0];
-  if (
-    typeof message === 'string' &&
-    (message.includes('NG0') || message.includes('Angular'))
-  ) {
+  if (typeof message === 'string' && (message.includes('NG0') || message.includes('Angular'))) {
     return;
   }
   originalWarn.apply(console, args);
 };
-
-// Global test utilities
-declare global {
-  namespace NodeJS {
-    interface Global {
-      ngJest: {
-        skipNgcc: boolean;
-        tsconfig: string;
-      };
-    }
-  }
-}

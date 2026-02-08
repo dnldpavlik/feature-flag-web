@@ -13,6 +13,7 @@ export class ProjectStore extends BaseCrudStore<Project> {
   private readonly toast = inject(ToastService);
   private readonly logAudit = inject(AuditLogger).forResource('project');
 
+  private static readonly STORAGE_KEY = 'selected-project-id';
   private readonly _selectedProjectId = signal<string>('');
 
   constructor() {
@@ -36,10 +37,12 @@ export class ProjectStore extends BaseCrudStore<Project> {
   async loadProjects(): Promise<void> {
     await this.loadFromApi(this.api.getAll());
 
-    // Auto-select the default project if nothing is selected
+    // Restore selection from localStorage, or fall back to default project
     if (!this._selectedProjectId() && this._items().length > 0) {
-      const defaultProject = this._items().find((p) => p.isDefault) ?? this._items()[0];
-      this._selectedProjectId.set(defaultProject.id);
+      const saved = localStorage.getItem(ProjectStore.STORAGE_KEY);
+      const savedProject = saved ? this._items().find((p) => p.id === saved) : undefined;
+      const selected = savedProject ?? this._items().find((p) => p.isDefault) ?? this._items()[0];
+      this._selectedProjectId.set(selected.id);
     }
   }
 
@@ -63,6 +66,7 @@ export class ProjectStore extends BaseCrudStore<Project> {
   /** Select a project as the current context */
   selectProject(projectId: string): void {
     this._selectedProjectId.set(projectId);
+    localStorage.setItem(ProjectStore.STORAGE_KEY, projectId);
   }
 
   /** Set a project as the default via API */

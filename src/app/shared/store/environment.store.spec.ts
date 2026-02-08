@@ -86,6 +86,45 @@ describe('EnvironmentStore', () => {
       store.selectEnvironment('env_production');
       expect(store.selectedEnvironmentId()).toBe('env_production');
     });
+
+    it('should persist selection to localStorage', () => {
+      store.selectEnvironment('env_production');
+      expect(localStorage.getItem('selected-environment-id')).toBe('env_production');
+    });
+  });
+
+  describe('selection persistence', () => {
+    let freshStore: EnvironmentStore;
+
+    beforeEach(() => {
+      TestBed.resetTestingModule();
+      TestBed.configureTestingModule({
+        providers: [EnvironmentStore, AuditStore, ...MOCK_API_PROVIDERS],
+      });
+      freshStore = injectService(EnvironmentStore);
+    });
+
+    it('should restore selection from localStorage on load', async () => {
+      localStorage.setItem('selected-environment-id', 'env_production');
+
+      await freshStore.loadEnvironments();
+
+      expect(freshStore.selectedEnvironmentId()).toBe('env_production');
+    });
+
+    it('should fall back to default when localStorage has invalid ID', async () => {
+      localStorage.setItem('selected-environment-id', 'env_nonexistent');
+
+      await freshStore.loadEnvironments();
+
+      expect(freshStore.selectedEnvironmentId()).toBe('env_development');
+    });
+
+    it('should fall back to default when localStorage is empty', async () => {
+      await freshStore.loadEnvironments();
+
+      expect(freshStore.selectedEnvironmentId()).toBe('env_development');
+    });
   });
 
   describe('setDefaultEnvironment', () => {

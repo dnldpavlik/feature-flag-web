@@ -166,6 +166,26 @@ describe('Breadcrumb', () => {
       expect(spy).toHaveBeenCalledWith({ key: 'project', value: 'proj_growth' });
     });
 
+    it('should reflect selectedId in the select element value', () => {
+      fixture.componentRef.setInput('items', [
+        {
+          label: 'Project',
+          key: 'project',
+          selectOptions: [
+            { id: 'proj_default', label: 'Default Project' },
+            { id: 'proj_growth', label: 'Growth Experiments' },
+          ],
+          selectedId: 'proj_growth',
+        },
+      ]);
+      fixture.detectChanges();
+
+      const select: HTMLSelectElement = fixture.debugElement.query(
+        By.css('.breadcrumb__select'),
+      ).nativeElement;
+      expect(select.value).toBe('proj_growth');
+    });
+
     it('should fall back to label when key is missing', () => {
       const spy = jest.fn();
       component.selectionChange.subscribe(spy);

@@ -16,6 +16,7 @@ export class EnvironmentStore extends BaseCrudStore<Environment> {
   private readonly api = inject(EnvironmentApi);
   private readonly toast = inject(ToastService);
   private readonly logAudit = inject(AuditLogger).forResource('environment');
+  private static readonly STORAGE_KEY = 'selected-environment-id';
   private readonly _selectedEnvironmentId = signal<string>('');
 
   constructor() {
@@ -45,16 +46,19 @@ export class EnvironmentStore extends BaseCrudStore<Environment> {
   async loadEnvironments(): Promise<void> {
     await this.loadFromApi(this.api.getAll());
 
-    // Auto-select default environment if none selected
+    // Restore selection from localStorage, or fall back to default environment
     if (!this._selectedEnvironmentId() && this._items().length > 0) {
-      const defaultEnv = this._items().find((e) => e.isDefault) ?? this._items()[0];
-      this._selectedEnvironmentId.set(defaultEnv.id);
+      const saved = localStorage.getItem(EnvironmentStore.STORAGE_KEY);
+      const savedEnv = saved ? this._items().find((e) => e.id === saved) : undefined;
+      const selected = savedEnv ?? this._items().find((e) => e.isDefault) ?? this._items()[0];
+      this._selectedEnvironmentId.set(selected.id);
     }
   }
 
   /** Select an environment as the current context */
   selectEnvironment(environmentId: string): void {
     this._selectedEnvironmentId.set(environmentId);
+    localStorage.setItem(EnvironmentStore.STORAGE_KEY, environmentId);
   }
 
   /** Set an environment as the default via API */

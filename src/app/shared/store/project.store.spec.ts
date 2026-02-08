@@ -127,6 +127,37 @@ describe('ProjectStore', () => {
       store.selectProject('proj_default');
       expect(store.selectedProjectId()).toBe('proj_default');
     });
+
+    it('should persist selection to localStorage', () => {
+      store.selectProject('proj_growth');
+      expect(localStorage.getItem('selected-project-id')).toBe('proj_growth');
+    });
+  });
+
+  describe('selection persistence', () => {
+    it('should restore selection from localStorage on load', async () => {
+      localStorage.setItem('selected-project-id', 'proj_growth');
+
+      await store.loadProjects();
+
+      expect(store.selectedProjectId()).toBe('proj_growth');
+    });
+
+    it('should fall back to default when localStorage has invalid project ID', async () => {
+      localStorage.setItem('selected-project-id', 'proj_nonexistent');
+
+      await store.loadProjects();
+
+      expect(store.selectedProjectId()).toBe('proj_default');
+    });
+
+    it('should fall back to default when localStorage is empty', async () => {
+      localStorage.removeItem('selected-project-id');
+
+      await store.loadProjects();
+
+      expect(store.selectedProjectId()).toBe('proj_default');
+    });
   });
 
   describe('addProject', () => {

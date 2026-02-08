@@ -9,7 +9,9 @@
           [attr.aria-label]="item.label"
         >
           @for (option of item.selectOptions; track option.id) {
-            <option [value]="option.id">{{ option.label }}</option>
+            <option [value]="option.id" [selected]="option.id === item.selectedId">
+              {{ option.label }}
+            </option>
           }
         </select>
       } @else if (item.route && !last) {
