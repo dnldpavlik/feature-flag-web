@@ -188,9 +188,9 @@ test.describe('Flag Regression Tests', () => {
       await flagList.goto();
 
       await flagList.searchFlags('xyznonexistentflag123');
-      await page.waitForTimeout(300);
 
-      // Should show empty state or zero results
+      // Should show empty state (auto-retries until search filter applies)
+      await expect(page.locator('app-empty-state')).toBeVisible();
       const count = await flagList.getFlagCount();
       expect(count).toBe(0);
     });

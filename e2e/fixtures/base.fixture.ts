@@ -38,6 +38,9 @@ interface TestFixtures {
   elementExists: (selector: string) => Promise<boolean>;
 }
 
+/** Default API key for local development (from backend bootstrap seed) */
+const DEFAULT_API_KEY = 'sk_bootstrap_admin_key_change_me';
+
 /**
  * Extended test with custom fixtures
  *
@@ -52,6 +55,15 @@ interface TestFixtures {
  * ```
  */
 export const test = base.extend<TestFixtures>({
+  // Set API key in localStorage before any page loads
+  page: async ({ page }, use) => {
+    const apiKey = process.env['E2E_API_KEY'] || DEFAULT_API_KEY;
+    await page.addInitScript((key) => {
+      localStorage.setItem('ff_api_key', key);
+    }, apiKey);
+    await use(page);
+  },
+
   // eslint-disable-next-line no-empty-pattern
   environment: async ({}, use) => {
     await use(getEnvironment());
