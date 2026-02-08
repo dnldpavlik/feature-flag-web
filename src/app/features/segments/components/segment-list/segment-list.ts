@@ -38,7 +38,7 @@ export class SegmentListComponent {
   private readonly fb = inject(NonNullableFormBuilder);
 
   protected readonly segments = this.segmentStore.segments;
-  protected readonly searchQuery = computed(() => this.searchStore.query().trim().toLowerCase());
+  protected readonly searchQuery = this.searchStore.normalizedQuery;
   protected readonly filteredSegments = computed(() => {
     const query = this.searchQuery();
     return this.segments().filter(textFilter(['name', 'key', 'description'], query));

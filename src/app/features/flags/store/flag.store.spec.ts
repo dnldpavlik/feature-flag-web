@@ -972,7 +972,7 @@ describe('FlagStore', () => {
 
       await store.loadFlags();
 
-      expect(store.error()).toBe('Failed to load flags');
+      expect(store.error()).toBe('Failed to load data');
     });
 
     it('should show toast when addFlag fails', async () => {

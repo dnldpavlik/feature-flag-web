@@ -28,15 +28,15 @@ export class ApiKeysTabComponent {
   protected readonly availableScopes = API_KEY_SCOPE_OPTIONS;
 
   // Create form state
-  readonly showCreateForm = signal(false);
+  protected readonly showCreateForm = signal(false);
   protected readonly newKeyName = signal('');
   protected readonly selectedScopes = signal<ApiKeyScope[]>([]);
 
   // Secret display state
-  readonly createdSecret = signal<string | null>(null);
+  protected readonly createdSecret = signal<string | null>(null);
 
   // Revoke confirmation state
-  readonly keyToRevoke = signal<string | null>(null);
+  protected readonly keyToRevoke = signal<string | null>(null);
 
   protected readonly canSubmit = computed(
     () => this.newKeyName().trim().length > 0 && this.selectedScopes().length > 0,

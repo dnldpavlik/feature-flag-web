@@ -60,8 +60,8 @@ export interface ProjectPreferences {
   notifications: NotificationPreferences;
 }
 
-/** Theme mode options */
-export type ThemeMode = 'light' | 'dark' | 'system';
+export type { ThemeMode } from '@/app/core/theme/theme.service';
+import type { ThemeMode } from '@/app/core/theme/theme.service';
 
 /** Theme and appearance preferences */
 export interface ThemePreferences {

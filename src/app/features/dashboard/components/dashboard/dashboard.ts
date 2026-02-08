@@ -53,7 +53,7 @@ export class DashboardComponent {
   protected readonly totalEnvironments = computed(
     () => this.environmentStore.environments().length,
   );
-  protected readonly searchQuery = computed(() => this.searchStore.query().trim().toLowerCase());
+  protected readonly searchQuery = this.searchStore.normalizedQuery;
   protected readonly recentFlags = computed<RecentFlag[]>(() => {
     const envId = this.environmentStore.selectedEnvironmentId();
     return [...this.flagStore.flagsInSelectedProject()]

@@ -42,7 +42,7 @@ export class AuditListComponent {
   protected readonly actionFilter = signal<ActionFilter>('all');
   protected readonly resourceFilter = signal<ResourceFilter>('all');
 
-  protected readonly searchQuery = computed(() => this.searchStore.query().trim().toLowerCase());
+  protected readonly searchQuery = this.searchStore.normalizedQuery;
 
   protected readonly filteredEntries = computed<AuditEntryFormatted[]>(() => {
     const action = this.actionFilter();
@@ -68,11 +68,11 @@ export class AuditListComponent {
   protected readonly filteredCount = computed(() => this.filteredEntries().length);
   protected readonly totalCount = computed(() => this.auditStore.entries().length);
 
-  onActionChange(value: string): void {
+  protected onActionChange(value: string): void {
     this.actionFilter.set(value as ActionFilter);
   }
 
-  onResourceChange(value: string): void {
+  protected onResourceChange(value: string): void {
     this.resourceFilter.set(value as ResourceFilter);
   }
 }

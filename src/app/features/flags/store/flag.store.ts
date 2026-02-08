@@ -1,6 +1,7 @@
-import { Injectable, computed, inject, signal } from '@angular/core';
+import { Injectable, computed, inject } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 
+import { BaseCrudStore } from '@/app/shared/store/base-crud.store';
 import { EnvironmentStore } from '@/app/shared/store/environment.store';
 import { ProjectStore } from '@/app/shared/store/project.store';
 import { ToastService } from '@/app/shared/ui/toast/toast.service';
@@ -19,28 +20,26 @@ import {
 } from '@/app/features/flags/utils/flag-value.utils';
 
 @Injectable({ providedIn: 'root' })
-export class FlagStore {
+export class FlagStore extends BaseCrudStore<Flag> {
   private readonly api = inject(FlagApi);
   private readonly toast = inject(ToastService);
   private readonly environmentStore = inject(EnvironmentStore);
   private readonly projectStore = inject(ProjectStore);
   private readonly logAudit = inject(AuditLogger).forResource('flag');
 
-  private readonly _flags = signal<Flag[]>([]);
-  private readonly _loading = signal(false);
-  private readonly _error = signal<string | null>(null);
+  constructor() {
+    super({ idPrefix: 'flag', initialData: [], allowDeleteLast: false });
+  }
 
-  readonly loading = this._loading.asReadonly();
-  readonly error = this._error.asReadonly();
-
-  readonly flags = this._flags.asReadonly();
-  readonly totalCount = computed(() => this._flags().length);
+  /** Alias for items to maintain backward compatibility */
+  readonly flags = this.items;
+  readonly totalCount = this.count;
 
   readonly currentEnvironmentId = computed(() => this.environmentStore.selectedEnvironmentId());
 
   readonly flagsInSelectedProject = computed(() => {
     const projectId = this.projectStore.selectedProjectId();
-    return this._flags().filter((flag) => flag.projectId === projectId);
+    return this._items().filter((flag) => flag.projectId === projectId);
   });
 
   readonly enabledFlagsInCurrentEnvironment = computed(() =>
@@ -51,17 +50,7 @@ export class FlagStore {
 
   /** Load flags from API */
   async loadFlags(): Promise<void> {
-    this._loading.set(true);
-    this._error.set(null);
-    try {
-      const flags = await firstValueFrom(this.api.getAll());
-      this._flags.set(flags);
-    } catch (e) {
-      const message = e instanceof Error ? e.message : 'Failed to load flags';
-      this._error.set(message);
-    } finally {
-      this._loading.set(false);
-    }
+    await this.loadFromApi(this.api.getAll());
   }
 
   /** Add a new flag via API */
@@ -71,11 +60,11 @@ export class FlagStore {
   ): Promise<void> {
     try {
       const created = await firstValueFrom(this.api.create(input));
-      this._flags.update((flags) => [created, ...flags]);
+      this._items.update((flags) => [created, ...flags]);
 
       // Enable flag in specified environments
       const hasToggles = enabledEnvironments && Object.values(enabledEnvironments).some(Boolean);
-      if (enabledEnvironments) {
+      if (hasToggles) {
         for (const [envId, enabled] of Object.entries(enabledEnvironments)) {
           if (enabled) {
             await this.toggleFlagInEnvironment(created.id, envId, true);
@@ -102,13 +91,13 @@ export class FlagStore {
 
   /** Delete a flag via API */
   async deleteFlag(flagId: string): Promise<void> {
-    if (this._flags().length <= 1) return;
+    if (this._items().length <= 1) return;
     const flag = this.getFlagById(flagId);
     if (!flag) return;
 
     try {
       await firstValueFrom(this.api.delete(flagId));
-      this._flags.update((flags) => flags.filter((f) => f.id !== flagId));
+      this.deleteItem(flagId);
       this.toast.success('Flag deleted');
       this.logAudit({
         action: 'deleted',
@@ -122,12 +111,12 @@ export class FlagStore {
   }
 
   getFlagById(id: string): Flag | undefined {
-    return this._flags().find((f) => f.id === id);
+    return this.getById(id);
   }
 
   /** Get all flags for a specific project */
   getFlagsByProjectId(projectId: string): Flag[] {
-    return this._flags().filter((f) => f.projectId === projectId);
+    return this._items().filter((f) => f.projectId === projectId);
   }
 
   /** Delete all flags for a specific project (for cascade delete) */
@@ -136,7 +125,7 @@ export class FlagStore {
     for (const flag of flagsToDelete) {
       try {
         await firstValueFrom(this.api.delete(flag.id));
-        this._flags.update((flags) => flags.filter((f) => f.id !== flag.id));
+        this._items.update((flags) => flags.filter((f) => f.id !== flag.id));
         this.logAudit({
           action: 'deleted',
           resourceId: flag.id,
@@ -158,7 +147,7 @@ export class FlagStore {
     try {
       const existing = this.getFlagById(flagId);
       const updated = await firstValueFrom(this.api.update(flagId, updates));
-      this._flags.update((flags) => flags.map((flag) => (flag.id === flagId ? updated : flag)));
+      this._items.update((flags) => flags.map((flag) => (flag.id === flagId ? updated : flag)));
       this.toast.success('Flag updated');
       const changedFields = Object.keys(updates).join(', ');
       this.logAudit({
@@ -181,7 +170,7 @@ export class FlagStore {
           enabled: input.enabled,
         }),
       );
-      this._flags.update((flags) =>
+      this._items.update((flags) =>
         flags.map((flag) => {
           if (flag.id !== input.flagId) return flag;
           const merged = this.mergeFlag(flag, updated);
@@ -214,7 +203,7 @@ export class FlagStore {
       const updated = await firstValueFrom(
         this.api.updateEnvironmentValue(flagId, environmentId, { enabled }),
       );
-      this._flags.update((flags) =>
+      this._items.update((flags) =>
         flags.map((flag) => {
           if (flag.id !== flagId) return flag;
           const merged = this.mergeFlag(flag, updated);

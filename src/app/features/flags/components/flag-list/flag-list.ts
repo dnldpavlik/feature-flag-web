@@ -58,7 +58,7 @@ export class FlagListComponent {
 
   protected readonly environments = this.environmentStore.sortedEnvironments;
   protected readonly selectedEnvironment = this.environmentStore.selectedEnvironment;
-  protected readonly searchQuery = computed(() => this.searchStore.query().trim().toLowerCase());
+  protected readonly searchQuery = this.searchStore.normalizedQuery;
 
   protected readonly environmentOptions = computed<SelectOption[]>(() =>
     this.environments().map((env) => ({ value: env.id, label: env.name })),

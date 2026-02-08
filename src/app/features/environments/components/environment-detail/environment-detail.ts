@@ -9,7 +9,7 @@ import { CardComponent } from '@/app/shared/ui/card/card';
 import { EmptyStateComponent } from '@/app/shared/ui/empty-state/empty-state';
 import { EnvironmentStore } from '@/app/shared/store/environment.store';
 import { FlagStore } from '@/app/features/flags/store/flag.store';
-import { UpdateEnvironmentInput } from '@/app/features/flags/models/environment.model';
+import { UpdateEnvironmentInput } from '@/app/features/environments/models/environment.model';
 import {
   getEffectiveValue,
   isEnabledInEnvironment,

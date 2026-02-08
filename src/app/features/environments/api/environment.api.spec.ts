@@ -4,7 +4,10 @@ import { TestBed } from '@angular/core/testing';
 
 import { API_BASE_URL } from '@/app/core/api';
 import { EnvironmentApi } from './environment.api';
-import { Environment, CreateEnvironmentInput } from '@/app/features/flags/models/environment.model';
+import {
+  Environment,
+  CreateEnvironmentInput,
+} from '@/app/features/environments/models/environment.model';
 
 describe('EnvironmentApi', () => {
   let api: EnvironmentApi;

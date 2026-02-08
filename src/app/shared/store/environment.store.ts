@@ -9,7 +9,7 @@ import {
   CreateEnvironmentInput,
   Environment,
   UpdateEnvironmentInput,
-} from '@/app/features/flags/models/environment.model';
+} from '@/app/features/environments/models/environment.model';
 
 @Injectable({ providedIn: 'root' })
 export class EnvironmentStore extends BaseCrudStore<Environment> {

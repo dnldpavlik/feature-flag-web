@@ -29,7 +29,7 @@ type FlagDetailInternals = FlagDetailComponent & {
 };
 
 type FlagStoreInternals = FlagStore & {
-  _flags: { update: (updater: (flags: Flag[]) => Flag[]) => void };
+  _items: { update: (updater: (flags: Flag[]) => Flag[]) => void };
 };
 
 describe('FlagDetail', () => {
@@ -331,7 +331,7 @@ describe('FlagDetail', () => {
   it('should compute environment rows with fallback values', async () => {
     await build('flag_new_checkout');
 
-    (store as FlagStoreInternals)._flags.update((flags: Flag[]) =>
+    (store as FlagStoreInternals)._items.update((flags: Flag[]) =>
       flags.map((flag) => {
         if (flag.id !== 'flag_new_checkout') return flag;
         const rest = { ...flag.environmentValues };

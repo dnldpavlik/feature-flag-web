@@ -1,12 +1,5 @@
 import { DatePipe } from '@angular/common';
-import {
-  ChangeDetectionStrategy,
-  Component,
-  computed,
-  inject,
-  OnInit,
-  signal,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { NonNullableFormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 
@@ -47,7 +40,7 @@ import { textFilter } from '@/app/shared/utils/filter.utils';
   styleUrl: './project-list.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ProjectListComponent implements OnInit {
+export class ProjectListComponent {
   private readonly projectStore = inject(ProjectStore);
   private readonly searchStore = inject(SearchStore);
   private readonly flagStore = inject(FlagStore);
@@ -57,31 +50,27 @@ export class ProjectListComponent implements OnInit {
   protected readonly loading = this.projectStore.loading;
   protected readonly error = this.projectStore.error;
   protected readonly selectedProjectId = this.projectStore.selectedProjectId;
-  protected readonly searchQuery = computed(() => this.searchStore.query().trim().toLowerCase());
+  protected readonly searchQuery = this.searchStore.normalizedQuery;
   protected readonly filteredProjects = computed(() => {
     const query = this.searchQuery();
     return this.projects().filter(textFilter(['name', 'key', 'description'], query));
   });
 
   // Delete confirmation state
-  readonly projectToDelete = signal<string | null>(null);
-  readonly deleteConfirmationFlagCount = signal(0);
+  protected readonly projectToDelete = signal<string | null>(null);
+  protected readonly deleteConfirmationFlagCount = signal(0);
 
-  readonly form = this.fb.group({
+  protected readonly form = this.fb.group({
     name: [''],
     key: [''],
     description: [''],
   });
 
-  ngOnInit(): void {
-    void this.projectStore.loadProjects();
-  }
-
   protected canAdd(): boolean {
     return hasRequiredFields(this.form, ['name', 'key']);
   }
 
-  addProject(): void {
+  protected addProject(): void {
     if (!this.canAdd()) return;
 
     const { name, key, description } = getTrimmedValues(this.form, ['name', 'key', 'description']);
@@ -89,34 +78,34 @@ export class ProjectListComponent implements OnInit {
     this.form.reset();
   }
 
-  selectProject(projectId: string): void {
+  protected selectProject(projectId: string): void {
     this.projectStore.selectProject(projectId);
   }
 
-  setDefaultProject(projectId: string): void {
+  protected setDefaultProject(projectId: string): void {
     void this.projectStore.setDefaultProject(projectId);
   }
 
   /** @deprecated Use requestDeleteProject instead */
-  deleteProject(projectId: string): void {
+  protected deleteProject(projectId: string): void {
     this.requestDeleteProject(projectId);
   }
 
   /** Request to delete a project - shows confirmation dialog */
-  requestDeleteProject(projectId: string): void {
+  protected requestDeleteProject(projectId: string): void {
     const flags = this.flagStore.getFlagsByProjectId(projectId);
     this.projectToDelete.set(projectId);
     this.deleteConfirmationFlagCount.set(flags.length);
   }
 
   /** Cancel the delete confirmation */
-  cancelDelete(): void {
+  protected cancelDelete(): void {
     this.projectToDelete.set(null);
     this.deleteConfirmationFlagCount.set(0);
   }
 
   /** Confirm and execute the delete */
-  async confirmDelete(): Promise<void> {
+  protected async confirmDelete(): Promise<void> {
     const projectId = this.projectToDelete();
     if (!projectId) return;
 

@@ -43,13 +43,13 @@ export class EnvironmentListComponent {
 
   protected readonly environments = this.environmentStore.sortedEnvironments;
   protected readonly selectedEnvironmentId = this.environmentStore.selectedEnvironmentId;
-  protected readonly searchQuery = computed(() => this.searchStore.query().trim().toLowerCase());
+  protected readonly searchQuery = this.searchStore.normalizedQuery;
   protected readonly filteredEnvironments = computed(() => {
     const query = this.searchQuery();
     return this.environments().filter(textFilter(['name', 'key'], query));
   });
 
-  readonly form = this.fb.group({
+  protected readonly form = this.fb.group({
     name: [''],
     key: [''],
     color: ['#3b82f6'],
@@ -59,7 +59,7 @@ export class EnvironmentListComponent {
     return hasRequiredFields(this.form, ['name', 'key']);
   }
 
-  async addEnvironment(): Promise<void> {
+  protected async addEnvironment(): Promise<void> {
     if (!this.canAdd()) return;
 
     const { name, key } = getTrimmedValues(this.form, ['name', 'key']);
@@ -70,12 +70,12 @@ export class EnvironmentListComponent {
     this.form.reset({ name: '', key: '', color: '#3b82f6' });
   }
 
-  selectEnvironment(envId: string): void {
+  protected selectEnvironment(envId: string): void {
     this.environmentStore.selectEnvironment(envId);
     void this.router.navigate(['/environments', envId]);
   }
 
-  setDefaultEnvironment(envId: string): void {
+  protected setDefaultEnvironment(envId: string): void {
     void this.environmentStore.setDefaultEnvironment(envId);
   }
 }

@@ -6,7 +6,7 @@ import {
   Environment,
   CreateEnvironmentInput,
   UpdateEnvironmentInput,
-} from '@/app/features/flags/models/environment.model';
+} from '@/app/features/environments/models/environment.model';
 
 @Injectable({ providedIn: 'root' })
 export class EnvironmentApi extends CrudApi<

@@ -57,6 +57,27 @@ describe('SearchStore', () => {
     });
   });
 
+  describe('normalizedQuery', () => {
+    it('should return empty string when query is empty', () => {
+      expect(store.normalizedQuery()).toBe('');
+    });
+
+    it('should trim and lowercase the query', () => {
+      store.setQuery('  Hello World  ');
+      expect(store.normalizedQuery()).toBe('hello world');
+    });
+
+    it('should lowercase the query', () => {
+      store.setQuery('FLAGS');
+      expect(store.normalizedQuery()).toBe('flags');
+    });
+
+    it('should trim whitespace from the query', () => {
+      store.setQuery('  spaced  ');
+      expect(store.normalizedQuery()).toBe('spaced');
+    });
+  });
+
   describe('clear', () => {
     it('should reset query to empty string', () => {
       store.setQuery('projects');
