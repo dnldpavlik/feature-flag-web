@@ -225,6 +225,39 @@ describe('FlagStore', () => {
       expect(updated?.tags).toEqual(['alpha', 'beta']);
       expect(updated?.defaultValue).toBe(false);
     });
+
+    it('should fall back to existing name when update response lacks name', async () => {
+      const flag = store.flags()[0];
+      const flagApi = TestBed.inject(FlagApi);
+      jest.spyOn(auditStore, 'logAction');
+      jest
+        .spyOn(flagApi, 'update')
+        .mockReturnValueOnce(of({ ...flag, name: '' } as unknown as Flag));
+
+      await store.updateFlagDetails(flag.id, { description: 'Updated' });
+
+      expect(auditStore.logAction).toHaveBeenCalledWith(
+        expect.objectContaining({ resourceName: flag.name }),
+      );
+    });
+
+    it('should fall back to flagId when both response and existing lack name', async () => {
+      const flag = store.flags()[0];
+      const flagApi = TestBed.inject(FlagApi);
+      jest.spyOn(auditStore, 'logAction');
+      jest
+        .spyOn(flagApi, 'update')
+        .mockReturnValueOnce(of({ ...flag, name: '' } as unknown as Flag));
+      jest
+        .spyOn(store, 'getFlagById')
+        .mockReturnValueOnce({ ...flag, name: '' } as unknown as Flag);
+
+      await store.updateFlagDetails(flag.id, { description: 'Updated' });
+
+      expect(auditStore.logAction).toHaveBeenCalledWith(
+        expect.objectContaining({ resourceName: flag.id }),
+      );
+    });
   });
 
   describe('updateEnvironmentValue', () => {
@@ -289,6 +322,29 @@ describe('FlagStore', () => {
       const updated = store.getFlagById(flag.id);
       expect(updated?.environmentValues[qaEnv!.id].value).toBe(flag.defaultValue);
       expect(updated?.environmentValues[qaEnv!.id].enabled).toBe(false);
+    });
+
+    it('should apply input when response lacks environment entry', async () => {
+      const flag = store.flags()[0];
+      const flagApi = TestBed.inject(FlagApi);
+      const responseWithoutEnvEntry = {
+        id: flag.id,
+        environmentValues: {},
+      };
+      jest
+        .spyOn(flagApi, 'updateEnvironmentValue')
+        .mockReturnValueOnce(of(responseWithoutEnvEntry as unknown as Flag));
+
+      await store.updateEnvironmentValue({
+        flagId: flag.id,
+        environmentId: 'env_new',
+        enabled: true,
+        value: 'test',
+      });
+
+      const updated = store.getFlagById(flag.id);
+      expect(updated?.environmentValues['env_new'].enabled).toBe(true);
+      expect(updated?.environmentValues['env_new'].value).toBe('test');
     });
   });
 
@@ -366,6 +422,23 @@ describe('FlagStore', () => {
       const updated = store.getFlagById(flag.id);
       expect(updated?.environmentValues['env_development'].enabled).toBe(!originalEnabled);
       expect(updated?.environmentValues['env_staging']).toBeDefined();
+    });
+
+    it('should create environment entry when toggling in environment not in response', async () => {
+      const flag = store.flags()[0];
+      const flagApi = TestBed.inject(FlagApi);
+      const responseWithoutEnv = {
+        id: flag.id,
+        environmentValues: {},
+      };
+      jest
+        .spyOn(flagApi, 'updateEnvironmentValue')
+        .mockReturnValueOnce(of(responseWithoutEnv as unknown as Flag));
+
+      await store.toggleFlagInEnvironment(flag.id, 'env_new', true);
+
+      const updated = store.getFlagById(flag.id);
+      expect(updated?.environmentValues['env_new'].enabled).toBe(true);
     });
 
     it('should fall back to default value when toggling in new environment', async () => {
