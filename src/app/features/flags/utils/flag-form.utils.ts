@@ -87,7 +87,7 @@ export function buildCreateFlagInput(params: {
   defaultValue: FlagTypeMap[FlagType];
 }): CreateFlagInput {
   const { projectId, type, key, name, description, tags, defaultValue } = params;
-  const base = { projectId, key, name, description, tags };
+  const base = { projectId, key, name, resourceName: name, description, tags };
 
   switch (type) {
     case 'boolean':

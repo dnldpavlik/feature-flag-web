@@ -63,6 +63,7 @@ describe('FlagCreate', () => {
           projectId: 'proj_default',
           key: 'new-flag',
           name: 'New Flag',
+          resourceName: 'New Flag',
           description: 'Description',
           type: 'boolean',
           defaultValue: true,

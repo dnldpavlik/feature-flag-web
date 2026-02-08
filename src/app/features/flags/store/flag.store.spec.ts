@@ -1,11 +1,12 @@
 import { TestBed } from '@angular/core/testing';
-import { throwError } from 'rxjs';
+import { of, throwError } from 'rxjs';
 
 import { EnvironmentStore } from '@/app/shared/store/environment.store';
 import { ProjectStore } from '@/app/shared/store/project.store';
 import { AuditStore } from '@/app/features/audit/store/audit.store';
 import { ToastService } from '@/app/shared/ui/toast/toast.service';
 import { FlagApi } from '@/app/features/flags/api/flag.api';
+import { Flag } from '@/app/features/flags/models/flag.model';
 import { FlagStore } from './flag.store';
 import {
   injectService,
@@ -77,6 +78,7 @@ describe('FlagStore', () => {
         projectId: 'proj_default',
         key: 'test-flag',
         name: 'Test Flag',
+        resourceName: 'Test Flag',
         description: 'A test flag',
         type: 'boolean',
         defaultValue: false,
@@ -93,6 +95,7 @@ describe('FlagStore', () => {
         projectId: 'proj_default',
         key: 'string-flag',
         name: 'String Flag',
+        resourceName: 'String Flag',
         description: 'A string flag',
         type: 'string',
         defaultValue: 'hello',
@@ -109,6 +112,7 @@ describe('FlagStore', () => {
         projectId: 'proj_default',
         key: 'number-flag',
         name: 'Number Flag',
+        resourceName: 'Number Flag',
         description: 'A number flag',
         type: 'number',
         defaultValue: 42,
@@ -125,6 +129,7 @@ describe('FlagStore', () => {
         projectId: 'proj_default',
         key: 'json-flag',
         name: 'JSON Flag',
+        resourceName: 'JSON Flag',
         description: 'A JSON flag',
         type: 'json',
         defaultValue: { key: 'value' },
@@ -141,6 +146,7 @@ describe('FlagStore', () => {
         projectId: 'proj_default',
         key: 'test-flag',
         name: 'Test Flag',
+        resourceName: 'Test Flag',
         description: 'A test flag',
         type: 'boolean',
         defaultValue: true,
@@ -160,6 +166,7 @@ describe('FlagStore', () => {
         projectId: 'proj_default',
         key: 'test-flag',
         name: 'Test Flag',
+        resourceName: 'Test Flag',
         description: 'A test flag',
         type: 'boolean',
         defaultValue: true,
@@ -175,6 +182,7 @@ describe('FlagStore', () => {
         projectId: 'proj_growth',
         key: 'growth-flag',
         name: 'Growth Flag',
+        resourceName: 'Growth Flag',
         description: 'A flag for growth project',
         type: 'boolean',
         defaultValue: false,
@@ -494,6 +502,7 @@ describe('FlagStore', () => {
         projectId: 'proj_default',
         key: 'audit-test-flag',
         name: 'Audit Test Flag',
+        resourceName: 'Audit Test Flag',
         description: 'Testing audit logging',
         type: 'boolean',
         defaultValue: false,
@@ -569,11 +578,78 @@ describe('FlagStore', () => {
       );
     });
 
+    it('should use existing flag name when toggle response lacks name', async () => {
+      const flag = store.flags()[0];
+      const flagApi = TestBed.inject(FlagApi);
+      const responseWithoutName = {
+        ...flag,
+        name: undefined,
+        environmentValues: {
+          ...flag.environmentValues,
+          env_development: {
+            ...flag.environmentValues['env_development'],
+            enabled: true,
+            updatedAt: new Date().toISOString(),
+          },
+        },
+      };
+      jest
+        .spyOn(flagApi, 'updateEnvironmentValue')
+        .mockReturnValue(of(responseWithoutName as unknown as Flag));
+
+      await store.toggleFlagInEnvironment(flag.id, 'env_development', true);
+
+      expect(auditStore.logAction).toHaveBeenCalledWith(
+        expect.objectContaining({
+          action: 'toggled',
+          resourceName: flag.name,
+        }),
+      );
+    });
+
+    it('should use input name when create response lacks name', async () => {
+      const flagApi = TestBed.inject(FlagApi);
+      jest.spyOn(flagApi, 'create').mockReturnValue(
+        of({
+          id: 'flag_no_name',
+          projectId: 'proj_default',
+          key: 'no-name',
+          name: undefined,
+          description: '',
+          type: 'boolean',
+          defaultValue: false,
+          tags: [],
+          environmentValues: {},
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        } as unknown as Flag),
+      );
+
+      await store.addFlag({
+        projectId: 'proj_default',
+        key: 'no-name',
+        name: 'Fallback Name',
+        resourceName: 'Fallback Name',
+        description: '',
+        type: 'boolean',
+        defaultValue: false,
+        tags: [],
+      });
+
+      expect(auditStore.logAction).toHaveBeenCalledWith(
+        expect.objectContaining({
+          action: 'created',
+          resourceName: 'Fallback Name',
+        }),
+      );
+    });
+
     it('should include user info in audit entry', async () => {
       await store.addFlag({
         projectId: 'proj_default',
         key: 'user-audit-flag',
         name: 'User Audit Flag',
+        resourceName: 'User Audit Flag',
         description: 'Testing user info',
         type: 'boolean',
         defaultValue: false,
@@ -657,6 +733,7 @@ describe('FlagStore', () => {
           projectId: 'proj_default',
           key: 'env-enabled-flag',
           name: 'Env Enabled Flag',
+          resourceName: 'Env Enabled Flag',
           description: 'A flag with environments enabled',
           type: 'boolean',
           defaultValue: false,
@@ -679,6 +756,7 @@ describe('FlagStore', () => {
           projectId: 'proj_default',
           key: 'no-toggle-flag',
           name: 'No Toggle Flag',
+          resourceName: 'No Toggle Flag',
           description: 'A flag with no environments enabled',
           type: 'boolean',
           defaultValue: false,
@@ -690,6 +768,46 @@ describe('FlagStore', () => {
       expect(toggleSpy).not.toHaveBeenCalled();
     });
 
+    it('should reload flags after toggling environments', async () => {
+      const loadSpy = jest.spyOn(store, 'loadFlags');
+
+      await store.addFlag(
+        {
+          projectId: 'proj_default',
+          key: 'reload-flag',
+          name: 'Reload Flag',
+          resourceName: 'Reload Flag',
+          description: 'Tests reload after env toggles',
+          type: 'boolean',
+          defaultValue: false,
+          tags: [],
+        },
+        { env_development: true },
+      );
+
+      expect(loadSpy).toHaveBeenCalled();
+    });
+
+    it('should not reload flags when no environments are toggled', async () => {
+      const loadSpy = jest.spyOn(store, 'loadFlags');
+
+      await store.addFlag(
+        {
+          projectId: 'proj_default',
+          key: 'no-reload-flag',
+          name: 'No Reload Flag',
+          resourceName: 'No Reload Flag',
+          description: 'No env toggles',
+          type: 'boolean',
+          defaultValue: false,
+          tags: [],
+        },
+        { env_development: false, env_staging: false },
+      );
+
+      expect(loadSpy).not.toHaveBeenCalled();
+    });
+
     it('should work without enabledEnvironments parameter', async () => {
       const countBefore = store.flags().length;
 
@@ -697,6 +815,7 @@ describe('FlagStore', () => {
         projectId: 'proj_default',
         key: 'no-env-flag',
         name: 'No Env Flag',
+        resourceName: 'No Env Flag',
         description: 'A flag without environment settings',
         type: 'boolean',
         defaultValue: false,
@@ -745,6 +864,7 @@ describe('FlagStore', () => {
         projectId: 'proj_default',
         key: 'fail-flag',
         name: 'Fail Flag',
+        resourceName: 'Fail Flag',
         description: 'Will fail',
         type: 'boolean',
         defaultValue: false,

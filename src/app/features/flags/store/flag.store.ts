@@ -74,6 +74,7 @@ export class FlagStore {
       this._flags.update((flags) => [created, ...flags]);
 
       // Enable flag in specified environments
+      const hasToggles = enabledEnvironments && Object.values(enabledEnvironments).some(Boolean);
       if (enabledEnvironments) {
         for (const [envId, enabled] of Object.entries(enabledEnvironments)) {
           if (enabled) {
@@ -82,11 +83,16 @@ export class FlagStore {
         }
       }
 
+      // Reload flags after toggles to get complete data from backend
+      if (hasToggles) {
+        await this.loadFlags();
+      }
+
       this.toast.success('Flag created');
       this.logAudit({
         action: 'created',
         resourceId: created.id,
-        resourceName: created.name,
+        resourceName: created.name || input.name,
         details: `Created ${created.type} flag`,
       });
     } catch {
@@ -150,6 +156,7 @@ export class FlagStore {
     updates: Partial<Pick<Flag, 'name' | 'description' | 'tags' | 'defaultValue'>>,
   ): Promise<void> {
     try {
+      const existing = this.getFlagById(flagId);
       const updated = await firstValueFrom(this.api.update(flagId, updates));
       this._flags.update((flags) => flags.map((flag) => (flag.id === flagId ? updated : flag)));
       this.toast.success('Flag updated');
@@ -157,7 +164,7 @@ export class FlagStore {
       this.logAudit({
         action: 'updated',
         resourceId: flagId,
-        resourceName: updated.name,
+        resourceName: updated.name || existing?.name || flagId,
         details: `Updated flag fields: ${changedFields}`,
       });
     } catch {
@@ -189,6 +196,7 @@ export class FlagStore {
     enabled: boolean,
   ): Promise<void> {
     try {
+      const existing = this.getFlagById(flagId);
       const updated = await firstValueFrom(
         this.api.updateEnvironmentValue(flagId, environmentId, { enabled }),
       );
@@ -198,7 +206,7 @@ export class FlagStore {
       this.logAudit({
         action: 'toggled',
         resourceId: flagId,
-        resourceName: updated.name,
+        resourceName: updated.name || existing?.name || flagId,
         details: `${state} flag in ${env?.name ?? environmentId}`,
       });
     } catch {

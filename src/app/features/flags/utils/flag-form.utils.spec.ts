@@ -71,6 +71,7 @@ describe('flag-form.utils', () => {
       projectId: 'proj_123',
       key: 'my-flag',
       name: 'My Flag',
+      resourceName: 'My Flag',
       description: 'Test description',
       tags: ['test', 'feature'],
     };

@@ -57,6 +57,7 @@ interface CreateFlagInputBase<T extends FlagType> {
   projectId: string;
   key: string;
   name: string;
+  resourceName: string;
   description: string;
   type: T;
   defaultValue: FlagTypeMap[T];

@@ -95,6 +95,7 @@ describe('FlagApi', () => {
         projectId: 'proj_default',
         key: 'dark-mode',
         name: 'Dark Mode',
+        resourceName: 'Dark Mode',
         description: 'Enables dark mode UI',
         type: 'boolean',
         defaultValue: false,
@@ -134,6 +135,96 @@ describe('FlagApi', () => {
       const req = httpTesting.expectOne(`${BASE_URL}/flags/flag_new_checkout`);
       expect(req.request.method).toBe('DELETE');
       req.flush(null);
+    });
+  });
+
+  describe('resourceName normalization', () => {
+    it('should map resourceName to name when backend omits name', () => {
+      const rawResponse = { ...mockFlag, name: undefined, resourceName: 'Backend Name' };
+
+      api.getById('flag_new_checkout').subscribe((result) => {
+        expect(result.name).toBe('Backend Name');
+      });
+
+      const req = httpTesting.expectOne(`${BASE_URL}/flags/flag_new_checkout`);
+      req.flush(rawResponse);
+    });
+
+    it('should preserve name when both name and resourceName are present', () => {
+      const rawResponse = { ...mockFlag, name: 'Frontend Name', resourceName: 'Backend Name' };
+
+      api.getById('flag_new_checkout').subscribe((result) => {
+        expect(result.name).toBe('Frontend Name');
+      });
+
+      const req = httpTesting.expectOne(`${BASE_URL}/flags/flag_new_checkout`);
+      req.flush(rawResponse);
+    });
+
+    it('should normalize flags in getAll response', () => {
+      const rawFlags = [
+        { ...mockFlag, name: undefined, resourceName: 'Flag One' },
+        { ...mockFlag, id: 'flag_two', name: undefined, resourceName: 'Flag Two' },
+      ];
+
+      api.getAll().subscribe((result) => {
+        expect(result[0].name).toBe('Flag One');
+        expect(result[1].name).toBe('Flag Two');
+      });
+
+      const req = httpTesting.expectOne(`${BASE_URL}/flags`);
+      req.flush(rawFlags);
+    });
+
+    it('should normalize flag in create response', () => {
+      const input: CreateFlagInput = {
+        projectId: 'proj_default',
+        key: 'test',
+        name: 'Test',
+        resourceName: 'Test',
+        description: '',
+        type: 'boolean',
+        defaultValue: false,
+        tags: [],
+      };
+
+      api.create(input).subscribe((result) => {
+        expect(result.name).toBe('Created Flag');
+      });
+
+      const req = httpTesting.expectOne(`${BASE_URL}/flags`);
+      req.flush({ ...mockFlag, name: undefined, resourceName: 'Created Flag' });
+    });
+
+    it('should normalize flag in update response', () => {
+      api.update('flag_new_checkout', { description: 'updated' }).subscribe((result) => {
+        expect(result.name).toBe('Updated Name');
+      });
+
+      const req = httpTesting.expectOne(`${BASE_URL}/flags/flag_new_checkout`);
+      req.flush({ ...mockFlag, name: undefined, resourceName: 'Updated Name' });
+    });
+
+    it('should normalize flag in updateEnvironmentValue response', () => {
+      api
+        .updateEnvironmentValue('flag_new_checkout', 'env_development', { enabled: true })
+        .subscribe((result) => {
+          expect(result.name).toBe('Env Updated Name');
+        });
+
+      const req = httpTesting.expectOne(
+        `${BASE_URL}/flags/flag_new_checkout/environments/env_development`,
+      );
+      req.flush({ ...mockFlag, name: undefined, resourceName: 'Env Updated Name' });
+    });
+
+    it('should normalize flag in getByKey response', () => {
+      api.getByKey('new-checkout').subscribe((result) => {
+        expect(result.name).toBe('Key Lookup Name');
+      });
+
+      const req = httpTesting.expectOne(`${BASE_URL}/flags/key/new-checkout`);
+      req.flush({ ...mockFlag, name: undefined, resourceName: 'Key Lookup Name' });
     });
   });
 

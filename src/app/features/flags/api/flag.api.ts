@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, map } from 'rxjs';
 
 import { CrudApi } from '@/app/core/api';
 import { Flag, CreateFlagInput } from '@/app/features/flags/models/flag.model';
@@ -17,12 +17,39 @@ export interface UpdateEnvironmentValueInput {
   enabled?: boolean;
 }
 
+/** Raw flag shape from the backend (uses resourceName instead of name) */
+interface RawFlag extends Omit<Flag, 'name'> {
+  resourceName: string;
+  name?: string;
+}
+
+/** Map backend resourceName to frontend name */
+function normalizeFlag(raw: RawFlag): Flag {
+  return { ...raw, name: raw.name ?? raw.resourceName };
+}
+
 @Injectable({ providedIn: 'root' })
 export class FlagApi extends CrudApi<Flag, CreateFlagInput, UpdateFlagInput> {
   protected override resourcePath = 'flags';
 
+  override getAll(): Observable<Flag[]> {
+    return super.getAll().pipe(map((flags) => (flags as unknown as RawFlag[]).map(normalizeFlag)));
+  }
+
+  override getById(id: string): Observable<Flag> {
+    return super.getById(id).pipe(map((flag) => normalizeFlag(flag as unknown as RawFlag)));
+  }
+
+  override create(input: CreateFlagInput): Observable<Flag> {
+    return super.create(input).pipe(map((flag) => normalizeFlag(flag as unknown as RawFlag)));
+  }
+
+  override update(id: string, updates: UpdateFlagInput): Observable<Flag> {
+    return super.update(id, updates).pipe(map((flag) => normalizeFlag(flag as unknown as RawFlag)));
+  }
+
   getByKey(key: string): Observable<Flag> {
-    return this.http.get<Flag>(`${this.resourceUrl}/key/${key}`);
+    return this.http.get<RawFlag>(`${this.resourceUrl}/key/${key}`).pipe(map(normalizeFlag));
   }
 
   updateEnvironmentValue(
@@ -30,9 +57,8 @@ export class FlagApi extends CrudApi<Flag, CreateFlagInput, UpdateFlagInput> {
     environmentId: string,
     updates: UpdateEnvironmentValueInput,
   ): Observable<Flag> {
-    return this.http.patch<Flag>(
-      `${this.resourceUrl}/${flagId}/environments/${environmentId}`,
-      updates,
-    );
+    return this.http
+      .patch<RawFlag>(`${this.resourceUrl}/${flagId}/environments/${environmentId}`, updates)
+      .pipe(map(normalizeFlag));
   }
 }
