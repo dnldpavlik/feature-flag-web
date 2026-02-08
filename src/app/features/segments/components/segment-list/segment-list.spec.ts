@@ -46,9 +46,9 @@ describe('SegmentList', () => {
   });
 
   it('should add a segment', async () => {
-    component.name = 'VIP Customers';
-    component.key = 'vip-customers';
-    component.description = 'High-value customers.';
+    component.form.controls.name.setValue('VIP Customers');
+    component.form.controls.key.setValue('vip-customers');
+    component.form.controls.description.setValue('High-value customers.');
     component.addSegment();
     await fixture.whenStable();
     fixture.detectChanges();
@@ -59,8 +59,8 @@ describe('SegmentList', () => {
 
   it('should not add a segment when required fields are missing', async () => {
     const initialCount = store.segments().length;
-    component.name = '';
-    component.key = '';
+    component.form.controls.name.setValue('');
+    component.form.controls.key.setValue('');
     component.addSegment();
     await fixture.whenStable();
     expect(store.segments().length).toBe(initialCount);
@@ -79,23 +79,6 @@ describe('SegmentList', () => {
 
     expect(getRowCount(fixture)).toBe(0);
     expectEmptyState(fixture);
-  });
-
-  describe('form field accessors', () => {
-    it('should get and set name field', () => {
-      component.name = 'Test Segment';
-      expect(component.name).toBe('Test Segment');
-    });
-
-    it('should get and set key field', () => {
-      component.key = 'test-key';
-      expect(component.key).toBe('test-key');
-    });
-
-    it('should get and set description field', () => {
-      component.description = 'Test description';
-      expect(component.description).toBe('Test description');
-    });
   });
 
   describe('segment name links', () => {

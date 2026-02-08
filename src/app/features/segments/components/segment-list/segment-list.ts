@@ -50,28 +50,6 @@ export class SegmentListComponent {
     description: [''],
   });
 
-  // Backward compatibility getters/setters for tests
-  get name(): string {
-    return this.form.controls.name.value;
-  }
-  set name(value: string) {
-    this.form.controls.name.setValue(value);
-  }
-
-  get key(): string {
-    return this.form.controls.key.value;
-  }
-  set key(value: string) {
-    this.form.controls.key.setValue(value);
-  }
-
-  get description(): string {
-    return this.form.controls.description.value;
-  }
-  set description(value: string) {
-    this.form.controls.description.setValue(value);
-  }
-
   protected canAdd(): boolean {
     const { name, key } = this.form.getRawValue();
     return name.trim().length > 0 && key.trim().length > 0;

@@ -24,7 +24,6 @@ import { FlagType } from '@/app/features/flags/models/flag.model';
  */
 @Component({
   selector: 'app-flag-value-input',
-  standalone: true,
   imports: [FormFieldComponent, ReactiveFormsModule],
   template: `
     @switch (type()) {
