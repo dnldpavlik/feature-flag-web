@@ -4,6 +4,18 @@
   gap: 1.5rem;
 }
 
+.audit-page__toolbar-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.audit-page__count {
+  font-size: 0.8125rem;
+  flex-shrink: 0;
+}
+
 .audit-cell {
   display: flex;
   flex-direction: column;
@@ -36,4 +48,3 @@
 .audit-cell--details {
   font-size: 0.8125rem;
 }
-

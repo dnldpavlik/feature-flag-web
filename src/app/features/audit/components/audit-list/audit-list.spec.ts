@@ -48,7 +48,7 @@ describe('AuditList', () => {
   });
 
   it('should display entry count', () => {
-    const countEl = query(fixture, '.toolbar__count');
+    const countEl = query(fixture, '.audit-page__count');
     expect(countEl).toBeTruthy();
     expect(countEl?.nativeElement.textContent).toContain(auditStore.entries().length.toString());
   });

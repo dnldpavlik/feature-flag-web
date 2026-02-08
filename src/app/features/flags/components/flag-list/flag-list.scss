@@ -4,6 +4,24 @@
   gap: 1.5rem;
 }
 
+.flags-page__toolbar-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.flags-page__meta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-shrink: 0;
+}
+
+.flags-page__count {
+  font-size: 0.8125rem;
+}
+
 .flags-page__actions {
   display: flex;
   gap: 0.75rem;
@@ -45,4 +63,3 @@
   flex-flow: row wrap;
   gap: 0.4rem;
 }
-

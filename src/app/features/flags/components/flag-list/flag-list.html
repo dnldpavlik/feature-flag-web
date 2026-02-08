@@ -4,37 +4,39 @@
     description="Ship safely with targeted rollouts and instant kill switches."
   />
 
-  <app-toolbar>
-    <ng-container toolbar-filters>
-      <app-labeled-select
-        label="Environment"
-        [options]="environmentOptions()"
-        [value]="selectedEnvironment()?.id ?? ''"
-        minWidth="160px"
-        (valueChange)="onEnvironmentChange($event)"
-      />
-      <app-labeled-select
-        label="Status"
-        [options]="statusOptions"
-        [value]="statusFilter()"
-        minWidth="120px"
-        (valueChange)="onStatusChange($event)"
-      />
-      <app-labeled-select
-        label="Type"
-        [options]="typeOptions"
-        [value]="typeFilter()"
-        minWidth="120px"
-        (valueChange)="onTypeChange($event)"
-      />
-    </ng-container>
-    <ng-container toolbar-meta>
-      <span class="toolbar__count text-muted">
+  <div class="flags-page__toolbar-row">
+    <app-toolbar>
+      <ng-container toolbar-filters>
+        <app-labeled-select
+          label="Environment"
+          [options]="environmentOptions()"
+          [value]="selectedEnvironment()?.id ?? ''"
+          minWidth="160px"
+          (valueChange)="onEnvironmentChange($event)"
+        />
+        <app-labeled-select
+          label="Status"
+          [options]="statusOptions"
+          [value]="statusFilter()"
+          minWidth="120px"
+          (valueChange)="onStatusChange($event)"
+        />
+        <app-labeled-select
+          label="Type"
+          [options]="typeOptions"
+          [value]="typeFilter()"
+          minWidth="120px"
+          (valueChange)="onTypeChange($event)"
+        />
+      </ng-container>
+    </app-toolbar>
+    <div class="flags-page__meta">
+      <span class="flags-page__count text-muted">
         {{ filteredCount() }} of {{ totalCount() }} flags
       </span>
       <app-button variant="ghost">Export</app-button>
-    </ng-container>
-  </app-toolbar>
+    </div>
+  </div>
 
   @if (filteredFlags().length === 0) {
     <app-empty-state

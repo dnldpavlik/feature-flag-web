@@ -4,27 +4,27 @@
     description="Track all changes to flags, environments, projects, and segments."
   />
 
-  <app-toolbar>
-    <ng-container toolbar-filters>
-      <app-labeled-select
-        label="Action"
-        [options]="actionOptions"
-        [value]="actionFilter()"
-        (valueChange)="onActionChange($event)"
-      />
-      <app-labeled-select
-        label="Resource"
-        [options]="resourceOptions"
-        [value]="resourceFilter()"
-        (valueChange)="onResourceChange($event)"
-      />
-    </ng-container>
-    <ng-container toolbar-meta>
-      <span class="toolbar__count text-muted">
-        {{ filteredCount() }} of {{ totalCount() }} entries
-      </span>
-    </ng-container>
-  </app-toolbar>
+  <div class="audit-page__toolbar-row">
+    <app-toolbar>
+      <ng-container toolbar-filters>
+        <app-labeled-select
+          label="Action"
+          [options]="actionOptions"
+          [value]="actionFilter()"
+          (valueChange)="onActionChange($event)"
+        />
+        <app-labeled-select
+          label="Resource"
+          [options]="resourceOptions"
+          [value]="resourceFilter()"
+          (valueChange)="onResourceChange($event)"
+        />
+      </ng-container>
+    </app-toolbar>
+    <span class="audit-page__count text-muted">
+      {{ filteredCount() }} of {{ totalCount() }} entries
+    </span>
+  </div>
 
   @if (filteredEntries().length === 0) {
     <app-empty-state
