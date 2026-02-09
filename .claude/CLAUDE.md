@@ -2,408 +2,471 @@
 
 ## Project Overview
 
-This is an Angular 21 application that serves as the web UI for a Feature Flag management system (LaunchDarkly clone). The backend API is written in Rust. This UI provides comprehensive feature flag management capabilities including creation, targeting rules (segments), environments, and a dashboard with usage statistics.
+Angular 21 web UI for a Feature Flag management system (LaunchDarkly clone). The Rust backend API exposes REST endpoints at `/api/v1`. The UI provides flag CRUD, targeting rules (segments), multi-environment management, projects, audit logging, dashboard, and user settings.
 
-## Core Development Principles
+**Tech stack:** Angular 21.1.2 | TypeScript 5.9 | RxJS 7.8 | Jest 30 | Playwright 1.58 | SCSS (BEM) | Nginx 1.27-alpine
 
-### Test-Driven Development (TDD)
+## Core Principles
 
-**This project follows strict TDD. No production code without a failing test first.**
+1. **Strict TDD** - Red-Green-Refactor. No production code without a failing test first.
+2. **SOLID** - Single responsibility, open/closed, Liskov, interface segregation, dependency inversion.
+3. **Functional Programming** - Pure functions, immutability, composition, higher-order functions.
+4. **Signals-First** - Angular Signals for all state management. No NgRx or external state libraries.
+5. **Separation of Concerns** - TypeScript (logic), HTML (structure), SCSS (styling).
 
-1. **Red**: Write a failing test that defines expected behavior
-2. **Green**: Write the minimum code to make the test pass
-3. **Refactor**: Clean up while keeping tests green
+## Architecture
 
-Testing stack:
-- **Unit tests**: Jest with Angular Testing Library
-- **Component tests**: Angular Testing Library (prefer over TestBed when possible)
-- **E2E tests**: Playwright
-- **Test coverage requirement**: Minimum 80% coverage, aim for 90%+
-
-```bash
-# Run tests in watch mode during development
-npm run test:watch
-
-# Run full test suite with coverage
-npm run test:coverage
-
-# Run e2e tests
-npm run e2e
+```
+Presentation Layer (Standalone Components, OnPush)
+    |
+State Layer (Signal-Based Stores: BaseCrudStore<T>)
+    |
+API Layer (Generic CrudApi<T, C, U> + HttpClient)
+    |
+Rust Backend (/api/v1 via proxy in dev, nginx in prod)
+    |
+PostgreSQL
 ```
 
-### SOLID Principles
-
-Apply SOLID rigorously:
-
-- **S - Single Responsibility**: Each class/function does ONE thing. Services handle business logic, components handle UI orchestration, pure functions handle transformations.
-- **O - Open/Closed**: Use interfaces and composition. Extend behavior through new implementations, not modifications.
-- **L - Liskov Substitution**: All implementations of an interface must be interchangeable without breaking behavior.
-- **I - Interface Segregation**: Create focused, specific interfaces. Prefer multiple small interfaces over one large one.
-- **D - Dependency Inversion**: Depend on abstractions (interfaces), not concretions. Use Angular's DI system properly.
-
-### Functional Programming Patterns
-
-Embrace functional paradigms for clean, predictable code:
-
-```typescript
-// ✅ DO: Pure functions for data transformations
-const filterActiveFlags = (flags: Flag[]): Flag[] =>
-  flags.filter(flag => flag.enabled);
-
-const sortByName = (flags: Flag[]): Flag[] =>
-  [...flags].sort((a, b) => a.name.localeCompare(b.name));
-
-// Compose functions
-const getActiveFlagsSorted = pipe(filterActiveFlags, sortByName);
-
-// ✅ DO: Immutable state updates
-const updateFlag = (flags: Flag[], updated: Flag): Flag[] =>
-  flags.map(f => f.id === updated.id ? { ...f, ...updated } : f);
-
-// ❌ DON'T: Mutate state directly
-flags.push(newFlag); // Never do this
-flag.enabled = true; // Never do this
-```
-
-Key functional patterns to use:
-- **Pure functions**: No side effects, same input = same output
-- **Immutability**: Never mutate, always return new objects/arrays
-- **Function composition**: Build complex operations from simple functions
-- **Higher-order functions**: map, filter, reduce, pipe
-- **Option/Result patterns**: Handle nullability explicitly
-
-### Separation of Concerns - Let Each Technology Shine
-
-**TypeScript**: Logic, types, business rules, state management
-**HTML**: Structure and semantics only - no logic in templates beyond simple bindings
-**SCSS**: All styling - use BEM methodology, no inline styles
-
-```typescript
-// ✅ DO: Keep templates clean, logic in TypeScript
-// component.ts
-readonly isValid = computed(() => this.form().valid && this.hasChanges());
-
-// template.html
-<button [disabled]="!isValid()">Save</button>
-
-// ❌ DON'T: Complex logic in templates
-<button [disabled]="!form.valid || !hasChanges || loading || error">Save</button>
-```
-
-## Angular 21 Best Practices
-
-### Signals-First Architecture
-
-Use Angular Signals as the primary state management approach:
-
-```typescript
-@Component({...})
-export class FlagListComponent {
-  // Input signals
-  readonly environmentId = input.required<string>();
-  
-  // Local state as signals
-  readonly searchTerm = signal('');
-  readonly sortOrder = signal<'asc' | 'desc'>('asc');
-  
-  // Computed signals for derived state
-  readonly filteredFlags = computed(() => {
-    const flags = this.flagStore.flags();
-    const term = this.searchTerm().toLowerCase();
-    return flags.filter(f => f.name.toLowerCase().includes(term));
-  });
-  
-  // Effects for side effects
-  constructor() {
-    effect(() => {
-      // React to environment changes
-      this.loadFlags(this.environmentId());
-    });
-  }
-}
-```
-
-### Standalone Components
-
-All components must be standalone. No NgModules for components:
-
-```typescript
-@Component({
-  selector: 'app-flag-card',
-  imports: [RouterLink, FlagToggleComponent],
-  templateUrl: './flag-card.html',
-  styleUrl: './flag-card.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush
-})
-export class FlagCardComponent {
-  readonly flag = input.required<Flag>();
-  readonly toggled = output<FlagToggleEvent>();
-}
-```
-
-**Note:** Angular 19+ defaults to standalone, so explicit `standalone: true` is optional. Direct imports are preferred over CommonModule.
-
-### Inject Function
-
-Use the `inject()` function instead of constructor injection:
-
-```typescript
-// ✅ DO: Use inject()
-export class FlagService {
-  private readonly http = inject(HttpClient);
-  private readonly config = inject(APP_CONFIG);
-  private readonly errorHandler = inject(ErrorHandlerService);
-}
-
-// ❌ DON'T: Constructor injection
-export class FlagService {
-  constructor(
-    private http: HttpClient,
-    private config: AppConfig
-  ) {}
-}
-```
-
-### Control Flow Syntax
-
-Use the new control flow syntax, not structural directives:
-
-```html
-<!-- ✅ DO: New control flow -->
-@if (loading()) {
-  <app-spinner />
-} @else if (error()) {
-  <app-error-message [error]="error()" />
-} @else {
-  @for (flag of flags(); track flag.id) {
-    <app-flag-card [flag]="flag" />
-  } @empty {
-    <p>No flags found</p>
-  }
-}
-
-<!-- ❌ DON'T: Old structural directives -->
-<app-spinner *ngIf="loading"></app-spinner>
-<div *ngFor="let flag of flags">...</div>
-```
-
-### Deferrable Views
-
-Use `@defer` for performance optimization:
-
-```html
-@defer (on viewport) {
-  <app-flag-analytics [flagId]="flag.id" />
-} @placeholder {
-  <div class="analytics-placeholder">Loading analytics...</div>
-} @loading (minimum 200ms) {
-  <app-skeleton-loader />
-}
-```
-
-## Project Structure
+### Project Structure
 
 ```
 src/
 ├── app/
-│   ├── core/                     # Singleton services and utilities
-│   │   ├── theme/                # Theme service (dark/light mode)
-│   │   └── time/                 # Time provider abstraction
-│   ├── shared/                   # Shared utilities and components
-│   │   ├── store/                # Cross-feature state (ProjectStore, EnvironmentStore, SearchStore)
-│   │   ├── ui/                   # Shared UI components (buttons, inputs, icons, etc.)
-│   │   └── utils/                # Pure utility functions
-│   ├── testing/                  # Test utilities and helpers
-│   │   ├── store.helpers.ts      # Store testing utilities (getCountBefore, expectItemAdded, etc.)
-│   │   ├── component.helpers.ts  # Component testing utilities
-│   │   ├── dom.helpers.ts        # DOM query helpers
-│   │   └── mock.factories.ts     # Test data factories
-│   ├── features/                 # Feature modules (lazy-loaded routes)
-│   │   ├── flags/
-│   │   │   ├── components/       # Feature-specific components
-│   │   │   ├── models/           # Feature-specific interfaces/types
-│   │   │   ├── store/            # Feature state management
-│   │   │   ├── utils/            # Feature-specific utilities
-│   │   │   └── flags.routes.ts
-│   │   ├── environments/
-│   │   ├── projects/
-│   │   ├── segments/             # User segment targeting rules
-│   │   ├── audit/                # Audit log feature
-│   │   ├── settings/             # User settings (profile, preferences, API keys)
-│   │   │   └── store/            # Focused stores: UserProfileStore, PreferencesStore, ApiKeyStore
-│   │   └── dashboard/            # Dashboard overview
-│   ├── layout/                   # App shell components
-│   │   ├── header/
-│   │   └── sidebar/
-│   └── app.routes.ts
-├── styles/                       # Global SCSS
-│   ├── _variables.scss
-│   ├── _mixins.scss
-│   ├── _typography.scss
-│   └── main.scss
+│   ├── core/                        # Singleton services
+│   │   ├── api/                     # HTTP layer: CrudApi<T,C,U>, tokens, interceptors
+│   │   │   ├── crud.api.ts          # Generic CRUD base (GET/POST/PUT/DELETE)
+│   │   │   ├── api.tokens.ts        # API_BASE_URL injection token
+│   │   │   ├── auth.interceptor.ts  # Token attachment
+│   │   │   ├── error.interceptor.ts # Global error handling
+│   │   │   └── api-error.model.ts   # Error types
+│   │   ├── theme/                   # ThemeService (dark/light via data-theme attribute)
+│   │   └── time/                    # TimeService + testable TimeProvider interface
+│   ├── shared/
+│   │   ├── store/                   # BaseCrudStore<T>, ProjectStore, EnvironmentStore, SearchStore
+│   │   ├── ui/                      # 26 reusable components (see UI Library below)
+│   │   └── utils/                   # filter.utils, search.utils, form.utils, id.utils, url.utils
+│   ├── testing/                     # Test helpers (store, component, dom, mock factories, mock-api providers)
+│   ├── features/
+│   │   ├── flags/                   # Flag CRUD, detail, create, value input, flag-specific store
+│   │   ├── environments/            # Environment CRUD with color coding
+│   │   ├── projects/                # Project CRUD with default project
+│   │   ├── segments/                # Segment CRUD + rule builder (rule-row component)
+│   │   ├── audit/                   # Audit log display, filtering, AuditLogger service
+│   │   ├── settings/                # User profile, preferences, API keys, theme tabs
+│   │   └── dashboard/               # Stats cards, recent flags, search
+│   ├── layout/
+│   │   ├── header/                  # Breadcrumbs, search, create button
+│   │   ├── sidebar/                 # Navigation, logo, user menu
+│   │   └── nav.config.ts            # Declarative nav items config
+│   ├── app.ts, app.html, app.scss   # Root component (app shell)
+│   ├── app.routes.ts                # Lazy-loaded feature routes
+│   └── app.config.ts                # App providers configuration
+├── styles/
+│   ├── _variables.scss              # CSS custom properties (light + dark theme tokens)
+│   └── _mixins.scss                 # auto-grid(), form-label() mixins
+├── styles.scss                      # Global reset, typography, base styles, scrollbar
 └── environments/
+    ├── environment.ts               # Dev config (tracked in git - no secrets)
+    └── environment.prod.ts          # Prod config (gitignored)
 ```
 
-**Note:** The following are planned but not yet implemented:
-- `core/auth/` - Authentication service and guards (when backend API ready)
-- `core/api/` - HTTP client and interceptors (when backend API ready)
-- `core/error-handling/` - Centralized error handling (when backend API ready)
+## Component Patterns
 
-## API Integration
-
-The Rust backend API base URL will be configured via environment variables. Use a typed API client:
+### Standard Component
 
 ```typescript
-// api/feature-flag.api.ts
-export interface FeatureFlagApi {
-  getFlags(projectId: string, envId: string): Observable<Flag[]>;
-  getFlag(id: string): Observable<Flag>;
-  createFlag(flag: CreateFlagDto): Observable<Flag>;
-  updateFlag(id: string, updates: UpdateFlagDto): Observable<Flag>;
-  deleteFlag(id: string): Observable<void>;
-  toggleFlag(id: string, enabled: boolean): Observable<Flag>;
-}
+@Component({
+  selector: 'app-flag-card',
+  imports: [RouterLink, BadgeComponent],
+  templateUrl: './flag-card.html',
+  styleUrl: './flag-card.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class FlagCardComponent {
+  readonly flag = input.required<Flag>();
+  readonly toggled = output<boolean>();
 
-@Injectable({ providedIn: 'root' })
-export class FeatureFlagApiService implements FeatureFlagApi {
-  private readonly http = inject(HttpClient);
-  private readonly baseUrl = inject(API_BASE_URL);
-  
-  getFlags(projectId: string, envId: string): Observable<Flag[]> {
-    return this.http.get<Flag[]>(
-      `${this.baseUrl}/projects/${projectId}/environments/${envId}/flags`
-    );
-  }
-  // ... other methods
-}
-```
-
-## State Management
-
-Use a signals-based store pattern:
-
-```typescript
-// store/flag.store.ts
-@Injectable({ providedIn: 'root' })
-export class FlagStore {
-  // State as signals
-  private readonly _flags = signal<Flag[]>([]);
-  private readonly _loading = signal(false);
-  private readonly _error = signal<string | null>(null);
-  
-  // Public readonly selectors
-  readonly flags = this._flags.asReadonly();
-  readonly loading = this._loading.asReadonly();
-  readonly error = this._error.asReadonly();
-  
-  // Computed selectors
-  readonly activeFlags = computed(() => 
-    this._flags().filter(f => f.enabled)
+  protected readonly isEnabled = computed(() =>
+    this.flag().environmentValues[this.envId()]?.enabled ?? false
   );
-  
-  // Actions
-  async loadFlags(projectId: string, envId: string): Promise<void> {
-    this._loading.set(true);
-    this._error.set(null);
-    
-    try {
-      const flags = await firstValueFrom(
-        this.api.getFlags(projectId, envId)
-      );
-      this._flags.set(flags);
-    } catch (e) {
-      this._error.set(this.errorHandler.getMessage(e));
-    } finally {
-      this._loading.set(false);
-    }
-  }
 }
 ```
 
-## Error Handling
+**Rules:**
+- All components standalone (Angular 21 default - do NOT set `standalone: true` explicitly)
+- `ChangeDetectionStrategy.OnPush` on every component
+- `input()` / `input.required()` for inputs, `output()` for outputs
+- `computed()` for derived state, `signal()` for local state
+- `inject()` for DI (never constructor injection)
+- Host bindings via `host: {}` property (never `@HostBinding`/`@HostListener`)
+- Templates use `@if`, `@for`, `@switch`, `@defer` (never `*ngIf`/`*ngFor`)
 
-Implement comprehensive error handling:
+### ControlValueAccessor (Form Integration)
 
 ```typescript
-// core/error-handling/error-handler.service.ts
-export interface AppError {
-  code: string;
-  message: string;
-  details?: Record<string, unknown>;
-  timestamp: Date;
+@Component({
+  providers: [{
+    provide: NG_VALUE_ACCESSOR,
+    useExisting: forwardRef(() => FormFieldComponent),
+    multi: true,
+  }],
+  host: {
+    class: 'form-field',
+    '[class.form-field--error]': 'error()',
+    '[class.form-field--disabled]': 'isDisabled()',
+  },
+})
+export class FormFieldComponent implements ControlValueAccessor { ... }
+```
+
+## Store Patterns
+
+### BaseCrudStore<T> (Abstract)
+
+All CRUD stores extend `BaseCrudStore<T>` from `shared/store/base-crud.store.ts`:
+
+```typescript
+// Private writable signals (underscore prefix)
+private readonly _items = signal<T[]>([]);
+private readonly _loading = signal(false);
+private readonly _error = signal<string | null>(null);
+
+// Public readonly selectors
+readonly items = this._items.asReadonly();
+readonly loading = this._loading.asReadonly();
+readonly error = this._error.asReadonly();
+
+// Actions use firstValueFrom() to convert Observable → Promise
+async loadAll(): Promise<void> {
+  this._loading.set(true);
+  try {
+    const items = await firstValueFrom(this.api.getAll());
+    this._items.set(items);
+  } catch (e) { ... }
+  finally { this._loading.set(false); }
+}
+```
+
+**Immutable updates only:**
+```typescript
+this._items.update(items => [created, ...items]);           // add
+this._items.update(items => items.map(i => i.id === u.id ? u : i)); // update
+this._items.update(items => items.filter(i => i.id !== id)); // remove
+```
+
+**Specialized stores** (FlagStore, AuditStore) don't extend BaseCrudStore due to extra complexity.
+
+### Store Interfaces (`shared/store/store.interfaces.ts`)
+
+```typescript
+interface ReadableStore<T> { items: Signal<readonly T[]>; loading: Signal<boolean>; ... }
+interface CrudStore<T, C, U> extends ReadableStore<T> { create(input: C): Promise<T>; ... }
+```
+
+## API Patterns
+
+### Generic CrudApi<T, C, U>
+
+```typescript
+// core/api/crud.api.ts
+export abstract class CrudApi<T, C, U> {
+  protected readonly http = inject(HttpClient);
+  protected readonly baseUrl = inject(API_BASE_URL);
+  protected abstract resourcePath: string;
+
+  protected get resourceUrl(): string {
+    return `${this.baseUrl}/${this.resourcePath}`;
+  }
+
+  getAll(): Observable<T[]> { return this.http.get<T[]>(this.resourceUrl); }
+  getById(id: string): Observable<T> { return this.http.get<T>(`${this.resourceUrl}/${id}`); }
+  create(input: C): Observable<T> { return this.http.post<T>(this.resourceUrl, input); }
+  update(id: string, input: U): Observable<T> { return this.http.put<T>(`${this.resourceUrl}/${id}`, input); }
+  delete(id: string): Observable<void> { return this.http.delete<void>(`${this.resourceUrl}/${id}`); }
+}
+```
+
+### Backend Field Mapping (Critical)
+
+The Rust backend uses `resourceName` instead of `name`. FlagApi normalizes this:
+
+```typescript
+// RawFlag has resourceName, Flag has name
+function normalizeFlag(raw: RawFlag): Flag {
+  return { ...raw, name: raw.resourceName };
 }
 
-// Use Result type for operations that can fail
-type Result<T, E = AppError> = 
-  | { success: true; data: T }
-  | { success: false; error: E };
-
-// Helper functions
-const ok = <T>(data: T): Result<T> => ({ success: true, data });
-const err = <E>(error: E): Result<never, E> => ({ success: false, error });
+// FlagApi overrides CrudApi methods to pipe through normalizeFlag
+override getAll(): Observable<Flag[]> {
+  return super.getAll().pipe(map(flags => flags.map(f => normalizeFlag(f as unknown as RawFlag))));
+}
 ```
+
+### Backend PATCH Response Behavior
+
+PATCH `/flags/{id}/environments/{envId}` returns **incomplete** flag data (missing `name`, `environmentValues`). Always merge with existing store data using `mergeFlag()`.
+
+## Model Patterns
+
+Separate domain models from input types. Use discriminated unions for type safety:
+
+```typescript
+export type FlagType = 'boolean' | 'string' | 'number' | 'json';
+
+export interface Flag {
+  id: string; projectId: string; key: string; name: string;
+  description: string; type: FlagType; defaultValue: FlagTypeMap[FlagType];
+  tags: string[]; environmentValues: Record<string, EnvironmentFlagValue>;
+  createdAt: string; updatedAt: string;
+}
+
+// Separate input types
+export type CreateFlagInput = CreateFlagInputBase<'boolean'> | CreateFlagInputBase<'string'> | ...;
+```
+
+Filter options as `const` arrays: `FLAG_STATUS_OPTIONS`, `FLAG_TYPE_OPTIONS`.
+
+## Styling Architecture
+
+### Design Tokens (CSS Custom Properties)
+
+All colors, spacing, shadows, and transitions defined in `_variables.scss`:
+
+```scss
+// Light theme (:root)
+--bg-primary: #fffcf5;     --text-primary: #040403;
+--accent-primary: #8e3d03;  --color-success: #1a7f37;
+--border-radius: 6px;       --transition-fast: 150ms ease;
+
+// Dark theme ([data-theme='dark']) overrides all tokens
+```
+
+Theme switching via `ThemeService` → sets `data-theme` attribute on `<html>`.
+
+### BEM Naming
+
+```scss
+.btn { }                    // Block
+.btn__spinner { }           // Element
+.btn--primary { }           // Modifier
+.btn--sm { }
+```
+
+### Component Styling
+
+- `:host` for component root styling
+- `host: { '[class]': 'hostClasses()' }` for dynamic classes via computed signals
+- `@use 'styles/mixins' as *;` for shared mixins
+- No inline styles. No ViewEncapsulation overrides.
+
+### Responsive Breakpoints
+
+```scss
+@media (width < 768px)   { /* Mobile: sidebar becomes drawer */ }
+@media (width <= 960px)  { /* Tablet */ }
+```
+
+## Testing
+
+### Unit Tests (Jest + Angular Testing Library)
+
+**Coverage threshold: 100%** (enforced by `jest.config.js`, blocks merges).
+
+```javascript
+// jest.config.js
+coverageThreshold: { global: { branches: 100, functions: 100, lines: 100, statements: 100 } }
+```
+
+**Test structure:**
+```typescript
+describe('FlagStore', () => {
+  describe('loadAll', () => {
+    it('should set flags on success', async () => {
+      // Arrange - setup mocks
+      // Act - call store method
+      // Assert - verify signal values
+    });
+    it('should set error on failure', async () => { ... });
+  });
+});
+```
+
+**Testing helpers** (`src/app/testing/`):
+- `store.helpers.ts` - `getCountBefore()`, `expectItemAdded()`, `expectItemRemoved()`
+- `component.helpers.ts` - Component rendering utilities
+- `dom.helpers.ts` - DOM query helpers
+- `mock.factories.ts` - `createMockFlag()`, `createMockProject()`, etc.
+- `mock-api.providers.ts` - Mock API providers with seed data
+
+**Jest setup** (`setup-jest.ts`):
+- Clears localStorage before each test
+- Mocks `window.matchMedia`, `IntersectionObserver`, `ResizeObserver`
+- Suppresses Angular internal warnings (NG0xxx)
+
+### E2E Tests (Playwright)
+
+**Test pyramid:** smoke (15s) → journeys (1-2min) → regression (5+min) → cross-browser
+
+```bash
+npm run e2e:smoke        # Quick sanity checks
+npm run e2e:journeys     # User workflow tests
+npm run e2e:regression   # Edge cases, accessibility
+npm run e2e:all-browsers # Chrome, Firefox, WebKit
+```
+
+**Page Object Model hierarchy:**
+```
+BasePage (modal, toast, table, toggle, search helpers)
+  └── BaseCrudListPage (itemRows, deleteItem, clickEdit, clickDelete)
+        ├── FlagListPage, FlagDetailPage, FlagCreatePage
+        ├── ProjectListPage
+        ├── EnvironmentListPage
+        └── SegmentListPage
+```
+
+**Critical: `<app-button>` click pattern:**
+Angular `(click)` handlers bind on the `<app-button>` host element. Use `dispatchEvent('click')` on the host, not `.click()` on the inner `<button>`:
+
+```typescript
+// CORRECT - reliable cross-browser
+locator('app-button').filter({ hasText: /delete/i }).dispatchEvent('click');
+
+// WRONG - intermittent failures in Firefox/WebKit
+getByRole('button', { name: /delete/i }).click();
+```
+
+**Assertion-based waits** (15s timeout for API-dependent operations):
+```typescript
+await expect(this.modal).not.toBeVisible({ timeout: 15000 });
+await expect(this.itemRow(name)).toBeVisible({ timeout: 15000 });
+```
+
+## UI Component Library (26 components)
+
+Located in `src/app/shared/ui/`:
+
+| Component | Key Features |
+|-----------|-------------|
+| `button` | Variants: primary/secondary/ghost/danger. Sizes: sm/md/lg. Loading state. |
+| `card` | Content projection. Padding variants: none/sm/md/lg. |
+| `badge` | Variants: success/warning/error/info + audit types. Dismissible. |
+| `data-table` | Generic `<T>`, sortable columns via `UiColDirective`, content children. |
+| `form-field` | ControlValueAccessor. Types: text/email/password/number/color/textarea. |
+| `toggle` | Checked/label/disabled inputs. Emits `toggled` output. |
+| `toast` | ToastService: success/error/warning/info. Auto-dismiss. Max visible limit. |
+| `empty-state` | Icon + title + message + action slot. Size variants. |
+| `loading-spinner` | Sizes: sm/md/lg. Optional label. |
+| `search-input` | Debounced search with clear button. |
+| `select` / `select-field` / `labeled-select` | Native select with label integration. |
+| `tabs` | Tab navigation component. |
+| `toolbar` | Toolbar container for page actions. |
+| `breadcrumb` | Route-aware breadcrumb with project/environment selectors. |
+| `page-header` | Page title + description container. |
+| `icon` | SVG icon system with `IconName` type and `icon.data.ts` registry. |
+| `nav-item` / `nav-section` | Sidebar navigation components. |
+| `stat-card` | Dashboard statistics display. |
+| `user-menu` | Profile dropdown in sidebar footer. |
+| `error-banner` | Error display banner. |
+| `logo-icon` / `flags-empty-icon` | SVG icon components. |
+
+## CI/CD Pipeline (GitLab)
+
+```
+install → lint (TS + SCSS parallel) → test:unit → build → build:docker → security* → deploy* → e2e*
+```
+
+- **Cache:** `package-lock.json` as key, `node_modules/` path
+- **Docker:** Kaniko builds (no daemon), tagged by commit SHA + latest
+- **Security:** Snyk weekly scans (dependencies, code, IaC) - requires `SNYK_TOKEN`
+- **E2E:** Conditional on `E2E_BASE_URL` being set; smoke → journeys → regression → cross-browser
+
+### Git Hooks (Husky)
+
+**Pre-commit:** `lint-staged` (ESLint + Prettier + StyleLint per file type) + `npm run typecheck`
+**Pre-push:** `npm run test:coverage` + `npm run e2e:smoke`
+
+## Docker
+
+### Production (`docker/`)
+- `nginx:1.27-alpine` serving pre-built Angular app
+- Non-root user (UID 1001), read-only filesystem, `no-new-privileges`
+- Security headers: CSP, X-Frame-Options, X-Content-Type-Options, Permissions-Policy
+- DoS protection: 1k body limit, 10s timeouts
+- Caching: 1-year for hashed assets, no-cache for HTML
+- Health check: `GET /health` → 200 OK
+- Resource limits: 0.5 CPU, 128MB memory
+
+### Development (`.devcontainer/`)
+- `node:20.19.0-alpine` with Angular CLI, git, dumb-init
+- Volume mounts project root, isolates `node_modules`
+- VS Code extensions pre-configured (16 extensions)
+- Auto-starts `ng serve` on port 4200
 
 ## File Naming Conventions
 
-- Components: `flag-card.ts`, `flag-card.html`, `flag-card.scss` (no `.component` suffix)
-- Services: `flag.service.ts`, `flag-api.service.ts`
-- Models/Interfaces: `flag.model.ts`, `flag-value.model.ts`
-- Utilities: `flag.utils.ts`, `flag-format.utils.ts`
-- Tests: `flag-card.spec.ts`, `flag.service.spec.ts`
-- Stores: `flag.store.ts`
-- Icon Components: `logo-icon.ts`, `flags-empty-icon.ts`
-
-## Git Workflow
-
-- Write descriptive commit messages following conventional commits
-- `feat:` new feature
-- `fix:` bug fix  
-- `test:` adding/updating tests
-- `refactor:` code refactoring
-- `docs:` documentation updates
-- `chore:` maintenance tasks
+| Type | Pattern | Example |
+|------|---------|---------|
+| Component | `kebab-case.ts` (no `.component`) | `flag-card.ts` |
+| Template | `kebab-case.html` | `flag-card.html` |
+| Styles | `kebab-case.scss` | `flag-card.scss` |
+| Service | `kebab-case.service.ts` | `flag-api.service.ts` |
+| Store | `kebab-case.store.ts` | `flag.store.ts` |
+| Model | `kebab-case.model.ts` | `flag.model.ts` |
+| Utility | `kebab-case.utils.ts` | `flag-format.utils.ts` |
+| Test | `kebab-case.spec.ts` | `flag-card.spec.ts` |
+| Icon | `kebab-case-icon.ts` | `logo-icon.ts` |
 
 ## Commands Reference
 
 ```bash
 # Development
-npm start                    # Start dev server
-npm run test:watch          # Run tests in watch mode
-npm run lint                # Run ESLint
-npm run lint:fix            # Fix linting issues
+npm start                    # Dev server (0.0.0.0:4200)
+npm run test:watch          # Jest watch mode
 
 # Testing
-npm test                    # Run all unit tests
-npm run test:coverage       # Run tests with coverage
-npm run e2e                 # Run Playwright e2e tests
+npm run test:coverage       # Full suite + 100% coverage check
+npm run e2e                 # All Playwright tests
+npm run e2e:smoke           # Quick smoke tests
+npm run e2e:journeys        # User workflow tests
+
+# Code Quality
+npm run lint                # ESLint (TS + SCSS)
+npm run typecheck           # tsc --noEmit
+npm run format              # Prettier
+npm run ci:local            # lint + coverage + build (pre-merge check)
 
 # Build
 npm run build               # Production build
-npm run build:analyze       # Build with bundle analyzer
-
-# Code Quality
-npm run format              # Format with Prettier
-npm run typecheck           # TypeScript type checking
 ```
 
-## When Generating Code
+## Git Workflow
 
-1. **Always start with the test** - Write the failing test first
-2. **Create interfaces before implementations** - Define the contract
-3. **Use pure functions for logic** - Keep components thin
-4. **Apply single responsibility** - One reason to change per unit
-5. **Compose, don't inherit** - Favor composition over inheritance
-6. **Make illegal states unrepresentable** - Use TypeScript's type system
-7. **Handle errors explicitly** - No silent failures
+Conventional commits: `feat:`, `fix:`, `test:`, `refactor:`, `docs:`, `chore:`
+
+## DO NOT
+
+- Use `*ngIf`, `*ngFor`, `*ngSwitch` (use `@if`, `@for`, `@switch`)
+- Use constructor injection (use `inject()`)
+- Use `@Input()`/`@Output()` decorators (use `input()`/`output()` functions)
+- Use `@HostBinding`/`@HostListener` (use `host: {}` property)
+- Set `standalone: true` explicitly (it's the default)
+- Mutate signals directly (use `.set()`, `.update()`)
+- Use NgModules for components
+- Store secrets in environment.ts (use environment variables)
+- Use `any` type (except in `.spec.ts` files)
+- Skip tests or write tests after implementation
+- Use inline styles (use SCSS with BEM)
+- Use `CommonModule` (import specific directives/pipes)
 
 ## Quality Checklist
 
 Before considering any task complete:
 
-- [ ] Tests written and passing (unit + integration where applicable)
-- [ ] Coverage meets minimum threshold
+- [ ] Tests written first (TDD) and all passing
+- [ ] 100% coverage maintained (`npm run test:coverage`)
 - [ ] No TypeScript errors (`npm run typecheck`)
 - [ ] No linting errors (`npm run lint`)
 - [ ] Code formatted (`npm run format`)
-- [ ] Documentation updated if needed
-- [ ] Follows all conventions in this file
+- [ ] BEM naming for all SCSS
+- [ ] Follows all patterns in this file
