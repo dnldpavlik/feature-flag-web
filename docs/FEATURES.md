@@ -2,7 +2,7 @@
 
 Comprehensive feature catalog across all platform components: Rust API backend, Angular web UI, and Android mobile app.
 
-> **Last updated:** 2026-01-30
+> **Last updated:** 2026-02-08
 > **Status legend:** Done | In Progress | Planned
 
 ---
@@ -69,7 +69,7 @@ Comprehensive feature catalog across all platform components: Rust API backend, 
 | View environment detail | `GET /api/v1/environments/{id}` | EnvironmentDetailComponent | Done |
 | Update environment | `PATCH /api/v1/environments/{id}` | - | API Done, UI Planned |
 | Set default environment | `POST /api/v1/environments/{id}/default` | EnvironmentListComponent | Done |
-| Delete environment | - | - | Planned |
+| Delete environment | `DELETE /api/v1/environments/{id}` | EnvironmentListComponent | UI Done, API Planned |
 | Environment color coding | Stored in DB | Displayed in list and sidebar | Done |
 | Environment ordering | Stored in DB (`order` column) | Sorted display | Done |
 | View flags per environment | - | EnvironmentDetailComponent | Done |
@@ -81,6 +81,7 @@ Comprehensive feature catalog across all platform components: Rust API backend, 
 - **API:** Auto-creates `flag_environment_values` entries for all existing flags when a new environment is created
 - **Database:** 3 default environments seeded: Development (green, order 0, default), Staging (orange, order 1), Production (red, order 2)
 - **Web UI:** Color picker on creation, sorted display, default indicator
+- **Delete:** Confirmation dialog shows affected flag count; removes environment values from all flags; prevents deleting the last remaining environment; falls back selection to default/first environment if the deleted one was selected
 
 ---
 
@@ -283,6 +284,7 @@ Each entry records: resource name, action, resource type, user, details string, 
 | Flag CRUD | `GET/POST/PUT/PATCH/DELETE /api/v1/flags/*` | Done |
 | Flag lookup by key | `GET /api/v1/flags/key/{key}` | Done |
 | Environment CRUD | `GET/POST/PATCH /api/v1/environments/*` | Done |
+| Delete environment | `DELETE /api/v1/environments/{id}` | Planned |
 | Set default environment | `POST /api/v1/environments/{id}/default` | Done |
 | Environment-specific flag values | `PATCH /api/v1/flags/{id}/environments/{env_id}` | Done |
 | Flag evaluation | `GET /api/v1/evaluate/{key}` | Done |
@@ -438,7 +440,7 @@ Each entry records: resource name, action, resource type, user, details string, 
 | Category | Done | In Progress | Planned | Total |
 |----------|------|-------------|---------|-------|
 | Flag Operations | 11 | 0 | 2 | 13 |
-| Environments | 8 | 0 | 3 | 11 |
+| Environments | 9 | 0 | 2 | 11 |
 | Projects | 8 | 0 | 0 | 8 |
 | Segments | 10 | 0 | 3 | 13 |
 | Targeting Rules | 1 | 0 | 7 | 8 |
@@ -451,4 +453,4 @@ Each entry records: resource name, action, resource type, user, details string, 
 | Mobile | 1 | 0 | 7 | 8 |
 | SDK & Integrations | 1 | 0 | 10 | 11 |
 | User Management | 3 | 0 | 7 | 10 |
-| **Total** | **105** | **0** | **63** | **168** |
+| **Total** | **106** | **0** | **62** | **168** |

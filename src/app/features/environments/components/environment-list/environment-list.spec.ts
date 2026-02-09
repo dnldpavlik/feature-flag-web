@@ -3,6 +3,8 @@ import { Router, provideRouter } from '@angular/router';
 
 import { EnvironmentStore } from '@/app/shared/store/environment.store';
 import { SearchStore } from '@/app/shared/store/search.store';
+import { FlagStore } from '@/app/features/flags/store/flag.store';
+import { ProjectStore } from '@/app/shared/store/project.store';
 import { EnvironmentListComponent } from './environment-list';
 import {
   expectHeading,
@@ -21,21 +23,33 @@ describe('EnvironmentList', () => {
   let fixture: ComponentFixture<EnvironmentListComponent>;
   let component: EnvironmentListComponent;
   let store: EnvironmentStore;
+  let flagStore: FlagStore;
   let router: Router;
   let searchStore: SearchStore;
 
   const build = async () => {
     await TestBed.configureTestingModule({
       imports: [EnvironmentListComponent],
-      providers: [EnvironmentStore, SearchStore, provideRouter([]), ...MOCK_API_PROVIDERS],
+      providers: [
+        EnvironmentStore,
+        ProjectStore,
+        FlagStore,
+        SearchStore,
+        provideRouter([]),
+        ...MOCK_API_PROVIDERS,
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(EnvironmentListComponent);
     component = getComponent(fixture);
     store = injectService(EnvironmentStore);
+    flagStore = injectService(FlagStore);
     router = injectService(Router);
     searchStore = injectService(SearchStore);
+    const projectStore = injectService(ProjectStore);
+    await projectStore.loadProjects();
     await store.loadEnvironments();
+    await flagStore.loadFlags();
     fixture.detectChanges();
   };
 
@@ -109,6 +123,70 @@ describe('EnvironmentList', () => {
 
     expect(getRowCount(fixture)).toBe(0);
     expectEmptyState(fixture);
+  });
+
+  describe('deleteEnvironment', () => {
+    it('should show Delete button when more than one environment exists', async () => {
+      await build();
+      const deleteButtons = queryAll(fixture, 'app-button[variant="ghost"]').filter(
+        (btn) => btn.nativeElement.textContent.trim() === 'Delete',
+      );
+      expect(deleteButtons.length).toBeGreaterThan(0);
+    });
+
+    it('should show confirmation dialog when requesting delete', async () => {
+      await build();
+      component.requestDeleteEnvironment('env_staging');
+      fixture.detectChanges();
+
+      expect(component.envToDelete()).toBe('env_staging');
+      const overlay = query(fixture, '.delete-confirmation-overlay');
+      expect(overlay).toBeTruthy();
+    });
+
+    it('should show flag count in confirmation dialog', async () => {
+      await build();
+      component.requestDeleteEnvironment('env_staging');
+      fixture.detectChanges();
+
+      expect(component.deleteConfirmationFlagCount()).toBeGreaterThanOrEqual(0);
+    });
+
+    it('should cancel delete and hide dialog', async () => {
+      await build();
+      component.requestDeleteEnvironment('env_staging');
+      expect(component.envToDelete()).toBe('env_staging');
+
+      component.cancelDelete();
+
+      expect(component.envToDelete()).toBeNull();
+    });
+
+    it('should confirm delete and remove the environment', async () => {
+      await build();
+      const removeEnvValuesSpy = jest.spyOn(flagStore, 'removeEnvironmentValues');
+      const deleteEnvSpy = jest.spyOn(store, 'deleteEnvironment');
+
+      component.requestDeleteEnvironment('env_staging');
+      component.confirmDelete();
+
+      expect(removeEnvValuesSpy).toHaveBeenCalledWith('env_staging');
+      expect(deleteEnvSpy).toHaveBeenCalledWith('env_staging');
+      expect(component.envToDelete()).toBeNull();
+    });
+
+    it('should do nothing when confirmDelete is called without envToDelete', async () => {
+      await build();
+      const removeEnvValuesSpy = jest.spyOn(flagStore, 'removeEnvironmentValues');
+      const deleteEnvSpy = jest.spyOn(store, 'deleteEnvironment');
+
+      expect(component.envToDelete()).toBeNull();
+
+      component.confirmDelete();
+
+      expect(removeEnvValuesSpy).not.toHaveBeenCalled();
+      expect(deleteEnvSpy).not.toHaveBeenCalled();
+    });
   });
 
   describe('form fields', () => {

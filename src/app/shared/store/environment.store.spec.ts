@@ -320,6 +320,100 @@ describe('EnvironmentStore', () => {
     });
   });
 
+  describe('deleteEnvironment', () => {
+    it('should delete an environment from the store', () => {
+      const countBefore = store.environments().length;
+
+      store.deleteEnvironment('env_staging');
+
+      expect(store.environments().length).toBe(countBefore - 1);
+      expect(store.getEnvironmentById('env_staging')).toBeUndefined();
+    });
+
+    it('should not delete when only one environment remains', () => {
+      // Delete until one remains
+      store.deleteEnvironment('env_staging');
+      store.deleteEnvironment('env_production');
+
+      expect(store.environments().length).toBe(1);
+
+      store.deleteEnvironment(store.environments()[0].id);
+
+      expect(store.environments().length).toBe(1);
+    });
+
+    it('should not delete when environment does not exist', () => {
+      const countBefore = store.environments().length;
+
+      store.deleteEnvironment('env_nonexistent');
+
+      expect(store.environments().length).toBe(countBefore);
+    });
+
+    it('should fall back selection when deleting the selected environment', () => {
+      store.selectEnvironment('env_staging');
+
+      store.deleteEnvironment('env_staging');
+
+      // Should fall back to default (development) or first remaining
+      expect(store.selectedEnvironmentId()).not.toBe('env_staging');
+      expect(store.getEnvironmentById(store.selectedEnvironmentId())).toBeDefined();
+    });
+
+    it('should persist fallback selection to localStorage', () => {
+      store.selectEnvironment('env_staging');
+
+      store.deleteEnvironment('env_staging');
+
+      const stored = localStorage.getItem('selected-environment-id');
+      expect(stored).toBe(store.selectedEnvironmentId());
+    });
+
+    it('should fall back to first environment when no default remains', () => {
+      // env_development is the default; select and delete it
+      store.selectEnvironment('env_development');
+
+      store.deleteEnvironment('env_development');
+
+      // No remaining env is default, so should fall back to first item
+      const remaining = store.environments();
+      expect(remaining.every((e) => !e.isDefault)).toBe(true);
+      expect(store.selectedEnvironmentId()).toBe(remaining[0].id);
+    });
+
+    it('should not change selection when deleting a non-selected environment', () => {
+      store.selectEnvironment('env_development');
+
+      store.deleteEnvironment('env_staging');
+
+      expect(store.selectedEnvironmentId()).toBe('env_development');
+    });
+
+    it('should show toast on success', () => {
+      const toastService = injectService(ToastService);
+      jest.spyOn(toastService, 'success');
+
+      store.deleteEnvironment('env_staging');
+
+      expect(toastService.success).toHaveBeenCalledWith('Environment deleted');
+    });
+
+    it('should log audit entry on delete', () => {
+      jest.spyOn(auditStore, 'logAction');
+
+      store.deleteEnvironment('env_staging');
+
+      expect(auditStore.logAction).toHaveBeenCalledWith(
+        expect.objectContaining({
+          action: 'deleted',
+          resourceType: 'environment',
+          resourceId: 'env_staging',
+          resourceName: 'Staging',
+        }),
+      );
+    });
+  });
+
   describe('error handling', () => {
     let toastService: ToastService;
     let environmentApi: EnvironmentApi;

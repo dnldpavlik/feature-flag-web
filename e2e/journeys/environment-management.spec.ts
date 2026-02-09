@@ -261,6 +261,111 @@ test.describe('Environment Management Journey', () => {
     });
   });
 
+  test.describe('Delete Environment', () => {
+    test('should show delete button for each environment when multiple exist', async ({ page }) => {
+      const envList = new EnvironmentListPage(page);
+      await envList.goto();
+
+      const envCount = await envList.getEnvironmentCount();
+      if (envCount <= 1) {
+        test.skip();
+        return;
+      }
+
+      // Each row should have a Delete button
+      const firstRow = envList.environmentRows.first();
+      const deleteBtn = firstRow.getByRole('button', { name: /delete/i });
+      await expect(deleteBtn).toBeVisible();
+    });
+
+    test('should show confirmation dialog when clicking delete', async ({ page }) => {
+      const envList = new EnvironmentListPage(page);
+      await envList.goto();
+
+      const envCount = await envList.getEnvironmentCount();
+      if (envCount <= 1) {
+        test.skip();
+        return;
+      }
+
+      // Click delete on an environment that is not default
+      const nonDefaultRow = envList.environmentRows.filter({
+        hasNot: page.locator('app-badge', { hasText: /default/i }),
+      });
+
+      if ((await nonDefaultRow.count()) === 0) {
+        test.skip();
+        return;
+      }
+
+      await nonDefaultRow
+        .first()
+        .getByRole('button', { name: /delete/i })
+        .click();
+
+      // Confirmation dialog should appear
+      const dialog = page.locator('[role="dialog"]');
+      await expect(dialog).toBeVisible();
+      await expect(dialog).toContainText(/delete environment/i);
+    });
+
+    test('should cancel delete when clicking cancel', async ({ page }) => {
+      const envList = new EnvironmentListPage(page);
+      await envList.goto();
+
+      const envCount = await envList.getEnvironmentCount();
+      if (envCount <= 1) {
+        test.skip();
+        return;
+      }
+
+      // Click delete on first environment
+      await envList.environmentRows
+        .first()
+        .getByRole('button', { name: /delete/i })
+        .click();
+
+      // Dialog visible
+      const dialog = page.locator('[role="dialog"]');
+      await expect(dialog).toBeVisible();
+
+      // Cancel
+      await envList.cancelModal();
+
+      // Dialog should be gone
+      await expect(dialog).not.toBeVisible();
+
+      // Count should be unchanged
+      await envList.assertEnvironmentCount(envCount);
+    });
+
+    test('should delete environment when confirmed', async ({ page }) => {
+      const envList = new EnvironmentListPage(page);
+      await envList.goto();
+
+      // First create a new environment so we have a safe one to delete
+      const envData = {
+        name: `Delete Me ${uniqueId()}`,
+        key: `delete-me-${uniqueId()}`,
+        color: '#ef4444',
+      };
+
+      await envList.createEnvironment(envData);
+      await page.waitForTimeout(500);
+      await envList.assertEnvironmentExists(new RegExp(envData.name));
+
+      const countAfterCreate = await envList.getEnvironmentCount();
+
+      // Delete the newly created environment
+      await envList.deleteEnvironment(envData.name);
+      await page.waitForTimeout(500);
+
+      // Environment should be gone
+      await envList.assertEnvironmentNotExists(new RegExp(envData.name));
+      await envList.assertEnvironmentCount(countAfterCreate - 1);
+    });
+  });
+
   test.describe('Complete Environment Lifecycle', () => {
     test('should complete full environment CRUD', async ({ page }) => {
       const envList = new EnvironmentListPage(page);
@@ -292,10 +397,13 @@ test.describe('Environment Management Journey', () => {
         await envList.submitForm();
         await page.waitForTimeout(500);
         await envList.assertEnvironmentExists(new RegExp(updatedName));
+        envData.name = updatedName;
       }
 
-      // 5. Cleanup would happen here (delete)
-      // Note: Be careful with delete in tests - may affect other tests
+      // 5. Delete the environment (cleanup)
+      await envList.deleteEnvironment(envData.name);
+      await page.waitForTimeout(500);
+      await envList.assertEnvironmentNotExists(new RegExp(envData.name));
     });
   });
 });

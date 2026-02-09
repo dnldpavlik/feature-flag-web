@@ -56,6 +56,11 @@
               >Make Default</app-button
             >
           }
+          @if (environments().length > 1) {
+            <app-button variant="ghost" type="button" (click)="requestDeleteEnvironment(env.id)"
+              >Delete</app-button
+            >
+          }
         </div>
       </ng-template>
     </app-ui-data-table>
@@ -75,4 +80,27 @@
       Add Environment
     </app-button>
   </app-card>
+
+  @if (envToDelete()) {
+    <div class="delete-confirmation-overlay" role="dialog" aria-modal="true">
+      <app-card class="delete-confirmation" padding="lg">
+        <h3>Delete Environment?</h3>
+        @if (deleteConfirmationFlagCount() > 0) {
+          <p class="delete-confirmation__warning">
+            This environment has values in <strong>{{ deleteConfirmationFlagCount() }}</strong>
+            flag(s). All environment values will be permanently removed.
+          </p>
+        } @else {
+          <p>Are you sure you want to delete this environment?</p>
+        }
+        <p class="text-muted">This action cannot be undone.</p>
+        <div class="delete-confirmation__actions">
+          <app-button variant="ghost" type="button" (click)="cancelDelete()">Cancel</app-button>
+          <app-button variant="danger" type="button" (click)="confirmDelete()">
+            Delete Environment
+          </app-button>
+        </div>
+      </app-card>
+    </div>
+  }
 </section>

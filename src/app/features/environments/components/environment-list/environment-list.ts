@@ -1,5 +1,5 @@
 import { DatePipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { NonNullableFormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 
@@ -13,6 +13,7 @@ import { FormFieldComponent } from '@/app/shared/ui/form-field/form-field';
 import { PageHeaderComponent } from '@/app/shared/ui/page-header/page-header';
 import { SearchStore } from '@/app/shared/store/search.store';
 import { EnvironmentStore } from '@/app/shared/store/environment.store';
+import { FlagStore } from '@/app/features/flags/store/flag.store';
 import { hasRequiredFields, getTrimmedValues } from '@/app/shared/utils/form.utils';
 import { textFilter } from '@/app/shared/utils/filter.utils';
 
@@ -37,6 +38,7 @@ import { textFilter } from '@/app/shared/utils/filter.utils';
 })
 export class EnvironmentListComponent {
   private readonly environmentStore = inject(EnvironmentStore);
+  private readonly flagStore = inject(FlagStore);
   private readonly router = inject(Router);
   private readonly searchStore = inject(SearchStore);
   private readonly fb = inject(NonNullableFormBuilder);
@@ -48,6 +50,10 @@ export class EnvironmentListComponent {
     const query = this.searchQuery();
     return this.environments().filter(textFilter(['name', 'key'], query));
   });
+
+  // Delete confirmation state
+  protected readonly envToDelete = signal<string | null>(null);
+  protected readonly deleteConfirmationFlagCount = signal(0);
 
   protected readonly form = this.fb.group({
     name: [''],
@@ -77,5 +83,28 @@ export class EnvironmentListComponent {
 
   protected setDefaultEnvironment(envId: string): void {
     void this.environmentStore.setDefaultEnvironment(envId);
+  }
+
+  /** Request to delete an environment - shows confirmation dialog */
+  protected requestDeleteEnvironment(envId: string): void {
+    const flagCount = this.flagStore.getFlagCountByEnvironmentId(envId);
+    this.envToDelete.set(envId);
+    this.deleteConfirmationFlagCount.set(flagCount);
+  }
+
+  /** Cancel the delete confirmation */
+  protected cancelDelete(): void {
+    this.envToDelete.set(null);
+    this.deleteConfirmationFlagCount.set(0);
+  }
+
+  /** Confirm and execute the delete */
+  protected confirmDelete(): void {
+    const envId = this.envToDelete();
+    if (!envId) return;
+
+    this.flagStore.removeEnvironmentValues(envId);
+    this.environmentStore.deleteEnvironment(envId);
+    this.cancelDelete();
   }
 }

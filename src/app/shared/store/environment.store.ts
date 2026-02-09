@@ -110,6 +110,31 @@ export class EnvironmentStore extends BaseCrudStore<Environment> {
     }
   }
 
+  /** Delete an environment (local store + audit; API DELETE not yet supported by backend) */
+  deleteEnvironment(envId: string): void {
+    if (this._items().length <= 1) return;
+
+    const env = this.getById(envId);
+    if (!env) return;
+
+    this.deleteItem(envId);
+
+    // If we deleted the selected environment, fall back to default or first
+    if (this._selectedEnvironmentId() === envId) {
+      const fallback = this._items().find((e) => e.isDefault) ?? this._items()[0];
+      this._selectedEnvironmentId.set(fallback.id);
+      localStorage.setItem(EnvironmentStore.STORAGE_KEY, fallback.id);
+    }
+
+    this.toast.success('Environment deleted');
+    this.logAudit({
+      action: 'deleted',
+      resourceId: envId,
+      resourceName: env.name,
+      details: `Deleted environment "${env.key}"`,
+    });
+  }
+
   /** Find environment by ID */
   getEnvironmentById(id: string): Environment | undefined {
     return this.getById(id);

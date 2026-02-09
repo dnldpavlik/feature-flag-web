@@ -245,6 +245,23 @@ export class FlagStore extends BaseCrudStore<Flag> {
     };
   }
 
+  /** Remove environment values for a deleted environment from all flags */
+  removeEnvironmentValues(environmentId: string): void {
+    this._items.update((flags) =>
+      flags.map((flag) => ({
+        ...flag,
+        environmentValues: Object.fromEntries(
+          Object.entries(flag.environmentValues).filter(([key]) => key !== environmentId),
+        ),
+      })),
+    );
+  }
+
+  /** Count flags that have values in a specific environment */
+  getFlagCountByEnvironmentId(environmentId: string): number {
+    return this._items().filter((f) => f.environmentValues[environmentId]).length;
+  }
+
   getValueInEnvironment<T extends FlagType>(
     flagId: string,
     environmentId: string,

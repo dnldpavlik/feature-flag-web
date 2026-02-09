@@ -945,6 +945,54 @@ describe('FlagStore', () => {
     });
   });
 
+  describe('removeEnvironmentValues', () => {
+    it('should remove environment values for the given environment ID from all flags', () => {
+      const flagsBefore = store.flags();
+      // Verify flags have env_staging values before removal
+      expect(flagsBefore.some((f) => f.environmentValues['env_staging'])).toBe(true);
+
+      store.removeEnvironmentValues('env_staging');
+
+      const flagsAfter = store.flags();
+      for (const flag of flagsAfter) {
+        expect(flag.environmentValues['env_staging']).toBeUndefined();
+      }
+    });
+
+    it('should preserve other environment values', () => {
+      store.removeEnvironmentValues('env_staging');
+
+      const flagsAfter = store.flags();
+      for (const flag of flagsAfter) {
+        expect(flag.environmentValues['env_development']).toBeDefined();
+        expect(flag.environmentValues['env_production']).toBeDefined();
+      }
+    });
+
+    it('should be a no-op for a non-existent environment ID', () => {
+      const flagsBefore = store.flags().map((f) => ({ ...f }));
+
+      store.removeEnvironmentValues('env_nonexistent');
+
+      const flagsAfter = store.flags();
+      expect(flagsAfter.length).toBe(flagsBefore.length);
+    });
+  });
+
+  describe('getFlagCountByEnvironmentId', () => {
+    it('should return count of flags with values in an environment', () => {
+      const count = store.getFlagCountByEnvironmentId('env_development');
+      const expected = store.flags().filter((f) => f.environmentValues['env_development']).length;
+      expect(count).toBe(expected);
+      expect(count).toBeGreaterThan(0);
+    });
+
+    it('should return zero for a non-existent environment', () => {
+      const count = store.getFlagCountByEnvironmentId('env_nonexistent');
+      expect(count).toBe(0);
+    });
+  });
+
   describe('error handling', () => {
     let toastService: ToastService;
     let flagApi: FlagApi;
