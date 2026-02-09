@@ -113,19 +113,28 @@ describe('ProjectList', () => {
       expect(component.projectToDelete()).toBeNull();
     });
 
-    it('should delete flags first then project when confirmed', async () => {
-      const deleteFlagsSpy = jest.spyOn(flagStore, 'deleteFlagsByProjectId').mockResolvedValue();
+    it('should delete project and clean up local flags when confirmed', async () => {
       const deleteProjectSpy = jest.spyOn(store, 'deleteProject').mockResolvedValue();
+      const removeFlagsSpy = jest.spyOn(flagStore, 'removeFlagsByProjectId');
 
       component.requestDeleteProject('proj_default');
       await component.confirmDelete();
 
-      expect(deleteFlagsSpy).toHaveBeenCalledWith('proj_default');
       expect(deleteProjectSpy).toHaveBeenCalledWith('proj_default');
+      expect(removeFlagsSpy).toHaveBeenCalledWith('proj_default');
+    });
+
+    it('should not clean up flags when project delete fails', async () => {
+      jest.spyOn(store, 'deleteProject').mockRejectedValue(new Error('fail'));
+      const removeFlagsSpy = jest.spyOn(flagStore, 'removeFlagsByProjectId');
+
+      component.requestDeleteProject('proj_default');
+      await component.confirmDelete();
+
+      expect(removeFlagsSpy).not.toHaveBeenCalled();
     });
 
     it('should clear confirmation state after delete', async () => {
-      jest.spyOn(flagStore, 'deleteFlagsByProjectId').mockResolvedValue();
       jest.spyOn(store, 'deleteProject').mockResolvedValue();
 
       component.requestDeleteProject('proj_default');
@@ -141,16 +150,15 @@ describe('ProjectList', () => {
     });
 
     it('should do nothing when confirmDelete is called without projectToDelete', async () => {
-      const deleteFlagsSpy = jest.spyOn(flagStore, 'deleteFlagsByProjectId');
       const deleteProjectSpy = jest.spyOn(store, 'deleteProject');
+      const removeFlagsSpy = jest.spyOn(flagStore, 'removeFlagsByProjectId');
 
-      // Ensure no project is selected for deletion
       expect(component.projectToDelete()).toBeNull();
 
       await component.confirmDelete();
 
-      expect(deleteFlagsSpy).not.toHaveBeenCalled();
       expect(deleteProjectSpy).not.toHaveBeenCalled();
+      expect(removeFlagsSpy).not.toHaveBeenCalled();
     });
   });
 

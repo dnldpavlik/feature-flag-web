@@ -73,7 +73,6 @@ test.describe('Project Management Journey', () => {
       };
 
       await projectList.createProject(projectData);
-      await page.waitForTimeout(500);
 
       // New project should appear in list
       await projectList.assertProjectExists(new RegExp(projectData.name));
@@ -212,6 +211,93 @@ test.describe('Project Management Journey', () => {
     });
   });
 
+  test.describe('Delete Project', () => {
+    test('should show delete button for each project when multiple exist', async ({ page }) => {
+      const projectList = new ProjectListPage(page);
+      await projectList.goto();
+
+      const projectCount = await projectList.getProjectCount();
+      if (projectCount <= 1) {
+        test.skip();
+        return;
+      }
+
+      // Each row should have a Delete button
+      const firstRow = projectList.projectRows.first();
+      const deleteBtn = firstRow.getByRole('button', { name: /delete/i });
+      await expect(deleteBtn).toBeVisible();
+    });
+
+    test('should show confirmation dialog when clicking delete', async ({ page }) => {
+      const projectList = new ProjectListPage(page);
+      await projectList.goto();
+
+      const projectCount = await projectList.getProjectCount();
+      if (projectCount <= 1) {
+        test.skip();
+        return;
+      }
+
+      await projectList.projectRows
+        .first()
+        .getByRole('button', { name: /delete/i })
+        .click();
+
+      // Confirmation dialog should appear
+      const dialog = page.locator('[role="dialog"]');
+      await expect(dialog).toBeVisible();
+      await expect(dialog).toContainText(/delete project/i);
+    });
+
+    test('should cancel delete when clicking cancel', async ({ page }) => {
+      const projectList = new ProjectListPage(page);
+      await projectList.goto();
+
+      const projectCount = await projectList.getProjectCount();
+      if (projectCount <= 1) {
+        test.skip();
+        return;
+      }
+
+      await projectList.projectRows
+        .first()
+        .getByRole('button', { name: /delete/i })
+        .click();
+
+      const dialog = page.locator('[role="dialog"]');
+      await expect(dialog).toBeVisible();
+
+      await projectList.cancelModal();
+
+      await expect(dialog).not.toBeVisible();
+      await projectList.assertItemCount(projectCount);
+    });
+
+    test('should delete project when confirmed', async ({ page }) => {
+      const projectList = new ProjectListPage(page);
+      await projectList.goto();
+
+      // Create a new project so we have a safe one to delete
+      const projectData = {
+        name: `Delete Me ${uniqueId()}`,
+        key: `delete-me-${uniqueId()}`,
+        description: 'Project for delete test',
+      };
+
+      await projectList.createProject(projectData);
+      await projectList.assertProjectExists(new RegExp(projectData.name));
+
+      const countAfterCreate = await projectList.getProjectCount();
+
+      // Delete the newly created project
+      await projectList.deleteProject(projectData.name);
+
+      // Project should be gone
+      await projectList.assertProjectNotExists(new RegExp(projectData.name));
+      await projectList.assertItemCount(countAfterCreate - 1);
+    });
+  });
+
   test.describe('Complete Project Lifecycle', () => {
     test('should complete full project CRUD', async ({ page }) => {
       const projectList = new ProjectListPage(page);
@@ -227,7 +313,6 @@ test.describe('Project Management Journey', () => {
 
       // 2. Create project
       await projectList.createProject(projectData);
-      await page.waitForTimeout(500);
 
       // 3. Verify project appears
       await projectList.assertProjectExists(new RegExp(projectData.name));
@@ -240,7 +325,9 @@ test.describe('Project Management Journey', () => {
       await page.goBack();
       await expect(page).toHaveURL(/projects$/);
 
-      // 6. Cleanup would happen here
+      // 6. Delete the project (cleanup)
+      await projectList.deleteProject(projectData.name);
+      await projectList.assertProjectNotExists(new RegExp(projectData.name));
     });
   });
 });

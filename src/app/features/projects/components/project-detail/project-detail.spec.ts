@@ -4,12 +4,14 @@ import { By } from '@angular/platform-browser';
 import { BehaviorSubject } from 'rxjs';
 
 import { ProjectStore } from '@/app/shared/store/project.store';
+import { FlagStore } from '@/app/features/flags/store/flag.store';
 import { ProjectDetailComponent } from './project-detail';
 import { MOCK_API_PROVIDERS } from '@/app/testing';
 
 describe('ProjectDetail', () => {
   let fixture: ComponentFixture<ProjectDetailComponent>;
   let store: ProjectStore;
+  let flagStore: FlagStore;
   let router: Router;
 
   const build = async (projectId?: string) => {
@@ -18,6 +20,7 @@ describe('ProjectDetail', () => {
       imports: [ProjectDetailComponent],
       providers: [
         ProjectStore,
+        FlagStore,
         ...MOCK_API_PROVIDERS,
         provideRouter([]),
         {
@@ -34,6 +37,7 @@ describe('ProjectDetail', () => {
 
     fixture = TestBed.createComponent(ProjectDetailComponent);
     store = TestBed.inject(ProjectStore);
+    flagStore = TestBed.inject(FlagStore);
     router = TestBed.inject(Router);
     await store.loadProjects();
     fixture.detectChanges();
@@ -66,14 +70,16 @@ describe('ProjectDetail', () => {
     expect(defaultSpy).toHaveBeenCalledWith('proj_growth');
   });
 
-  it('should delete the project and navigate back', async () => {
+  it('should delete the project, clean up flags, and navigate back', async () => {
     await build('proj_growth');
-    const deleteSpy = jest.spyOn(store, 'deleteProject');
+    const deleteSpy = jest.spyOn(store, 'deleteProject').mockResolvedValue();
+    const removeFlagsSpy = jest.spyOn(flagStore, 'removeFlagsByProjectId');
     const navSpy = jest.spyOn(router, 'navigate').mockResolvedValue(true);
 
-    fixture.componentInstance.deleteProject();
+    await fixture.componentInstance.deleteProject();
 
     expect(deleteSpy).toHaveBeenCalledWith('proj_growth');
+    expect(removeFlagsSpy).toHaveBeenCalledWith('proj_growth');
     expect(navSpy).toHaveBeenCalledWith(['/projects']);
   });
 

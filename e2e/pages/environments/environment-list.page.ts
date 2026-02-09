@@ -74,9 +74,11 @@ export class EnvironmentListPage extends BaseCrudListPage {
     return this.createForm.locator('input[type="color"]');
   }
 
-  /** Save/Add button in form */
+  /** Save/Add button in form — targets app-button host for reliable cross-browser clicks */
   get saveButton(): Locator {
-    return this.createForm.getByRole('button', { name: /add environment|save|create/i });
+    return this.createForm
+      .locator('app-button')
+      .filter({ hasText: /add environment|save|create/i });
   }
 
   /** Cancel button in form (may not exist in inline forms) */
@@ -109,12 +111,14 @@ export class EnvironmentListPage extends BaseCrudListPage {
 
     if (data.color) {
       await this.colorInput.fill(data.color);
+      // Blur dismisses the native color picker in Firefox, unblocking the submit button
+      await this.colorInput.blur();
     }
   }
 
   /** Submit the form */
   async submitForm(): Promise<void> {
-    await this.saveButton.click();
+    await this.saveButton.dispatchEvent('click');
   }
 
   /** Cancel the form (clear fields since there's no cancel button in inline form) */
@@ -128,6 +132,8 @@ export class EnvironmentListPage extends BaseCrudListPage {
     await this.clickCreate();
     await this.fillForm(data);
     await this.submitForm();
+    // Wait for the form to reset, confirming the API call completed
+    await expect(this.nameInput).toHaveValue('', { timeout: 15000 });
   }
 
   /** Edit an existing environment */

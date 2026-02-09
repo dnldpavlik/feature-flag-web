@@ -96,7 +96,7 @@
   </app-card>
 
   @if (projectToDelete()) {
-    <div class="delete-confirmation-overlay">
+    <div class="delete-confirmation-overlay" role="dialog" aria-modal="true">
       <app-card class="delete-confirmation" padding="lg">
         <h3>Delete Project?</h3>
         @if (deleteConfirmationFlagCount() > 0) {

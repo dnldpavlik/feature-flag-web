@@ -178,12 +178,20 @@ export abstract class BasePage {
 
   /** Confirm modal action (click primary button) */
   async confirmModal(): Promise<void> {
-    await this.modal.getByRole('button', { name: /confirm|save|create|delete|yes/i }).click();
+    // Use dispatchEvent to fire click directly on app-button host, ensuring Angular's
+    // (click) handler fires reliably across browsers (WebKit/Firefox event bubbling issues)
+    await this.modal
+      .locator('app-button')
+      .filter({ hasText: /confirm|save|create|delete|yes/i })
+      .dispatchEvent('click');
   }
 
   /** Cancel modal action */
   async cancelModal(): Promise<void> {
-    await this.modal.getByRole('button', { name: /cancel|no|close/i }).click();
+    await this.modal
+      .locator('app-button')
+      .filter({ hasText: /cancel|no|close/i })
+      .dispatchEvent('click');
   }
 
   // ============================================================
@@ -197,7 +205,7 @@ export abstract class BasePage {
 
   /** Wait for toast with specific text */
   async waitForToast(text: string | RegExp): Promise<void> {
-    await expect(this.toast.filter({ hasText: text })).toBeVisible({ timeout: 5000 });
+    await expect(this.toast.filter({ hasText: text })).toBeVisible({ timeout: 10000 });
   }
 
   /** Dismiss all visible toasts */

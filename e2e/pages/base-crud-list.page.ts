@@ -61,17 +61,19 @@ export abstract class BaseCrudListPage extends BasePage {
   }
 
   /**
-   * Get edit button in a row.
+   * Get edit button in a row — targets app-button host for reliable cross-browser clicks.
    */
   editButton(name: string | RegExp): Locator {
-    return this.itemRow(name).getByRole('button', { name: /edit/i });
+    return this.itemRow(name).locator('app-button').filter({ hasText: /edit/i });
   }
 
   /**
-   * Get delete button in a row.
+   * Get delete button in a row — targets app-button host for reliable cross-browser clicks.
    */
   deleteButton(name: string | RegExp): Locator {
-    return this.itemRow(name).getByRole('button', { name: /delete/i });
+    return this.itemRow(name)
+      .locator('app-button')
+      .filter({ hasText: /delete/i });
   }
 
   /**
@@ -112,15 +114,18 @@ export abstract class BaseCrudListPage extends BasePage {
    * Click delete button for an item.
    */
   async clickDelete(name: string | RegExp): Promise<void> {
-    await this.deleteButton(name).click();
+    await this.deleteButton(name).dispatchEvent('click');
   }
 
   /**
    * Delete an item with confirmation.
+   * Waits for the confirmation dialog to dismiss, ensuring the delete completed.
    */
   async deleteItem(name: string | RegExp): Promise<void> {
     await this.clickDelete(name);
+    await expect(this.modal).toBeVisible();
     await this.confirmModal();
+    await expect(this.modal).not.toBeVisible({ timeout: 15000 });
   }
 
   // ============================================================

@@ -99,12 +99,14 @@ export class EnvironmentListComponent {
   }
 
   /** Confirm and execute the delete */
-  protected confirmDelete(): void {
+  protected async confirmDelete(): Promise<void> {
     const envId = this.envToDelete();
     if (!envId) return;
 
-    this.flagStore.removeEnvironmentValues(envId);
-    this.environmentStore.deleteEnvironment(envId);
+    const deleted = await this.environmentStore.deleteEnvironment(envId);
+    if (deleted) {
+      this.flagStore.removeEnvironmentValues(envId);
+    }
     this.cancelDelete();
   }
 }

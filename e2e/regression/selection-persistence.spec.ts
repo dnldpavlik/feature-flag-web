@@ -123,8 +123,10 @@ test.describe('Selection Persistence', () => {
       const selectionBefore = await envSelector.inputValue();
       expect(selectionBefore).toBe(secondEnvId);
 
-      // Reload the page
+      // Reload the page and wait for Angular to bootstrap
       await page.reload();
+      await flagList.waitForPageLoad();
+      await flagList.assertPageLoaded();
 
       // Verify environment selection persisted (auto-retries until value matches)
       await expect(envSelector).toHaveValue(secondEnvId);
@@ -161,8 +163,10 @@ test.describe('Selection Persistence', () => {
       await projectSelector.selectOption(secondProjectId!);
       await page.waitForTimeout(300);
 
-      // Reload the page
+      // Reload the page and wait for Angular to bootstrap
       await page.reload();
+      await flagList.waitForPageLoad();
+      await flagList.assertPageLoaded();
 
       // Verify the select element's value matches (auto-retries until value matches)
       await expect(projectSelector).toHaveValue(secondProjectId!);

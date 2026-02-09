@@ -110,29 +110,35 @@ export class EnvironmentStore extends BaseCrudStore<Environment> {
     }
   }
 
-  /** Delete an environment (local store + audit; API DELETE not yet supported by backend) */
-  deleteEnvironment(envId: string): void {
-    if (this._items().length <= 1) return;
+  /** Delete an environment via API */
+  async deleteEnvironment(envId: string): Promise<boolean> {
+    if (this._items().length <= 1) return false;
 
     const env = this.getById(envId);
-    if (!env) return;
+    if (!env) return false;
 
-    this.deleteItem(envId);
+    try {
+      await firstValueFrom(this.api.delete(envId));
+      this.deleteItem(envId);
 
-    // If we deleted the selected environment, fall back to default or first
-    if (this._selectedEnvironmentId() === envId) {
-      const fallback = this._items().find((e) => e.isDefault) ?? this._items()[0];
-      this._selectedEnvironmentId.set(fallback.id);
-      localStorage.setItem(EnvironmentStore.STORAGE_KEY, fallback.id);
+      // If we deleted the selected environment, fall back to default or first
+      if (this._selectedEnvironmentId() === envId) {
+        const fallback = this._items().find((e) => e.isDefault) ?? this._items()[0];
+        this._selectedEnvironmentId.set(fallback.id);
+        localStorage.setItem(EnvironmentStore.STORAGE_KEY, fallback.id);
+      }
+
+      this.toast.success('Environment deleted');
+      this.logAudit({
+        action: 'deleted',
+        resourceId: envId,
+        resourceName: env.name,
+        details: `Deleted environment "${env.key}"`,
+      });
+      return true;
+    } catch {
+      return false;
     }
-
-    this.toast.success('Environment deleted');
-    this.logAudit({
-      action: 'deleted',
-      resourceId: envId,
-      resourceName: env.name,
-      details: `Deleted environment "${env.key}"`,
-    });
   }
 
   /** Find environment by ID */

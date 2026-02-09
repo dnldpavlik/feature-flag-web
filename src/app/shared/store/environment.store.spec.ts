@@ -321,87 +321,86 @@ describe('EnvironmentStore', () => {
   });
 
   describe('deleteEnvironment', () => {
-    it('should delete an environment from the store', () => {
+    it('should call API and remove environment from store', async () => {
+      const api = injectService(EnvironmentApi);
+      jest.spyOn(api, 'delete');
       const countBefore = store.environments().length;
 
-      store.deleteEnvironment('env_staging');
+      await store.deleteEnvironment('env_staging');
 
+      expect(api.delete).toHaveBeenCalledWith('env_staging');
       expect(store.environments().length).toBe(countBefore - 1);
       expect(store.getEnvironmentById('env_staging')).toBeUndefined();
     });
 
-    it('should not delete when only one environment remains', () => {
-      // Delete until one remains
-      store.deleteEnvironment('env_staging');
-      store.deleteEnvironment('env_production');
+    it('should not delete when only one environment remains', async () => {
+      await store.deleteEnvironment('env_staging');
+      await store.deleteEnvironment('env_production');
 
       expect(store.environments().length).toBe(1);
 
-      store.deleteEnvironment(store.environments()[0].id);
+      await store.deleteEnvironment(store.environments()[0].id);
 
       expect(store.environments().length).toBe(1);
     });
 
-    it('should not delete when environment does not exist', () => {
+    it('should not delete when environment does not exist', async () => {
       const countBefore = store.environments().length;
 
-      store.deleteEnvironment('env_nonexistent');
+      await store.deleteEnvironment('env_nonexistent');
 
       expect(store.environments().length).toBe(countBefore);
     });
 
-    it('should fall back selection when deleting the selected environment', () => {
+    it('should fall back selection when deleting the selected environment', async () => {
       store.selectEnvironment('env_staging');
 
-      store.deleteEnvironment('env_staging');
+      await store.deleteEnvironment('env_staging');
 
-      // Should fall back to default (development) or first remaining
       expect(store.selectedEnvironmentId()).not.toBe('env_staging');
       expect(store.getEnvironmentById(store.selectedEnvironmentId())).toBeDefined();
     });
 
-    it('should persist fallback selection to localStorage', () => {
+    it('should persist fallback selection to localStorage', async () => {
       store.selectEnvironment('env_staging');
 
-      store.deleteEnvironment('env_staging');
+      await store.deleteEnvironment('env_staging');
 
       const stored = localStorage.getItem('selected-environment-id');
       expect(stored).toBe(store.selectedEnvironmentId());
     });
 
-    it('should fall back to first environment when no default remains', () => {
-      // env_development is the default; select and delete it
+    it('should fall back to first environment when no default remains', async () => {
       store.selectEnvironment('env_development');
 
-      store.deleteEnvironment('env_development');
+      await store.deleteEnvironment('env_development');
 
-      // No remaining env is default, so should fall back to first item
       const remaining = store.environments();
       expect(remaining.every((e) => !e.isDefault)).toBe(true);
       expect(store.selectedEnvironmentId()).toBe(remaining[0].id);
     });
 
-    it('should not change selection when deleting a non-selected environment', () => {
+    it('should not change selection when deleting a non-selected environment', async () => {
       store.selectEnvironment('env_development');
 
-      store.deleteEnvironment('env_staging');
+      await store.deleteEnvironment('env_staging');
 
       expect(store.selectedEnvironmentId()).toBe('env_development');
     });
 
-    it('should show toast on success', () => {
+    it('should show toast on success', async () => {
       const toastService = injectService(ToastService);
       jest.spyOn(toastService, 'success');
 
-      store.deleteEnvironment('env_staging');
+      await store.deleteEnvironment('env_staging');
 
       expect(toastService.success).toHaveBeenCalledWith('Environment deleted');
     });
 
-    it('should log audit entry on delete', () => {
+    it('should log audit entry on delete', async () => {
       jest.spyOn(auditStore, 'logAction');
 
-      store.deleteEnvironment('env_staging');
+      await store.deleteEnvironment('env_staging');
 
       expect(auditStore.logAction).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -411,6 +410,32 @@ describe('EnvironmentStore', () => {
           resourceName: 'Staging',
         }),
       );
+    });
+
+    it('should return true on successful delete', async () => {
+      const result = await store.deleteEnvironment('env_staging');
+
+      expect(result).toBe(true);
+    });
+
+    it('should not remove from store on API failure', async () => {
+      const api = injectService(EnvironmentApi);
+      jest.spyOn(api, 'delete').mockReturnValue(throwError(() => new Error('Delete failed')));
+      const countBefore = store.environments().length;
+
+      await store.deleteEnvironment('env_staging');
+
+      expect(store.environments().length).toBe(countBefore);
+      expect(store.getEnvironmentById('env_staging')).toBeDefined();
+    });
+
+    it('should return false on API failure', async () => {
+      const api = injectService(EnvironmentApi);
+      jest.spyOn(api, 'delete').mockReturnValue(throwError(() => new Error('Delete failed')));
+
+      const result = await store.deleteEnvironment('env_staging');
+
+      expect(result).toBe(false);
     });
   });
 

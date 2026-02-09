@@ -979,6 +979,33 @@ describe('FlagStore', () => {
     });
   });
 
+  describe('removeFlagsByProjectId', () => {
+    it('should remove all flags for the given project from the local store', () => {
+      const defaultFlagsBefore = store.getFlagsByProjectId('proj_default');
+      expect(defaultFlagsBefore.length).toBeGreaterThan(0);
+
+      store.removeFlagsByProjectId('proj_default');
+
+      expect(store.getFlagsByProjectId('proj_default').length).toBe(0);
+    });
+
+    it('should not remove flags from other projects', () => {
+      const growthCount = store.getFlagsByProjectId('proj_growth').length;
+
+      store.removeFlagsByProjectId('proj_default');
+
+      expect(store.getFlagsByProjectId('proj_growth').length).toBe(growthCount);
+    });
+
+    it('should be a no-op for a project with no flags', () => {
+      const totalBefore = store.flags().length;
+
+      store.removeFlagsByProjectId('proj_nonexistent');
+
+      expect(store.flags().length).toBe(totalBefore);
+    });
+  });
+
   describe('getFlagCountByEnvironmentId', () => {
     it('should return count of flags with values in an environment', () => {
       const count = store.getFlagCountByEnvironmentId('env_development');

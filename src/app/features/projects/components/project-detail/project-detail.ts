@@ -8,6 +8,7 @@ import { ButtonComponent } from '@/app/shared/ui/button/button';
 import { CardComponent } from '@/app/shared/ui/card/card';
 import { EmptyStateComponent } from '@/app/shared/ui/empty-state/empty-state';
 import { ProjectStore } from '@/app/shared/store/project.store';
+import { FlagStore } from '@/app/features/flags/store/flag.store';
 
 @Component({
   selector: 'app-project-detail',
@@ -18,6 +19,7 @@ import { ProjectStore } from '@/app/shared/store/project.store';
 })
 export class ProjectDetailComponent {
   private readonly projectStore = inject(ProjectStore);
+  private readonly flagStore = inject(FlagStore);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly paramMap = toSignal(this.route.paramMap, {
@@ -45,10 +47,11 @@ export class ProjectDetailComponent {
     void this.projectStore.setDefaultProject(project.id);
   }
 
-  protected deleteProject(): void {
+  protected async deleteProject(): Promise<void> {
     const project = this.project();
     if (!project) return;
-    void this.projectStore.deleteProject(project.id);
+    await this.projectStore.deleteProject(project.id);
+    this.flagStore.removeFlagsByProjectId(project.id);
     void this.router.navigate(['/projects']);
   }
 

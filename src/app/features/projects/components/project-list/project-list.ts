@@ -109,14 +109,14 @@ export class ProjectListComponent {
     const projectId = this.projectToDelete();
     if (!projectId) return;
 
-    // Delete all flags first
-    await this.flagStore.deleteFlagsByProjectId(projectId);
-
-    // Then delete the project
-    await this.projectStore.deleteProject(projectId);
-
-    // Clear confirmation state
-    this.cancelDelete();
+    try {
+      await this.projectStore.deleteProject(projectId);
+      this.flagStore.removeFlagsByProjectId(projectId);
+    } catch {
+      // Error handling delegated to the store
+    } finally {
+      this.cancelDelete();
+    }
   }
 
   protected retry(): void {

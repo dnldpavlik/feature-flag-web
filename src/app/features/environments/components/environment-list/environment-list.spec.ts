@@ -168,10 +168,22 @@ describe('EnvironmentList', () => {
       const deleteEnvSpy = jest.spyOn(store, 'deleteEnvironment');
 
       component.requestDeleteEnvironment('env_staging');
-      component.confirmDelete();
+      await component.confirmDelete();
 
-      expect(removeEnvValuesSpy).toHaveBeenCalledWith('env_staging');
       expect(deleteEnvSpy).toHaveBeenCalledWith('env_staging');
+      expect(removeEnvValuesSpy).toHaveBeenCalledWith('env_staging');
+      expect(component.envToDelete()).toBeNull();
+    });
+
+    it('should not remove environment values when API delete fails', async () => {
+      await build();
+      const removeEnvValuesSpy = jest.spyOn(flagStore, 'removeEnvironmentValues');
+      jest.spyOn(store, 'deleteEnvironment').mockResolvedValue(false);
+
+      component.requestDeleteEnvironment('env_staging');
+      await component.confirmDelete();
+
+      expect(removeEnvValuesSpy).not.toHaveBeenCalled();
       expect(component.envToDelete()).toBeNull();
     });
 
@@ -182,7 +194,7 @@ describe('EnvironmentList', () => {
 
       expect(component.envToDelete()).toBeNull();
 
-      component.confirmDelete();
+      await component.confirmDelete();
 
       expect(removeEnvValuesSpy).not.toHaveBeenCalled();
       expect(deleteEnvSpy).not.toHaveBeenCalled();

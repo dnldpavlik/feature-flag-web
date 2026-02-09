@@ -100,40 +100,54 @@ test.describe('Environment Delete Regression', () => {
     test('should remove environment from list after confirmed delete', async ({ page }) => {
       const envList = new EnvironmentListPage(page);
       await envList.goto();
+      await envList.waitForLoadingComplete();
 
-      // Create a new environment to safely delete
+      // Create two environments so delete button is always visible (need 2+)
+      const helperName = `Helper ${uniqueId()}`;
+      await envList.createEnvironment({
+        name: helperName,
+        key: `helper-${uniqueId()}`,
+        color: '#10b981',
+      });
+      await envList.assertEnvironmentExists(new RegExp(helperName));
+
       const envName = `Deletable ${uniqueId()}`;
       await envList.createEnvironment({
         name: envName,
         key: `deletable-${uniqueId()}`,
         color: '#dc2626',
       });
-      await page.waitForTimeout(500);
       await envList.assertEnvironmentExists(new RegExp(envName));
-
-      const countBefore = await envList.getEnvironmentCount();
 
       // Delete it
       await envList.deleteEnvironment(envName);
-      await page.waitForTimeout(500);
 
-      // Verify it's gone
+      // Verify the deleted one is gone, the helper still exists
       await envList.assertEnvironmentNotExists(new RegExp(envName));
-      await envList.assertEnvironmentCount(countBefore - 1);
+      await envList.assertEnvironmentExists(new RegExp(helperName));
     });
 
     test('should show success toast after deleting environment', async ({ page }) => {
       const envList = new EnvironmentListPage(page);
       await envList.goto();
+      await envList.waitForLoadingComplete();
 
-      // Create environment to delete
+      // Create two environments so delete button is always visible (need 2+)
+      const helperName = `Helper ${uniqueId()}`;
+      await envList.createEnvironment({
+        name: helperName,
+        key: `helper-${uniqueId()}`,
+        color: '#10b981',
+      });
+      await envList.assertEnvironmentExists(new RegExp(helperName));
+
       const envName = `Toast Test ${uniqueId()}`;
       await envList.createEnvironment({
         name: envName,
         key: `toast-test-${uniqueId()}`,
         color: '#7c3aed',
       });
-      await page.waitForTimeout(500);
+      await envList.assertEnvironmentExists(new RegExp(envName));
 
       // Delete it
       await envList.deleteEnvironment(envName);
@@ -145,27 +159,31 @@ test.describe('Environment Delete Regression', () => {
     test('should preserve other environments after delete', async ({ page }) => {
       const envList = new EnvironmentListPage(page);
       await envList.goto();
+      await envList.waitForLoadingComplete();
 
-      const initialCount = await envList.getEnvironmentCount();
-      if (initialCount <= 1) {
-        test.skip();
-        return;
-      }
-
-      // Create a new environment and delete it
-      const envName = `Temp Env ${uniqueId()}`;
+      // Create two environments — we will delete one and verify the other survives
+      const keepName = `Keep Env ${uniqueId()}`;
       await envList.createEnvironment({
-        name: envName,
-        key: `temp-${uniqueId()}`,
+        name: keepName,
+        key: `keep-${uniqueId()}`,
+        color: '#10b981',
+      });
+      await envList.assertEnvironmentExists(new RegExp(keepName));
+
+      const deleteName = `Delete Env ${uniqueId()}`;
+      await envList.createEnvironment({
+        name: deleteName,
+        key: `delete-${uniqueId()}`,
         color: '#0ea5e9',
       });
-      await page.waitForTimeout(500);
+      await envList.assertEnvironmentExists(new RegExp(deleteName));
 
-      await envList.deleteEnvironment(envName);
-      await page.waitForTimeout(500);
+      // Delete one
+      await envList.deleteEnvironment(deleteName);
 
-      // Original environments should still be there
-      await envList.assertEnvironmentCount(initialCount);
+      // The other should still be there
+      await envList.assertEnvironmentNotExists(new RegExp(deleteName));
+      await envList.assertEnvironmentExists(new RegExp(keepName));
     });
   });
 });

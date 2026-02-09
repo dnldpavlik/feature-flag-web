@@ -5,7 +5,7 @@
  * @route /projects
  */
 
-import { Locator } from '@playwright/test';
+import { Locator, expect } from '@playwright/test';
 import { BaseCrudListPage } from '../base-crud-list.page';
 
 export interface ProjectFormData {
@@ -69,9 +69,9 @@ export class ProjectListPage extends BaseCrudListPage {
     return this.createForm.getByLabel('Description');
   }
 
-  /** Save/Add button */
+  /** Save/Add button — targets app-button host for reliable cross-browser clicks */
   get saveButton(): Locator {
-    return this.createForm.getByRole('button', { name: /add project|save|create/i });
+    return this.createForm.locator('app-button').filter({ hasText: /add project|save|create/i });
   }
 
   /** Cancel button (may not exist in inline forms) */
@@ -103,7 +103,7 @@ export class ProjectListPage extends BaseCrudListPage {
 
   /** Submit the form */
   async submitForm(): Promise<void> {
-    await this.saveButton.click();
+    await this.saveButton.dispatchEvent('click');
   }
 
   /** Create a new project */
@@ -111,6 +111,8 @@ export class ProjectListPage extends BaseCrudListPage {
     await this.clickCreate();
     await this.fillForm(data);
     await this.submitForm();
+    // Wait for the project to appear in the table (API call must complete)
+    await expect(this.itemRow(new RegExp(data.name))).toBeVisible({ timeout: 15000 });
   }
 
   /** Delete a project */

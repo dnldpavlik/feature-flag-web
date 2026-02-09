@@ -139,6 +139,11 @@ export class FlagStore extends BaseCrudStore<Flag> {
     }
   }
 
+  /** Remove all flags for a project from the local store (no API calls) */
+  removeFlagsByProjectId(projectId: string): void {
+    this._items.update((flags) => flags.filter((f) => f.projectId !== projectId));
+  }
+
   /** Update flag details via API */
   async updateFlagDetails(
     flagId: string,
