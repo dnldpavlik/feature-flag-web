@@ -2,10 +2,9 @@
 
 > **Note:** This document describes both the current implementation and the target architecture.
 > Sections marked with **(Current)** reflect what exists today. Sections marked with **(Planned)**
-> describe infrastructure that has not yet been implemented, including: the `core/api/` service layer,
-> `core/auth/` authentication system, `core/error-handling/` error types and handlers, HTTP interceptors,
-> and the API service abstractions. The stores currently use in-memory seed data rather than HTTP calls
-> to a backend API.
+> describe infrastructure that has not yet been implemented. The `core/api/` service layer (CrudApi,
+> error interceptor), `core/auth/` authentication system (Keycloak via keycloak-angular), and HTTP
+> interceptors are all implemented. Stores use the CrudApi layer to communicate with the Rust backend.
 
 ## Overview
 
@@ -100,10 +99,10 @@ src/
 │   │   │   ├── base-api.service.ts     # Base HTTP client
 │   │   │   └── api.interceptor.ts      # HTTP interceptors
 │   │   ├── auth/
-│   │   │   ├── auth.service.ts
-│   │   │   ├── auth.guard.ts
-│   │   │   ├── auth.interceptor.ts
-│   │   │   └── auth.types.ts
+│   │   │   ├── auth.service.ts          # Wraps Keycloak with Angular signals
+│   │   │   ├── auth.guard.ts            # Redirects to Keycloak login if unauthenticated
+│   │   │   ├── role.guard.ts            # Checks Keycloak roles for admin routes
+│   │   │   └── auth.models.ts           # UserProfile, AUTH_ROLES, AuthRole
 │   │   ├── error-handling/
 │   │   │   ├── error-handler.service.ts
 │   │   │   ├── error.types.ts
@@ -547,36 +546,19 @@ export const apiInterceptor: HttpInterceptorFn = (req, next) => {
   return next(req);
 };
 
-// core/auth/auth.interceptor.ts
-export const authInterceptor: HttpInterceptorFn = (req, next) => {
-  const authService = inject(AuthService);
-  const token = authService.getToken();
+// Authentication is handled by keycloak-angular's includeBearerTokenInterceptor.
+// It automatically attaches Bearer tokens to requests matching the configured URL pattern.
+// See app.config.ts for the INCLUDE_BEARER_TOKEN_INTERCEPTOR_CONFIG setup.
 
-  if (token) {
-    req = req.clone({
-      setHeaders: {
-        Authorization: `Bearer ${token}`
-      }
-    });
-  }
-
-  return next(req);
-};
-
-// core/error-handling/error.interceptor.ts
+// core/api/error.interceptor.ts
 export const errorInterceptor: HttpInterceptorFn = (req, next) => {
-  const errorHandler = inject(ErrorHandlerService);
-
   return next(req).pipe(
     catchError((error: HttpErrorResponse) => {
-      const appError = errorHandler.normalize(error);
-      
-      // Handle specific errors globally
-      if (error.status === 401) {
-        inject(AuthService).logout();
-      }
-
-      return throwError(() => appError);
+      // Maps HTTP status codes to user-friendly error messages
+      // 401 → "Session expired. Redirecting to login..."
+      // 403 → "You do not have permission..."
+      // etc.
+      return throwError(() => ({ status: error.status, message: getErrorMessage(error) }));
     })
   );
 };
@@ -896,14 +878,14 @@ All components use OnPush change detection for optimal performance:
 
 ## Security
 
-### Authentication Flow
+### Authentication Flow (Keycloak)
 
-1. User submits credentials to login endpoint
-2. Backend validates and returns JWT
-3. Token stored in memory (not localStorage)
-4. Token attached to requests via interceptor
-5. Token refresh handled automatically
-6. Logout clears token and redirects
+1. App loads with `login-required` → Keycloak redirects to login page
+2. User authenticates via Keycloak (OIDC/PKCE)
+3. Keycloak redirects back with access token
+4. `keycloak-angular`'s `includeBearerTokenInterceptor` attaches Bearer token to API requests
+5. `withAutoRefreshToken` silently refreshes tokens; logs out on inactivity (5min)
+6. Logout calls `keycloak.logout()` and redirects to app origin
 
 ### XSS Prevention
 

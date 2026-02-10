@@ -136,7 +136,7 @@ This project follows strict development practices:
 
 **Test-Driven Development (TDD)**
 - Write failing tests before implementation
-- Maintain minimum 80% code coverage
+- 100% code coverage enforced
 - See [CLAUDE.md](./.claude/CLAUDE.md) for detailed TDD workflow
 
 **SOLID Principles**
@@ -192,18 +192,24 @@ npm run e2e:debug
 
 See [e2e/README.md](./e2e/README.md) for the complete E2E testing guide.
 
-### API Configuration
+### API & Authentication Configuration
 
-Configure the Rust backend API URL in your environment file:
+The app authenticates via **Keycloak** (OIDC/PKCE). Configure both the API URL and Keycloak connection in your environment file:
 
 ```typescript
 // src/environments/environment.ts
 export const environment = {
   production: false,
   apiBaseUrl: 'http://localhost:8080/api/v1',
-  // ... other config
+  keycloak: {
+    url: 'http://localhost:8080',
+    realm: 'homelab',
+    clientId: 'feature-flags-ui',
+  },
 };
 ```
+
+On app load, unauthenticated users are redirected to the Keycloak login page (`login-required` mode). Bearer tokens are automatically attached to `/api/` requests via `keycloak-angular`.
 
 ## Architecture
 

@@ -294,7 +294,7 @@ Each entry records: resource name, action, resource type, user, details string, 
 | Error handling | Typed error responses (400, 404, 500) | Done |
 | Database migrations | SQLx migrate (3 migrations) | Done |
 | Seed file execution | Configurable via `RUN_SEEDS` | Done |
-| Authentication/authorization | - | Planned |
+| Authentication (Keycloak JWT) | Web UI via keycloak-angular | Done (UI), In Progress (API) |
 | Rate limiting | - | Planned |
 | Pagination | - | Planned |
 | Webhook delivery | - | Planned |
@@ -416,20 +416,27 @@ Each entry records: resource name, action, resource type, user, details string, 
 | User profile display | Done (UI) |
 | Password management | Done (UI) |
 | API key management | Done (UI) |
-| Authentication (login/signup) | Planned |
-| Role-based access control | Planned |
+| Authentication (Keycloak OIDC/PKCE) | Done |
+| Role-based access control (admin/user) | Done |
+| SSO (OIDC via Keycloak) | Done |
+| Session management (auto-refresh, inactivity logout) | Done |
+| Logout | Done |
 | Team/organization management | Planned |
 | Invite users by email | Planned |
-| Session management | Planned |
-| 2FA/MFA | Planned |
-| SSO (SAML/OIDC) | Planned |
+| 2FA/MFA | Planned (via Keycloak) |
 
-### Planned Roles
+### Current Roles (Keycloak)
+
+| Role | Permissions |
+|------|-------------|
+| Admin | Full access: all routes including Settings and Environments management |
+| User | Standard access: all routes except Settings and Environments |
+
+### Planned Roles (Future)
 
 | Role | Permissions |
 |------|-------------|
 | Owner | Full access, organization deletion |
-| Admin | Manage users, projects, environments |
 | Developer | Create/edit flags and targeting |
 | Viewer | Read-only access |
 
@@ -452,5 +459,5 @@ Each entry records: resource name, action, resource type, user, details string, 
 | Web UI Components | 14 | 0 | 0 | 14 |
 | Mobile | 1 | 0 | 7 | 8 |
 | SDK & Integrations | 1 | 0 | 10 | 11 |
-| User Management | 3 | 0 | 7 | 10 |
-| **Total** | **106** | **0** | **62** | **168** |
+| User Management | 8 | 0 | 3 | 11 |
+| **Total** | **112** | **0** | **56** | **168** |

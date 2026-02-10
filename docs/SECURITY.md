@@ -17,8 +17,8 @@ As a feature flag management system, this application handles sensitive configur
 
 | Category | Status | Notes |
 |----------|--------|-------|
-| Authentication | Not Started | No auth service, guard, or interceptor |
-| Authorization | Not Started | No RBAC implementation |
+| Authentication | Complete | Keycloak OIDC/PKCE via keycloak-angular |
+| Authorization | Complete | Role-based guards (admin/user) via Keycloak roles |
 | XSS Prevention | Complete | Using Angular's built-in sanitization |
 | CSRF Protection | Not Started | Backend integration required |
 | Secure Storage | Partial | Theme uses localStorage (acceptable) |
@@ -36,222 +36,99 @@ As a feature flag management system, this application handles sensitive configur
 
 ## Authentication
 
-### Requirements (P0)
+### Implementation: Complete (Keycloak OIDC/PKCE)
 
-#### Token-Based Authentication
+Authentication is handled by **Keycloak** via `keycloak-angular` (v21) and `keycloak-js` (v26). The app uses `login-required` mode, redirecting unauthenticated users to the Keycloak login page.
 
-```typescript
-// core/auth/auth.types.ts
-export interface AuthTokens {
-  accessToken: string;
-  refreshToken: string;
-  expiresAt: number;
-}
-
-export interface AuthUser {
-  id: string;
-  email: string;
-  name: string;
-  roles: string[];
-  permissions: string[];
-}
-
-export interface AuthState {
-  user: AuthUser | null;
-  isAuthenticated: boolean;
-  isLoading: boolean;
-}
-```
-
-#### Auth Service
+#### Configuration
 
 ```typescript
-// core/auth/auth.service.ts
-@Injectable({ providedIn: 'root' })
-export class AuthService {
-  private readonly http = inject(HttpClient);
-  private readonly router = inject(Router);
-
-  // Store tokens in memory, NOT localStorage
-  private tokens = signal<AuthTokens | null>(null);
-  private user = signal<AuthUser | null>(null);
-
-  readonly isAuthenticated = computed(() => !!this.tokens());
-  readonly currentUser = this.user.asReadonly();
-
-  async login(credentials: LoginCredentials): Promise<void> { }
-  async logout(): Promise<void> { }
-  async refreshToken(): Promise<void> { }
-  getAccessToken(): string | null { }
-}
+// app.config.ts
+provideKeycloak({
+  config: environment.keycloak,  // { url, realm, clientId }
+  initOptions: { onLoad: 'login-required' },
+  providers: [AutoRefreshTokenService, UserActivityService],
+  features: [
+    withAutoRefreshToken({ sessionTimeout: 300000, onInactivityTimeout: 'logout' }),
+  ],
+})
 ```
 
-#### Auth Interceptor
+#### AuthService (`core/auth/auth.service.ts`)
 
-```typescript
-// core/auth/auth.interceptor.ts
-export const authInterceptor: HttpInterceptorFn = (req, next) => {
-  const authService = inject(AuthService);
-  const token = authService.getAccessToken();
+Wraps the Keycloak instance with Angular signals:
 
-  if (token && !req.url.includes('/auth/')) {
-    req = req.clone({
-      setHeaders: {
-        Authorization: `Bearer ${token}`
-      }
-    });
-  }
-
-  return next(req).pipe(
-    catchError((error: HttpErrorResponse) => {
-      if (error.status === 401) {
-        authService.logout();
-      }
-      return throwError(() => error);
-    })
-  );
-};
-```
+- `isAuthenticated: Signal<boolean>` — reactive auth state from Keycloak events
+- `userProfile: Signal<UserProfile | null>` — loaded via `keycloak.loadUserProfile()`
+- `roles: Signal<string[]>` — combined realm + client roles
+- `token: Signal<string | undefined>` — current access token
+- `login()`, `logout()`, `hasRole()`, `isAdmin()`
 
 #### Route Guards
 
-```typescript
-// core/auth/auth.guard.ts
-export const authGuard: CanActivateFn = (route, state) => {
-  const authService = inject(AuthService);
-  const router = inject(Router);
+- **`authGuard`** — redirects to Keycloak login if not authenticated
+- **`roleGuard`** — checks Keycloak client/realm roles against route `data.role`; redirects to `/dashboard` if lacking required role
 
-  if (authService.isAuthenticated()) {
-    return true;
-  }
+#### Bearer Token Interceptor
 
-  // Store intended destination for redirect after login
-  return router.createUrlTree(['/login'], {
-    queryParams: { returnUrl: state.url }
-  });
-};
-```
+`keycloak-angular`'s `includeBearerTokenInterceptor` automatically attaches the Bearer token to requests matching `/api/` URL pattern.
 
 ### Implementation Checklist
 
-- [ ] Create `AuthService` with login/logout/refresh
-- [ ] Create `authInterceptor` for token attachment
-- [ ] Create `authGuard` for protected routes
-- [ ] Create login page component
-- [ ] Store tokens in memory only (not localStorage/sessionStorage)
-- [ ] Implement automatic token refresh before expiry
-- [ ] Handle 401 responses globally
-- [ ] Clear all state on logout
-- [ ] Add loading states during auth operations
+- [x] Integrate Keycloak via `keycloak-angular` with `login-required`
+- [x] Create `AuthService` wrapping Keycloak with Angular signals
+- [x] Create `authGuard` for protected routes
+- [x] Create `roleGuard` for admin-only routes
+- [x] Bearer token attachment via `includeBearerTokenInterceptor`
+- [x] Automatic token refresh via `withAutoRefreshToken`
+- [x] Handle 401 in error interceptor ("Session expired")
+- [x] Logout clears Keycloak session and redirects
+- [x] User profile and roles loaded reactively via signals
 
 ### Security Rules
 
-1. **Never store tokens in localStorage/sessionStorage** - Vulnerable to XSS
-2. **Use httpOnly cookies for refresh tokens** - When backend supports it
-3. **Short access token expiry** - 15 minutes recommended
-4. **Validate tokens on every request** - Backend responsibility
-5. **Implement token refresh** - Before access token expires
+1. **Tokens managed by Keycloak** - No manual localStorage/sessionStorage handling
+2. **OIDC/PKCE flow** - Secure browser-based authentication
+3. **Automatic token refresh** - `withAutoRefreshToken` refreshes before expiry
+4. **Inactivity timeout** - 5-minute session timeout with automatic logout
+5. **Validate tokens on every request** - Backend responsibility (Keycloak JWT validation)
 
 ---
 
 ## Authorization
 
-### Requirements (P0)
+### Implementation: Complete (Keycloak Role-Based)
 
-#### Role-Based Access Control (RBAC)
+Authorization uses Keycloak roles (client + realm) checked via `roleGuard`.
 
-```typescript
-// core/auth/permissions.types.ts
-export type Role = 'admin' | 'developer' | 'viewer';
+#### Current Roles
 
-export type Permission =
-  | 'flags:read'
-  | 'flags:write'
-  | 'flags:delete'
-  | 'flags:toggle'
-  | 'environments:read'
-  | 'environments:write'
-  | 'environments:delete'
-  | 'projects:read'
-  | 'projects:write'
-  | 'projects:delete'
-  | 'users:read'
-  | 'users:write'
-  | 'audit:read';
+| Role | Source | Access |
+|------|--------|--------|
+| `admin` | Keycloak client role (`feature-flags-ui`) | All routes including Settings and Environments |
+| `user` | Default | All routes except Settings and Environments |
 
-export const ROLE_PERMISSIONS: Record<Role, Permission[]> = {
-  admin: ['*'], // All permissions
-  developer: [
-    'flags:read', 'flags:write', 'flags:toggle',
-    'environments:read',
-    'projects:read',
-    'audit:read'
-  ],
-  viewer: [
-    'flags:read',
-    'environments:read',
-    'projects:read',
-    'audit:read'
-  ]
-};
-```
+#### Implementation
 
-#### Permission Directive
-
-```typescript
-// shared/directives/has-permission.directive.ts
-@Directive({
-  selector: '[appHasPermission]',
-})
-export class HasPermissionDirective {
-  private readonly authService = inject(AuthService);
-  private readonly templateRef = inject(TemplateRef<unknown>);
-  private readonly viewContainer = inject(ViewContainerRef);
-
-  @Input() set appHasPermission(permission: Permission) {
-    if (this.authService.hasPermission(permission)) {
-      this.viewContainer.createEmbeddedView(this.templateRef);
-    } else {
-      this.viewContainer.clear();
-    }
-  }
-}
-```
-
-#### Permission Guard
-
-```typescript
-// core/auth/permission.guard.ts
-export const permissionGuard = (permission: Permission): CanActivateFn => {
-  return () => {
-    const authService = inject(AuthService);
-    const router = inject(Router);
-
-    if (authService.hasPermission(permission)) {
-      return true;
-    }
-
-    return router.createUrlTree(['/unauthorized']);
-  };
-};
-```
+- **`roleGuard`** reads `keycloak.resourceAccess` and `keycloak.realmAccess` directly
+- **Nav filtering** — `AppComponent` filters `NAV_ITEMS` by `authService.isAdmin()`, hiding admin-only items
+- **Route data** — admin routes have `data: { role: 'admin' }` and use `[authGuard, roleGuard]`
 
 ### Implementation Checklist
 
-- [ ] Define roles and permissions
-- [ ] Add permissions to user object from backend
-- [ ] Create `hasPermission()` method in AuthService
-- [ ] Create `HasPermissionDirective` for template use
-- [ ] Create `permissionGuard` for route protection
-- [ ] Hide UI elements based on permissions
-- [ ] Disable actions user cannot perform
-- [ ] Create unauthorized page
+- [x] Define roles in Keycloak (admin, user)
+- [x] Create `roleGuard` checking route `data.role` against Keycloak roles
+- [x] Hide nav items based on roles (`adminOnly` flag on NavItem)
+- [x] Redirect unauthorized users to `/dashboard`
+- [ ] Create granular permission system (future: developer, viewer roles)
+- [ ] Create `HasPermissionDirective` for template use (future)
+- [ ] Create unauthorized page (future)
 
 ### Security Rules
 
-1. **Always verify permissions on backend** - Frontend is for UX only
+1. **Always verify permissions on backend** - Frontend guards are for UX only
 2. **Use least privilege principle** - Default to minimal permissions
-3. **Environment-scoped permissions** - Production access should be restricted
+3. **Environment-scoped permissions** - Production access should be restricted (future)
 4. **Log permission denials** - For security monitoring
 
 ---
@@ -501,7 +378,7 @@ function getPublicErrorMessage(status: number): string {
 
 | # | Vulnerability | Mitigation | Status |
 |---|--------------|------------|--------|
-| A01 | Broken Access Control | Route guards, permission checks | Not Started |
+| A01 | Broken Access Control | Route guards (authGuard, roleGuard), Keycloak roles | Complete |
 | A02 | Cryptographic Failures | HTTPS only, no client-side crypto | Partial |
 | A03 | Injection | Angular sanitization, parameterized queries | Complete |
 | A05 | Security Misconfiguration | CSP headers, secure defaults | Not Started |
@@ -591,11 +468,11 @@ Before production launch:
 
 ## Implementation Roadmap
 
-### Phase 1: MVP Security (P0)
+### Phase 1: MVP Security (P0) — Complete
 
-1. Authentication service and interceptor
-2. Route guards for protected pages
-3. Basic authorization (admin/user)
+1. ~~Authentication service and interceptor~~ — Keycloak OIDC via keycloak-angular
+2. ~~Route guards for protected pages~~ — authGuard + roleGuard
+3. ~~Basic authorization (admin/user)~~ — Keycloak role-based
 4. HTTPS enforcement
 5. Input validation on all forms
 

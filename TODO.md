@@ -41,23 +41,24 @@ Development task tracker organized by phase and priority.
 
 - [x] Implement app shell (header, sidebar, main content area)
 - [x] Set up routing structure with lazy loading
-- [ ] Create base API client service with error handling
-- [ ] Implement HTTP interceptor for auth tokens
-- [ ] Implement HTTP interceptor for error handling
+- [x] Create base API client service with error handling
+- [x] Implement HTTP interceptor for auth tokens (Keycloak Bearer token via keycloak-angular)
+- [x] Implement HTTP interceptor for error handling
 - [ ] Create global loading indicator service
-- [ ] Set up toast/notification service
+- [x] Set up toast/notification service
 - [x] Implement theme service (light/dark mode)
 - [ ] Create responsive breakpoint service
 
 ### Authentication 🔴
 
-- [ ] Create auth service interface
-- [ ] Implement JWT token handling
-- [ ] Create auth guard for protected routes
-- [ ] Implement login page/flow
-- [ ] Handle token refresh
-- [ ] Create logged-in user state
-- [ ] Implement logout functionality
+- [x] Integrate Keycloak via keycloak-angular (OIDC/PKCE)
+- [x] Create AuthService with Angular signals (wraps Keycloak instance)
+- [x] Create auth guard for protected routes (redirects to Keycloak login)
+- [x] Create role guard for admin-only routes (Settings, Environments)
+- [x] Handle token refresh (withAutoRefreshToken)
+- [x] Create logged-in user state (userProfile signal from Keycloak)
+- [x] Implement logout functionality (Keycloak logout + redirect)
+- [x] Role-based nav item filtering (admin-only items hidden for non-admins)
 
 ### Layout Components 🔴
 
@@ -381,4 +382,4 @@ Additional shared infrastructure:
 
 ---
 
-_Last updated: 2026-01-30_
+_Last updated: 2026-02-10_

@@ -37,9 +37,13 @@ src/
 │   │   ├── api/                     # HTTP layer: CrudApi<T,C,U>, tokens, interceptors
 │   │   │   ├── crud.api.ts          # Generic CRUD base (GET/POST/PUT/DELETE)
 │   │   │   ├── api.tokens.ts        # API_BASE_URL injection token
-│   │   │   ├── auth.interceptor.ts  # Token attachment
 │   │   │   ├── error.interceptor.ts # Global error handling
 │   │   │   └── api-error.model.ts   # Error types
+│   │   ├── auth/                    # Keycloak authentication (OIDC/PKCE)
+│   │   │   ├── auth.service.ts      # AuthService: signals for user, roles, token
+│   │   │   ├── auth.guard.ts        # Functional CanActivateFn (redirects to Keycloak login)
+│   │   │   ├── role.guard.ts        # Functional CanActivateFn (checks Keycloak client roles)
+│   │   │   └── auth.models.ts       # UserProfile interface, AUTH_ROLES constants
 │   │   ├── theme/                   # ThemeService (dark/light via data-theme attribute)
 │   │   └── time/                    # TimeService + testable TimeProvider interface
 │   ├── shared/
