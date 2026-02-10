@@ -6,6 +6,7 @@
  *   - SMOKE-002: Navigation is functional
  *   - SMOKE-003: Core pages are accessible
  *   - SMOKE-004: API connectivity (when backend available)
+ *   - SMOKE-005: Authentication state
  *
  * @description
  * Quick smoke tests to verify the application is functioning after deployment.
@@ -49,7 +50,6 @@ test.describe('Smoke Tests', () => {
       const nav = page.locator('.sidebar');
       await expect(nav.getByRole('link', { name: /dashboard/i })).toBeVisible();
       await expect(nav.getByRole('link', { name: /flags/i })).toBeVisible();
-      await expect(nav.getByRole('link', { name: /environments/i })).toBeVisible();
       await expect(nav.getByRole('link', { name: /projects/i })).toBeVisible();
     });
   });
@@ -90,10 +90,6 @@ test.describe('Smoke Tests', () => {
       await page.getByRole('link', { name: /flags/i }).click();
       await expect(page).toHaveURL(/flags/);
 
-      // Navigate to environments
-      await page.getByRole('link', { name: /environments/i }).click();
-      await expect(page).toHaveURL(/environments/);
-
       // Navigate to projects
       await page.getByRole('link', { name: /projects/i }).click();
       await expect(page).toHaveURL(/projects/);
@@ -108,11 +104,6 @@ test.describe('Smoke Tests', () => {
       await page.goto('/flags');
       await expect(page.locator('app-root')).toBeAttached();
       await expect(page).toHaveURL(/flags/);
-
-      // Direct navigation to environments
-      await page.goto('/environments');
-      await expect(page.locator('app-root')).toBeAttached();
-      await expect(page).toHaveURL(/environments/);
     });
 
     test('should redirect root to dashboard', async ({ page }) => {
@@ -152,6 +143,20 @@ test.describe('Smoke Tests', () => {
 
       // Verify create button is present
       await expect(flagList.createButton).toBeVisible();
+    });
+  });
+
+  test.describe('Authentication', () => {
+    test('should show logged-in user name in sidebar', async ({ page }) => {
+      const dashboard = new DashboardPage(page);
+      await dashboard.goto();
+      await expect(page.locator('.user-menu__name')).not.toBeEmpty();
+    });
+
+    test('should have logout button', async ({ page }) => {
+      const dashboard = new DashboardPage(page);
+      await dashboard.goto();
+      await expect(page.locator('.user-menu__logout')).toBeVisible();
     });
   });
 

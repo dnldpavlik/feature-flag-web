@@ -23,6 +23,10 @@
   </nav>
 
   <div class="sidebar__footer">
-    <app-user-menu [name]="currentUser().name" [email]="currentUser().email" />
+    <app-user-menu
+      [name]="currentUser().name"
+      [email]="currentUser().email"
+      (logoutClick)="logout.emit()"
+    />
   </div>
 </aside>

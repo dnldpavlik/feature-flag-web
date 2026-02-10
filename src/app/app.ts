@@ -10,6 +10,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { filter, map } from 'rxjs';
 
+import { AuthService } from './core/auth/auth.service';
 import { ThemeService } from './core/theme/theme.service';
 import { BreadcrumbItem } from './shared/ui/breadcrumb/breadcrumb';
 import { ToastComponent } from './shared/ui/toast/toast';
@@ -38,6 +39,7 @@ interface SidebarEnvironment {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AppComponent {
+  private readonly authService = inject(AuthService);
   private readonly environmentStore = inject(EnvironmentStore);
   private readonly projectStore = inject(ProjectStore);
   private readonly flagStore = inject(FlagStore);
@@ -59,10 +61,13 @@ export class AppComponent {
 
   protected readonly sidebarOpen = signal(true);
 
-  protected readonly currentUser = {
-    name: 'John Doe',
-    email: 'john@example.com',
-  };
+  protected readonly currentUser = computed(() => {
+    const profile = this.authService.userProfile();
+    return {
+      name: profile?.fullName ?? '',
+      email: profile?.email ?? '',
+    };
+  });
 
   protected readonly breadcrumbs = computed<BreadcrumbItem[]>(() => [
     {
@@ -78,7 +83,10 @@ export class AppComponent {
     { label: getSectionLabel(this.currentUrl()) },
   ]);
 
-  protected readonly navItems = NAV_ITEMS;
+  protected readonly navItems = computed(() => {
+    const isAdmin = this.authService.isAdmin();
+    return NAV_ITEMS.filter((item) => !item.adminOnly || isAdmin);
+  });
 
   protected readonly environments = computed<SidebarEnvironment[]>(() =>
     this.environmentStore.sortedEnvironments().map((env) => ({
@@ -111,5 +119,9 @@ export class AppComponent {
 
   toggleSidebar(): void {
     this.sidebarOpen.update((open) => !open);
+  }
+
+  onLogout(): void {
+    void this.authService.logout();
   }
 }

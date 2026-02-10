@@ -10,7 +10,12 @@ import { expectExists, expectTextContains, query, queryAll } from '@/app/testing
 @Component({
   selector: 'app-sidebar-host',
   template: `
-    <app-sidebar [navItems]="navItems" [environments]="environments" [currentUser]="currentUser" />
+    <app-sidebar
+      [navItems]="navItems"
+      [environments]="environments"
+      [currentUser]="currentUser"
+      (logout)="logoutCalled = true"
+    />
   `,
   imports: [SidebarComponent],
 })
@@ -20,6 +25,7 @@ class SidebarHostComponent {
     { name: 'Production', color: '#f85149', route: '/env/production' },
   ];
   currentUser: SidebarUser = { name: 'John Doe', email: 'john@example.com' };
+  logoutCalled = false;
 }
 
 @Component({
@@ -150,6 +156,30 @@ describe('Sidebar', () => {
 
     it('should display user email in the user menu', () => {
       expectTextContains(fixture, '.user-menu', 'john@example.com');
+    });
+  });
+
+  describe('logout', () => {
+    let fixture: ComponentFixture<SidebarHostComponent>;
+    let hostComponent: SidebarHostComponent;
+
+    beforeEach(async () => {
+      await TestBed.configureTestingModule({
+        imports: [SidebarHostComponent],
+        providers: [provideRouter([])],
+      }).compileComponents();
+
+      fixture = TestBed.createComponent(SidebarHostComponent);
+      hostComponent = fixture.componentInstance;
+      fixture.detectChanges();
+    });
+
+    it('should emit logout when user menu logout is clicked', () => {
+      const logoutBtn = fixture.debugElement.query(By.css('.user-menu__logout'));
+      logoutBtn.nativeElement.click();
+      fixture.detectChanges();
+
+      expect(hostComponent.logoutCalled).toBe(true);
     });
   });
 

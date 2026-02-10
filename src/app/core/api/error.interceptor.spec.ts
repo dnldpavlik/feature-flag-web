@@ -64,7 +64,7 @@ describe('errorInterceptor', () => {
     const req = httpTesting.expectOne('/api/v1/projects');
     req.flush('Unauthorized', { status: 401, statusText: 'Unauthorized' });
 
-    expect(toastService.toasts()[0].message).toContain('Authentication required');
+    expect(toastService.toasts()[0].message).toContain('Session expired');
   });
 
   it('should show permission message for 403', () => {

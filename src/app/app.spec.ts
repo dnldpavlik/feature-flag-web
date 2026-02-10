@@ -6,6 +6,7 @@ import { By } from '@angular/platform-browser';
 import { EnvironmentStore } from '@/app/shared/store/environment.store';
 import { ProjectStore } from '@/app/shared/store/project.store';
 import { SearchStore } from '@/app/shared/store/search.store';
+import { AuthService } from '@/app/core/auth/auth.service';
 import { AppComponent } from './app';
 import { MOCK_API_PROVIDERS } from '@/app/testing';
 
@@ -14,8 +15,8 @@ class DummyComponent {}
 
 type AppComponentInternals = AppComponent & {
   sidebarOpen: { (): boolean; update: (fn: (v: boolean) => boolean) => void };
-  currentUser: { name: string; email: string };
-  navItems: readonly { label: string; route: string; icon: string }[];
+  currentUser: () => { name: string; email: string };
+  navItems: () => readonly { label: string; route: string; icon: string }[];
   breadcrumbs: () => { label: string; key?: string; route?: string }[];
   environments: () => { name: string; color: string; route: string }[];
 };
@@ -27,6 +28,7 @@ describe('AppComponent', () => {
   let searchStore: SearchStore;
   let projectStore: ProjectStore;
   let environmentStore: EnvironmentStore;
+  let authService: AuthService;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -57,6 +59,7 @@ describe('AppComponent', () => {
     searchStore = TestBed.inject(SearchStore);
     projectStore = TestBed.inject(ProjectStore);
     environmentStore = TestBed.inject(EnvironmentStore);
+    authService = TestBed.inject(AuthService);
     await projectStore.loadProjects();
     await environmentStore.loadEnvironments();
     fixture.detectChanges();
@@ -71,10 +74,19 @@ describe('AppComponent', () => {
       expect((component as AppComponentInternals).sidebarOpen()).toBe(true);
     });
 
-    it('should have current user with name and email', () => {
-      const user = (component as AppComponentInternals).currentUser;
-      expect(user.name).toBe('John Doe');
-      expect(user.email).toBe('john@example.com');
+    it('should compute current user from auth service', () => {
+      const user = (component as AppComponentInternals).currentUser();
+      expect(user).toBeDefined();
+      expect(user.name).toBeDefined();
+      expect(user.email).toBeDefined();
+    });
+
+    it('should return empty strings when user profile is null', () => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (authService as Record<string, any>)['_userProfile'].set(null);
+      const user = (component as AppComponentInternals).currentUser();
+      expect(user.name).toBe('');
+      expect(user.email).toBe('');
     });
   });
 
@@ -107,12 +119,12 @@ describe('AppComponent', () => {
 
   describe('navigation items', () => {
     it('should provide navigation items to sidebar', () => {
-      const navItems = (component as AppComponentInternals).navItems;
+      const navItems = (component as AppComponentInternals).navItems();
       expect(navItems.length).toBeGreaterThan(0);
     });
 
     it('should include Dashboard nav item', () => {
-      const navItems = (component as AppComponentInternals).navItems;
+      const navItems = (component as AppComponentInternals).navItems();
       const dashboard = navItems.find((item) => item.label === 'Dashboard');
       expect(dashboard).toBeDefined();
       expect(dashboard?.route).toBe('/dashboard');
@@ -120,43 +132,43 @@ describe('AppComponent', () => {
     });
 
     it('should include Feature Flags nav item', () => {
-      const navItems = (component as AppComponentInternals).navItems;
+      const navItems = (component as AppComponentInternals).navItems();
       const flags = navItems.find((item) => item.label === 'Feature Flags');
       expect(flags).toBeDefined();
       expect(flags?.route).toBe('/flags');
       expect(flags?.icon).toBe('flag');
     });
 
-    it('should include Environments nav item', () => {
-      const navItems = (component as AppComponentInternals).navItems;
+    it('should include Environments nav item when admin', () => {
+      const navItems = (component as AppComponentInternals).navItems();
       const environments = navItems.find((item) => item.label === 'Environments');
       expect(environments).toBeDefined();
       expect(environments?.route).toBe('/environments');
     });
 
     it('should include Projects nav item', () => {
-      const navItems = (component as AppComponentInternals).navItems;
+      const navItems = (component as AppComponentInternals).navItems();
       const projects = navItems.find((item) => item.label === 'Projects');
       expect(projects).toBeDefined();
       expect(projects?.route).toBe('/projects');
     });
 
     it('should include Segments nav item', () => {
-      const navItems = (component as AppComponentInternals).navItems;
+      const navItems = (component as AppComponentInternals).navItems();
       const segments = navItems.find((item) => item.label === 'Segments');
       expect(segments).toBeDefined();
       expect(segments?.route).toBe('/segments');
     });
 
     it('should include Audit Log nav item', () => {
-      const navItems = (component as AppComponentInternals).navItems;
+      const navItems = (component as AppComponentInternals).navItems();
       const audit = navItems.find((item) => item.label === 'Audit Log');
       expect(audit).toBeDefined();
       expect(audit?.route).toBe('/audit');
     });
 
-    it('should include Settings nav item', () => {
-      const navItems = (component as AppComponentInternals).navItems;
+    it('should include Settings nav item when admin', () => {
+      const navItems = (component as AppComponentInternals).navItems();
       const settings = navItems.find((item) => item.label === 'Settings');
       expect(settings).toBeDefined();
       expect(settings?.route).toBe('/settings');
@@ -326,6 +338,14 @@ describe('AppComponent', () => {
         selectedId?: string;
       };
       expect(projectCrumb?.selectedId).toBe('proj_growth');
+    });
+  });
+
+  describe('logout', () => {
+    it('should call auth service logout', () => {
+      const logoutSpy = jest.spyOn(authService, 'logout').mockResolvedValue();
+      component.onLogout();
+      expect(logoutSpy).toHaveBeenCalled();
     });
   });
 });

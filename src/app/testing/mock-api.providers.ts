@@ -12,8 +12,10 @@
  * ```
  */
 
-import { Provider } from '@angular/core';
+import { Provider, signal } from '@angular/core';
 import { of } from 'rxjs';
+import Keycloak from 'keycloak-js';
+import { KEYCLOAK_EVENT_SIGNAL, KeycloakEventType } from 'keycloak-angular';
 
 import { ProjectApi } from '@/app/features/projects/api/project.api';
 import {
@@ -603,6 +605,26 @@ const MOCK_API_KEY_API: Partial<ApiKeyApi> = {
   revoke: () => of(undefined),
 };
 
+const MOCK_KEYCLOAK: Partial<Keycloak> = {
+  authenticated: true,
+  token: 'mock-token',
+  login: jest.fn().mockResolvedValue(undefined),
+  logout: jest.fn().mockResolvedValue(undefined),
+  loadUserProfile: jest.fn().mockResolvedValue({
+    username: 'testuser',
+    email: 'test@example.com',
+    firstName: 'Test',
+    lastName: 'User',
+  }),
+  resourceAccess: { 'feature-flags-ui': { roles: ['admin'] } },
+  realmAccess: { roles: [] },
+};
+
+const MOCK_KEYCLOAK_EVENT_SIGNAL = signal({
+  type: KeycloakEventType.Ready,
+  args: true,
+});
+
 export const MOCK_API_PROVIDERS: Provider[] = [
   { provide: ProjectApi, useValue: MOCK_PROJECT_API },
   { provide: EnvironmentApi, useValue: MOCK_ENVIRONMENT_API },
@@ -610,4 +632,6 @@ export const MOCK_API_PROVIDERS: Provider[] = [
   { provide: SegmentApi, useValue: MOCK_SEGMENT_API },
   { provide: AuditApi, useValue: MOCK_AUDIT_API },
   { provide: ApiKeyApi, useValue: MOCK_API_KEY_API },
+  { provide: Keycloak, useValue: MOCK_KEYCLOAK },
+  { provide: KEYCLOAK_EVENT_SIGNAL, useValue: MOCK_KEYCLOAK_EVENT_SIGNAL },
 ];

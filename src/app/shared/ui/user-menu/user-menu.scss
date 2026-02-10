@@ -1,28 +1,40 @@
 .user-menu {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  padding: 0.5rem;
-  border: none;
-  background: transparent;
-  border-radius: var(--border-radius, 6px);
-  cursor: pointer;
-  transition: background var(--transition-fast, 150ms ease);
-  text-align: left;
+  gap: 0;
   width: 100%;
-
-  &:hover {
-    background: var(--bg-hover, #535955);
-  }
-
-  &:focus-visible {
-    outline: 2px solid var(--accent-primary, #8e3d03);
-    outline-offset: 2px;
-  }
 
   &--compact {
     width: auto;
-    padding: 0.25rem;
+  }
+
+  &__trigger {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.5rem;
+    border: none;
+    background: transparent;
+    border-radius: var(--border-radius, 6px);
+    cursor: pointer;
+    transition: background var(--transition-fast, 150ms ease);
+    text-align: left;
+    flex: 1;
+    min-width: 0;
+
+    &:hover {
+      background: var(--bg-hover, #535955);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--accent-primary, #8e3d03);
+      outline-offset: 2px;
+    }
+
+    .user-menu--compact & {
+      flex: 0;
+      padding: 0.25rem;
+    }
   }
 
   &__avatar {
@@ -72,5 +84,36 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+  }
+
+  &__logout {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem;
+    border: none;
+    background: transparent;
+    border-radius: var(--border-radius, 6px);
+    cursor: pointer;
+    color: var(--text-muted, #535955);
+    transition:
+      background var(--transition-fast, 150ms ease),
+      color var(--transition-fast, 150ms ease);
+    flex-shrink: 0;
+
+    &:hover {
+      background: var(--bg-hover, #535955);
+      color: var(--color-error, #d1242f);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--accent-primary, #8e3d03);
+      outline-offset: 2px;
+    }
+  }
+
+  &__logout-icon {
+    width: 18px;
+    height: 18px;
   }
 }

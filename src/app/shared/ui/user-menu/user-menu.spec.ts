@@ -106,16 +106,16 @@ describe('UserMenu', () => {
   });
 
   describe('click interaction', () => {
-    it('should be a button element', () => {
+    it('should have a trigger button element', () => {
       fixture.componentRef.setInput('name', 'John Doe');
       fixture.componentRef.setInput('email', 'john@example.com');
       fixture.detectChanges();
 
-      const button = fixture.debugElement.query(By.css('button.user-menu'));
+      const button = fixture.debugElement.query(By.css('button.user-menu__trigger'));
       expect(button).toBeTruthy();
     });
 
-    it('should emit menuToggle on click', () => {
+    it('should emit menuToggle on trigger click', () => {
       fixture.componentRef.setInput('name', 'John Doe');
       fixture.componentRef.setInput('email', 'john@example.com');
       fixture.detectChanges();
@@ -123,10 +123,68 @@ describe('UserMenu', () => {
       const spy = jest.fn();
       component.menuToggle.subscribe(spy);
 
-      const button = fixture.debugElement.query(By.css('.user-menu'));
+      const button = fixture.debugElement.query(By.css('.user-menu__trigger'));
       button.nativeElement.click();
 
       expect(spy).toHaveBeenCalled();
+    });
+  });
+
+  describe('logout button', () => {
+    it('should render logout button in normal mode', () => {
+      fixture.componentRef.setInput('name', 'John Doe');
+      fixture.componentRef.setInput('email', 'john@example.com');
+      fixture.detectChanges();
+
+      const logoutBtn = fixture.debugElement.query(By.css('.user-menu__logout'));
+      expect(logoutBtn).toBeTruthy();
+    });
+
+    it('should emit logoutClick on logout button click', () => {
+      fixture.componentRef.setInput('name', 'John Doe');
+      fixture.componentRef.setInput('email', 'john@example.com');
+      fixture.detectChanges();
+
+      const spy = jest.fn();
+      component.logoutClick.subscribe(spy);
+
+      const logoutBtn = fixture.debugElement.query(By.css('.user-menu__logout'));
+      logoutBtn.nativeElement.click();
+
+      expect(spy).toHaveBeenCalled();
+    });
+
+    it('should not emit menuToggle when logout is clicked', () => {
+      fixture.componentRef.setInput('name', 'John Doe');
+      fixture.componentRef.setInput('email', 'john@example.com');
+      fixture.detectChanges();
+
+      const menuSpy = jest.fn();
+      component.menuToggle.subscribe(menuSpy);
+
+      const logoutBtn = fixture.debugElement.query(By.css('.user-menu__logout'));
+      logoutBtn.nativeElement.click();
+
+      expect(menuSpy).not.toHaveBeenCalled();
+    });
+
+    it('should have aria-label on logout button', () => {
+      fixture.componentRef.setInput('name', 'John Doe');
+      fixture.componentRef.setInput('email', 'john@example.com');
+      fixture.detectChanges();
+
+      const logoutBtn = fixture.debugElement.query(By.css('.user-menu__logout'));
+      expect(logoutBtn.nativeElement.getAttribute('aria-label')).toBe('Log out');
+    });
+
+    it('should hide logout button in compact mode', () => {
+      fixture.componentRef.setInput('name', 'John Doe');
+      fixture.componentRef.setInput('email', 'john@example.com');
+      fixture.componentRef.setInput('compact', true);
+      fixture.detectChanges();
+
+      const logoutBtn = fixture.debugElement.query(By.css('.user-menu__logout'));
+      expect(logoutBtn).toBeFalsy();
     });
   });
 
@@ -162,12 +220,12 @@ describe('UserMenu', () => {
   });
 
   describe('accessibility', () => {
-    it('should have aria-label', () => {
+    it('should have aria-label on trigger', () => {
       fixture.componentRef.setInput('name', 'John Doe');
       fixture.componentRef.setInput('email', 'john@example.com');
       fixture.detectChanges();
 
-      const button = fixture.debugElement.query(By.css('.user-menu'));
+      const button = fixture.debugElement.query(By.css('.user-menu__trigger'));
       expect(button.nativeElement.getAttribute('aria-label')).toBe('User menu for John Doe');
     });
 
@@ -176,7 +234,7 @@ describe('UserMenu', () => {
       fixture.componentRef.setInput('email', 'john@example.com');
       fixture.detectChanges();
 
-      const button = fixture.debugElement.query(By.css('.user-menu'));
+      const button = fixture.debugElement.query(By.css('.user-menu__trigger'));
       expect(button.nativeElement.getAttribute('aria-haspopup')).toBe('true');
     });
 

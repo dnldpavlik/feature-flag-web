@@ -78,17 +78,15 @@ export const testSegments = {
   },
 };
 
-/** Test user credentials (placeholder until auth is implemented) */
+/** Test user credentials — provided via environment variables */
 export const testUsers = {
   admin: {
-    email: 'admin@example.com',
-    password: 'admin123',
-    name: 'Admin User',
+    username: process.env['E2E_ADMIN_USERNAME'] || 'test-admin',
+    password: process.env['E2E_ADMIN_PASSWORD'] || '',
   },
-  developer: {
-    email: 'developer@example.com',
-    password: 'dev123',
-    name: 'Developer User',
+  user: {
+    username: process.env['E2E_USER_USERNAME'] || 'test-user',
+    password: process.env['E2E_USER_PASSWORD'] || '',
   },
 };
 

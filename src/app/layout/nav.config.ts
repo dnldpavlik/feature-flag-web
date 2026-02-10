@@ -4,6 +4,7 @@ export interface NavItem {
   label: string;
   route: string;
   icon: IconName;
+  adminOnly?: boolean;
 }
 
 export const NAV_ITEMS: readonly NavItem[] = [
@@ -21,6 +22,7 @@ export const NAV_ITEMS: readonly NavItem[] = [
     label: 'Environments',
     route: '/environments',
     icon: 'list',
+    adminOnly: true,
   },
   {
     label: 'Projects',
@@ -41,5 +43,6 @@ export const NAV_ITEMS: readonly NavItem[] = [
     label: 'Settings',
     route: '/settings',
     icon: 'settings',
+    adminOnly: true,
   },
 ] as const;

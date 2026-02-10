@@ -33,7 +33,7 @@ function extractErrorMessage(error: HttpErrorResponse): string {
   }
 
   if (error.status === 401) {
-    return 'Authentication required. Please set your API key.';
+    return 'Session expired. Redirecting to login...';
   }
 
   if (error.status === 403) {

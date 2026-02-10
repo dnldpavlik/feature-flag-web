@@ -1,3 +1,24 @@
+/**
+ * Note: app.config.ts uses provideKeycloak() which internally constructs a
+ * Keycloak instance. Mocking keycloak-angular avoids the ESM/CJS interop
+ * issue where keycloak-js constructor fails in Jest.
+ */
+
+jest.mock('keycloak-angular', () => {
+  const { InjectionToken } = jest.requireActual('@angular/core');
+  return {
+    __esModule: true,
+    provideKeycloak: jest.fn(() => ({ ɵproviders: [] })),
+    withAutoRefreshToken: jest.fn(() => ({})),
+    AutoRefreshTokenService: class {},
+    UserActivityService: class {},
+    includeBearerTokenInterceptor: jest.fn(),
+    INCLUDE_BEARER_TOKEN_INTERCEPTOR_CONFIG: new InjectionToken(
+      'INCLUDE_BEARER_TOKEN_INTERCEPTOR_CONFIG',
+    ),
+  };
+});
+
 import { appConfig } from './app.config';
 
 describe('appConfig', () => {
@@ -8,10 +29,10 @@ describe('appConfig', () => {
       expect(Array.isArray(appConfig.providers)).toBe(true);
     });
 
-    it('should register six core providers', () => {
+    it('should register core providers', () => {
       // 3 original (errorListeners, zoneChangeDetection, router)
-      // + httpClient, API_BASE_URL, AUTH_TOKEN_KEY
-      expect(appConfig.providers.length).toBe(6);
+      // + provideKeycloak, httpClient, INCLUDE_BEARER_TOKEN_INTERCEPTOR_CONFIG, API_BASE_URL
+      expect(appConfig.providers.length).toBe(7);
     });
 
     it('should include browser global error listeners provider', () => {

@@ -23,6 +23,9 @@ export class UserMenuComponent {
   /** Emits when the menu button is clicked */
   readonly menuToggle = output<void>();
 
+  /** Emits when the logout button is clicked */
+  readonly logoutClick = output<void>();
+
   /** Computed initials from user name */
   protected readonly initials = computed(() => {
     const nameParts = this.name().trim().split(/\s+/);
@@ -41,5 +44,11 @@ export class UserMenuComponent {
   /** Handle click on the menu button */
   protected onClick(): void {
     this.menuToggle.emit();
+  }
+
+  /** Handle click on the logout button */
+  protected onLogout(event: Event): void {
+    event.stopPropagation();
+    this.logoutClick.emit();
   }
 }

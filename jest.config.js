@@ -48,7 +48,7 @@ export default {
     '^@environments/(.*)$': '<rootDir>/src/environments/$1'
   },
   transformIgnorePatterns: [
-    'node_modules/(?!(@angular|rxjs|@ngrx|lodash-es|@testing-library)/)'
+    'node_modules/(?!(@angular|rxjs|@ngrx|lodash-es|@testing-library|keycloak-js|keycloak-angular)/)'
   ],
   collectCoverageFrom: [
     'src/app/**/*.ts',

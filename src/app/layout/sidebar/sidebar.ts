@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 
 import { LogoIconComponent } from '@/app/shared/ui/logo-icon/logo-icon';
 import { NavItemComponent } from '@/app/shared/ui/nav-item/nav-item';
@@ -22,4 +22,7 @@ export class SidebarComponent {
 
   /** User identity for the footer menu */
   readonly currentUser = input.required<SidebarUser>();
+
+  /** Emits when the user clicks logout */
+  readonly logout = output<void>();
 }
