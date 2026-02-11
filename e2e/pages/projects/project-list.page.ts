@@ -69,9 +69,12 @@ export class ProjectListPage extends BaseCrudListPage {
     return this.createForm.getByLabel('Description');
   }
 
-  /** Save/Add button — targets app-button host for reliable cross-browser clicks */
+  /** Save/Add button — targets inner button for disabled state checks */
   get saveButton(): Locator {
-    return this.createForm.locator('app-button').filter({ hasText: /add project|save|create/i });
+    return this.createForm
+      .locator('app-button')
+      .filter({ hasText: /add project|save|create/i })
+      .locator('button');
   }
 
   /** Cancel button (may not exist in inline forms) */

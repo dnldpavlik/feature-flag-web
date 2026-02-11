@@ -78,7 +78,8 @@ export class EnvironmentListPage extends BaseCrudListPage {
   get saveButton(): Locator {
     return this.createForm
       .locator('app-button')
-      .filter({ hasText: /add environment|save|create/i });
+      .filter({ hasText: /add environment|save|create/i })
+      .locator('button');
   }
 
   /** Cancel button in form (may not exist in inline forms) */
