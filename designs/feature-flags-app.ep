@@ -1,0 +1,2046 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Document xmlns="http://www.evolus.vn/Namespace/Pencil" version="1.4">
+  <Properties>
+    <Property name="documentTitle">Feature Flags Application - Desktop Designs</Property>
+    <Property name="author">Claude Code</Property>
+    <Property name="description">Desktop UI designs for Feature Flag management system (LaunchDarkly clone)</Property>
+    <Property name="width">1440</Property>
+    <Property name="height">900</Property>
+    <Property name="backgroundColor">#FFFCF5</Property>
+  </Properties>
+
+  <!-- Page 1: Dashboard -->
+  <Page name="1. Dashboard" id="dashboard_page" width="1440" height="900">
+    <Properties>
+      <Property name="fid">dashboard_page</Property>
+      <Property name="name">1. Dashboard</Property>
+      <Property name="description">Main dashboard showing overview and recent flags</Property>
+    </Properties>
+    <Content>
+      <!-- Sidebar -->
+      <Shape id="sidebar_bg" type="Rectangle" x="0" y="0" width="240" height="900">
+        <p:fillColor>#FAF7F0</p:fillColor>
+        <p:strokeColor>#E8E5E0</p:strokeColor>
+        <p:strokeWidth>1</p:strokeWidth>
+      </Shape>
+
+      <!-- Logo and Title -->
+      <Shape id="logo_icon" type="RoundedRect" x="16" y="16" width="32" height="32">
+        <p:fillColor>#8E3D03</p:fillColor>
+        <p:cornerRadius>6</p:cornerRadius>
+      </Shape>
+      <Shape id="app_title" type="PlainText" x="56" y="16" width="168" height="32">
+        <p:textContent>Feature Flags</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>18</p:fontSize>
+        <p:fontWeight>bold</p:fontWeight>
+        <p:textColor>#040403</p:textColor>
+      </Shape>
+
+      <Shape id="sidebar_divider1" type="Line" x="0" y="64" width="240" height="1">
+        <p:strokeColor>#E8E5E0</p:strokeColor>
+      </Shape>
+
+      <!-- Navigation Items -->
+      <Shape id="nav_dashboard" type="RoundedRect" x="12" y="76" width="216" height="36">
+        <p:fillColor>#E8E5E0</p:fillColor>
+        <p:cornerRadius>4</p:cornerRadius>
+      </Shape>
+      <Shape id="nav_dashboard_icon" type="RoundedRect" x="20" y="84" width="20" height="20">
+        <p:fillColor>#8E3D03</p:fillColor>
+        <p:cornerRadius>2</p:cornerRadius>
+      </Shape>
+      <Shape id="nav_dashboard_text" type="PlainText" x="48" y="82" width="168" height="24">
+        <p:textContent>Dashboard</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>14</p:fontSize>
+        <p:textColor>#040403</p:textColor>
+      </Shape>
+
+      <Shape id="nav_flags" type="RoundedRect" x="12" y="120" width="216" height="36">
+        <p:fillColor>transparent</p:fillColor>
+      </Shape>
+      <Shape id="nav_flags_icon" type="RoundedRect" x="20" y="128" width="20" height="20">
+        <p:fillColor>#535955</p:fillColor>
+        <p:cornerRadius>2</p:cornerRadius>
+      </Shape>
+      <Shape id="nav_flags_text" type="PlainText" x="48" y="126" width="168" height="24">
+        <p:textContent>Feature Flags</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>14</p:fontSize>
+        <p:textColor>#262725</p:textColor>
+      </Shape>
+
+      <Shape id="nav_environments" type="PlainText" x="48" y="170" width="168" height="24">
+        <p:textContent>Environments</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>14</p:fontSize>
+        <p:textColor>#262725</p:textColor>
+      </Shape>
+
+      <Shape id="nav_projects" type="PlainText" x="48" y="214" width="168" height="24">
+        <p:textContent>Projects</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>14</p:fontSize>
+        <p:textColor>#262725</p:textColor>
+      </Shape>
+
+      <Shape id="nav_segments" type="PlainText" x="48" y="258" width="168" height="24">
+        <p:textContent>Segments</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>14</p:fontSize>
+        <p:textColor>#262725</p:textColor>
+      </Shape>
+
+      <Shape id="nav_audit" type="PlainText" x="48" y="302" width="168" height="24">
+        <p:textContent>Audit Log</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>14</p:fontSize>
+        <p:textColor>#262725</p:textColor>
+      </Shape>
+
+      <Shape id="nav_settings" type="PlainText" x="48" y="346" width="168" height="24">
+        <p:textContent>Settings</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>14</p:fontSize>
+        <p:textColor>#262725</p:textColor>
+      </Shape>
+
+      <!-- Environments Section -->
+      <Shape id="env_section_title" type="PlainText" x="20" y="406" width="200" height="20">
+        <p:textContent>ENVIRONMENTS</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>11</p:fontSize>
+        <p:fontWeight>bold</p:fontWeight>
+        <p:textColor>#535955</p:textColor>
+      </Shape>
+
+      <Shape id="env_dev_dot" type="Ellipse" x="20" y="438" width="8" height="8">
+        <p:fillColor>#3B82F6</p:fillColor>
+      </Shape>
+      <Shape id="env_dev_text" type="PlainText" x="36" y="434" width="188" height="20">
+        <p:textContent>Development</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>13</p:fontSize>
+        <p:textColor>#262725</p:textColor>
+      </Shape>
+
+      <Shape id="env_staging_dot" type="Ellipse" x="20" y="466" width="8" height="8">
+        <p:fillColor>#EAB308</p:fillColor>
+      </Shape>
+      <Shape id="env_staging_text" type="PlainText" x="36" y="462" width="188" height="20">
+        <p:textContent>Staging</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>13</p:fontSize>
+        <p:textColor>#262725</p:textColor>
+      </Shape>
+
+      <Shape id="env_prod_dot" type="Ellipse" x="20" y="494" width="8" height="8">
+        <p:fillColor>#EF4444</p:fillColor>
+      </Shape>
+      <Shape id="env_prod_text" type="PlainText" x="36" y="490" width="188" height="20">
+        <p:textContent>Production</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>13</p:fontSize>
+        <p:textColor>#262725</p:textColor>
+      </Shape>
+
+      <!-- User Menu Footer -->
+      <Shape id="sidebar_divider2" type="Line" x="0" y="836" width="240" height="1">
+        <p:strokeColor>#E8E5E0</p:strokeColor>
+      </Shape>
+      <Shape id="user_name" type="PlainText" x="16" y="852" width="208" height="20">
+        <p:textContent>John Developer</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>14</p:fontSize>
+        <p:fontWeight>bold</p:fontWeight>
+        <p:textColor>#040403</p:textColor>
+      </Shape>
+      <Shape id="user_email" type="PlainText" x="16" y="872" width="208" height="16">
+        <p:textContent>john@example.com</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>12</p:fontSize>
+        <p:textColor>#535955</p:textColor>
+      </Shape>
+
+      <!-- Header -->
+      <Shape id="header_bg" type="Rectangle" x="240" y="0" width="1200" height="56">
+        <p:fillColor>#FFFCF5</p:fillColor>
+        <p:strokeColor>#E8E5E0</p:strokeColor>
+        <p:strokeWidth>1</p:strokeWidth>
+      </Shape>
+
+      <!-- Breadcrumb -->
+      <Shape id="breadcrumb_project" type="RoundedRect" x="264" y="16" width="160" height="32">
+        <p:fillColor>#FFFFFF</p:fillColor>
+        <p:strokeColor>#D4D1CA</p:strokeColor>
+        <p:cornerRadius>4</p:cornerRadius>
+      </Shape>
+      <Shape id="breadcrumb_project_text" type="PlainText" x="276" y="22" width="130" height="20">
+        <p:textContent>My Project ▾</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>13</p:fontSize>
+        <p:textColor>#040403</p:textColor>
+      </Shape>
+
+      <Shape id="breadcrumb_sep" type="PlainText" x="432" y="22" width="16" height="20">
+        <p:textContent>/</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>14</p:fontSize>
+        <p:textColor>#535955</p:textColor>
+      </Shape>
+
+      <Shape id="breadcrumb_section" type="PlainText" x="456" y="22" width="100" height="20">
+        <p:textContent>Dashboard</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>13</p:fontSize>
+        <p:textColor>#535955</p:textColor>
+      </Shape>
+
+      <!-- Search -->
+      <Shape id="search_input" type="RoundedRect" x="880" y="16" width="280" height="32">
+        <p:fillColor>#FFFFFF</p:fillColor>
+        <p:strokeColor>#D4D1CA</p:strokeColor>
+        <p:cornerRadius>4</p:cornerRadius>
+      </Shape>
+      <Shape id="search_placeholder" type="PlainText" x="896" y="22" width="240" height="20">
+        <p:textContent>Search flags... (Press /)</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>13</p:fontSize>
+        <p:textColor>#535955</p:textColor>
+      </Shape>
+
+      <!-- Create Flag Button -->
+      <Shape id="create_btn" type="RoundedRect" x="1292" y="16" width="132" height="32">
+        <p:fillColor>#8E3D03</p:fillColor>
+        <p:cornerRadius>4</p:cornerRadius>
+      </Shape>
+      <Shape id="create_btn_text" type="PlainText" x="1316" y="22" width="100" height="20">
+        <p:textContent>+ Create Flag</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>13</p:fontSize>
+        <p:fontWeight>bold</p:fontWeight>
+        <p:textColor>#FFFFFF</p:textColor>
+      </Shape>
+
+      <!-- Main Content Area -->
+      <Shape id="content_bg" type="Rectangle" x="240" y="56" width="1200" height="844">
+        <p:fillColor>#FFFCF5</p:fillColor>
+      </Shape>
+
+      <!-- Page Title -->
+      <Shape id="page_title" type="PlainText" x="288" y="88" width="400" height="32">
+        <p:textContent>Feature Flags</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>28</p:fontSize>
+        <p:fontWeight>bold</p:fontWeight>
+        <p:textColor>#040403</p:textColor>
+      </Shape>
+
+      <Shape id="page_desc" type="PlainText" x="288" y="128" width="600" height="20">
+        <p:textContent>Project: My Project  ·  Environment: Development</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>14</p:fontSize>
+        <p:textColor>#535955</p:textColor>
+      </Shape>
+
+      <!-- Statistics Cards -->
+      <Shape id="stat_card_1" type="RoundedRect" x="288" y="172" width="250" height="100">
+        <p:fillColor>#FFFFFF</p:fillColor>
+        <p:strokeColor>#E8E5E0</p:strokeColor>
+        <p:cornerRadius>6</p:cornerRadius>
+        <p:shadow>0 1px 2px rgba(0,0,0,0.08)</p:shadow>
+      </Shape>
+      <Shape id="stat_value_1" type="PlainText" x="312" y="196" width="200" height="40">
+        <p:textContent>24</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>36</p:fontSize>
+        <p:fontWeight>bold</p:fontWeight>
+        <p:textColor>#040403</p:textColor>
+      </Shape>
+      <Shape id="stat_label_1" type="PlainText" x="312" y="236" width="200" height="20">
+        <p:textContent>Total Flags</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>14</p:fontSize>
+        <p:textColor>#535955</p:textColor>
+      </Shape>
+
+      <Shape id="stat_card_2" type="RoundedRect" x="558" y="172" width="250" height="100">
+        <p:fillColor>#FFFFFF</p:fillColor>
+        <p:strokeColor>#E8E5E0</p:strokeColor>
+        <p:cornerRadius>6</p:cornerRadius>
+      </Shape>
+      <Shape id="stat_value_2" type="PlainText" x="582" y="196" width="200" height="40">
+        <p:textContent>18</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>36</p:fontSize>
+        <p:fontWeight>bold</p:fontWeight>
+        <p:textColor>#1A7F37</p:textColor>
+      </Shape>
+      <Shape id="stat_label_2" type="PlainText" x="582" y="236" width="200" height="20">
+        <p:textContent>Active</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>14</p:fontSize>
+        <p:textColor>#535955</p:textColor>
+      </Shape>
+
+      <Shape id="stat_card_3" type="RoundedRect" x="828" y="172" width="250" height="100">
+        <p:fillColor>#FFFFFF</p:fillColor>
+        <p:strokeColor>#E8E5E0</p:strokeColor>
+        <p:cornerRadius>6</p:cornerRadius>
+      </Shape>
+      <Shape id="stat_value_3" type="PlainText" x="852" y="196" width="200" height="40">
+        <p:textContent>6</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>36</p:fontSize>
+        <p:fontWeight>bold</p:fontWeight>
+        <p:textColor>#D1242F</p:textColor>
+      </Shape>
+      <Shape id="stat_label_3" type="PlainText" x="852" y="236" width="200" height="20">
+        <p:textContent>Inactive</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>14</p:fontSize>
+        <p:textColor>#535955</p:textColor>
+      </Shape>
+
+      <Shape id="stat_card_4" type="RoundedRect" x="1098" y="172" width="250" height="100">
+        <p:fillColor>#FFFFFF</p:fillColor>
+        <p:strokeColor>#E8E5E0</p:strokeColor>
+        <p:cornerRadius>6</p:cornerRadius>
+      </Shape>
+      <Shape id="stat_value_4" type="PlainText" x="1122" y="196" width="200" height="40">
+        <p:textContent>3</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>36</p:fontSize>
+        <p:fontWeight>bold</p:fontWeight>
+        <p:textColor>#040403</p:textColor>
+      </Shape>
+      <Shape id="stat_label_4" type="PlainText" x="1122" y="236" width="200" height="20">
+        <p:textContent>Environments</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>14</p:fontSize>
+        <p:textColor>#535955</p:textColor>
+      </Shape>
+
+      <!-- Recent Flags Section -->
+      <Shape id="recent_title_row" type="Rectangle" x="288" y="304" width="1060" height="48">
+        <p:fillColor>transparent</p:fillColor>
+      </Shape>
+      <Shape id="recent_title" type="PlainText" x="288" y="308" width="400" height="24">
+        <p:textContent>Recently Updated Flags</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>20</p:fontSize>
+        <p:fontWeight>bold</p:fontWeight>
+        <p:textColor>#040403</p:textColor>
+      </Shape>
+      <Shape id="recent_subtitle" type="PlainText" x="288" y="332" width="600" height="16">
+        <p:textContent>Latest updates in My Project · Development</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>13</p:fontSize>
+        <p:textColor>#535955</p:textColor>
+      </Shape>
+      <Shape id="view_all_btn" type="PlainText" x="1248" y="316" width="100" height="20">
+        <p:textContent>View All →</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>13</p:fontSize>
+        <p:textColor>#8E3D03</p:textColor>
+        <p:textDecoration>underline</p:textDecoration>
+      </Shape>
+
+      <!-- Recent Flags Table -->
+      <Shape id="table_bg" type="RoundedRect" x="288" y="372" width="1060" height="440">
+        <p:fillColor>#FFFFFF</p:fillColor>
+        <p:strokeColor>#E8E5E0</p:strokeColor>
+        <p:cornerRadius>6</p:cornerRadius>
+      </Shape>
+
+      <!-- Table Header -->
+      <Shape id="th_flag" type="PlainText" x="312" y="388" width="400" height="20">
+        <p:textContent>Flag</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>13</p:fontSize>
+        <p:fontWeight>bold</p:fontWeight>
+        <p:textColor>#535955</p:textColor>
+      </Shape>
+      <Shape id="th_status" type="PlainText" x="848" y="388" width="120" height="20">
+        <p:textContent>Status</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>13</p:fontSize>
+        <p:fontWeight>bold</p:fontWeight>
+        <p:textColor>#535955</p:textColor>
+      </Shape>
+      <Shape id="th_updated" type="PlainText" x="1100" y="388" width="120" height="20">
+        <p:textContent>Updated</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>13</p:fontSize>
+        <p:fontWeight>bold</p:fontWeight>
+        <p:textColor>#535955</p:textColor>
+      </Shape>
+
+      <Shape id="table_divider" type="Line" x="312" y="420" width="1012" height="1">
+        <p:strokeColor>#E8E5E0</p:strokeColor>
+      </Shape>
+
+      <!-- Table Row 1 -->
+      <Shape id="row1_name" type="PlainText" x="312" y="436" width="400" height="20">
+        <p:textContent>New Checkout Experience</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>14</p:fontSize>
+        <p:fontWeight>bold</p:fontWeight>
+        <p:textColor>#8E3D03</p:textColor>
+        <p:textDecoration>underline</p:textDecoration>
+      </Shape>
+      <Shape id="row1_key" type="PlainText" x="312" y="456" width="400" height="16">
+        <p:textContent>new_checkout_experience</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>12</p:fontSize>
+        <p:textColor>#535955</p:textColor>
+      </Shape>
+      <Shape id="row1_desc" type="PlainText" x="312" y="476" width="500" height="16">
+        <p:textContent>Enables the redesigned checkout flow with one-click purchasing</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>12</p:fontSize>
+        <p:textColor>#535955</p:textColor>
+      </Shape>
+      <Shape id="row1_badge" type="RoundedRect" x="848" y="440" width="72" height="24">
+        <p:fillColor>#DCFCE7</p:fillColor>
+        <p:cornerRadius>3</p:cornerRadius>
+      </Shape>
+      <Shape id="row1_badge_text" type="PlainText" x="860" y="445" width="60" height="14">
+        <p:textContent>Enabled</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>11</p:fontSize>
+        <p:fontWeight>bold</p:fontWeight>
+        <p:textColor>#166534</p:textColor>
+      </Shape>
+      <Shape id="row1_date" type="PlainText" x="1100" y="444" width="120" height="16">
+        <p:textContent>Feb 8, 2026</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>12</p:fontSize>
+        <p:textColor>#535955</p:textColor>
+      </Shape>
+
+      <Shape id="row1_divider" type="Line" x="312" y="512" width="1012" height="1">
+        <p:strokeColor>#F2EFEA</p:strokeColor>
+      </Shape>
+
+      <!-- Table Row 2 -->
+      <Shape id="row2_name" type="PlainText" x="312" y="528" width="400" height="20">
+        <p:textContent>Dark Mode Toggle</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>14</p:fontSize>
+        <p:fontWeight>bold</p:fontWeight>
+        <p:textColor>#8E3D03</p:textColor>
+        <p:textDecoration>underline</p:textDecoration>
+      </Shape>
+      <Shape id="row2_key" type="PlainText" x="312" y="548" width="400" height="16">
+        <p:textContent>dark_mode_toggle</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>12</p:fontSize>
+        <p:textColor>#535955</p:textColor>
+      </Shape>
+      <Shape id="row2_desc" type="PlainText" x="312" y="568" width="500" height="16">
+        <p:textContent>Allow users to switch between light and dark themes</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>12</p:fontSize>
+        <p:textColor>#535955</p:textColor>
+      </Shape>
+      <Shape id="row2_badge" type="RoundedRect" x="848" y="532" width="72" height="24">
+        <p:fillColor>#DCFCE7</p:fillColor>
+        <p:cornerRadius>3</p:cornerRadius>
+      </Shape>
+      <Shape id="row2_badge_text" type="PlainText" x="860" y="537" width="60" height="14">
+        <p:textContent>Enabled</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>11</p:fontSize>
+        <p:fontWeight>bold</p:fontWeight>
+        <p:textColor>#166534</p:textColor>
+      </Shape>
+      <Shape id="row2_date" type="PlainText" x="1100" y="536" width="120" height="16">
+        <p:textContent>Feb 7, 2026</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>12</p:fontSize>
+        <p:textColor>#535955</p:textColor>
+      </Shape>
+
+      <Shape id="row2_divider" type="Line" x="312" y="604" width="1012" height="1">
+        <p:strokeColor>#F2EFEA</p:strokeColor>
+      </Shape>
+
+      <!-- Table Row 3 -->
+      <Shape id="row3_name" type="PlainText" x="312" y="620" width="400" height="20">
+        <p:textContent>Beta Features Access</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>14</p:fontSize>
+        <p:fontWeight>bold</p:fontWeight>
+        <p:textColor>#8E3D03</p:textColor>
+        <p:textDecoration>underline</p:textDecoration>
+      </Shape>
+      <Shape id="row3_key" type="PlainText" x="312" y="640" width="400" height="16">
+        <p:textContent>beta_features_access</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>12</p:fontSize>
+        <p:textColor>#535955</p:textColor>
+      </Shape>
+      <Shape id="row3_desc" type="PlainText" x="312" y="660" width="500" height="16">
+        <p:textContent>Grant access to experimental features for beta testers</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>12</p:fontSize>
+        <p:textColor>#535955</p:textColor>
+      </Shape>
+      <Shape id="row3_badge" type="RoundedRect" x="848" y="624" width="72" height="24">
+        <p:fillColor>#FEE2E2</p:fillColor>
+        <p:cornerRadius>3</p:cornerRadius>
+      </Shape>
+      <Shape id="row3_badge_text" type="PlainText" x="856" y="629" width="64" height="14">
+        <p:textContent>Disabled</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>11</p:fontSize>
+        <p:fontWeight>bold</p:fontWeight>
+        <p:textColor>#991B1B</p:textColor>
+      </Shape>
+      <Shape id="row3_date" type="PlainText" x="1100" y="628" width="120" height="16">
+        <p:textContent>Feb 6, 2026</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>12</p:fontSize>
+        <p:textColor>#535955</p:textColor>
+      </Shape>
+    </Content>
+  </Page>
+
+  <!-- Page 2: Flag List -->
+  <Page name="2. Flag List" id="flag_list_page" width="1440" height="900">
+    <Properties>
+      <Property name="fid">flag_list_page</Property>
+      <Property name="name">2. Flag List</Property>
+      <Property name="description">Browse and manage all feature flags</Property>
+    </Properties>
+    <Content>
+      <!-- Reuse Sidebar and Header from Dashboard (simplified reference) -->
+      <Shape id="sidebar_bg" type="Rectangle" x="0" y="0" width="240" height="900">
+        <p:fillColor>#FAF7F0</p:fillColor>
+        <p:strokeColor>#E8E5E0</p:strokeColor>
+      </Shape>
+      <Shape id="sidebar_title" type="PlainText" x="56" y="22" width="168" height="24">
+        <p:textContent>Feature Flags</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>16</p:fontSize>
+        <p:fontWeight>bold</p:fontWeight>
+        <p:textColor>#040403</p:textColor>
+      </Shape>
+
+      <Shape id="header_bg" type="Rectangle" x="240" y="0" width="1200" height="56">
+        <p:fillColor>#FFFCF5</p:fillColor>
+        <p:strokeColor>#E8E5E0</p:strokeColor>
+      </Shape>
+      <Shape id="breadcrumb" type="PlainText" x="276" y="22" width="200" height="20">
+        <p:textContent>My Project / Flags</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>13</p:fontSize>
+        <p:textColor>#535955</p:textColor>
+      </Shape>
+
+      <!-- Main Content -->
+      <Shape id="content_bg" type="Rectangle" x="240" y="56" width="1200" height="844">
+        <p:fillColor>#FFFCF5</p:fillColor>
+      </Shape>
+
+      <Shape id="page_title" type="PlainText" x="288" y="88" width="400" height="32">
+        <p:textContent>Feature Flags</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>28</p:fontSize>
+        <p:fontWeight>bold</p:fontWeight>
+        <p:textColor>#040403</p:textColor>
+      </Shape>
+      <Shape id="page_desc" type="PlainText" x="288" y="128" width="800" height="20">
+        <p:textContent>Ship safely with targeted rollouts and instant kill switches.</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>14</p:fontSize>
+        <p:textColor>#535955</p:textColor>
+      </Shape>
+
+      <!-- Toolbar with Filters -->
+      <Shape id="toolbar_bg" type="RoundedRect" x="288" y="172" width="900" height="48">
+        <p:fillColor>#FFFFFF</p:fillColor>
+        <p:strokeColor>#E8E5E0</p:strokeColor>
+        <p:cornerRadius>6</p:cornerRadius>
+      </Shape>
+
+      <!-- Environment Filter -->
+      <Shape id="env_label" type="PlainText" x="304" y="180" width="80" height="14">
+        <p:textContent>Environment</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>11</p:fontSize>
+        <p:textColor>#535955</p:textColor>
+      </Shape>
+      <Shape id="env_select" type="RoundedRect" x="304" y="194" width="160" height="20">
+        <p:fillColor>#F2EFEA</p:fillColor>
+        <p:cornerRadius>3</p:cornerRadius>
+      </Shape>
+      <Shape id="env_select_text" type="PlainText" x="312" y="196" width="140" height="16">
+        <p:textContent>Development ▾</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>12</p:fontSize>
+        <p:textColor>#040403</p:textColor>
+      </Shape>
+
+      <!-- Status Filter -->
+      <Shape id="status_label" type="PlainText" x="484" y="180" width="60" height="14">
+        <p:textContent>Status</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>11</p:fontSize>
+        <p:textColor>#535955</p:textColor>
+      </Shape>
+      <Shape id="status_select" type="RoundedRect" x="484" y="194" width="120" height="20">
+        <p:fillColor>#F2EFEA</p:fillColor>
+        <p:cornerRadius>3</p:cornerRadius>
+      </Shape>
+      <Shape id="status_select_text" type="PlainText" x="492" y="196" width="100" height="16">
+        <p:textContent>All ▾</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>12</p:fontSize>
+        <p:textColor>#040403</p:textColor>
+      </Shape>
+
+      <!-- Type Filter -->
+      <Shape id="type_label" type="PlainText" x="624" y="180" width="60" height="14">
+        <p:textContent>Type</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>11</p:fontSize>
+        <p:textColor>#535955</p:textColor>
+      </Shape>
+      <Shape id="type_select" type="RoundedRect" x="624" y="194" width="120" height="20">
+        <p:fillColor>#F2EFEA</p:fillColor>
+        <p:cornerRadius>3</p:cornerRadius>
+      </Shape>
+      <Shape id="type_select_text" type="PlainText" x="632" y="196" width="100" height="16">
+        <p:textContent>All ▾</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>12</p:fontSize>
+        <p:textColor>#040403</p:textColor>
+      </Shape>
+
+      <!-- Flag Count -->
+      <Shape id="flag_count" type="PlainText" x="1204" y="184" width="120" height="20">
+        <p:textContent>24 of 24 flags</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>12</p:fontSize>
+        <p:textColor>#535955</p:textColor>
+      </Shape>
+      <Shape id="export_btn" type="PlainText" x="1204" y="204" width="60" height="16">
+        <p:textContent>Export</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>12</p:fontSize>
+        <p:textColor>#8E3D03</p:textColor>
+        <p:textDecoration>underline</p:textDecoration>
+      </Shape>
+
+      <!-- Data Table -->
+      <Shape id="table_bg" type="RoundedRect" x="288" y="244" width="1060" height="580">
+        <p:fillColor>#FFFFFF</p:fillColor>
+        <p:strokeColor>#E8E5E0</p:strokeColor>
+        <p:cornerRadius>6</p:cornerRadius>
+      </Shape>
+
+      <!-- Table Headers -->
+      <Shape id="th_flag" type="PlainText" x="312" y="260" width="240" height="20">
+        <p:textContent>Flag</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>13</p:fontSize>
+        <p:fontWeight>bold</p:fontWeight>
+        <p:textColor>#535955</p:textColor>
+      </Shape>
+      <Shape id="th_status" type="PlainText" x="648" y="260" width="100" height="20">
+        <p:textContent>Status</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>13</p:fontSize>
+        <p:fontWeight>bold</p:fontWeight>
+        <p:textColor>#535955</p:textColor>
+      </Shape>
+      <Shape id="th_value" type="PlainText" x="788" y="260" width="100" height="20">
+        <p:textContent>Value</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>13</p:fontSize>
+        <p:fontWeight>bold</p:fontWeight>
+        <p:textColor>#535955</p:textColor>
+      </Shape>
+      <Shape id="th_type" type="PlainText" x="948" y="260" width="80" height="20">
+        <p:textContent>Type</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>13</p:fontSize>
+        <p:fontWeight>bold</p:fontWeight>
+        <p:textColor>#535955</p:textColor>
+      </Shape>
+      <Shape id="th_tags" type="PlainText" x="1068" y="260" width="80" height="20">
+        <p:textContent>Tags</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>13</p:fontSize>
+        <p:fontWeight>bold</p:fontWeight>
+        <p:textColor>#535955</p:textColor>
+      </Shape>
+      <Shape id="th_updated" type="PlainText" x="1188" y="260" width="80" height="20">
+        <p:textContent>Updated</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>13</p:fontSize>
+        <p:fontWeight>bold</p:fontWeight>
+        <p:textColor>#535955</p:textColor>
+      </Shape>
+
+      <Shape id="table_header_divider" type="Line" x="312" y="292" width="1012" height="1">
+        <p:strokeColor>#E8E5E0</p:strokeColor>
+      </Shape>
+
+      <!-- Table Row 1 -->
+      <Shape id="r1_name" type="PlainText" x="312" y="308" width="300" height="18">
+        <p:textContent>New Checkout Experience</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>14</p:fontSize>
+        <p:fontWeight>bold</p:fontWeight>
+        <p:textColor>#8E3D03</p:textColor>
+        <p:textDecoration>underline</p:textDecoration>
+      </Shape>
+      <Shape id="r1_key" type="PlainText" x="312" y="326" width="300" height="14">
+        <p:textContent>new_checkout_experience</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>11</p:fontSize>
+        <p:textColor>#535955</p:textColor>
+      </Shape>
+      <Shape id="r1_desc" type="PlainText" x="312" y="342" width="300" height="14">
+        <p:textContent>Enables the redesigned checkout flow</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>11</p:fontSize>
+        <p:textColor>#535955</p:textColor>
+      </Shape>
+
+      <!-- Toggle -->
+      <Shape id="r1_toggle_bg" type="RoundedRect" x="648" y="312" width="48" height="24">
+        <p:fillColor>#1A7F37</p:fillColor>
+        <p:cornerRadius>12</p:cornerRadius>
+      </Shape>
+      <Shape id="r1_toggle_knob" type="Ellipse" x="666" y="315" width="18" height="18">
+        <p:fillColor>#FFFFFF</p:fillColor>
+      </Shape>
+      <Shape id="r1_toggle_label" type="PlainText" x="704" y="316" width="60" height="16">
+        <p:textContent>Enabled</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>11</p:fontSize>
+        <p:textColor>#535955</p:textColor>
+      </Shape>
+
+      <Shape id="r1_value" type="RoundedRect" x="788" y="312" width="52" height="20">
+        <p:fillColor>#F2EFEA</p:fillColor>
+        <p:cornerRadius>3</p:cornerRadius>
+      </Shape>
+      <Shape id="r1_value_text" type="PlainText" x="794" y="315" width="40" height="14">
+        <p:textContent>true</p:textContent>
+        <p:fontFamily>Courier</p:fontFamily>
+        <p:fontSize>11</p:fontSize>
+        <p:textColor>#040403</p:textColor>
+      </Shape>
+
+      <Shape id="r1_type_badge" type="RoundedRect" x="948" y="312" width="64" height="20">
+        <p:fillColor>#DBEAFE</p:fillColor>
+        <p:cornerRadius>3</p:cornerRadius>
+      </Shape>
+      <Shape id="r1_type_text" type="PlainText" x="958" y="315" width="44" height="14">
+        <p:textContent>Boolean</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>10</p:fontSize>
+        <p:fontWeight>bold</p:fontWeight>
+        <p:textColor>#1E40AF</p:textColor>
+      </Shape>
+
+      <Shape id="r1_tag" type="RoundedRect" x="1068" y="312" width="48" height="20">
+        <p:fillColor>#DCFCE7</p:fillColor>
+        <p:cornerRadius>3</p:cornerRadius>
+      </Shape>
+      <Shape id="r1_tag_text" type="PlainText" x="1076" y="315" width="32" height="14">
+        <p:textContent>beta</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>10</p:fontSize>
+        <p:fontWeight>bold</p:fontWeight>
+        <p:textColor>#166534</p:textColor>
+      </Shape>
+
+      <Shape id="r1_date" type="PlainText" x="1188" y="316" width="100" height="14">
+        <p:textContent>Feb 8, 2026</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>11</p:fontSize>
+        <p:textColor>#535955</p:textColor>
+      </Shape>
+
+      <Shape id="r1_delete" type="PlainText" x="1276" y="316" width="40" height="14">
+        <p:textContent>Delete</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>11</p:fontSize>
+        <p:textColor>#D1242F</p:textColor>
+        <p:textDecoration>underline</p:textDecoration>
+      </Shape>
+
+      <Shape id="r1_divider" type="Line" x="312" y="372" width="1012" height="1">
+        <p:strokeColor>#F2EFEA</p:strokeColor>
+      </Shape>
+
+      <!-- Table Row 2 -->
+      <Shape id="r2_name" type="PlainText" x="312" y="388" width="300" height="18">
+        <p:textContent>Dark Mode Toggle</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>14</p:fontSize>
+        <p:fontWeight>bold</p:fontWeight>
+        <p:textColor>#8E3D03</p:textColor>
+        <p:textDecoration>underline</p:textDecoration>
+      </Shape>
+      <Shape id="r2_key" type="PlainText" x="312" y="406" width="300" height="14">
+        <p:textContent>dark_mode_toggle</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>11</p:fontSize>
+        <p:textColor>#535955</p:textColor>
+      </Shape>
+      <Shape id="r2_desc" type="PlainText" x="312" y="422" width="300" height="14">
+        <p:textContent>Allow users to switch themes</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>11</p:fontSize>
+        <p:textColor>#535955</p:textColor>
+      </Shape>
+
+      <Shape id="r2_toggle_bg" type="RoundedRect" x="648" y="392" width="48" height="24">
+        <p:fillColor>#1A7F37</p:fillColor>
+        <p:cornerRadius>12</p:cornerRadius>
+      </Shape>
+      <Shape id="r2_toggle_knob" type="Ellipse" x="666" y="395" width="18" height="18">
+        <p:fillColor>#FFFFFF</p:fillColor>
+      </Shape>
+
+      <Shape id="r2_value" type="RoundedRect" x="788" y="392" width="52" height="20">
+        <p:fillColor>#F2EFEA</p:fillColor>
+        <p:cornerRadius>3</p:cornerRadius>
+      </Shape>
+      <Shape id="r2_value_text" type="PlainText" x="794" y="395" width="40" height="14">
+        <p:textContent>true</p:textContent>
+        <p:fontFamily>Courier</p:fontFamily>
+        <p:fontSize>11</p:fontSize>
+        <p:textColor>#040403</p:textColor>
+      </Shape>
+
+      <Shape id="r2_type_badge" type="RoundedRect" x="948" y="392" width="64" height="20">
+        <p:fillColor>#DBEAFE</p:fillColor>
+        <p:cornerRadius>3</p:cornerRadius>
+      </Shape>
+      <Shape id="r2_type_text" type="PlainText" x="958" y="395" width="44" height="14">
+        <p:textContent>Boolean</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>10</p:fontSize>
+        <p:fontWeight>bold</p:fontWeight>
+        <p:textColor>#1E40AF</p:textColor>
+      </Shape>
+
+      <Shape id="r2_date" type="PlainText" x="1188" y="396" width="100" height="14">
+        <p:textContent>Feb 7, 2026</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>11</p:fontSize>
+        <p:textColor>#535955</p:textColor>
+      </Shape>
+
+      <!-- Table Row 3 -->
+      <Shape id="r3_divider" type="Line" x="312" y="452" width="1012" height="1">
+        <p:strokeColor>#F2EFEA</p:strokeColor>
+      </Shape>
+
+      <Shape id="r3_name" type="PlainText" x="312" y="468" width="300" height="18">
+        <p:textContent>Max Upload Size</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>14</p:fontSize>
+        <p:fontWeight>bold</p:fontWeight>
+        <p:textColor>#8E3D03</p:textColor>
+        <p:textDecoration>underline</p:textDecoration>
+      </Shape>
+      <Shape id="r3_key" type="PlainText" x="312" y="486" width="300" height="14">
+        <p:textContent>max_upload_size_mb</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>11</p:fontSize>
+        <p:textColor>#535955</p:textColor>
+      </Shape>
+      <Shape id="r3_desc" type="PlainText" x="312" y="502" width="300" height="14">
+        <p:textContent>Maximum file upload size in MB</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>11</p:fontSize>
+        <p:textColor>#535955</p:textColor>
+      </Shape>
+
+      <Shape id="r3_toggle_bg" type="RoundedRect" x="648" y="472" width="48" height="24">
+        <p:fillColor>#D1242F</p:fillColor>
+        <p:cornerRadius>12</p:cornerRadius>
+      </Shape>
+      <Shape id="r3_toggle_knob" type="Ellipse" x="651" y="475" width="18" height="18">
+        <p:fillColor>#FFFFFF</p:fillColor>
+      </Shape>
+
+      <Shape id="r3_value" type="RoundedRect" x="788" y="472" width="40" height="20">
+        <p:fillColor>#F2EFEA</p:fillColor>
+        <p:cornerRadius>3</p:cornerRadius>
+      </Shape>
+      <Shape id="r3_value_text" type="PlainText" x="794" y="475" width="28" height="14">
+        <p:textContent>100</p:textContent>
+        <p:fontFamily>Courier</p:fontFamily>
+        <p:fontSize>11</p:fontSize>
+        <p:textColor>#040403</p:textColor>
+      </Shape>
+
+      <Shape id="r3_type_badge" type="RoundedRect" x="948" y="472" width="64" height="20">
+        <p:fillColor>#DBEAFE</p:fillColor>
+        <p:cornerRadius>3</p:cornerRadius>
+      </Shape>
+      <Shape id="r3_type_text" type="PlainText" x="958" y="475" width="44" height="14">
+        <p:textContent>Number</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>10</p:fontSize>
+        <p:fontWeight>bold</p:fontWeight>
+        <p:textColor>#1E40AF</p:textColor>
+      </Shape>
+
+      <Shape id="r3_date" type="PlainText" x="1188" y="476" width="100" height="14">
+        <p:textContent>Feb 5, 2026</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>11</p:fontSize>
+        <p:textColor>#535955</p:textColor>
+      </Shape>
+    </Content>
+  </Page>
+
+  <!-- Page 3: Flag Detail/Edit -->
+  <Page name="3. Flag Detail" id="flag_detail_page" width="1440" height="900">
+    <Properties>
+      <Property name="fid">flag_detail_page</Property>
+      <Property name="name">3. Flag Detail</Property>
+      <Property name="description">Edit flag configuration and environment values</Property>
+    </Properties>
+    <Content>
+      <!-- Sidebar and Header (simplified) -->
+      <Shape id="sidebar_bg" type="Rectangle" x="0" y="0" width="240" height="900">
+        <p:fillColor>#FAF7F0</p:fillColor>
+        <p:strokeColor>#E8E5E0</p:strokeColor>
+      </Shape>
+      <Shape id="header_bg" type="Rectangle" x="240" y="0" width="1200" height="56">
+        <p:fillColor>#FFFCF5</p:fillColor>
+        <p:strokeColor>#E8E5E0</p:strokeColor>
+      </Shape>
+
+      <!-- Content -->
+      <Shape id="content_bg" type="Rectangle" x="240" y="56" width="1200" height="844">
+        <p:fillColor>#FFFCF5</p:fillColor>
+      </Shape>
+
+      <!-- Header Actions -->
+      <Shape id="back_btn" type="PlainText" x="288" y="88" width="80" height="24">
+        <p:textContent>← Back</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>13</p:fontSize>
+        <p:textColor>#8E3D03</p:textColor>
+        <p:textDecoration>underline</p:textDecoration>
+      </Shape>
+
+      <Shape id="delete_btn" type="RoundedRect" x="1188" y="84" width="80" height="32">
+        <p:fillColor>transparent</p:fillColor>
+        <p:strokeColor>#D1242F</p:strokeColor>
+        <p:cornerRadius>4</p:cornerRadius>
+      </Shape>
+      <Shape id="delete_btn_text" type="PlainText" x="1204" y="92" width="48" height="16">
+        <p:textContent>Delete</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>12</p:fontSize>
+        <p:textColor>#D1242F</p:textColor>
+      </Shape>
+
+      <Shape id="save_btn" type="RoundedRect" x="1288" y="84" width="132" height="32">
+        <p:fillColor>#8E3D03</p:fillColor>
+        <p:cornerRadius>4</p:cornerRadius>
+      </Shape>
+      <Shape id="save_btn_text" type="PlainText" x="1304" y="92" width="100" height="16">
+        <p:textContent>Save Changes</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>12</p:fontSize>
+        <p:fontWeight>bold</p:fontWeight>
+        <p:textColor>#FFFFFF</p:textColor>
+      </Shape>
+
+      <!-- Page Title -->
+      <Shape id="page_title" type="PlainText" x="288" y="136" width="800" height="32">
+        <p:textContent>New Checkout Experience</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>28</p:fontSize>
+        <p:fontWeight>bold</p:fontWeight>
+        <p:textColor>#040403</p:textColor>
+      </Shape>
+      <Shape id="page_subtitle" type="PlainText" x="288" y="172" width="400" height="20">
+        <p:textContent>new_checkout_experience</p:textContent>
+        <p:fontFamily>Courier</p:fontFamily>
+        <p:fontSize>14</p:fontSize>
+        <p:textColor>#535955</p:textColor>
+      </Shape>
+
+      <!-- Details Card -->
+      <Shape id="details_card" type="RoundedRect" x="288" y="220" width="720" height="240">
+        <p:fillColor>#FFFFFF</p:fillColor>
+        <p:strokeColor>#E8E5E0</p:strokeColor>
+        <p:cornerRadius>6</p:cornerRadius>
+      </Shape>
+      <Shape id="details_title" type="PlainText" x="312" y="236" width="120" height="20">
+        <p:textContent>Details</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>16</p:fontSize>
+        <p:fontWeight>bold</p:fontWeight>
+        <p:textColor>#040403</p:textColor>
+      </Shape>
+
+      <!-- Name Field -->
+      <Shape id="name_label" type="PlainText" x="312" y="276" width="80" height="16">
+        <p:textContent>Name *</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>12</p:fontSize>
+        <p:fontWeight>bold</p:fontWeight>
+        <p:textColor>#040403</p:textColor>
+      </Shape>
+      <Shape id="name_input" type="RoundedRect" x="312" y="296" width="672" height="36">
+        <p:fillColor>#F2EFEA</p:fillColor>
+        <p:strokeColor>#D4D1CA</p:strokeColor>
+        <p:cornerRadius>4</p:cornerRadius>
+      </Shape>
+      <Shape id="name_value" type="PlainText" x="324" y="304" width="640" height="20">
+        <p:textContent>New Checkout Experience</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>14</p:fontSize>
+        <p:textColor>#040403</p:textColor>
+      </Shape>
+
+      <!-- Description Field -->
+      <Shape id="desc_label" type="PlainText" x="312" y="348" width="100" height="16">
+        <p:textContent>Description</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>12</p:fontSize>
+        <p:fontWeight>bold</p:fontWeight>
+        <p:textColor>#040403</p:textColor>
+      </Shape>
+      <Shape id="desc_input" type="RoundedRect" x="312" y="368" width="672" height="60">
+        <p:fillColor>#F2EFEA</p:fillColor>
+        <p:strokeColor>#D4D1CA</p:strokeColor>
+        <p:cornerRadius>4</p:cornerRadius>
+      </Shape>
+      <Shape id="desc_value" type="PlainText" x="324" y="376" width="640" height="40">
+        <p:textContent>Enables the redesigned checkout flow with one-click purchasing</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>13</p:fontSize>
+        <p:textColor>#040403</p:textColor>
+      </Shape>
+
+      <!-- Default Value Card -->
+      <Shape id="value_card" type="RoundedRect" x="288" y="484" width="720" height="180">
+        <p:fillColor>#FFFFFF</p:fillColor>
+        <p:strokeColor>#E8E5E0</p:strokeColor>
+        <p:cornerRadius>6</p:cornerRadius>
+      </Shape>
+      <Shape id="value_title" type="PlainText" x="312" y="500" width="200" height="20">
+        <p:textContent>Default Value</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>16</p:fontSize>
+        <p:fontWeight>bold</p:fontWeight>
+        <p:textColor>#040403</p:textColor>
+      </Shape>
+
+      <Shape id="value_type_label" type="PlainText" x="312" y="540" width="60" height="16">
+        <p:textContent>Type</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>12</p:fontSize>
+        <p:fontWeight>bold</p:fontWeight>
+        <p:textColor>#040403</p:textColor>
+      </Shape>
+      <Shape id="value_type_badge" type="RoundedRect" x="312" y="560" width="72" height="24">
+        <p:fillColor>#DBEAFE</p:fillColor>
+        <p:cornerRadius>3</p:cornerRadius>
+      </Shape>
+      <Shape id="value_type_text" type="PlainText" x="324" y="565" width="48" height="14">
+        <p:textContent>Boolean</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>11</p:fontSize>
+        <p:fontWeight>bold</p:fontWeight>
+        <p:textColor>#1E40AF</p:textColor>
+      </Shape>
+
+      <Shape id="value_label" type="PlainText" x="312" y="604" width="80" height="16">
+        <p:textContent>Value *</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>12</p:fontSize>
+        <p:fontWeight>bold</p:fontWeight>
+        <p:textColor>#040403</p:textColor>
+      </Shape>
+      <Shape id="value_toggle_bg" type="RoundedRect" x="312" y="624" width="48" height="24">
+        <p:fillColor>#1A7F37</p:fillColor>
+        <p:cornerRadius>12</p:cornerRadius>
+      </Shape>
+      <Shape id="value_toggle_knob" type="Ellipse" x="330" y="627" width="18" height="18">
+        <p:fillColor>#FFFFFF</p:fillColor>
+      </Shape>
+      <Shape id="value_toggle_label" type="PlainText" x="368" y="628" width="60" height="16">
+        <p:textContent>Enabled</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>12</p:fontSize>
+        <p:textColor>#535955</p:textColor>
+      </Shape>
+
+      <!-- Environment Overrides Card -->
+      <Shape id="env_card" type="RoundedRect" x="288" y="688" width="720" height="180">
+        <p:fillColor>#FFFFFF</p:fillColor>
+        <p:strokeColor>#E8E5E0</p:strokeColor>
+        <p:cornerRadius>6</p:cornerRadius>
+      </Shape>
+      <Shape id="env_title" type="PlainText" x="312" y="704" width="240" height="20">
+        <p:textContent>Environment Overrides</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>16</p:fontSize>
+        <p:fontWeight>bold</p:fontWeight>
+        <p:textColor>#040403</p:textColor>
+      </Shape>
+
+      <!-- Environment Row 1: Development -->
+      <Shape id="env1_dot" type="Ellipse" x="312" y="744" width="8" height="8">
+        <p:fillColor>#3B82F6</p:fillColor>
+      </Shape>
+      <Shape id="env1_name" type="PlainText" x="332" y="740" width="140" height="16">
+        <p:textContent>Development</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>13</p:fontSize>
+        <p:textColor>#040403</p:textColor>
+      </Shape>
+      <Shape id="env1_toggle_bg" type="RoundedRect" x="500" y="738" width="48" height="24">
+        <p:fillColor>#1A7F37</p:fillColor>
+        <p:cornerRadius>12</p:cornerRadius>
+      </Shape>
+      <Shape id="env1_toggle_knob" type="Ellipse" x="518" y="741" width="18" height="18">
+        <p:fillColor>#FFFFFF</p:fillColor>
+      </Shape>
+      <Shape id="env1_value" type="RoundedRect" x="568" y="738" width="52" height="24">
+        <p:fillColor>#F2EFEA</p:fillColor>
+        <p:cornerRadius>3</p:cornerRadius>
+      </Shape>
+      <Shape id="env1_value_text" type="PlainText" x="578" y="743" width="32" height="14">
+        <p:textContent>true</p:textContent>
+        <p:fontFamily>Courier</p:fontFamily>
+        <p:fontSize>11</p:fontSize>
+        <p:textColor>#040403</p:textColor>
+      </Shape>
+
+      <!-- Environment Row 2: Staging -->
+      <Shape id="env2_dot" type="Ellipse" x="312" y="784" width="8" height="8">
+        <p:fillColor>#EAB308</p:fillColor>
+      </Shape>
+      <Shape id="env2_name" type="PlainText" x="332" y="780" width="140" height="16">
+        <p:textContent>Staging</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>13</p:fontSize>
+        <p:textColor>#040403</p:textColor>
+      </Shape>
+      <Shape id="env2_toggle_bg" type="RoundedRect" x="500" y="778" width="48" height="24">
+        <p:fillColor>#1A7F37</p:fillColor>
+        <p:cornerRadius>12</p:cornerRadius>
+      </Shape>
+      <Shape id="env2_toggle_knob" type="Ellipse" x="518" y="781" width="18" height="18">
+        <p:fillColor>#FFFFFF</p:fillColor>
+      </Shape>
+      <Shape id="env2_value" type="RoundedRect" x="568" y="778" width="52" height="24">
+        <p:fillColor>#F2EFEA</p:fillColor>
+        <p:cornerRadius>3</p:cornerRadius>
+      </Shape>
+      <Shape id="env2_value_text" type="PlainText" x="578" y="783" width="32" height="14">
+        <p:textContent>true</p:textContent>
+        <p:fontFamily>Courier</p:fontFamily>
+        <p:fontSize>11</p:fontSize>
+        <p:textColor>#040403</p:textColor>
+      </Shape>
+
+      <!-- Environment Row 3: Production -->
+      <Shape id="env3_dot" type="Ellipse" x="312" y="824" width="8" height="8">
+        <p:fillColor>#EF4444</p:fillColor>
+      </Shape>
+      <Shape id="env3_name" type="PlainText" x="332" y="820" width="140" height="16">
+        <p:textContent>Production</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>13</p:fontSize>
+        <p:textColor>#040403</p:textColor>
+      </Shape>
+      <Shape id="env3_toggle_bg" type="RoundedRect" x="500" y="818" width="48" height="24">
+        <p:fillColor>#D1242F</p:fillColor>
+        <p:cornerRadius>12</p:cornerRadius>
+      </Shape>
+      <Shape id="env3_toggle_knob" type="Ellipse" x="503" y="821" width="18" height="18">
+        <p:fillColor>#FFFFFF</p:fillColor>
+      </Shape>
+      <Shape id="env3_value" type="RoundedRect" x="568" y="818" width="56" height="24">
+        <p:fillColor>#F2EFEA</p:fillColor>
+        <p:cornerRadius>3</p:cornerRadius>
+      </Shape>
+      <Shape id="env3_value_text" type="PlainText" x="576" y="823" width="40" height="14">
+        <p:textContent>false</p:textContent>
+        <p:fontFamily>Courier</p:fontFamily>
+        <p:fontSize>11</p:fontSize>
+        <p:textColor>#040403</p:textColor>
+      </Shape>
+    </Content>
+  </Page>
+
+  <!-- Page 4: Projects List -->
+  <Page name="4. Projects List" id="projects_page" width="1440" height="900">
+    <Properties>
+      <Property name="fid">projects_page</Property>
+      <Property name="name">4. Projects List</Property>
+      <Property name="description">Manage projects (workspaces)</Property>
+    </Properties>
+    <Content>
+      <!-- Sidebar and Header -->
+      <Shape id="sidebar_bg" type="Rectangle" x="0" y="0" width="240" height="900">
+        <p:fillColor>#FAF7F0</p:fillColor>
+        <p:strokeColor>#E8E5E0</p:strokeColor>
+      </Shape>
+      <Shape id="header_bg" type="Rectangle" x="240" y="0" width="1200" height="56">
+        <p:fillColor>#FFFCF5</p:fillColor>
+        <p:strokeColor>#E8E5E0</p:strokeColor>
+      </Shape>
+
+      <!-- Content -->
+      <Shape id="content_bg" type="Rectangle" x="240" y="56" width="1200" height="844">
+        <p:fillColor>#FFFCF5</p:fillColor>
+      </Shape>
+
+      <Shape id="page_title" type="PlainText" x="288" y="88" width="400" height="32">
+        <p:textContent>Projects</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>28</p:fontSize>
+        <p:fontWeight>bold</p:fontWeight>
+        <p:textColor>#040403</p:textColor>
+      </Shape>
+      <Shape id="page_desc" type="PlainText" x="288" y="128" width="800" height="20">
+        <p:textContent>Organize your feature flags into separate workspaces.</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>14</p:fontSize>
+        <p:textColor>#535955</p:textColor>
+      </Shape>
+
+      <!-- Projects Table -->
+      <Shape id="projects_table" type="RoundedRect" x="288" y="172" width="1060" height="520">
+        <p:fillColor>#FFFFFF</p:fillColor>
+        <p:strokeColor>#E8E5E0</p:strokeColor>
+        <p:cornerRadius>6</p:cornerRadius>
+      </Shape>
+
+      <!-- Table Headers -->
+      <Shape id="th_project" type="PlainText" x="312" y="188" width="360" height="20">
+        <p:textContent>Project</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>13</p:fontSize>
+        <p:fontWeight>bold</p:fontWeight>
+        <p:textColor>#535955</p:textColor>
+      </Shape>
+      <Shape id="th_key" type="PlainText" x="724" y="188" width="160" height="20">
+        <p:textContent>Key</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>13</p:fontSize>
+        <p:fontWeight>bold</p:fontWeight>
+        <p:textColor>#535955</p:textColor>
+      </Shape>
+      <Shape id="th_status" type="PlainText" x="928" y="188" width="120" height="20">
+        <p:textContent>Status</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>13</p:fontSize>
+        <p:fontWeight>bold</p:fontWeight>
+        <p:textColor>#535955</p:textColor>
+      </Shape>
+      <Shape id="th_updated" type="PlainText" x="1088" y="188" width="100" height="20">
+        <p:textContent>Updated</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>13</p:fontSize>
+        <p:fontWeight>bold</p:fontWeight>
+        <p:textColor>#535955</p:textColor>
+      </Shape>
+      <Shape id="th_actions" type="PlainText" x="1228" y="188" width="80" height="20">
+        <p:textContent>Actions</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>13</p:fontSize>
+        <p:fontWeight>bold</p:fontWeight>
+        <p:textColor>#535955</p:textColor>
+      </Shape>
+
+      <Shape id="projects_header_divider" type="Line" x="312" y="220" width="1012" height="1">
+        <p:strokeColor>#E8E5E0</p:strokeColor>
+      </Shape>
+
+      <!-- Project Row 1 -->
+      <Shape id="p1_name" type="PlainText" x="312" y="236" width="360" height="18">
+        <p:textContent>My Project</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>14</p:fontSize>
+        <p:fontWeight>bold</p:fontWeight>
+        <p:textColor>#8E3D03</p:textColor>
+        <p:textDecoration>underline</p:textDecoration>
+      </Shape>
+      <Shape id="p1_desc" type="PlainText" x="312" y="256" width="360" height="14">
+        <p:textContent>Main development project for feature flags</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>11</p:fontSize>
+        <p:textColor>#535955</p:textColor>
+      </Shape>
+
+      <Shape id="p1_key" type="PlainText" x="724" y="240" width="160" height="16">
+        <p:textContent>my-project</p:textContent>
+        <p:fontFamily>Courier</p:fontFamily>
+        <p:fontSize>12</p:fontSize>
+        <p:textColor>#535955</p:textColor>
+      </Shape>
+
+      <Shape id="p1_badge1" type="RoundedRect" x="928" y="236" width="56" height="20">
+        <p:fillColor>#FEF3C7</p:fillColor>
+        <p:cornerRadius>3</p:cornerRadius>
+      </Shape>
+      <Shape id="p1_badge1_text" type="PlainText" x="936" y="239" width="40" height="14">
+        <p:textContent>Default</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>10</p:fontSize>
+        <p:fontWeight>bold</p:fontWeight>
+        <p:textColor>#92400E</p:textColor>
+      </Shape>
+
+      <Shape id="p1_badge2" type="RoundedRect" x="992" y="236" width="56" height="20">
+        <p:fillColor>#DBEAFE</p:fillColor>
+        <p:cornerRadius>3</p:cornerRadius>
+      </Shape>
+      <Shape id="p1_badge2_text" type="PlainText" x="998" y="239" width="44" height="14">
+        <p:textContent>Selected</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>10</p:fontSize>
+        <p:fontWeight>bold</p:fontWeight>
+        <p:textColor>#1E40AF</p:textColor>
+      </Shape>
+
+      <Shape id="p1_date" type="PlainText" x="1088" y="240" width="100" height="14">
+        <p:textContent>Feb 8, 2026</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>11</p:fontSize>
+        <p:textColor>#535955</p:textColor>
+      </Shape>
+
+      <Shape id="p1_select" type="PlainText" x="1228" y="240" width="40" height="14">
+        <p:textContent>Select</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>11</p:fontSize>
+        <p:textColor>#8E3D03</p:textColor>
+        <p:textDecoration>underline</p:textDecoration>
+      </Shape>
+
+      <Shape id="p1_divider" type="Line" x="312" y="284" width="1012" height="1">
+        <p:strokeColor>#F2EFEA</p:strokeColor>
+      </Shape>
+
+      <!-- Project Row 2 -->
+      <Shape id="p2_name" type="PlainText" x="312" y="300" width="360" height="18">
+        <p:textContent>Beta Testing</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>14</p:fontSize>
+        <p:fontWeight>bold</p:fontWeight>
+        <p:textColor>#8E3D03</p:textColor>
+        <p:textDecoration>underline</p:textDecoration>
+      </Shape>
+      <Shape id="p2_desc" type="PlainText" x="312" y="320" width="360" height="14">
+        <p:textContent>Experimental features for early access users</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>11</p:fontSize>
+        <p:textColor>#535955</p:textColor>
+      </Shape>
+
+      <Shape id="p2_key" type="PlainText" x="724" y="304" width="160" height="16">
+        <p:textContent>beta-testing</p:textContent>
+        <p:fontFamily>Courier</p:fontFamily>
+        <p:fontSize>12</p:fontSize>
+        <p:textColor>#535955</p:textColor>
+      </Shape>
+
+      <Shape id="p2_date" type="PlainText" x="1088" y="304" width="100" height="14">
+        <p:textContent>Feb 5, 2026</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>11</p:fontSize>
+        <p:textColor>#535955</p:textColor>
+      </Shape>
+
+      <Shape id="p2_select" type="PlainText" x="1228" y="304" width="40" height="14">
+        <p:textContent>Select</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>11</p:fontSize>
+        <p:textColor>#8E3D03</p:textColor>
+        <p:textDecoration>underline</p:textDecoration>
+      </Shape>
+      <Shape id="p2_delete" type="PlainText" x="1276" y="304" width="40" height="14">
+        <p:textContent>Delete</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>11</p:fontSize>
+        <p:textColor>#D1242F</p:textColor>
+        <p:textDecoration>underline</p:textDecoration>
+      </Shape>
+
+      <!-- Create Project Form -->
+      <Shape id="create_form_title" type="PlainText" x="288" y="724" width="200" height="24">
+        <p:textContent>Create New Project</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>18</p:fontSize>
+        <p:fontWeight>bold</p:fontWeight>
+        <p:textColor>#040403</p:textColor>
+      </Shape>
+
+      <Shape id="create_form_bg" type="RoundedRect" x="288" y="760" width="1060" height="100">
+        <p:fillColor>#FFFFFF</p:fillColor>
+        <p:strokeColor>#E8E5E0</p:strokeColor>
+        <p:cornerRadius>6</p:cornerRadius>
+      </Shape>
+
+      <Shape id="create_name_label" type="PlainText" x="312" y="776" width="80" height="14">
+        <p:textContent>Name *</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>11</p:fontSize>
+        <p:fontWeight>bold</p:fontWeight>
+        <p:textColor>#040403</p:textColor>
+      </Shape>
+      <Shape id="create_name_input" type="RoundedRect" x="312" y="794" width="280" height="32">
+        <p:fillColor>#F2EFEA</p:fillColor>
+        <p:strokeColor>#D4D1CA</p:strokeColor>
+        <p:cornerRadius>4</p:cornerRadius>
+      </Shape>
+      <Shape id="create_name_placeholder" type="PlainText" x="324" y="801" width="256" height="18">
+        <p:textContent>My New Project</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>13</p:fontSize>
+        <p:textColor>#535955</p:textColor>
+      </Shape>
+
+      <Shape id="create_key_label" type="PlainText" x="612" y="776" width="80" height="14">
+        <p:textContent>Key *</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>11</p:fontSize>
+        <p:fontWeight>bold</p:fontWeight>
+        <p:textColor>#040403</p:textColor>
+      </Shape>
+      <Shape id="create_key_input" type="RoundedRect" x="612" y="794" width="280" height="32">
+        <p:fillColor>#F2EFEA</p:fillColor>
+        <p:strokeColor>#D4D1CA</p:strokeColor>
+        <p:cornerRadius>4</p:cornerRadius>
+      </Shape>
+      <Shape id="create_key_placeholder" type="PlainText" x="624" y="801" width="256" height="18">
+        <p:textContent>my-new-project</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>13</p:fontSize>
+        <p:textColor>#535955</p:textColor>
+      </Shape>
+
+      <Shape id="create_desc_label" type="PlainText" x="912" y="776" width="100" height="14">
+        <p:textContent>Description</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>11</p:fontSize>
+        <p:fontWeight>bold</p:fontWeight>
+        <p:textColor>#040403</p:textColor>
+      </Shape>
+      <Shape id="create_desc_input" type="RoundedRect" x="912" y="794" width="280" height="32">
+        <p:fillColor>#F2EFEA</p:fillColor>
+        <p:strokeColor>#D4D1CA</p:strokeColor>
+        <p:cornerRadius>4</p:cornerRadius>
+      </Shape>
+
+      <Shape id="create_btn" type="RoundedRect" x="1212" y="794" width="112" height="32">
+        <p:fillColor>#8E3D03</p:fillColor>
+        <p:cornerRadius>4</p:cornerRadius>
+      </Shape>
+      <Shape id="create_btn_text" type="PlainText" x="1228" y="802" width="80" height="16">
+        <p:textContent>Add Project</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>12</p:fontSize>
+        <p:fontWeight>bold</p:fontWeight>
+        <p:textColor>#FFFFFF</p:textColor>
+      </Shape>
+    </Content>
+  </Page>
+
+  <!-- Page 5: Audit Log -->
+  <Page name="5. Audit Log" id="audit_log_page" width="1440" height="900">
+    <Properties>
+      <Property name="fid">audit_log_page</Property>
+      <Property name="name">5. Audit Log</Property>
+      <Property name="description">Track all changes and activities</Property>
+    </Properties>
+    <Content>
+      <!-- Sidebar and Header -->
+      <Shape id="sidebar_bg" type="Rectangle" x="0" y="0" width="240" height="900">
+        <p:fillColor>#FAF7F0</p:fillColor>
+        <p:strokeColor>#E8E5E0</p:strokeColor>
+      </Shape>
+      <Shape id="header_bg" type="Rectangle" x="240" y="0" width="1200" height="56">
+        <p:fillColor>#FFFCF5</p:fillColor>
+        <p:strokeColor>#E8E5E0</p:strokeColor>
+      </Shape>
+
+      <!-- Content -->
+      <Shape id="content_bg" type="Rectangle" x="240" y="56" width="1200" height="844">
+        <p:fillColor>#FFFCF5</p:fillColor>
+      </Shape>
+
+      <Shape id="page_title" type="PlainText" x="288" y="88" width="400" height="32">
+        <p:textContent>Audit Log</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>28</p:fontSize>
+        <p:fontWeight>bold</p:fontWeight>
+        <p:textColor>#040403</p:textColor>
+      </Shape>
+      <Shape id="page_desc" type="PlainText" x="288" y="128" width="800" height="20">
+        <p:textContent>Track all changes and activities across your feature flags.</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>14</p:fontSize>
+        <p:textColor>#535955</p:textColor>
+      </Shape>
+
+      <!-- Toolbar with Filters -->
+      <Shape id="toolbar_bg" type="RoundedRect" x="288" y="172" width="900" height="48">
+        <p:fillColor>#FFFFFF</p:fillColor>
+        <p:strokeColor>#E8E5E0</p:strokeColor>
+        <p:cornerRadius>6</p:cornerRadius>
+      </Shape>
+
+      <Shape id="action_label" type="PlainText" x="304" y="180" width="60" height="14">
+        <p:textContent>Action</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>11</p:fontSize>
+        <p:textColor>#535955</p:textColor>
+      </Shape>
+      <Shape id="action_select" type="RoundedRect" x="304" y="194" width="140" height="20">
+        <p:fillColor>#F2EFEA</p:fillColor>
+        <p:cornerRadius>3</p:cornerRadius>
+      </Shape>
+      <Shape id="action_select_text" type="PlainText" x="312" y="196" width="120" height="16">
+        <p:textContent>All Actions ▾</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>12</p:fontSize>
+        <p:textColor>#040403</p:textColor>
+      </Shape>
+
+      <Shape id="resource_label" type="PlainText" x="464" y="180" width="80" height="14">
+        <p:textContent>Resource</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>11</p:fontSize>
+        <p:textColor>#535955</p:textColor>
+      </Shape>
+      <Shape id="resource_select" type="RoundedRect" x="464" y="194" width="140" height="20">
+        <p:fillColor>#F2EFEA</p:fillColor>
+        <p:cornerRadius>3</p:cornerRadius>
+      </Shape>
+      <Shape id="resource_select_text" type="PlainText" x="472" y="196" width="120" height="16">
+        <p:textContent>All Resources ▾</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>12</p:fontSize>
+        <p:textColor>#040403</p:textColor>
+      </Shape>
+
+      <Shape id="entry_count" type="PlainText" x="1204" y="192" width="120" height="20">
+        <p:textContent>156 entries</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>12</p:fontSize>
+        <p:textColor>#535955</p:textColor>
+      </Shape>
+
+      <!-- Audit Table -->
+      <Shape id="audit_table" type="RoundedRect" x="288" y="244" width="1060" height="580">
+        <p:fillColor>#FFFFFF</p:fillColor>
+        <p:strokeColor>#E8E5E0</p:strokeColor>
+        <p:cornerRadius>6</p:cornerRadius>
+      </Shape>
+
+      <!-- Table Headers -->
+      <Shape id="th_timestamp" type="PlainText" x="312" y="260" width="140" height="20">
+        <p:textContent>Timestamp</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>13</p:fontSize>
+        <p:fontWeight>bold</p:fontWeight>
+        <p:textColor>#535955</p:textColor>
+      </Shape>
+      <Shape id="th_action" type="PlainText" x="472" y="260" width="100" height="20">
+        <p:textContent>Action</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>13</p:fontSize>
+        <p:fontWeight>bold</p:fontWeight>
+        <p:textColor>#535955</p:textColor>
+      </Shape>
+      <Shape id="th_resource" type="PlainText" x="592" y="260" width="280" height="20">
+        <p:textContent>Resource</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>13</p:fontSize>
+        <p:fontWeight>bold</p:fontWeight>
+        <p:textColor>#535955</p:textColor>
+      </Shape>
+      <Shape id="th_user" type="PlainText" x="892" y="260" width="160" height="20">
+        <p:textContent>User</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>13</p:fontSize>
+        <p:fontWeight>bold</p:fontWeight>
+        <p:textColor>#535955</p:textColor>
+      </Shape>
+      <Shape id="th_details" type="PlainText" x="1072" y="260" width="240" height="20">
+        <p:textContent>Details</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>13</p:fontSize>
+        <p:fontWeight>bold</p:fontWeight>
+        <p:textColor>#535955</p:textColor>
+      </Shape>
+
+      <Shape id="audit_header_divider" type="Line" x="312" y="292" width="1012" height="1">
+        <p:strokeColor>#E8E5E0</p:strokeColor>
+      </Shape>
+
+      <!-- Audit Row 1 -->
+      <Shape id="a1_time" type="PlainText" x="312" y="308" width="140" height="14">
+        <p:textContent>Feb 8, 2026</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>12</p:fontSize>
+        <p:textColor>#535955</p:textColor>
+      </Shape>
+      <Shape id="a1_time2" type="PlainText" x="312" y="324" width="140" height="12">
+        <p:textContent>2:34 PM</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>11</p:fontSize>
+        <p:textColor>#535955</p:textColor>
+      </Shape>
+
+      <Shape id="a1_action_badge" type="RoundedRect" x="472" y="310" width="64" height="20">
+        <p:fillColor>#DCFCE7</p:fillColor>
+        <p:cornerRadius>3</p:cornerRadius>
+      </Shape>
+      <Shape id="a1_action_text" type="PlainText" x="482" y="313" width="44" height="14">
+        <p:textContent>Created</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>10</p:fontSize>
+        <p:fontWeight>bold</p:fontWeight>
+        <p:textColor>#166534</p:textColor>
+      </Shape>
+
+      <Shape id="a1_resource_badge" type="RoundedRect" x="592" y="310" width="40" height="20">
+        <p:fillColor>#DBEAFE</p:fillColor>
+        <p:cornerRadius>3</p:cornerRadius>
+      </Shape>
+      <Shape id="a1_resource_text" type="PlainText" x="600" y="313" width="24" height="14">
+        <p:textContent>Flag</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>10</p:fontSize>
+        <p:fontWeight>bold</p:fontWeight>
+        <p:textColor>#1E40AF</p:textColor>
+      </Shape>
+      <Shape id="a1_resource_name" type="PlainText" x="640" y="312" width="220" height="16">
+        <p:textContent>New Checkout Experience</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>12</p:fontSize>
+        <p:textColor>#040403</p:textColor>
+      </Shape>
+
+      <Shape id="a1_user" type="PlainText" x="892" y="312" width="160" height="16">
+        <p:textContent>John Developer</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>12</p:fontSize>
+        <p:textColor>#040403</p:textColor>
+      </Shape>
+
+      <Shape id="a1_details" type="PlainText" x="1072" y="312" width="240" height="16">
+        <p:textContent>Created boolean flag</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>12</p:fontSize>
+        <p:textColor>#535955</p:textColor>
+      </Shape>
+
+      <Shape id="a1_divider" type="Line" x="312" y="352" width="1012" height="1">
+        <p:strokeColor>#F2EFEA</p:strokeColor>
+      </Shape>
+
+      <!-- Audit Row 2 -->
+      <Shape id="a2_time" type="PlainText" x="312" y="368" width="140" height="14">
+        <p:textContent>Feb 8, 2026</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>12</p:fontSize>
+        <p:textColor>#535955</p:textColor>
+      </Shape>
+      <Shape id="a2_time2" type="PlainText" x="312" y="384" width="140" height="12">
+        <p:textContent>1:15 PM</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>11</p:fontSize>
+        <p:textColor>#535955</p:textColor>
+      </Shape>
+
+      <Shape id="a2_action_badge" type="RoundedRect" x="472" y="370" width="64" height="20">
+        <p:fillColor>#FEF3C7</p:fillColor>
+        <p:cornerRadius>3</p:cornerRadius>
+      </Shape>
+      <Shape id="a2_action_text" type="PlainText" x="481" y="373" width="46" height="14">
+        <p:textContent>Toggled</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>10</p:fontSize>
+        <p:fontWeight>bold</p:fontWeight>
+        <p:textColor>#92400E</p:textColor>
+      </Shape>
+
+      <Shape id="a2_resource_badge" type="RoundedRect" x="592" y="370" width="40" height="20">
+        <p:fillColor>#DBEAFE</p:fillColor>
+        <p:cornerRadius>3</p:cornerRadius>
+      </Shape>
+      <Shape id="a2_resource_text" type="PlainText" x="600" y="373" width="24" height="14">
+        <p:textContent>Flag</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>10</p:fontSize>
+        <p:fontWeight>bold</p:fontWeight>
+        <p:textColor>#1E40AF</p:textColor>
+      </Shape>
+      <Shape id="a2_resource_name" type="PlainText" x="640" y="372" width="220" height="16">
+        <p:textContent>Dark Mode Toggle</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>12</p:fontSize>
+        <p:textColor>#040403</p:textColor>
+      </Shape>
+
+      <Shape id="a2_user" type="PlainText" x="892" y="372" width="160" height="16">
+        <p:textContent>Jane Smith</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>12</p:fontSize>
+        <p:textColor>#040403</p:textColor>
+      </Shape>
+
+      <Shape id="a2_details" type="PlainText" x="1072" y="372" width="240" height="16">
+        <p:textContent>Enabled in Production</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>12</p:fontSize>
+        <p:textColor>#535955</p:textColor>
+      </Shape>
+
+      <Shape id="a2_divider" type="Line" x="312" y="412" width="1012" height="1">
+        <p:strokeColor>#F2EFEA</p:strokeColor>
+      </Shape>
+
+      <!-- Audit Row 3 -->
+      <Shape id="a3_time" type="PlainText" x="312" y="428" width="140" height="14">
+        <p:textContent>Feb 7, 2026</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>12</p:fontSize>
+        <p:textColor>#535955</p:textColor>
+      </Shape>
+      <Shape id="a3_time2" type="PlainText" x="312" y="444" width="140" height="12">
+        <p:textContent>4:22 PM</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>11</p:fontSize>
+        <p:textColor>#535955</p:textColor>
+      </Shape>
+
+      <Shape id="a3_action_badge" type="RoundedRect" x="472" y="430" width="64" height="20">
+        <p:fillColor>#FEE2E2</p:fillColor>
+        <p:cornerRadius>3</p:cornerRadius>
+      </Shape>
+      <Shape id="a3_action_text" type="PlainText" x="482" y="433" width="44" height="14">
+        <p:textContent>Deleted</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>10</p:fontSize>
+        <p:fontWeight>bold</p:fontWeight>
+        <p:textColor>#991B1B</p:textColor>
+      </Shape>
+
+      <Shape id="a3_resource_badge" type="RoundedRect" x="592" y="430" width="64" height="20">
+        <p:fillColor>#FEF3C7</p:fillColor>
+        <p:cornerRadius>3</p:cornerRadius>
+      </Shape>
+      <Shape id="a3_resource_text" type="PlainText" x="596" y="433" width="56" height="14">
+        <p:textContent>Environment</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>9</p:fontSize>
+        <p:fontWeight>bold</p:fontWeight>
+        <p:textColor>#92400E</p:textColor>
+      </Shape>
+      <Shape id="a3_resource_name" type="PlainText" x="664" y="432" width="180" height="16">
+        <p:textContent>Old Test Environment</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>12</p:fontSize>
+        <p:textColor>#040403</p:textColor>
+      </Shape>
+
+      <Shape id="a3_user" type="PlainText" x="892" y="432" width="160" height="16">
+        <p:textContent>John Developer</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>12</p:fontSize>
+        <p:textColor>#040403</p:textColor>
+      </Shape>
+
+      <Shape id="a3_details" type="PlainText" x="1072" y="432" width="240" height="16">
+        <p:textContent>Removed unused environment</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>12</p:fontSize>
+        <p:textColor>#535955</p:textColor>
+      </Shape>
+    </Content>
+  </Page>
+
+  <!-- Page 6: Settings -->
+  <Page name="6. Settings" id="settings_page" width="1440" height="900">
+    <Properties>
+      <Property name="fid">settings_page</Property>
+      <Property name="name">6. Settings</Property>
+      <Property name="description">User preferences and account settings</Property>
+    </Properties>
+    <Content>
+      <!-- Sidebar and Header -->
+      <Shape id="sidebar_bg" type="Rectangle" x="0" y="0" width="240" height="900">
+        <p:fillColor>#FAF7F0</p:fillColor>
+        <p:strokeColor>#E8E5E0</p:strokeColor>
+      </Shape>
+      <Shape id="header_bg" type="Rectangle" x="240" y="0" width="1200" height="56">
+        <p:fillColor>#FFFCF5</p:fillColor>
+        <p:strokeColor>#E8E5E0</p:strokeColor>
+      </Shape>
+
+      <!-- Content -->
+      <Shape id="content_bg" type="Rectangle" x="240" y="56" width="1200" height="844">
+        <p:fillColor>#FFFCF5</p:fillColor>
+      </Shape>
+
+      <Shape id="page_title" type="PlainText" x="288" y="88" width="400" height="32">
+        <p:textContent>Settings</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>28</p:fontSize>
+        <p:fontWeight>bold</p:fontWeight>
+        <p:textColor>#040403</p:textColor>
+      </Shape>
+
+      <!-- Tabs -->
+      <Shape id="tabs_container" type="Rectangle" x="288" y="148" width="1060" height="48">
+        <p:fillColor>transparent</p:fillColor>
+        <p:strokeColor>transparent</p:strokeColor>
+      </Shape>
+
+      <Shape id="tab_profile" type="Rectangle" x="288" y="148" width="100" height="48">
+        <p:fillColor>transparent</p:fillColor>
+        <p:strokeColor>transparent</p:strokeColor>
+      </Shape>
+      <Shape id="tab_profile_text" type="PlainText" x="288" y="160" width="100" height="20">
+        <p:textContent>Profile</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>14</p:fontSize>
+        <p:fontWeight>bold</p:fontWeight>
+        <p:textColor>#8E3D03</p:textColor>
+      </Shape>
+      <Shape id="tab_profile_indicator" type="Rectangle" x="288" y="192" width="100" height="2">
+        <p:fillColor>#8E3D03</p:fillColor>
+      </Shape>
+
+      <Shape id="tab_preferences" type="PlainText" x="408" y="160" width="100" height="20">
+        <p:textContent>Preferences</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>14</p:fontSize>
+        <p:textColor>#535955</p:textColor>
+      </Shape>
+
+      <Shape id="tab_api" type="PlainText" x="528" y="160" width="100" height="20">
+        <p:textContent>API Keys</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>14</p:fontSize>
+        <p:textColor>#535955</p:textColor>
+      </Shape>
+
+      <Shape id="tab_appearance" type="PlainText" x="648" y="160" width="100" height="20">
+        <p:textContent>Appearance</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>14</p:fontSize>
+        <p:textColor>#535955</p:textColor>
+      </Shape>
+
+      <Shape id="tabs_divider" type="Line" x="288" y="196" width="1060" height="1">
+        <p:strokeColor>#E8E5E0</p:strokeColor>
+      </Shape>
+
+      <!-- Profile Form -->
+      <Shape id="profile_card" type="RoundedRect" x="288" y="220" width="720" height="460">
+        <p:fillColor>#FFFFFF</p:fillColor>
+        <p:strokeColor>#E8E5E0</p:strokeColor>
+        <p:cornerRadius>6</p:cornerRadius>
+      </Shape>
+
+      <Shape id="profile_section_title" type="PlainText" x="312" y="236" width="200" height="20">
+        <p:textContent>Profile Information</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>16</p:fontSize>
+        <p:fontWeight>bold</p:fontWeight>
+        <p:textColor>#040403</p:textColor>
+      </Shape>
+
+      <!-- Display Name -->
+      <Shape id="display_name_label" type="PlainText" x="312" y="276" width="120" height="16">
+        <p:textContent>Display Name</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>12</p:fontSize>
+        <p:fontWeight>bold</p:fontWeight>
+        <p:textColor>#040403</p:textColor>
+      </Shape>
+      <Shape id="display_name_input" type="RoundedRect" x="312" y="296" width="672" height="36">
+        <p:fillColor>#F2EFEA</p:fillColor>
+        <p:strokeColor>#D4D1CA</p:strokeColor>
+        <p:cornerRadius>4</p:cornerRadius>
+      </Shape>
+      <Shape id="display_name_value" type="PlainText" x="324" y="304" width="640" height="20">
+        <p:textContent>John Developer</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>14</p:fontSize>
+        <p:textColor>#040403</p:textColor>
+      </Shape>
+
+      <!-- Email -->
+      <Shape id="email_label" type="PlainText" x="312" y="348" width="80" height="16">
+        <p:textContent>Email</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>12</p:fontSize>
+        <p:fontWeight>bold</p:fontWeight>
+        <p:textColor>#040403</p:textColor>
+      </Shape>
+      <Shape id="email_input" type="RoundedRect" x="312" y="368" width="672" height="36">
+        <p:fillColor>#F2EFEA</p:fillColor>
+        <p:strokeColor>#D4D1CA</p:strokeColor>
+        <p:cornerRadius>4</p:cornerRadius>
+      </Shape>
+      <Shape id="email_value" type="PlainText" x="324" y="376" width="640" height="20">
+        <p:textContent>john@example.com</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>14</p:fontSize>
+        <p:textColor>#040403</p:textColor>
+      </Shape>
+
+      <!-- Password Section -->
+      <Shape id="password_section_title" type="PlainText" x="312" y="432" width="200" height="20">
+        <p:textContent>Change Password</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>16</p:fontSize>
+        <p:fontWeight>bold</p:fontWeight>
+        <p:textColor>#040403</p:textColor>
+      </Shape>
+
+      <Shape id="current_pwd_label" type="PlainText" x="312" y="472" width="120" height="16">
+        <p:textContent>Current Password</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>12</p:fontSize>
+        <p:fontWeight>bold</p:fontWeight>
+        <p:textColor>#040403</p:textColor>
+      </Shape>
+      <Shape id="current_pwd_input" type="RoundedRect" x="312" y="492" width="672" height="36">
+        <p:fillColor>#F2EFEA</p:fillColor>
+        <p:strokeColor>#D4D1CA</p:strokeColor>
+        <p:cornerRadius>4</p:cornerRadius>
+      </Shape>
+      <Shape id="current_pwd_placeholder" type="PlainText" x="324" y="500" width="640" height="20">
+        <p:textContent>••••••••</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>14</p:fontSize>
+        <p:textColor>#535955</p:textColor>
+      </Shape>
+
+      <Shape id="new_pwd_label" type="PlainText" x="312" y="544" width="120" height="16">
+        <p:textContent>New Password</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>12</p:fontSize>
+        <p:fontWeight>bold</p:fontWeight>
+        <p:textColor>#040403</p:textColor>
+      </Shape>
+      <Shape id="new_pwd_input" type="RoundedRect" x="312" y="564" width="672" height="36">
+        <p:fillColor>#F2EFEA</p:fillColor>
+        <p:strokeColor>#D4D1CA</p:strokeColor>
+        <p:cornerRadius>4</p:cornerRadius>
+      </Shape>
+
+      <Shape id="confirm_pwd_label" type="PlainText" x="312" y="616" width="140" height="16">
+        <p:textContent>Confirm New Password</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>12</p:fontSize>
+        <p:fontWeight>bold</p:fontWeight>
+        <p:textColor>#040403</p:textColor>
+      </Shape>
+      <Shape id="confirm_pwd_input" type="RoundedRect" x="312" y="636" width="672" height="36">
+        <p:fillColor>#F2EFEA</p:fillColor>
+        <p:strokeColor>#D4D1CA</p:strokeColor>
+        <p:cornerRadius>4</p:cornerRadius>
+      </Shape>
+
+      <!-- Save Button -->
+      <Shape id="save_profile_btn" type="RoundedRect" x="876" y="704" width="108" height="36">
+        <p:fillColor>#8E3D03</p:fillColor>
+        <p:cornerRadius>4</p:cornerRadius>
+      </Shape>
+      <Shape id="save_profile_text" type="PlainText" x="904" y="712" width="52" height="20">
+        <p:textContent>Save</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>14</p:fontSize>
+        <p:fontWeight>bold</p:fontWeight>
+        <p:textColor>#FFFFFF</p:textColor>
+      </Shape>
+
+      <!-- Theme Preview on Right -->
+      <Shape id="theme_preview_card" type="RoundedRect" x="1032" y="220" width="316" height="320">
+        <p:fillColor>#FFFFFF</p:fillColor>
+        <p:strokeColor>#E8E5E0</p:strokeColor>
+        <p:cornerRadius>6</p:cornerRadius>
+      </Shape>
+      <Shape id="theme_preview_title" type="PlainText" x="1056" y="236" width="200" height="20">
+        <p:textContent>Theme Preview</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>14</p:fontSize>
+        <p:fontWeight>bold</p:fontWeight>
+        <p:textColor>#040403</p:textColor>
+      </Shape>
+
+      <!-- Light Theme Example -->
+      <Shape id="light_preview" type="RoundedRect" x="1056" y="268" width="268" height="100">
+        <p:fillColor>#FFFCF5</p:fillColor>
+        <p:strokeColor>#E8E5E0</p:strokeColor>
+        <p:cornerRadius>4</p:cornerRadius>
+      </Shape>
+      <Shape id="light_label" type="PlainText" x="1068" y="276" width="100" height="16">
+        <p:textContent>Light Theme</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>11</p:fontSize>
+        <p:fontWeight>bold</p:fontWeight>
+        <p:textColor>#040403</p:textColor>
+      </Shape>
+      <Shape id="light_sample_card" type="RoundedRect" x="1068" y="296" width="244" height="60">
+        <p:fillColor>#FFFFFF</p:fillColor>
+        <p:strokeColor>#D4D1CA</p:strokeColor>
+        <p:cornerRadius>3</p:cornerRadius>
+      </Shape>
+      <Shape id="light_sample_text" type="PlainText" x="1080" y="306" width="220" height="40">
+        <p:textContent>Text on warm white background with good contrast</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>10</p:fontSize>
+        <p:textColor>#040403</p:textColor>
+      </Shape>
+
+      <!-- Dark Theme Example -->
+      <Shape id="dark_preview" type="RoundedRect" x="1056" y="388" width="268" height="100">
+        <p:fillColor>#040403</p:fillColor>
+        <p:strokeColor>#535955</p:strokeColor>
+        <p:cornerRadius>4</p:cornerRadius>
+      </Shape>
+      <Shape id="dark_label" type="PlainText" x="1068" y="396" width="100" height="16">
+        <p:textContent>Dark Theme</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>11</p:fontSize>
+        <p:fontWeight>bold</p:fontWeight>
+        <p:textColor>#F5F2EA</p:textColor>
+      </Shape>
+      <Shape id="dark_sample_card" type="RoundedRect" x="1068" y="416" width="244" height="60">
+        <p:fillColor>#1A1A18</p:fillColor>
+        <p:strokeColor>#535955</p:strokeColor>
+        <p:cornerRadius>3</p:cornerRadius>
+      </Shape>
+      <Shape id="dark_sample_text" type="PlainText" x="1080" y="426" width="220" height="40">
+        <p:textContent>Light text on dark background with proper contrast</p:textContent>
+        <p:fontFamily>Arial</p:fontFamily>
+        <p:fontSize>10</p:fontSize>
+        <p:textColor>#F5F2EA</p:textColor>
+      </Shape>
+    </Content>
+  </Page>
+</Document>

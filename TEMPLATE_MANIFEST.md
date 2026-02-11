@@ -13,6 +13,9 @@ Documents which files are **reusable boilerplate** (can be templated for new pro
 | `project_description` | One-line description | `Web UI for feature flag management` |
 | `angular_prefix` | Component selector prefix | `app` |
 | `api_base_url` | Backend API base URL | `/api/v1` |
+| `keycloak_url` | Keycloak server URL | `http://localhost:8080` |
+| `keycloak_realm` | Keycloak realm name | `homelab` |
+| `keycloak_client_id` | Keycloak client ID | `feature-flags-ui` |
 | `default_port` | Dev server port | `4200` |
 | `prod_port` | Production nginx port | `80` |
 | `node_version_ci` | Node version for CI | `22` |
@@ -60,8 +63,11 @@ Documents which files are **reusable boilerplate** (can be templated for new pro
 | `src/app/core/api/crud.api.ts` | As-is | Generic CRUD base class |
 | `src/app/core/api/api.tokens.ts` | As-is | API_BASE_URL token |
 | `src/app/core/api/api-error.model.ts` | As-is | Error types |
-| `src/app/core/api/auth.interceptor.ts` | As-is | Token interceptor |
 | `src/app/core/api/error.interceptor.ts` | As-is | Error interceptor |
+| `src/app/core/auth/auth.service.ts` | Template `{{ keycloak_client_id }}` | Keycloak AuthService with signals |
+| `src/app/core/auth/auth.guard.ts` | As-is | Functional CanActivateFn |
+| `src/app/core/auth/role.guard.ts` | Template `{{ keycloak_client_id }}` | Role-based CanActivateFn |
+| `src/app/core/auth/auth.models.ts` | As-is | UserProfile, AUTH_ROLES constants |
 | `src/app/core/theme/theme.service.ts` | As-is | Dark/light theme service |
 | `src/app/core/time/time.service.ts` | As-is | Testable time abstraction |
 | `src/app/shared/store/base-crud.store.ts` | As-is | Generic CRUD store |
@@ -113,6 +119,7 @@ Documents which files are **reusable boilerplate** (can be templated for new pro
 | `e2e/helpers/wait.helper.ts` | Yes | Wait/sync helper |
 | `e2e/helpers/navigation.helper.ts` | Yes | Navigation helper |
 | `e2e/fixtures/base.fixture.ts` | Partial | Fixture setup |
+| `e2e/auth/auth.setup.ts` | Template `{{ keycloak_realm }}` | Keycloak login setup for E2E |
 
 ### Styles (High Reuse)
 
@@ -135,7 +142,7 @@ Documents which files are **reusable boilerplate** (can be templated for new pro
 | `src/app/features/dashboard/` | App-specific dashboard stats |
 | `src/app/layout/nav.config.ts` | App-specific navigation items |
 | `src/app/app.routes.ts` | App-specific route definitions |
-| `src/environments/environment.ts` | App-specific API config |
+| `src/environments/environment.ts` | App-specific API + Keycloak config |
 | `proxy.conf.json` | App-specific backend proxy |
 | `docs/` | Project documentation |
 | `designs/` | UI/UX design artifacts |
@@ -146,13 +153,15 @@ Documents which files are **reusable boilerplate** (can be templated for new pro
 
 1. **Config files** - `.editorconfig`, `.prettierrc`, `.eslintrc.json`, `tsconfig.*`, `jest.config.js`
 2. **Infrastructure** - Docker, CI/CD, git hooks, devcontainer
-3. **Core services** - API layer, theme, time, error handling
-4. **Shared store** - BaseCrudStore, interfaces, SearchStore
-5. **UI library** - All shared components
-6. **Testing utilities** - Helpers, factories, page objects
-7. **Styles** - Variables, mixins, global styles
-8. **App shell** - Layout (header, sidebar), root component, routes
-9. **First feature** - Scaffold one complete feature as example
+3. **Core services** - API layer, error handling, theme, time
+4. **Authentication** - Keycloak setup (auth.service, auth.guard, role.guard, auth.models)
+5. **Shared store** - BaseCrudStore, interfaces, SearchStore
+6. **UI library** - All shared components
+7. **Testing utilities** - Helpers, factories, mock Keycloak providers, page objects
+8. **Styles** - Variables, mixins, global styles
+9. **App shell** - Layout (header, sidebar), root component, routes with guards
+10. **E2E auth setup** - Keycloak login setup, storageState pattern
+11. **First feature** - Scaffold one complete feature as example
 
 ## Estimated Reuse
 

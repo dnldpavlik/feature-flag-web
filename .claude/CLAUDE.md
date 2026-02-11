@@ -211,6 +211,79 @@ override getAll(): Observable<Flag[]> {
 
 PATCH `/flags/{id}/environments/{envId}` returns **incomplete** flag data (missing `name`, `environmentValues`). Always merge with existing store data using `mergeFlag()`.
 
+## Authentication (Keycloak OIDC/PKCE)
+
+### Setup (`app.config.ts`)
+
+```typescript
+provideKeycloak({
+  config: environment.keycloak,       // { url, realm, clientId }
+  initOptions: { onLoad: 'login-required' },
+  features: [
+    withAutoRefreshToken({
+      sessionTimeout: 300000,
+      onInactivityTimeout: 'logout',
+    }),
+  ],
+}),
+provideHttpClient(withInterceptors([includeBearerTokenInterceptor, errorInterceptor])),
+{ provide: INCLUDE_BEARER_TOKEN_INTERCEPTOR_CONFIG, useValue: [{ urlPattern: /\/api\//i }] },
+```
+
+- `login-required` — immediate redirect to Keycloak on app load
+- `includeBearerTokenInterceptor` — auto-attaches Bearer token to `/api/` requests
+- `withAutoRefreshToken` — silent token refresh, logout on inactivity
+
+### AuthService (`core/auth/auth.service.ts`)
+
+Wraps `Keycloak` instance with Angular signals. Components depend on `AuthService`, never keycloak-js directly.
+
+```typescript
+// Inject Keycloak and event signal from keycloak-angular
+private readonly keycloak = inject(Keycloak);
+private readonly keycloakSignal = inject(KEYCLOAK_EVENT_SIGNAL);
+
+// Reactive signals
+readonly isAuthenticated = signal(false);
+readonly userProfile = signal<UserProfile | null>(null);
+readonly roles = signal<string[]>([]);
+readonly token = signal<string | undefined>(undefined);
+
+// Convenience methods
+hasRole(role: string): boolean;
+isAdmin(): boolean;             // hasRole('admin')
+login(): Promise<void>;
+logout(): Promise<void>;
+```
+
+**Effect** watches `KEYCLOAK_EVENT_SIGNAL` for Ready/AuthSuccess events → updates signals → loads user profile.
+
+### Route Guards (Functional)
+
+```typescript
+// authGuard — redirects to Keycloak login if not authenticated
+export const authGuard = createAuthGuard<CanActivateFn>(isAuthenticated);
+
+// roleGuard — checks client roles from route data, redirects to /dashboard
+export const roleGuard = createAuthGuard<CanActivateFn>(hasRequiredRole);
+
+// Route config
+{ path: 'environments', canActivate: [authGuard, roleGuard], data: { role: 'admin' } }
+```
+
+### Testing Keycloak
+
+```typescript
+// Mock providers for unit tests
+{ provide: Keycloak, useValue: createMockKeycloak() },
+{ provide: KEYCLOAK_EVENT_SIGNAL, useValue: signal<KeycloakEvent>({ type: KeycloakEventType.Ready, args: true }) },
+
+// Trigger auth events in tests
+eventSignal.set({ type: KeycloakEventType.AuthSuccess });
+TestBed.flushEffects();
+expect(service.isAuthenticated()).toBe(true);
+```
+
 ## Model Patterns
 
 Separate domain models from input types. Use discriminated unions for type safety:
@@ -230,6 +303,47 @@ export type CreateFlagInput = CreateFlagInputBase<'boolean'> | CreateFlagInputBa
 ```
 
 Filter options as `const` arrays: `FLAG_STATUS_OPTIONS`, `FLAG_TYPE_OPTIONS`.
+
+## Utility Patterns (Pure Functions)
+
+### Composable Filter Predicates (`filter.utils.ts`)
+
+Higher-order functions returning predicates. Compose with `matchesAll()` / `matchesAny()`:
+
+```typescript
+// Individual predicate factories
+textFilter<T>(fields, query): (item: T) => boolean;
+propertyEquals<T>(field, value): (item: T) => boolean;
+isTruthy<T>(field): (item: T) => boolean;
+not<T>(predicate): (item: T) => boolean;
+
+// Composition
+matchesAll<T>(predicates): (item: T) => boolean;
+matchesAny<T>(predicates): (item: T) => boolean;
+
+// Usage in computed signals
+protected readonly filtered = computed(() =>
+  this.items().filter(matchesAll([
+    textFilter(['name', 'key'], this.query()),
+    propertyEquals('type', this.typeFilter()),
+  ]))
+);
+```
+
+### Search + Highlight (`search.utils.ts`)
+
+```typescript
+matchesSearch(item: Searchable, query: string): boolean;   // Multi-field search
+highlightParts(text: string, query: string): HighlightPart[];  // Structured highlight data
+```
+
+### Form Helpers (`form.utils.ts`)
+
+```typescript
+hasRequiredFields(form, fields): boolean;
+getTrimmedValues<T>(form, fields): Record<T, string>;
+createFormFieldAccessors<T>(form): T;   // Proxy-based transparent get/set
+```
 
 ## Styling Architecture
 
@@ -303,6 +417,11 @@ describe('FlagStore', () => {
 - `mock.factories.ts` - `createMockFlag()`, `createMockProject()`, etc.
 - `mock-api.providers.ts` - Mock API providers with seed data
 
+**Mock API providers** (`mock-api.providers.ts`) include Keycloak mocks:
+- `Keycloak` mock with `authenticated: true`, `loadUserProfile()`, `resourceAccess`
+- `KEYCLOAK_EVENT_SIGNAL` mock signal for testing auth state changes
+- Spread `MOCK_API_PROVIDERS` into any TestBed that needs API + auth mocking
+
 **Jest setup** (`setup-jest.ts`):
 - Clears localStorage before each test
 - Mocks `window.matchMedia`, `IntersectionObserver`, `ResizeObserver`
@@ -339,6 +458,12 @@ locator('app-button').filter({ hasText: /delete/i }).dispatchEvent('click');
 // WRONG - intermittent failures in Firefox/WebKit
 getByRole('button', { name: /delete/i }).click();
 ```
+
+**Authentication:** Keycloak auth via Playwright `storageState` pattern:
+- `e2e/auth/auth.setup.ts` — setup project logs in as admin + user, saves `e2e/.auth/*.json`
+- All test projects depend on `auth-setup` and use `storageState: 'e2e/.auth/admin.json'`
+- `user-role` project uses `storageState: 'e2e/.auth/user.json'` for non-admin tests
+- Password field uses `page.locator('#password')` (not `getByLabel` — strict mode conflict)
 
 **Assertion-based waits** (15s timeout for API-dependent operations):
 ```typescript
@@ -420,6 +545,9 @@ install → lint (TS + SCSS parallel) → test:unit → build → build:docker �
 | Utility | `kebab-case.utils.ts` | `flag-format.utils.ts` |
 | Test | `kebab-case.spec.ts` | `flag-card.spec.ts` |
 | Icon | `kebab-case-icon.ts` | `logo-icon.ts` |
+| API | `kebab-case.api.ts` | `flag.api.ts` |
+| Guard | `kebab-case.guard.ts` | `auth.guard.ts` |
+| Directive | `kebab-case.directive.ts` | `ui-col.directive.ts` |
 
 ## Commands Reference
 
