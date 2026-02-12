@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, output, signal } from '@angular/core';
 
-import { ButtonComponent } from '@/app/shared/ui/button/button';
+import { ButtonComponent } from '@watt/ui';
 import {
   COMMON_ATTRIBUTES,
   CreateSegmentRuleInput,
@@ -35,11 +35,11 @@ export class RuleBuilderComponent {
   });
 
   protected readonly valuePlaceholder = computed(() =>
-    this.isArrayOperator() ? 'Values (comma-separated)' : 'Value'
+    this.isArrayOperator() ? 'Values (comma-separated)' : 'Value',
   );
 
   protected readonly effectiveAttribute = computed(() =>
-    this.isCustomAttribute() ? this.customAttribute() : this.selectedAttribute()
+    this.isCustomAttribute() ? this.customAttribute() : this.selectedAttribute(),
   );
 
   protected readonly canAdd = computed(() => {

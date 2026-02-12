@@ -39,7 +39,7 @@ test.describe('Environment Management Journey', () => {
       await envList.goto();
 
       // Check for table or empty state
-      const tableOrEmpty = page.locator('app-ui-data-table, app-empty-state');
+      const tableOrEmpty = page.locator('ui-data-table, ui-empty-state');
       await expect(tableOrEmpty.first()).toBeVisible();
     });
 
@@ -290,7 +290,7 @@ test.describe('Environment Management Journey', () => {
 
       // Click delete on an environment that is not default
       const nonDefaultRow = envList.environmentRows.filter({
-        hasNot: page.locator('app-badge', { hasText: /default/i }),
+        hasNot: page.locator('ui-badge', { hasText: /default/i }),
       });
 
       if ((await nonDefaultRow.count()) === 0) {

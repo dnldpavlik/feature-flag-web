@@ -79,7 +79,7 @@ test.describe('Navigation Journey', () => {
       await page.goto('/flags');
 
       // Check if there are any flags to click
-      const flagLinks = page.locator('app-ui-data-table').getByRole('link');
+      const flagLinks = page.locator('ui-data-table').getByRole('link');
       if ((await flagLinks.count()) === 0) {
         test.skip();
         return;
@@ -89,14 +89,14 @@ test.describe('Navigation Journey', () => {
       await flagLinks.first().click();
 
       // Breadcrumb should be visible
-      const breadcrumb = page.locator('app-breadcrumb, [aria-label*="breadcrumb"]');
+      const breadcrumb = page.locator('ui-breadcrumb, [aria-label*="breadcrumb"]');
       await expect(breadcrumb).toBeVisible();
     });
 
     test('should navigate via breadcrumb', async ({ page }) => {
       await page.goto('/flags');
 
-      const flagLinks = page.locator('app-ui-data-table').getByRole('link');
+      const flagLinks = page.locator('ui-data-table').getByRole('link');
       if ((await flagLinks.count()) === 0) {
         test.skip();
         return;
@@ -106,7 +106,7 @@ test.describe('Navigation Journey', () => {
       await expect(page).toHaveURL(/flags\/[^/]+/);
 
       // Click breadcrumb to go back
-      const breadcrumb = page.locator('app-breadcrumb, [aria-label*="breadcrumb"]');
+      const breadcrumb = page.locator('ui-breadcrumb, [aria-label*="breadcrumb"]');
       const flagsBreadcrumb = breadcrumb.getByRole('link', { name: /flags/i });
 
       if ((await flagsBreadcrumb.count()) > 0) {
@@ -191,7 +191,7 @@ test.describe('Navigation Journey', () => {
       await page.goto('/flags');
 
       // Search for something
-      const searchInput = page.locator('app-search-input input, [role="searchbox"]');
+      const searchInput = page.locator('ui-search-input input, [role="searchbox"]');
       if ((await searchInput.count()) > 0) {
         await searchInput.fill('test');
         await page.waitForTimeout(300);

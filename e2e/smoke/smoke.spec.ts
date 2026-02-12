@@ -133,7 +133,7 @@ test.describe('Smoke Tests', () => {
       await flagList.goto();
 
       // Verify either data table or empty state is shown
-      const tableOrEmpty = page.locator('app-ui-data-table, app-empty-state');
+      const tableOrEmpty = page.locator('ui-data-table, ui-empty-state');
       await expect(tableOrEmpty.first()).toBeVisible();
     });
 
@@ -153,10 +153,10 @@ test.describe('Smoke Tests', () => {
       await expect(page.locator('.user-menu__name')).not.toBeEmpty();
     });
 
-    test('should have logout button', async ({ page }) => {
+    test('should have user menu button', async ({ page }) => {
       const dashboard = new DashboardPage(page);
       await dashboard.goto();
-      await expect(page.locator('.user-menu__logout')).toBeVisible();
+      await expect(page.locator('.user-menu')).toBeVisible();
     });
   });
 

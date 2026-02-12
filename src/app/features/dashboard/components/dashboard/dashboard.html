@@ -1,17 +1,17 @@
 <div class="welcome-section">
-  <app-page-header title="Feature Flags">
+  <ui-page-header title="Feature Flags">
     <p page-header-description class="text-secondary">
       Project: <span class="dashboard-env">{{ selectedProjectName() }}</span>
       <span class="dashboard-divider">·</span>
       Environment: <span class="dashboard-env">{{ selectedEnvironmentName() }}</span>
     </p>
-  </app-page-header>
+  </ui-page-header>
 
   <div class="stats-grid">
-    <app-stat-card [value]="totalFlags()" label="Total Flags" />
-    <app-stat-card [value]="activeFlags()" label="Active" />
-    <app-stat-card [value]="inactiveFlags()" label="Inactive" />
-    <app-stat-card [value]="totalEnvironments()" label="Environments" />
+    <ui-stat-card [value]="totalFlags()" label="Total Flags" />
+    <ui-stat-card [value]="activeFlags()" label="Active" />
+    <ui-stat-card [value]="inactiveFlags()" label="Inactive" />
+    <ui-stat-card [value]="totalEnvironments()" label="Environments" />
   </div>
 
   @if (totalFlags() > 0) {
@@ -23,21 +23,21 @@
             Latest updates in {{ selectedProjectName() }} · {{ selectedEnvironmentName() }}
           </p>
         </div>
-        <app-button variant="ghost" [routerLink]="['/flags']">View All</app-button>
+        <ui-button variant="ghost" [routerLink]="['/flags']">View All</ui-button>
       </div>
       @if (recentFlagsWithHighlights().length === 0) {
-        <app-empty-state
+        <ui-empty-state
           title="No flags match your search"
           message="Try a different term to find recently updated flags."
         >
-        </app-empty-state>
+        </ui-empty-state>
       } @else {
-        <app-ui-data-table
+        <ui-data-table
           [items]="recentFlagsWithHighlights()"
           ariaLabel="Recently updated flags"
           emptyText="No recent flags."
         >
-          <ng-template appUiCol="name" header="Flag" width="50%" let-flag>
+          <ng-template uiCol="name" header="Flag" width="50%" let-flag>
             <div class="recent-flags__flag">
               <a class="recent-flags__link" [routerLink]="['/flags', flag.id]">
                 @for (part of flag.nameParts; track $index) {
@@ -68,28 +68,28 @@
               </span>
             </div>
           </ng-template>
-          <ng-template appUiCol="status" header="Status" width="25%" [sortable]="false" let-flag>
-            <app-badge [variant]="flag.currentEnabled ? 'success' : 'error'">
+          <ng-template uiCol="status" header="Status" width="25%" [sortable]="false" let-flag>
+            <ui-badge [variant]="flag.currentEnabled ? 'success' : 'error'">
               {{ flag.currentEnabled ? 'Enabled' : 'Disabled' }}
-            </app-badge>
+            </ui-badge>
           </ng-template>
-          <ng-template appUiCol="updatedAt" header="Updated" width="25%" let-flag>
+          <ng-template uiCol="updatedAt" header="Updated" width="25%" let-flag>
             <span class="text-muted">{{ flag.updatedAt | date: 'mediumDate' }}</span>
           </ng-template>
-        </app-ui-data-table>
+        </ui-data-table>
       }
     </section>
   }
 
   @if (totalFlags() === 0) {
-    <app-empty-state
+    <ui-empty-state
       title="No feature flags yet"
       message="Create your first feature flag to start controlling your application's features."
     >
       <app-flags-empty-icon empty-state-icon />
-      <app-button empty-state-action variant="primary" icon="plus">
+      <ui-button empty-state-action variant="primary" icon="plus">
         Create Your First Flag
-      </app-button>
-    </app-empty-state>
+      </ui-button>
+    </ui-empty-state>
   }
 </div>

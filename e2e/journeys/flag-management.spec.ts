@@ -46,7 +46,7 @@ test.describe('Feature Flag Management Journey', () => {
       await flagList.goto();
 
       // This may show empty state or existing flags depending on data
-      const tableOrEmpty = page.locator('app-ui-data-table, app-empty-state');
+      const tableOrEmpty = page.locator('ui-data-table, ui-empty-state');
       await expect(tableOrEmpty.first()).toBeVisible();
     });
   });
@@ -311,8 +311,8 @@ test.describe('Feature Flag Management Journey', () => {
       await flagDetail.assertFlagName(new RegExp(flagName));
 
       // 4. Toggle flag state (use label since input is visually hidden)
-      const envToggleLabel = page.locator('.flag-detail__env-row app-toggle label.toggle').first();
-      const envToggleInput = page.locator('.flag-detail__env-row app-toggle input').first();
+      const envToggleLabel = page.locator('.flag-detail__env-row ui-toggle label.toggle').first();
+      const envToggleInput = page.locator('.flag-detail__env-row ui-toggle input').first();
       if ((await envToggleInput.count()) > 0) {
         const initialState = await envToggleInput.isChecked();
         await envToggleLabel.click();

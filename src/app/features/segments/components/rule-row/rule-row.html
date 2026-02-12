@@ -9,10 +9,7 @@
         placeholder="Attribute"
       />
 
-      <select
-        class="rule-row__operator-select"
-        (change)="onOperatorChange($event)"
-      >
+      <select class="rule-row__operator-select" (change)="onOperatorChange($event)">
         @for (option of operatorOptions; track option.value) {
           <option [value]="option.value" [selected]="option.value === editOperator()">
             {{ option.label }}
@@ -30,8 +27,8 @@
     </div>
 
     <div class="rule-row__actions">
-      <app-button variant="primary" size="sm" (click)="saveEdit()">Save</app-button>
-      <app-button variant="ghost" size="sm" (click)="cancelEdit()">Cancel</app-button>
+      <ui-button variant="primary" size="sm" (click)="saveEdit()">Save</ui-button>
+      <ui-button variant="ghost" size="sm" (click)="cancelEdit()">Cancel</ui-button>
     </div>
   </div>
 } @else {
@@ -43,8 +40,8 @@
     </div>
 
     <div class="rule-row__actions">
-      <app-button variant="secondary" size="sm" (click)="enterEditMode()">Edit</app-button>
-      <app-button variant="ghost" size="sm" (click)="onRemove()">Remove</app-button>
+      <ui-button variant="secondary" size="sm" (click)="enterEditMode()">Edit</ui-button>
+      <ui-button variant="ghost" size="sm" (click)="onRemove()">Remove</ui-button>
     </div>
   </div>
 }

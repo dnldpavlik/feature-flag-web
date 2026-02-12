@@ -28,7 +28,7 @@ export class SegmentListPage extends BaseCrudListPage {
 
   /** Segment list/table */
   get segmentList(): Locator {
-    return this.page.locator('[data-testid="segment-list"], app-data-table');
+    return this.page.locator('[data-testid="segment-list"], ui-data-table');
   }
 
   // Semantic aliases for backward compatibility

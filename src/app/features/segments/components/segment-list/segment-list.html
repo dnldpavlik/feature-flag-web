@@ -1,28 +1,21 @@
 <section class="segments-page">
-  <app-page-header
-    title="Segments"
-    description="Create reusable audiences for precise targeting."
-  />
+  <ui-page-header title="Segments" description="Create reusable audiences for precise targeting." />
 
   @if (segments().length === 0) {
-    <app-empty-state
+    <ui-empty-state
       title="No segments yet"
       message="Create your first segment to group users for flag targeting."
     >
-    </app-empty-state>
+    </ui-empty-state>
   } @else if (filteredSegments().length === 0) {
-    <app-empty-state
+    <ui-empty-state
       title="No segments found"
       message="Try a different search term or clear the filter."
     >
-    </app-empty-state>
+    </ui-empty-state>
   } @else {
-    <app-ui-data-table
-      [items]="filteredSegments()"
-      ariaLabel="Segments"
-      emptyText="No segments match."
-    >
-      <ng-template appUiCol="name" header="Segment" width="33%" let-segment>
+    <ui-data-table [items]="filteredSegments()" ariaLabel="Segments" emptyText="No segments match.">
+      <ng-template uiCol="name" header="Segment" width="33%" let-segment>
         <div class="segment-cell segment-cell--name">
           <div>
             <a [routerLink]="['/segments', segment.id]" class="segment-name segment-name--link">{{
@@ -32,36 +25,36 @@
           </div>
         </div>
       </ng-template>
-      <ng-template appUiCol="key" header="Key" width="17%" let-segment>
+      <ng-template uiCol="key" header="Key" width="17%" let-segment>
         <span class="text-muted">{{ segment.key }}</span>
       </ng-template>
-      <ng-template appUiCol="ruleCount" header="Rules" width="12%" align="right" let-segment>
+      <ng-template uiCol="ruleCount" header="Rules" width="12%" align="right" let-segment>
         <span class="text-muted">{{ segment.ruleCount }}</span>
       </ng-template>
-      <ng-template appUiCol="updatedAt" header="Updated" width="17%" let-segment>
+      <ng-template uiCol="updatedAt" header="Updated" width="17%" let-segment>
         <span class="text-muted">{{ segment.updatedAt | date: 'mediumDate' }}</span>
       </ng-template>
-      <ng-template appUiCol="actions" header="Actions" width="17%" [sortable]="false" let-segment>
+      <ng-template uiCol="actions" header="Actions" width="17%" [sortable]="false" let-segment>
         <div class="segment-cell segment-cell--actions">
           @if (segments().length > 1) {
-            <app-button variant="ghost" type="button" (click)="deleteSegment(segment.id)"
-              >Delete</app-button
+            <ui-button variant="ghost" type="button" (click)="deleteSegment(segment.id)"
+              >Delete</ui-button
             >
           }
         </div>
       </ng-template>
-    </app-ui-data-table>
+    </ui-data-table>
   }
 
-  <app-card class="segment-form" padding="lg">
+  <ui-card class="segment-form" padding="lg">
     <div class="segment-form__header">
       <h2>New Segment</h2>
       <p class="text-secondary">Build a reusable audience definition.</p>
     </div>
     <div class="segment-form__grid">
-      <app-form-field label="Name" placeholder="Beta Testers" [formControl]="form.controls.name" />
-      <app-form-field label="Key" placeholder="beta-testers" [formControl]="form.controls.key" />
-      <app-form-field
+      <ui-form-field label="Name" placeholder="Beta Testers" [formControl]="form.controls.name" />
+      <ui-form-field label="Key" placeholder="beta-testers" [formControl]="form.controls.key" />
+      <ui-form-field
         class="segment-form__field--full"
         label="Description"
         type="textarea"
@@ -69,8 +62,8 @@
         [formControl]="form.controls.description"
       />
     </div>
-    <app-button variant="primary" type="button" [disabled]="!canAdd()" (click)="addSegment()">
+    <ui-button variant="primary" type="button" [disabled]="!canAdd()" (click)="addSegment()">
       Add Segment
-    </app-button>
-  </app-card>
+    </ui-button>
+  </ui-card>
 </section>

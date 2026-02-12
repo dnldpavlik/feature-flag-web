@@ -17,7 +17,7 @@ export class DashboardPage extends BasePage {
 
   /** Stat cards showing overview metrics */
   get statCards(): Locator {
-    return this.page.locator('app-stat-card');
+    return this.page.locator('ui-stat-card');
   }
 
   /** Get stat card by title */

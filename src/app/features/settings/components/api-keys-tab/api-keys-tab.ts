@@ -1,9 +1,7 @@
 import { DatePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 
-import { ButtonComponent } from '@/app/shared/ui/button/button';
-import { DataTableComponent } from '@/app/shared/ui/data-table/data-table';
-import { UiColDirective } from '@/app/shared/ui/data-table/ui-col.directive';
+import { ButtonComponent, DataTableComponent, UiColDirective } from '@watt/ui';
 import { ApiKeyStore } from '../../store/api-key.store';
 import { API_KEY_SCOPE_OPTIONS, type ApiKeyScope } from '../../models/settings.model';
 

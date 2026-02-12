@@ -4,7 +4,7 @@ import { firstValueFrom } from 'rxjs';
 import { BaseCrudStore } from '@/app/shared/store/base-crud.store';
 import { CreateProjectInput, Project } from '@/app/features/projects/models/project.model';
 import { ProjectApi } from '@/app/features/projects/api/project.api';
-import { ToastService } from '@/app/shared/ui/toast/toast.service';
+import { ToastService } from '@watt/ui';
 import { AuditLogger } from '@/app/features/audit/services/audit-logger.service';
 
 @Injectable({ providedIn: 'root' })

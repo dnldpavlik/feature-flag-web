@@ -75,7 +75,7 @@ export abstract class BasePage {
 
   /** Page header component */
   get pageHeader(): Locator {
-    return this.page.locator('app-page-header');
+    return this.page.locator('ui-page-header');
   }
 
   /** Page title */
@@ -85,7 +85,7 @@ export abstract class BasePage {
 
   /** Breadcrumb navigation */
   get breadcrumb(): Locator {
-    return this.page.locator('app-breadcrumb, [aria-label="Breadcrumb"]');
+    return this.page.locator('ui-breadcrumb, [aria-label="Breadcrumb"]');
   }
 
   // ============================================================
@@ -129,7 +129,7 @@ export abstract class BasePage {
 
   /** Get data table component */
   get dataTable(): Locator {
-    return this.page.locator('app-data-table, app-ui-data-table');
+    return this.page.locator('ui-data-table');
   }
 
   /** Get table rows */
@@ -178,10 +178,10 @@ export abstract class BasePage {
 
   /** Confirm modal action (click primary button) */
   async confirmModal(): Promise<void> {
-    // Use dispatchEvent to fire click directly on app-button host, ensuring Angular's
+    // Use dispatchEvent to fire click directly on ui-button host, ensuring Angular's
     // (click) handler fires reliably across browsers (WebKit/Firefox event bubbling issues)
     await this.modal
-      .locator('app-button')
+      .locator('ui-button')
       .filter({ hasText: /confirm|save|create|delete|yes/i })
       .dispatchEvent('click');
   }
@@ -189,7 +189,7 @@ export abstract class BasePage {
   /** Cancel modal action */
   async cancelModal(): Promise<void> {
     await this.modal
-      .locator('app-button')
+      .locator('ui-button')
       .filter({ hasText: /cancel|no|close/i })
       .dispatchEvent('click');
   }
@@ -248,7 +248,7 @@ export abstract class BasePage {
 
   /** Get empty state component */
   get emptyState(): Locator {
-    return this.page.locator('app-empty-state, [data-testid="empty-state"]');
+    return this.page.locator('ui-empty-state, [data-testid="empty-state"]');
   }
 
   /** Check if empty state is shown */
@@ -262,7 +262,7 @@ export abstract class BasePage {
 
   /** Get search input */
   get searchInput(): Locator {
-    return this.page.locator('app-search-input input, [role="searchbox"]');
+    return this.page.locator('ui-search-input input, [role="searchbox"]');
   }
 
   /** Search for a term */

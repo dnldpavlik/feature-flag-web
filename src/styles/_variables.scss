@@ -16,18 +16,23 @@
   --bg-sidebar: #faf7f0;
   --bg-header: #fffcf5;
   --bg-card: #fffcf5;
+  --bg-elevated: #fffcf5;
   --bg-hover: #f2efea;
   --bg-active: #e8e5e0;
+  --bg-input: #fffcf5;
 
   // Text colors (from dark palette values)
   --text-primary: #040403;
   --text-secondary: #262725;
   --text-muted: #535955;
   --text-link: #8e3d03;
+  --text-inverse: #fffcf5;
 
   // Border colors
   --border-primary: #d4d1ca;
   --border-secondary: #e8e5e0;
+  --border-color: #d4d1ca;
+  --border-focus: #8e3d03;
 
   // Accent colors (darker for light bg contrast - WCAG AA)
   --accent-primary: #8e3d03;
@@ -40,6 +45,14 @@
   --color-warning: #8e3d03;
   --color-error: #d1242f;
   --color-info: #ca7a28;
+  --color-danger: #d1242f;
+  --color-danger-hover: #b91c26;
+
+  // Status badge background colors (@watt/ui naming)
+  --color-success-bg: #dcfce7;
+  --color-warning-bg: #fef3c7;
+  --color-error-bg: #fee2e2;
+  --color-info-bg: #dbeafe;
 
   // Status badge colors (audit log)
   --status-success-bg: #dcfce7;
@@ -51,11 +64,36 @@
   --status-warning-bg: #fef3c7;
   --status-warning-text: #92400e;
 
-  // Sizing
+  // Border radii
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-full: 9999px;
+
+  // Sizing (legacy)
   --sidebar-width: 240px;
   --header-height: 56px;
   --border-radius: 6px;
   --border-radius-lg: 8px;
+
+  // Typography scale
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: 1.125rem;
+  --text-2xl: 1.5rem;
+  --text-3xl: 2rem;
+  --font-medium: 500;
+  --font-semibold: 600;
+
+  // Spacing scale
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-12: 3rem;
 
   // Shadows
   --shadow-sm: 0 1px 2px rgb(0 0 0 / 8%);
@@ -78,18 +116,23 @@
   --bg-sidebar: #040403;
   --bg-header: #0d0d0b;
   --bg-card: #1a1a18;
+  --bg-elevated: #1a1a18;
   --bg-hover: #262725;
   --bg-active: #353432;
+  --bg-input: #0d0d0b;
 
   // Text colors
   --text-primary: #f5f2ea;
   --text-secondary: #a8a5a0;
   --text-muted: #535955;
   --text-link: #e4bb4f;
+  --text-inverse: #f5f2ea;
 
   // Border colors
   --border-primary: #535955;
   --border-secondary: #353432;
+  --border-color: #535955;
+  --border-focus: #ca7a28;
 
   // Accent colors
   --accent-primary: #8e3d03;
@@ -102,6 +145,14 @@
   --color-warning: #ca7a28;
   --color-error: #d9534f;
   --color-info: #e4bb4f;
+  --color-danger: #d9534f;
+  --color-danger-hover: #c9302c;
+
+  // Status badge background colors (@watt/ui naming)
+  --color-success-bg: #1a2e1a;
+  --color-warning-bg: #2a2215;
+  --color-error-bg: #2e1a1a;
+  --color-info-bg: #1f2520;
 
   // Status badge colors (audit log) - muted for dark theme
   --status-success-bg: #1a2e1a;

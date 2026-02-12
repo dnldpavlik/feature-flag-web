@@ -125,7 +125,7 @@ export const assertions = {
 
   /** Assert empty state is shown */
   async emptyStateShown(page: Page) {
-    await expect(page.locator('app-empty-state, [data-testid="empty-state"]')).toBeVisible();
+    await expect(page.locator('ui-empty-state, [data-testid="empty-state"]')).toBeVisible();
   },
 
   /** Assert loading spinner is not visible (page finished loading) */

@@ -1,9 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 
-import {
-  LabeledSelectComponent,
-  SelectOption,
-} from '@/app/shared/ui/labeled-select/labeled-select';
+import { LabeledSelectComponent, SelectOption } from '@watt/ui';
 import { EnvironmentStore } from '@/app/shared/store/environment.store';
 import { PreferencesStore } from '../../store/preferences.store';
 import { EmailDigestFrequency } from '../../models/settings.model';

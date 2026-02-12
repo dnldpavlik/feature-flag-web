@@ -1,89 +1,89 @@
 <section class="environments-page">
-  <app-page-header
+  <ui-page-header
     title="Environments"
     description="Manage environments and API keys for each release stage."
   />
 
   @if (environments().length === 0) {
-    <app-empty-state
+    <ui-empty-state
       title="No environments yet"
       message="Create your first environment to start shipping safely."
     >
-    </app-empty-state>
+    </ui-empty-state>
   } @else if (filteredEnvironments().length === 0) {
-    <app-empty-state
+    <ui-empty-state
       title="No environments found"
       message="Try a different search term or clear the filter."
     >
-    </app-empty-state>
+    </ui-empty-state>
   } @else {
-    <app-ui-data-table
+    <ui-data-table
       [items]="filteredEnvironments()"
       ariaLabel="Environments"
       emptyText="No environments match."
     >
-      <ng-template appUiCol="name" header="Environment" width="26%" let-env>
+      <ng-template uiCol="name" header="Environment" width="26%" let-env>
         <div class="env-cell env-cell--name">
           <span class="env-dot" [style.--env-color]="env.color"></span>
           <a class="env-link" [routerLink]="['/environments', env.id]">{{ env.name }}</a>
         </div>
       </ng-template>
-      <ng-template appUiCol="key" header="Key" width="17%" let-env>
+      <ng-template uiCol="key" header="Key" width="17%" let-env>
         <span class="text-muted">{{ env.key }}</span>
       </ng-template>
-      <ng-template appUiCol="status" header="Status" width="17%" [sortable]="false" let-env>
+      <ng-template uiCol="status" header="Status" width="17%" [sortable]="false" let-env>
         <div class="env-cell env-cell--badges">
           @if (env.isDefault) {
-            <app-badge variant="info">Default</app-badge>
+            <ui-badge variant="info">Default</ui-badge>
           }
           @if (selectedEnvironmentId() === env.id) {
-            <app-badge variant="success">Selected</app-badge>
+            <ui-badge variant="success">Selected</ui-badge>
           }
         </div>
       </ng-template>
-      <ng-template appUiCol="updatedAt" header="Updated" width="17%" let-env>
+      <ng-template uiCol="updatedAt" header="Updated" width="17%" let-env>
         <span class="text-muted">{{ env.updatedAt | date: 'mediumDate' }}</span>
       </ng-template>
-      <ng-template appUiCol="actions" header="Actions" width="23%" [sortable]="false" let-env>
+      <ng-template uiCol="actions" header="Actions" width="23%" [sortable]="false" let-env>
         <div class="env-cell env-cell--actions">
           @if (selectedEnvironmentId() !== env.id) {
-            <app-button variant="ghost" type="button" (click)="selectEnvironment(env.id)"
-              >Select</app-button
+            <ui-button variant="ghost" type="button" (click)="selectEnvironment(env.id)"
+              >Select</ui-button
             >
           }
           @if (!env.isDefault) {
-            <app-button variant="ghost" type="button" (click)="setDefaultEnvironment(env.id)"
-              >Make Default</app-button
+            <ui-button variant="ghost" type="button" (click)="setDefaultEnvironment(env.id)"
+              >Make Default</ui-button
             >
           }
           @if (environments().length > 1) {
-            <app-button variant="ghost" type="button" (click)="requestDeleteEnvironment(env.id)"
-              >Delete</app-button
+            <ui-button variant="ghost" type="button" (click)="requestDeleteEnvironment(env.id)"
+              >Delete</ui-button
             >
           }
         </div>
       </ng-template>
-    </app-ui-data-table>
+    </ui-data-table>
   }
 
-  <app-card class="env-form" padding="lg">
+  <ui-card class="env-form" padding="lg">
     <div class="env-form__header">
       <h2>New Environment</h2>
       <p class="text-secondary">Add a new release stage for your feature flags.</p>
     </div>
     <div class="env-form__grid">
-      <app-form-field label="Name" placeholder="Production" [formControl]="form.controls.name" />
-      <app-form-field label="Key" placeholder="production" [formControl]="form.controls.key" />
-      <app-form-field label="Color" type="color" [formControl]="form.controls.color" />
+      <ui-form-field label="Name" placeholder="Production" [formControl]="form.controls.name" />
+      <ui-form-field label="Key" placeholder="production" [formControl]="form.controls.key" />
+      <ui-form-field label="Color" type="color" [formControl]="form.controls.color" />
     </div>
-    <app-button variant="primary" type="button" [disabled]="!canAdd()" (click)="addEnvironment()">
+    <ui-button variant="primary" type="button" [disabled]="!canAdd()" (click)="addEnvironment()">
       Add Environment
-    </app-button>
-  </app-card>
+    </ui-button>
+  </ui-card>
 
   @if (envToDelete()) {
     <div class="delete-confirmation-overlay" role="dialog" aria-modal="true">
-      <app-card class="delete-confirmation" padding="lg">
+      <ui-card class="delete-confirmation" padding="lg">
         <h3>Delete Environment?</h3>
         @if (deleteConfirmationFlagCount() > 0) {
           <p class="delete-confirmation__warning">
@@ -95,12 +95,12 @@
         }
         <p class="text-muted">This action cannot be undone.</p>
         <div class="delete-confirmation__actions">
-          <app-button variant="ghost" type="button" (click)="cancelDelete()">Cancel</app-button>
-          <app-button variant="danger" type="button" (click)="confirmDelete()">
+          <ui-button variant="ghost" type="button" (click)="cancelDelete()">Cancel</ui-button>
+          <ui-button variant="danger" type="button" (click)="confirmDelete()">
             Delete Environment
-          </app-button>
+          </ui-button>
         </div>
-      </app-card>
+      </ui-card>
     </div>
   }
 </section>

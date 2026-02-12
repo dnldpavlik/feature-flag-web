@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, input, output, signal } from '@angular/core';
 
-import { ButtonComponent } from '@/app/shared/ui/button/button';
+import { ButtonComponent } from '@watt/ui';
 import {
   OPERATOR_OPTIONS,
   SegmentRule,
@@ -29,7 +29,7 @@ export class RuleRowComponent {
   protected readonly operatorOptions = OPERATOR_OPTIONS;
 
   protected readonly displayValue = computed(() =>
-    formatRuleValue(this.rule().operator, this.rule().value)
+    formatRuleValue(this.rule().operator, this.rule().value),
   );
 
   protected readonly operatorLabel = computed(() => getOperatorLabel(this.rule().operator));

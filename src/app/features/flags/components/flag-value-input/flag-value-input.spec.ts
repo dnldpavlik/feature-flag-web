@@ -76,7 +76,7 @@ describe('FlagValueInputComponent', () => {
       host.type.set('string');
       fixture.detectChanges();
 
-      expectExists(fixture, 'app-form-field');
+      expectExists(fixture, 'ui-form-field');
       expectNotExists(fixture, 'input[type="checkbox"]');
     });
   });
@@ -86,7 +86,7 @@ describe('FlagValueInputComponent', () => {
       host.type.set('number');
       fixture.detectChanges();
 
-      expectExists(fixture, 'app-form-field');
+      expectExists(fixture, 'ui-form-field');
     });
   });
 
@@ -95,7 +95,7 @@ describe('FlagValueInputComponent', () => {
       host.type.set('json');
       fixture.detectChanges();
 
-      expectExists(fixture, 'app-form-field');
+      expectExists(fixture, 'ui-form-field');
     });
 
     it('should display json error when provided', () => {
@@ -103,7 +103,7 @@ describe('FlagValueInputComponent', () => {
       host.jsonError.set('Invalid JSON');
       fixture.detectChanges();
 
-      const formField = query(fixture, 'app-form-field');
+      const formField = query(fixture, 'ui-form-field');
       expect(formField).toBeTruthy();
     });
   });
@@ -117,15 +117,15 @@ describe('FlagValueInputComponent', () => {
       host.type.set('string');
       fixture.detectChanges();
       expectNotExists(fixture, 'input[type="checkbox"]');
-      expectExists(fixture, 'app-form-field');
+      expectExists(fixture, 'ui-form-field');
 
       host.type.set('number');
       fixture.detectChanges();
-      expectExists(fixture, 'app-form-field');
+      expectExists(fixture, 'ui-form-field');
 
       host.type.set('json');
       fixture.detectChanges();
-      expectExists(fixture, 'app-form-field');
+      expectExists(fixture, 'ui-form-field');
     });
   });
 });

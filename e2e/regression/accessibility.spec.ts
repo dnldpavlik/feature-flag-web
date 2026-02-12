@@ -315,7 +315,7 @@ test.describe('Accessibility Tests', () => {
     test('should have accessible toggle switches', async ({ page }) => {
       await page.goto('/flags');
 
-      const toggles = page.locator('app-toggle, [role="switch"]');
+      const toggles = page.locator('ui-toggle, [role="switch"]');
       const toggleCount = await toggles.count();
 
       if (toggleCount === 0) {
@@ -338,7 +338,7 @@ test.describe('Accessibility Tests', () => {
     test('should announce toggle state changes', async ({ page }) => {
       await page.goto('/flags');
 
-      const toggleInput = page.locator('app-toggle input').first();
+      const toggleInput = page.locator('ui-toggle input').first();
       if ((await toggleInput.count()) === 0) {
         test.skip();
         return;

@@ -53,7 +53,7 @@ export class FlagCreatePage extends BasePage {
 
   /** Enabled toggle */
   get enabledToggle(): Locator {
-    return this.page.locator('app-toggle input, [role="switch"]').first();
+    return this.page.locator('ui-toggle input, [role="switch"]').first();
   }
 
   /** Environment checkboxes container */

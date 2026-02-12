@@ -3,7 +3,7 @@ import { inject } from '@angular/core';
 import { catchError, throwError } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
 
-import { ToastService } from '@/app/shared/ui/toast/toast.service';
+import { ToastService } from '@watt/ui';
 import { isApiError } from './api-error.model';
 
 export const errorInterceptor: HttpInterceptorFn = (req, next) => {

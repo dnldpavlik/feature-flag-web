@@ -3,7 +3,7 @@ import { of, throwError } from 'rxjs';
 
 import { EnvironmentStore } from './environment.store';
 import { AuditStore } from '@/app/features/audit/store/audit.store';
-import { ToastService } from '@/app/shared/ui/toast/toast.service';
+import { ToastService } from '@watt/ui';
 import { EnvironmentApi } from '@/app/features/environments/api/environment.api';
 import {
   expectItemAdded,

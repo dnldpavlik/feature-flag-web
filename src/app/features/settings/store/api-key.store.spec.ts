@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { throwError } from 'rxjs';
 
-import { ToastService } from '@/app/shared/ui/toast/toast.service';
+import { ToastService } from '@watt/ui';
 import { ApiKeyApi } from '../api/api-key.api';
 import { ApiKeyStore } from './api-key.store';
 import { CreateApiKeyInput } from '../models/settings.model';

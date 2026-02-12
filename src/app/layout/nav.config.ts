@@ -1,4 +1,4 @@
-import { IconName } from '@/app/shared/ui/icon/icon.types';
+import { IconName } from '@watt/ui';
 
 export interface NavItem {
   label: string;

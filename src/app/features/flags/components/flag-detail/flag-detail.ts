@@ -10,11 +10,13 @@ import {
 import { NonNullableFormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { ButtonComponent } from '@/app/shared/ui/button/button';
-import { CardComponent } from '@/app/shared/ui/card/card';
-import { EmptyStateComponent } from '@/app/shared/ui/empty-state/empty-state';
-import { FormFieldComponent } from '@/app/shared/ui/form-field/form-field';
-import { ToggleComponent } from '@/app/shared/ui/toggle/toggle';
+import {
+  ButtonComponent,
+  CardComponent,
+  EmptyStateComponent,
+  FormFieldComponent,
+  ToggleComponent,
+} from '@watt/ui';
 import { EnvironmentStore } from '@/app/shared/store/environment.store';
 import { ProjectStore } from '@/app/shared/store/project.store';
 import { Flag, FlagType } from '@/app/features/flags/models/flag.model';

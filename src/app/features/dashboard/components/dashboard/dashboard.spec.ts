@@ -49,7 +49,7 @@ describe('Dashboard', () => {
   });
 
   it('should render stat cards', () => {
-    const cards = queryAll(fixture, 'app-stat-card');
+    const cards = queryAll(fixture, 'ui-stat-card');
     expect(cards.length).toBe(4);
   });
 

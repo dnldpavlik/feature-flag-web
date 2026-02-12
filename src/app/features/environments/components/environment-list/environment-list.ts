@@ -3,14 +3,16 @@ import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@a
 import { NonNullableFormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 
-import { BadgeComponent } from '@/app/shared/ui/badge/badge';
-import { ButtonComponent } from '@/app/shared/ui/button/button';
-import { CardComponent } from '@/app/shared/ui/card/card';
-import { DataTableComponent } from '@/app/shared/ui/data-table/data-table';
-import { UiColDirective } from '@/app/shared/ui/data-table/ui-col.directive';
-import { EmptyStateComponent } from '@/app/shared/ui/empty-state/empty-state';
-import { FormFieldComponent } from '@/app/shared/ui/form-field/form-field';
-import { PageHeaderComponent } from '@/app/shared/ui/page-header/page-header';
+import {
+  BadgeComponent,
+  ButtonComponent,
+  CardComponent,
+  DataTableComponent,
+  EmptyStateComponent,
+  FormFieldComponent,
+  PageHeaderComponent,
+  UiColDirective,
+} from '@watt/ui';
 import { SearchStore } from '@/app/shared/store/search.store';
 import { EnvironmentStore } from '@/app/shared/store/environment.store';
 import { FlagStore } from '@/app/features/flags/store/flag.store';

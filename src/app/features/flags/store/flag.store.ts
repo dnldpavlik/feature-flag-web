@@ -4,7 +4,7 @@ import { firstValueFrom } from 'rxjs';
 import { BaseCrudStore } from '@/app/shared/store/base-crud.store';
 import { EnvironmentStore } from '@/app/shared/store/environment.store';
 import { ProjectStore } from '@/app/shared/store/project.store';
-import { ToastService } from '@/app/shared/ui/toast/toast.service';
+import { ToastService } from '@watt/ui';
 import { AuditLogger } from '@/app/features/audit/services/audit-logger.service';
 import {
   CreateFlagInput,

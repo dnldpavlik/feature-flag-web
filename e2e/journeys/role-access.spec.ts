@@ -27,9 +27,7 @@ test.describe('Role-based access', () => {
   test('admin nav items are hidden for user role', async ({ page }) => {
     await page.goto('/dashboard');
     await expect(page.locator('.sidebar')).toBeVisible();
-    await expect(page.locator('app-nav-item').filter({ hasText: 'Settings' })).not.toBeVisible();
-    await expect(
-      page.locator('app-nav-item').filter({ hasText: 'Environments' }),
-    ).not.toBeVisible();
+    await expect(page.locator('ui-nav-item').filter({ hasText: 'Settings' })).not.toBeVisible();
+    await expect(page.locator('ui-nav-item').filter({ hasText: 'Environments' })).not.toBeVisible();
   });
 });

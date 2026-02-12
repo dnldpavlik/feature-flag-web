@@ -4,7 +4,7 @@ import { of, throwError } from 'rxjs';
 import { EnvironmentStore } from '@/app/shared/store/environment.store';
 import { ProjectStore } from '@/app/shared/store/project.store';
 import { AuditStore } from '@/app/features/audit/store/audit.store';
-import { ToastService } from '@/app/shared/ui/toast/toast.service';
+import { ToastService } from '@watt/ui';
 import { FlagApi } from '@/app/features/flags/api/flag.api';
 import { Flag } from '@/app/features/flags/models/flag.model';
 import { FlagStore } from './flag.store';

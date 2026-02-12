@@ -20,7 +20,7 @@ export class AuditPage extends BasePage {
 
   /** Audit log table */
   get auditTable(): Locator {
-    return this.page.locator('[data-testid="audit-table"], app-data-table');
+    return this.page.locator('[data-testid="audit-table"], ui-data-table');
   }
 
   /** All audit entry rows */

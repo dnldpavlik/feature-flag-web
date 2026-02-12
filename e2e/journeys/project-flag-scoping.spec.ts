@@ -29,7 +29,7 @@ test.describe('Project-Flag Scoping', () => {
       const initialCount = await flagList.getFlagCount();
 
       // Switch to a different project
-      const projectSelector = page.locator('app-breadcrumb select[aria-label="Project"]');
+      const projectSelector = page.locator('ui-breadcrumb select[aria-label="Project"]');
       const options = await projectSelector.locator('option').all();
 
       if (options.length < 2) {
@@ -74,7 +74,7 @@ test.describe('Project-Flag Scoping', () => {
       // Look for the count indicator in the toolbar
       const countIndicator = page.locator('.flags-page__count');
 
-      const projectSelector = page.locator('app-breadcrumb select[aria-label="Project"]');
+      const projectSelector = page.locator('ui-breadcrumb select[aria-label="Project"]');
       const options = await projectSelector.locator('option').all();
 
       if (options.length < 2) {
@@ -104,7 +104,7 @@ test.describe('Project-Flag Scoping', () => {
       // Navigate to flags list first to establish project context
       await flagList.goto();
 
-      const projectSelector = page.locator('app-breadcrumb select[aria-label="Project"]');
+      const projectSelector = page.locator('ui-breadcrumb select[aria-label="Project"]');
       const options = await projectSelector.locator('option').all();
 
       if (options.length < 2) {
@@ -169,7 +169,7 @@ test.describe('Project-Flag Scoping', () => {
 
       await flagList.goto();
 
-      const projectSelector = page.locator('app-breadcrumb select[aria-label="Project"]');
+      const projectSelector = page.locator('ui-breadcrumb select[aria-label="Project"]');
       const options = await projectSelector.locator('option').all();
 
       if (options.length < 2) {
@@ -224,7 +224,7 @@ test.describe('Project-Flag Scoping', () => {
       await dashboard.goto();
       await dashboard.assertDashboardLoaded();
 
-      const projectSelector = page.locator('app-breadcrumb select[aria-label="Project"]');
+      const projectSelector = page.locator('ui-breadcrumb select[aria-label="Project"]');
       const options = await projectSelector.locator('option').all();
 
       if (options.length < 2) {
@@ -250,7 +250,7 @@ test.describe('Project-Flag Scoping', () => {
       const dashboard = new DashboardPage(page);
       await dashboard.goto();
 
-      const projectSelector = page.locator('app-breadcrumb select[aria-label="Project"]');
+      const projectSelector = page.locator('ui-breadcrumb select[aria-label="Project"]');
       const options = await projectSelector.locator('option').all();
 
       if (options.length < 2) {
@@ -278,7 +278,7 @@ test.describe('Project-Flag Scoping', () => {
       const flagList = new FlagListPage(page);
       await flagList.goto();
 
-      const projectSelector = page.locator('app-breadcrumb select[aria-label="Project"]');
+      const projectSelector = page.locator('ui-breadcrumb select[aria-label="Project"]');
       const options = await projectSelector.locator('option').all();
 
       if (options.length < 2) {
@@ -314,7 +314,7 @@ test.describe('Project-Flag Scoping', () => {
         await page.waitForTimeout(300);
 
         // Should show empty state since flag doesn't belong to this project
-        const emptyState = page.locator('app-empty-state');
+        const emptyState = page.locator('ui-empty-state');
         await expect(emptyState).toBeVisible();
       }
     });
@@ -325,7 +325,7 @@ test.describe('Project-Flag Scoping', () => {
       const flagList = new FlagListPage(page);
       await flagList.goto();
 
-      const projectSelector = page.locator('app-breadcrumb select[aria-label="Project"]');
+      const projectSelector = page.locator('ui-breadcrumb select[aria-label="Project"]');
       const options = await projectSelector.locator('option').all();
 
       if (options.length < 2) {
@@ -357,7 +357,7 @@ test.describe('Project-Flag Scoping', () => {
         await page.waitForTimeout(500);
 
         // Flag should not be visible (empty state or not-found)
-        const flagNotVisible = page.locator('app-empty-state, .not-found, .flag-not-found');
+        const flagNotVisible = page.locator('ui-empty-state, .not-found, .flag-not-found');
         await expect(flagNotVisible.first()).toBeVisible();
 
         // Switch back to first project and re-navigate to verify flag is accessible
@@ -384,7 +384,7 @@ test.describe('Project-Flag Scoping', () => {
       // Start on dashboard
       await dashboard.goto();
 
-      const projectSelector = page.locator('app-breadcrumb select[aria-label="Project"]');
+      const projectSelector = page.locator('ui-breadcrumb select[aria-label="Project"]');
       const options = await projectSelector.locator('option').all();
 
       if (options.length < 2) {

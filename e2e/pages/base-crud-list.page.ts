@@ -61,18 +61,18 @@ export abstract class BaseCrudListPage extends BasePage {
   }
 
   /**
-   * Get edit button in a row — targets app-button host for reliable cross-browser clicks.
+   * Get edit button in a row — targets ui-button host for reliable cross-browser clicks.
    */
   editButton(name: string | RegExp): Locator {
-    return this.itemRow(name).locator('app-button').filter({ hasText: /edit/i });
+    return this.itemRow(name).locator('ui-button').filter({ hasText: /edit/i });
   }
 
   /**
-   * Get delete button in a row — targets app-button host for reliable cross-browser clicks.
+   * Get delete button in a row — targets ui-button host for reliable cross-browser clicks.
    */
   deleteButton(name: string | RegExp): Locator {
     return this.itemRow(name)
-      .locator('app-button')
+      .locator('ui-button')
       .filter({ hasText: /delete/i });
   }
 
@@ -81,7 +81,7 @@ export abstract class BaseCrudListPage extends BasePage {
    */
   defaultBadge(name: string | RegExp): Locator {
     return this.itemRow(name)
-      .locator('app-badge')
+      .locator('ui-badge')
       .filter({ hasText: /default/i });
   }
 

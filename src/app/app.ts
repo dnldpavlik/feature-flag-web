@@ -12,8 +12,7 @@ import { filter, map } from 'rxjs';
 
 import { AuthService } from './core/auth/auth.service';
 import { ThemeService } from './core/theme/theme.service';
-import { BreadcrumbItem } from './shared/ui/breadcrumb/breadcrumb';
-import { ToastComponent } from './shared/ui/toast/toast';
+import { BreadcrumbItem, ToastComponent } from '@watt/ui';
 import { HeaderComponent } from './layout/header/header';
 import { SidebarComponent } from './layout/sidebar/sidebar';
 import { NAV_ITEMS } from './layout/nav.config';

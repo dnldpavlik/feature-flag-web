@@ -36,9 +36,11 @@ RUN git config --system user.name "${GIT_USER_NAME}" && \
 # Set working directory and change ownership
 WORKDIR /home/angular/workspace
 
-# Copy package files and install dependencies as root
-COPY --chown=angular:nodejs package*.json ./
-RUN npm install --no-audit --no-fund
+# Copy package files, registry config, and env for token auth
+COPY --chown=angular:nodejs package*.json .npmrc .env ./
+RUN export $(grep '^GITLAB_TOKEN=' .env | xargs) && \
+    npm install --no-audit --no-fund && \
+    rm -f .npmrc .env
 
 # Switch to non-root user for runtime operations
 # USER angular

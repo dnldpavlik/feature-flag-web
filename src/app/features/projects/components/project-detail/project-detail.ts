@@ -3,10 +3,7 @@ import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/c
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { BadgeComponent } from '@/app/shared/ui/badge/badge';
-import { ButtonComponent } from '@/app/shared/ui/button/button';
-import { CardComponent } from '@/app/shared/ui/card/card';
-import { EmptyStateComponent } from '@/app/shared/ui/empty-state/empty-state';
+import { BadgeComponent, ButtonComponent, CardComponent, EmptyStateComponent } from '@watt/ui';
 import { ProjectStore } from '@/app/shared/store/project.store';
 import { FlagStore } from '@/app/features/flags/store/flag.store';
 

@@ -3,7 +3,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { map } from 'rxjs';
 
-import { ButtonComponent } from '@/app/shared/ui/button/button';
+import { ButtonComponent } from '@watt/ui';
 import { CreateSegmentRuleInput, UpdateSegmentRuleInput } from '../../models/segment-rule.model';
 import { UpdateSegmentInput } from '../../api/segment.api';
 import { SegmentStore } from '../../store/segment.store';

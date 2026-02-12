@@ -10,21 +10,21 @@
   </header>
 
   <form class="flag-create__form" [formGroup]="form" (ngSubmit)="createFlag()">
-    <app-form-field
+    <ui-form-field
       label="Name"
       placeholder="Checkout Experience"
       [required]="true"
       [formControl]="form.controls.name"
     />
 
-    <app-form-field
+    <ui-form-field
       label="Key"
       placeholder="checkout-experience"
       hint="Leave blank to auto-generate from the name."
       [formControl]="form.controls.key"
     />
 
-    <app-form-field
+    <ui-form-field
       label="Description"
       type="textarea"
       placeholder="Briefly describe what this flag controls."
@@ -32,9 +32,9 @@
     />
 
     <div class="flag-create__row">
-      <app-select-field label="Type" [options]="typeOptions" [formControl]="form.controls.type" />
+      <ui-select-field label="Type" [options]="typeOptions" [formControl]="form.controls.type" />
 
-      <app-form-field label="Tags" placeholder="checkout, web" [formControl]="form.controls.tags" />
+      <ui-form-field label="Tags" placeholder="checkout, web" [formControl]="form.controls.tags" />
     </div>
 
     <div class="flag-create__field">
@@ -78,8 +78,8 @@
     </div>
 
     <div class="flag-create__actions">
-      <app-button variant="ghost" type="button" (click)="cancel()">Cancel</app-button>
-      <app-button variant="primary" type="submit">Create Flag</app-button>
+      <ui-button variant="ghost" type="button" (click)="cancel()">Cancel</ui-button>
+      <ui-button variant="primary" type="submit">Create Flag</ui-button>
     </div>
   </form>
 </section>

@@ -38,12 +38,9 @@
           />
         </div>
 
-        <app-button
-          class="user-profile-tab__save-btn"
-          (click)="saveProfile()"
-        >
+        <ui-button class="user-profile-tab__save-btn" (click)="saveProfile()">
           Save Profile
-        </app-button>
+        </ui-button>
       </div>
     </div>
   </section>
@@ -56,9 +53,7 @@
 
     <div class="user-profile-tab__password-form">
       <div class="user-profile-tab__field">
-        <label class="user-profile-tab__label" for="current-password">
-          Current Password
-        </label>
+        <label class="user-profile-tab__label" for="current-password"> Current Password </label>
         <input
           type="password"
           id="current-password"
@@ -69,9 +64,7 @@
       </div>
 
       <div class="user-profile-tab__field">
-        <label class="user-profile-tab__label" for="new-password">
-          New Password
-        </label>
+        <label class="user-profile-tab__label" for="new-password"> New Password </label>
         <input
           type="password"
           id="new-password"
@@ -82,9 +75,7 @@
       </div>
 
       <div class="user-profile-tab__field">
-        <label class="user-profile-tab__label" for="confirm-password">
-          Confirm New Password
-        </label>
+        <label class="user-profile-tab__label" for="confirm-password"> Confirm New Password </label>
         <input
           type="password"
           id="confirm-password"
@@ -93,19 +84,17 @@
           (input)="onConfirmPasswordInput($event)"
         />
         @if (showPasswordError()) {
-          <span class="user-profile-tab__password-error">
-            Passwords do not match
-          </span>
+          <span class="user-profile-tab__password-error"> Passwords do not match </span>
         }
       </div>
 
-      <app-button
+      <ui-button
         class="user-profile-tab__password-btn"
         [disabled]="!canChangePassword()"
         (click)="changePassword()"
       >
         Change Password
-      </app-button>
+      </ui-button>
     </div>
   </section>
 </div>

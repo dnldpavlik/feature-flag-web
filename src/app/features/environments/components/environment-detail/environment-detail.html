@@ -9,24 +9,20 @@
         <p class="text-secondary">Key: {{ env.key }}</p>
       </div>
       <div class="environment-detail__actions">
-        <app-button variant="ghost" type="button" (click)="selectEnvironment()">
-          Select
-        </app-button>
+        <ui-button variant="ghost" type="button" (click)="selectEnvironment()"> Select </ui-button>
         @if (!env.isDefault) {
-          <app-button variant="ghost" type="button" (click)="makeDefault()">
+          <ui-button variant="ghost" type="button" (click)="makeDefault()">
             Make Default
-          </app-button>
+          </ui-button>
         }
         @if (!isEditing()) {
-          <app-button variant="secondary" type="button" (click)="enterEditMode()">
-            Edit
-          </app-button>
+          <ui-button variant="secondary" type="button" (click)="enterEditMode()"> Edit </ui-button>
         }
       </div>
     </header>
 
     <div class="environment-detail__grid">
-      <app-card padding="lg">
+      <ui-card padding="lg">
         <h2>Overview</h2>
         @if (isEditing()) {
           <div class="environment-detail__edit-form">
@@ -61,10 +57,10 @@
             </label>
 
             <div class="environment-detail__edit-actions">
-              <app-button variant="primary" type="button" (click)="saveEdit()"
-                >Save Changes</app-button
+              <ui-button variant="primary" type="button" (click)="saveEdit()"
+                >Save Changes</ui-button
               >
-              <app-button variant="ghost" type="button" (click)="cancelEdit()">Cancel</app-button>
+              <ui-button variant="ghost" type="button" (click)="cancelEdit()">Cancel</ui-button>
             </div>
           </div>
         } @else {
@@ -72,10 +68,10 @@
             <span class="text-muted">Status</span>
             <div class="environment-detail__badges">
               @if (env.isDefault) {
-                <app-badge variant="info">Default</app-badge>
+                <ui-badge variant="info">Default</ui-badge>
               }
               @if (selectedEnvironmentId() === env.id) {
-                <app-badge variant="success">Selected</app-badge>
+                <ui-badge variant="success">Selected</ui-badge>
               }
             </div>
           </div>
@@ -87,9 +83,9 @@
             </div>
           </div>
         }
-      </app-card>
+      </ui-card>
 
-      <app-card padding="lg">
+      <ui-card padding="lg">
         <h2>Details</h2>
         <div class="environment-detail__row">
           <span class="text-muted">Created</span>
@@ -99,7 +95,7 @@
           <span class="text-muted">Last updated</span>
           <span>{{ env.updatedAt | date: 'mediumDate' }}</span>
         </div>
-      </app-card>
+      </ui-card>
     </div>
 
     <section class="environment-detail__flags">
@@ -108,7 +104,7 @@
           <h2>Flags in {{ env.name }}</h2>
           <p class="text-secondary">Current values and status for this environment.</p>
         </div>
-        <app-button variant="ghost" [routerLink]="['/flags']">View All Flags</app-button>
+        <ui-button variant="ghost" [routerLink]="['/flags']">View All Flags</ui-button>
       </div>
       <div class="environment-detail__table">
         <div class="environment-detail__row environment-detail__row--header">
@@ -125,23 +121,23 @@
               </a>
               <span class="text-muted">{{ flag.key }}</span>
             </div>
-            <app-badge [variant]="flag.currentEnabled ? 'success' : 'error'">
+            <ui-badge [variant]="flag.currentEnabled ? 'success' : 'error'">
               {{ flag.currentEnabled ? 'Enabled' : 'Disabled' }}
-            </app-badge>
+            </ui-badge>
             <code class="environment-detail__value">{{ formatValue(flag.currentValue) }}</code>
-            <app-badge variant="info">{{ flag.type }}</app-badge>
+            <ui-badge variant="info">{{ flag.type }}</ui-badge>
           </div>
         }
       </div>
     </section>
   </section>
 } @else {
-  <app-empty-state
+  <ui-empty-state
     title="Environment not found"
     message="We couldn't find that environment. Return to the list to continue."
   >
-    <app-button empty-state-action variant="primary" type="button" (click)="backToList()">
+    <ui-button empty-state-action variant="primary" type="button" (click)="backToList()">
       Back to Environments
-    </app-button>
-  </app-empty-state>
+    </ui-button>
+  </ui-empty-state>
 }

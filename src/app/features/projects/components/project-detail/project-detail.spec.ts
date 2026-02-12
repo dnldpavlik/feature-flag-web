@@ -95,14 +95,14 @@ describe('ProjectDetail', () => {
   it('should show empty state when project is missing', async () => {
     await build('proj_missing');
 
-    const empty = fixture.debugElement.query(By.css('app-empty-state'));
+    const empty = fixture.debugElement.query(By.css('ui-empty-state'));
     expect(empty).toBeTruthy();
   });
 
   it('should treat missing route param as empty id', async () => {
     await build();
 
-    const empty = fixture.debugElement.query(By.css('app-empty-state'));
+    const empty = fixture.debugElement.query(By.css('ui-empty-state'));
     expect(empty).toBeTruthy();
   });
 

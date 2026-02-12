@@ -19,7 +19,7 @@ describe('SegmentDetailComponent', () => {
   };
 
   const getButtonByText = (text: string) => {
-    const buttons = fixture.debugElement.queryAll(By.css('app-button'));
+    const buttons = fixture.debugElement.queryAll(By.css('ui-button'));
     return buttons.find((btn) => btn.nativeElement.textContent.trim() === text);
   };
 

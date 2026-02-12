@@ -4,7 +4,7 @@
 
 Angular 21 web UI for a Feature Flag management system (LaunchDarkly clone). The Rust backend API exposes REST endpoints at `/api/v1`. The UI provides flag CRUD, targeting rules (segments), multi-environment management, projects, audit logging, dashboard, and user settings.
 
-**Tech stack:** Angular 21.1.2 | TypeScript 5.9 | RxJS 7.8 | Jest 30 | Playwright 1.58 | SCSS (BEM) | Nginx 1.27-alpine
+**Tech stack:** Angular 21.1.2 | TypeScript 5.9 | RxJS 7.8 | Jest 30 | Playwright 1.58 | SCSS (BEM) | Nginx 1.27-alpine | @watt/ui (shared component library)
 
 ## Core Principles
 
@@ -48,7 +48,7 @@ src/
 │   │   └── time/                    # TimeService + testable TimeProvider interface
 │   ├── shared/
 │   │   ├── store/                   # BaseCrudStore<T>, ProjectStore, EnvironmentStore, SearchStore
-│   │   ├── ui/                      # 26 reusable components (see UI Library below)
+│   │   ├── ui/                      # Local-only components (logo-icon, flags-empty-icon); shared UI from @watt/ui
 │   │   └── utils/                   # filter.utils, search.utils, form.utils, id.utils, url.utils
 │   ├── testing/                     # Test helpers (store, component, dom, mock factories, mock-api providers)
 │   ├── features/
@@ -56,7 +56,7 @@ src/
 │   │   ├── environments/            # Environment CRUD with color coding
 │   │   ├── projects/                # Project CRUD with default project
 │   │   ├── segments/                # Segment CRUD + rule builder (rule-row component)
-│   │   ├── audit/                   # Audit log display, filtering, AuditLogger service
+│   │   ├── audit/                   # Audit log display, filtering, AuditLogger service, AuditBadgeComponent
 │   │   ├── settings/                # User profile, preferences, API keys, theme tabs
 │   │   └── dashboard/               # Stats cards, recent flags, search
 │   ├── layout/
@@ -82,7 +82,7 @@ src/
 ```typescript
 @Component({
   selector: 'app-flag-card',
-  imports: [RouterLink, BadgeComponent],
+  imports: [RouterLink, BadgeComponent],  // BadgeComponent from '@watt/ui/badge'
   templateUrl: './flag-card.html',
   styleUrl: './flag-card.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -471,33 +471,44 @@ await expect(this.modal).not.toBeVisible({ timeout: 15000 });
 await expect(this.itemRow(name)).toBeVisible({ timeout: 15000 });
 ```
 
-## UI Component Library (26 components)
+## UI Component Library (`@watt/ui`)
 
-Located in `src/app/shared/ui/`:
+22 shared UI components are provided by the `@watt/ui` npm package (private GitLab registry). Components use `ui-*` selector prefix.
 
-| Component | Key Features |
-|-----------|-------------|
-| `button` | Variants: primary/secondary/ghost/danger. Sizes: sm/md/lg. Loading state. |
-| `card` | Content projection. Padding variants: none/sm/md/lg. |
-| `badge` | Variants: success/warning/error/info + audit types. Dismissible. |
-| `data-table` | Generic `<T>`, sortable columns via `UiColDirective`, content children. |
-| `form-field` | ControlValueAccessor. Types: text/email/password/number/color/textarea. |
-| `toggle` | Checked/label/disabled inputs. Emits `toggled` output. |
-| `toast` | ToastService: success/error/warning/info. Auto-dismiss. Max visible limit. |
-| `empty-state` | Icon + title + message + action slot. Size variants. |
-| `loading-spinner` | Sizes: sm/md/lg. Optional label. |
-| `search-input` | Debounced search with clear button. |
-| `select` / `select-field` / `labeled-select` | Native select with label integration. |
-| `tabs` | Tab navigation component. |
-| `toolbar` | Toolbar container for page actions. |
-| `breadcrumb` | Route-aware breadcrumb with project/environment selectors. |
-| `page-header` | Page title + description container. |
-| `icon` | SVG icon system with `IconName` type and `icon.data.ts` registry. |
-| `nav-item` / `nav-section` | Sidebar navigation components. |
-| `stat-card` | Dashboard statistics display. |
-| `user-menu` | Profile dropdown in sidebar footer. |
-| `error-banner` | Error display banner. |
-| `logo-icon` / `flags-empty-icon` | SVG icon components. |
+**Import pattern:** `import { ButtonComponent } from '@watt/ui/button';`
+
+| Component | Import Path | Selector | Key Features |
+|-----------|------------|----------|-------------|
+| `button` | `@watt/ui/button` | `ui-button` | Variants: primary/secondary/ghost/danger. Sizes: sm/md/lg. Loading state. |
+| `card` | `@watt/ui/card` | `ui-card` | Content projection. Padding variants: none/sm/md/lg. |
+| `badge` | `@watt/ui/badge` | `ui-badge` | Variants: success/warning/error/info. Dismissible. |
+| `data-table` | `@watt/ui/data-table` | `ui-data-table` | Generic `<T>`, sortable columns via `UiColDirective`, content children. |
+| `form-field` | `@watt/ui/form-field` | `ui-form-field` | ControlValueAccessor. Types: text/email/password/number/color/textarea. |
+| `toggle` | `@watt/ui/toggle` | `ui-toggle` | Checked/label/disabled inputs. Emits `toggled` output. |
+| `toast` | `@watt/ui/toast` | `ui-toast` | ToastService: success/error/warning/info. Auto-dismiss. |
+| `empty-state` | `@watt/ui/empty-state` | `ui-empty-state` | Icon + title + message + action slot. Size variants. |
+| `loading-spinner` | `@watt/ui/loading-spinner` | `ui-loading-spinner` | Sizes: sm/md/lg. Optional label. |
+| `search-input` | `@watt/ui/search-input` | `ui-search-input` | Debounced search with clear button. |
+| `select-field` | `@watt/ui/select-field` | `ui-select-field` | Native select with label integration (for forms). |
+| `labeled-select` | `@watt/ui/labeled-select` | `ui-labeled-select` | Compact select (for toolbars/filters). |
+| `tabs` | `@watt/ui/tabs` | `ui-tabs` | Tab navigation component. |
+| `toolbar` | `@watt/ui/toolbar` | `ui-toolbar` | Toolbar container for page actions. |
+| `breadcrumb` | `@watt/ui/breadcrumb` | `ui-breadcrumb` | Route-aware breadcrumb with selectors. |
+| `page-header` | `@watt/ui/page-header` | `ui-page-header` | Page title + description container. |
+| `icon` | `@watt/ui/icon` | `ui-icon` | SVG icon system with `IconName` type. |
+| `nav-item` | `@watt/ui/nav-item` | `ui-nav-item` | Sidebar navigation link. |
+| `nav-section` | `@watt/ui/nav-section` | `ui-nav-section` | Grouped navigation section. |
+| `stat-card` | `@watt/ui/stat-card` | `ui-stat-card` | Dashboard statistics display. |
+| `user-menu` | `@watt/ui/user-menu` | `ui-user-menu` | Profile dropdown in sidebar footer. |
+| `error-banner` | `@watt/ui/error-banner` | `ui-error-banner` | Error display banner. |
+
+### Local-Only Components
+
+| Component | Location | Selector | Reason |
+|-----------|----------|----------|--------|
+| `LogoIconComponent` | `shared/ui/logo-icon/` | `app-logo-icon` | App-specific branding SVG |
+| `FlagsEmptyIconComponent` | `shared/ui/flags-empty-icon/` | `app-flags-empty-icon` | App-specific empty state SVG |
+| `AuditBadgeComponent` | `features/audit/components/audit-badge/` | `app-audit-badge` | Extends badge with audit action variants (created/updated/deleted/toggled) |
 
 ## CI/CD Pipeline (GitLab)
 

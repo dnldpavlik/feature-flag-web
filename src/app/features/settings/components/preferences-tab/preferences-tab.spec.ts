@@ -32,7 +32,7 @@ describe('PreferencesTabComponent', () => {
 
   describe('default environment selector', () => {
     it('should render environment select', () => {
-      const select = fixture.debugElement.query(By.css('app-labeled-select'));
+      const select = fixture.debugElement.query(By.css('ui-labeled-select'));
       expect(select).toBeTruthy();
     });
 

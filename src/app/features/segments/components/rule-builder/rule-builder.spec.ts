@@ -9,7 +9,7 @@ describe('RuleBuilderComponent', () => {
   let fixture: ComponentFixture<RuleBuilderComponent>;
 
   const getAddButton = () => {
-    const appButton = fixture.debugElement.query(By.css('app-button'));
+    const appButton = fixture.debugElement.query(By.css('ui-button'));
     return appButton?.query(By.css('button'));
   };
 
@@ -87,12 +87,16 @@ describe('RuleBuilderComponent', () => {
       select.nativeElement.dispatchEvent(new Event('change'));
       fixture.detectChanges();
 
-      const customInput = fixture.debugElement.query(By.css('.rule-builder__custom-attribute-input'));
+      const customInput = fixture.debugElement.query(
+        By.css('.rule-builder__custom-attribute-input'),
+      );
       expect(customInput).toBeTruthy();
     });
 
     it('should hide custom attribute input when standard attribute selected', () => {
-      const customInput = fixture.debugElement.query(By.css('.rule-builder__custom-attribute-input'));
+      const customInput = fixture.debugElement.query(
+        By.css('.rule-builder__custom-attribute-input'),
+      );
       expect(customInput).toBeFalsy();
     });
   });
@@ -232,7 +236,9 @@ describe('RuleBuilderComponent', () => {
       fixture.detectChanges();
 
       // Enter custom attribute
-      const customInput = fixture.debugElement.query(By.css('.rule-builder__custom-attribute-input'));
+      const customInput = fixture.debugElement.query(
+        By.css('.rule-builder__custom-attribute-input'),
+      );
       customInput.nativeElement.value = 'subscription_tier';
       customInput.nativeElement.dispatchEvent(new Event('input'));
       fixture.detectChanges();
@@ -283,8 +289,12 @@ describe('RuleBuilderComponent', () => {
       fixture.detectChanges();
 
       // Verify form reset
-      expect(fixture.debugElement.query(By.css('.rule-builder__attribute-select')).nativeElement.value).toBe('');
-      expect(fixture.debugElement.query(By.css('.rule-builder__value-input')).nativeElement.value).toBe('');
+      expect(
+        fixture.debugElement.query(By.css('.rule-builder__attribute-select')).nativeElement.value,
+      ).toBe('');
+      expect(
+        fixture.debugElement.query(By.css('.rule-builder__value-input')).nativeElement.value,
+      ).toBe('');
     });
   });
 });

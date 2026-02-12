@@ -28,7 +28,7 @@ export class ProjectListPage extends BaseCrudListPage {
 
   /** Project list/table */
   get projectList(): Locator {
-    return this.page.locator('[data-testid="project-list"], app-ui-data-table');
+    return this.page.locator('[data-testid="project-list"], ui-data-table');
   }
 
   // Semantic aliases for backward compatibility
@@ -72,7 +72,7 @@ export class ProjectListPage extends BaseCrudListPage {
   /** Save/Add button — targets inner button for disabled state checks */
   get saveButton(): Locator {
     return this.createForm
-      .locator('app-button')
+      .locator('ui-button')
       .filter({ hasText: /add project|save|create/i })
       .locator('button');
   }

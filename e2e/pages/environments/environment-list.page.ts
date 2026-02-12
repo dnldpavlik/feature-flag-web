@@ -28,7 +28,7 @@ export class EnvironmentListPage extends BaseCrudListPage {
 
   /** Environment list/table */
   get environmentList(): Locator {
-    return this.page.locator('[data-testid="environment-list"], app-ui-data-table');
+    return this.page.locator('[data-testid="environment-list"], ui-data-table');
   }
 
   // Semantic aliases for backward compatibility
@@ -74,10 +74,10 @@ export class EnvironmentListPage extends BaseCrudListPage {
     return this.createForm.locator('input[type="color"]');
   }
 
-  /** Save/Add button in form — targets app-button host for reliable cross-browser clicks */
+  /** Save/Add button in form — targets ui-button host for reliable cross-browser clicks */
   get saveButton(): Locator {
     return this.createForm
-      .locator('app-button')
+      .locator('ui-button')
       .filter({ hasText: /add environment|save|create/i })
       .locator('button');
   }

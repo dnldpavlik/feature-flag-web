@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 
-import { FormFieldComponent } from '@/app/shared/ui/form-field/form-field';
+import { FormFieldComponent } from '@watt/ui';
 import { FlagType } from '@/app/features/flags/models/flag.model';
 
 /**
@@ -34,14 +34,14 @@ import { FlagType } from '@/app/features/flags/models/flag.model';
         </label>
       }
       @case ('string') {
-        <app-form-field
+        <ui-form-field
           label=""
           [placeholder]="stringPlaceholder()"
           [formControl]="stringControl()"
         />
       }
       @case ('number') {
-        <app-form-field
+        <ui-form-field
           label=""
           type="number"
           [placeholder]="numberPlaceholder()"
@@ -49,7 +49,7 @@ import { FlagType } from '@/app/features/flags/models/flag.model';
         />
       }
       @case ('json') {
-        <app-form-field
+        <ui-form-field
           label=""
           type="textarea"
           [rows]="jsonRows()"

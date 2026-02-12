@@ -3,7 +3,7 @@ import { firstValueFrom } from 'rxjs';
 
 import { EnvironmentApi } from '@/app/features/environments/api/environment.api';
 import { BaseCrudStore } from '@/app/shared/store/base-crud.store';
-import { ToastService } from '@/app/shared/ui/toast/toast.service';
+import { ToastService } from '@watt/ui';
 import { AuditLogger } from '@/app/features/audit/services/audit-logger.service';
 import {
   CreateEnvironmentInput,

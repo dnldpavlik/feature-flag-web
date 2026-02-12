@@ -19,7 +19,7 @@ export class SettingsPage extends BasePage {
 
   /** Tab navigation */
   get tabs(): Locator {
-    return this.page.locator('app-tabs, [role="tablist"]');
+    return this.page.locator('ui-tabs, [role="tablist"]');
   }
 
   /** Profile tab */

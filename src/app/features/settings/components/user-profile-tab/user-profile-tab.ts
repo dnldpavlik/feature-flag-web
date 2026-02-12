@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 
-import { ButtonComponent } from '@/app/shared/ui/button/button';
+import { ButtonComponent } from '@watt/ui';
 import { UserProfileStore } from '../../store/user-profile.store';
 
 @Component({

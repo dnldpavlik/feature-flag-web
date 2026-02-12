@@ -1,27 +1,27 @@
 <section class="flags-page">
-  <app-page-header
+  <ui-page-header
     title="Feature Flags"
     description="Ship safely with targeted rollouts and instant kill switches."
   />
 
   <div class="flags-page__toolbar-row">
-    <app-toolbar>
+    <ui-toolbar>
       <ng-container toolbar-filters>
-        <app-labeled-select
+        <ui-labeled-select
           label="Environment"
           [options]="environmentOptions()"
           [value]="selectedEnvironment()?.id ?? ''"
           minWidth="160px"
           (valueChange)="onEnvironmentChange($event)"
         />
-        <app-labeled-select
+        <ui-labeled-select
           label="Status"
           [options]="statusOptions"
           [value]="statusFilter()"
           minWidth="120px"
           (valueChange)="onStatusChange($event)"
         />
-        <app-labeled-select
+        <ui-labeled-select
           label="Type"
           [options]="typeOptions"
           [value]="typeFilter()"
@@ -29,28 +29,28 @@
           (valueChange)="onTypeChange($event)"
         />
       </ng-container>
-    </app-toolbar>
+    </ui-toolbar>
     <div class="flags-page__meta">
       <span class="flags-page__count text-muted">
         {{ filteredCount() }} of {{ totalCount() }} flags
       </span>
-      <app-button variant="ghost">Export</app-button>
+      <ui-button variant="ghost">Export</ui-button>
     </div>
   </div>
 
   @if (filteredFlags().length === 0) {
-    <app-empty-state
+    <ui-empty-state
       title="No flags found"
       message="Try adjusting your filters or create a new flag to get started."
     >
-    </app-empty-state>
+    </ui-empty-state>
   } @else {
-    <app-ui-data-table
+    <ui-data-table
       [items]="filteredFlags()"
       ariaLabel="Feature flags"
       emptyText="No flags match filters."
     >
-      <ng-template appUiCol="name" header="Flag" width="28%" let-flag>
+      <ng-template uiCol="name" header="Flag" width="28%" let-flag>
         <div class="flag-cell flag-cell--name">
           <a class="flag-cell__title flag-cell__link" [routerLink]="['/flags', flag.id]">{{
             flag.name
@@ -59,38 +59,38 @@
           <div class="flag-cell__description text-secondary">{{ flag.description }}</div>
         </div>
       </ng-template>
-      <ng-template appUiCol="status" header="Status" width="14%" [sortable]="false" let-flag>
-        <app-toggle
+      <ng-template uiCol="status" header="Status" width="14%" [sortable]="false" let-flag>
+        <ui-toggle
           [checked]="flag.currentEnabled"
           [label]="flag.currentEnabled ? 'Enabled' : 'Disabled'"
           (toggled)="onToggleFlag(flag.id, $event)"
         />
       </ng-template>
-      <ng-template appUiCol="value" header="Value" width="16%" [sortable]="false" let-flag>
+      <ng-template uiCol="value" header="Value" width="16%" [sortable]="false" let-flag>
         <code class="flag-value">{{ flag.formattedValue }}</code>
       </ng-template>
-      <ng-template appUiCol="type" header="Type" width="10%" let-flag>
-        <app-badge variant="info">{{ flag.type }}</app-badge>
+      <ng-template uiCol="type" header="Type" width="10%" let-flag>
+        <ui-badge variant="info">{{ flag.type }}</ui-badge>
       </ng-template>
-      <ng-template appUiCol="tags" header="Tags" width="14%" [sortable]="false" let-flag>
+      <ng-template uiCol="tags" header="Tags" width="14%" [sortable]="false" let-flag>
         @for (tag of flag.tags; track tag) {
-          <app-badge variant="success">{{ tag }}</app-badge>
+          <ui-badge variant="success">{{ tag }}</ui-badge>
         }
       </ng-template>
-      <ng-template appUiCol="updatedAt" header="Updated" width="10%" let-flag>
+      <ng-template uiCol="updatedAt" header="Updated" width="10%" let-flag>
         <span class="text-muted">{{ flag.updatedAt | date: 'mediumDate' }}</span>
       </ng-template>
-      <ng-template appUiCol="actions" header="Actions" [sortable]="false" let-flag>
+      <ng-template uiCol="actions" header="Actions" [sortable]="false" let-flag>
         @if (totalCount() > 1) {
-          <app-button
+          <ui-button
             class="flag-delete-btn"
             variant="ghost"
             type="button"
             (click)="onDeleteFlag(flag.id)"
-            >Delete</app-button
+            >Delete</ui-button
           >
         }
       </ng-template>
-    </app-ui-data-table>
+    </ui-data-table>
   }
 </section>

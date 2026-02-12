@@ -41,7 +41,7 @@ export function exists<T>(fixture: ComponentFixture<T>, selector: string): boole
  * Get table rows from data table
  */
 export function getTableRows<T>(fixture: ComponentFixture<T>): DebugElement[] {
-  return queryAll(fixture, '.data-table__body-wrap tbody tr, app-ui-data-table tbody tr');
+  return queryAll(fixture, '.data-table__body-wrap tbody tr, ui-data-table tbody tr');
 }
 
 /**
@@ -94,14 +94,14 @@ export function expectHeading<T>(
  * Assert empty state is visible
  */
 export function expectEmptyState<T>(fixture: ComponentFixture<T>): void {
-  expectExists(fixture, 'app-empty-state');
+  expectExists(fixture, 'ui-empty-state');
 }
 
 /**
  * Assert empty state is not visible
  */
 export function expectNoEmptyState<T>(fixture: ComponentFixture<T>): void {
-  expectNotExists(fixture, 'app-empty-state');
+  expectNotExists(fixture, 'ui-empty-state');
 }
 
 /**
@@ -127,7 +127,7 @@ export function expectHasClass<T>(
  * Assert button exists with text
  */
 export function expectButton<T>(fixture: ComponentFixture<T>, text: string): void {
-  const buttons = queryAll(fixture, 'button, app-button');
+  const buttons = queryAll(fixture, 'button, ui-button');
   const found = buttons.some((btn) => btn.nativeElement.textContent?.includes(text));
   expect(found).toBe(true);
 }

@@ -41,12 +41,12 @@ export class FlagListPage extends BaseCrudListPage {
 
   /** Toggle switch for a flag */
   flagToggle(name: string): Locator {
-    return this.flagRow(name).locator('app-toggle input, [role="switch"]');
+    return this.flagRow(name).locator('ui-toggle input, [role="switch"]');
   }
 
   /** Flag type badge */
   flagTypeBadge(name: string): Locator {
-    return this.flagRow(name).locator('app-badge, .badge');
+    return this.flagRow(name).locator('ui-badge, .badge');
   }
 
   /** Bulk action toolbar (visible when items selected) */

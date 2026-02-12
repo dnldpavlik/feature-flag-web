@@ -190,7 +190,7 @@ test.describe('Flag Regression Tests', () => {
       await flagList.searchFlags('xyznonexistentflag123');
 
       // Should show empty state (auto-retries until search filter applies)
-      await expect(page.locator('app-empty-state')).toBeVisible();
+      await expect(page.locator('ui-empty-state')).toBeVisible();
       const count = await flagList.getFlagCount();
       expect(count).toBe(0);
     });
@@ -376,8 +376,8 @@ test.describe('Flag Regression Tests', () => {
       }
 
       // Toggle input is visually hidden, use the label for clicking
-      const toggleLabel = page.locator('app-toggle label.toggle').first();
-      const toggleInput = page.locator('app-toggle input').first();
+      const toggleLabel = page.locator('ui-toggle label.toggle').first();
+      const toggleInput = page.locator('ui-toggle input').first();
       const initialState = await toggleInput.isChecked();
 
       // Rapid clicks on label — verify the UI handles it without errors

@@ -10,38 +10,36 @@
       </div>
       <div class="flag-detail__actions">
         @if (canDelete()) {
-          <app-button
+          <ui-button
             class="flag-detail__delete-btn"
             variant="ghost"
             type="button"
             (click)="deleteFlag()"
-            >Delete</app-button
+            >Delete</ui-button
           >
         }
-        <app-button variant="ghost" type="button" (click)="cancelChanges()">Cancel</app-button>
-        <app-button variant="primary" type="button" (click)="saveDetails()"
-          >Save Changes</app-button
-        >
+        <ui-button variant="ghost" type="button" (click)="cancelChanges()">Cancel</ui-button>
+        <ui-button variant="primary" type="button" (click)="saveDetails()">Save Changes</ui-button>
       </div>
     </header>
 
     <div class="flag-detail__grid" [formGroup]="form">
-      <app-card padding="lg">
+      <ui-card padding="lg">
         <h2>Details</h2>
-        <app-form-field label="Name" [formControl]="form.controls.name" />
-        <app-form-field
+        <ui-form-field label="Name" [formControl]="form.controls.name" />
+        <ui-form-field
           label="Description"
           type="textarea"
           [formControl]="form.controls.description"
         />
-        <app-form-field
+        <ui-form-field
           label="Tags"
           placeholder="checkout, web"
           [formControl]="form.controls.tags"
         />
-      </app-card>
+      </ui-card>
 
-      <app-card padding="lg">
+      <ui-card padding="lg">
         <h2>Default Value</h2>
         <p class="text-secondary flag-detail__help">
           Used when an environment does not have an override.
@@ -55,10 +53,10 @@
           [jsonControl]="form.controls.jsonValue"
           [jsonError]="jsonError()"
         />
-      </app-card>
+      </ui-card>
     </div>
 
-    <app-card padding="lg">
+    <ui-card padding="lg">
       <h2>Environment Overrides</h2>
       <div class="flag-detail__env-table">
         <div class="flag-detail__env-header">
@@ -72,7 +70,7 @@
               <span class="flag-detail__env-dot" [style.--env-color]="env.color"></span>
               <span>{{ env.name }}</span>
             </div>
-            <app-toggle [checked]="env.enabled" (toggled)="onEnvironmentToggle(env.id, $event)" />
+            <ui-toggle [checked]="env.enabled" (toggled)="onEnvironmentToggle(env.id, $event)" />
             <div>
               @switch (current.type) {
                 @case ('boolean') {
@@ -113,15 +111,15 @@
           </div>
         }
       </div>
-    </app-card>
+    </ui-card>
   </section>
 } @else {
-  <app-empty-state
+  <ui-empty-state
     title="Flag not found"
     message="We couldn't find that flag. Return to the flags list to continue."
   >
-    <app-button empty-state-action variant="primary" type="button" (click)="backToList()">
+    <ui-button empty-state-action variant="primary" type="button" (click)="backToList()">
       Back to Flags
-    </app-button>
-  </app-empty-state>
+    </ui-button>
+  </ui-empty-state>
 }

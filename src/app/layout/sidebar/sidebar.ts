@@ -1,9 +1,7 @@
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 
 import { LogoIconComponent } from '@/app/shared/ui/logo-icon/logo-icon';
-import { NavItemComponent } from '@/app/shared/ui/nav-item/nav-item';
-import { NavSectionComponent } from '@/app/shared/ui/nav-section/nav-section';
-import { UserMenuComponent } from '@/app/shared/ui/user-menu/user-menu';
+import { NavItemComponent, NavSectionComponent, UserMenuComponent } from '@watt/ui';
 import { SidebarEnvironment, SidebarNavItem, SidebarUser } from './sidebar.types';
 
 @Component({

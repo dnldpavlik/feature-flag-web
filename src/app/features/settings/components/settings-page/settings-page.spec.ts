@@ -35,7 +35,7 @@ describe('SettingsPageComponent', () => {
     });
 
     it('should render the tabs component', () => {
-      const tabs = fixture.debugElement.query(By.css('app-tabs'));
+      const tabs = fixture.debugElement.query(By.css('ui-tabs'));
       expect(tabs).toBeTruthy();
     });
 

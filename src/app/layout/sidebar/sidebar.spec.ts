@@ -98,12 +98,12 @@ describe('Sidebar', () => {
     });
 
     it('should render nav items for each provided item', () => {
-      const items = queryAll(fixture, '.nav-list app-nav-item');
+      const items = queryAll(fixture, '.nav-list ui-nav-item');
       expect(items.length).toBeGreaterThanOrEqual(1);
     });
 
     it('should render environment items in the environments section', () => {
-      expectExists(fixture, 'app-nav-section');
+      expectExists(fixture, 'ui-nav-section');
     });
   });
 
@@ -121,14 +121,14 @@ describe('Sidebar', () => {
     });
 
     it('should render all provided nav items', () => {
-      const items = queryAll(fixture, 'app-nav-item');
+      const items = queryAll(fixture, 'ui-nav-item');
       // 3 nav items + 3 environment items = 6 total
       expect(items.length).toBe(6);
     });
 
     it('should render all environment items', () => {
-      const envSection = query(fixture, 'app-nav-section');
-      const envItems = envSection?.queryAll(By.css('app-nav-item')) ?? [];
+      const envSection = query(fixture, 'ui-nav-section');
+      const envItems = envSection?.queryAll(By.css('ui-nav-item')) ?? [];
       expect(envItems.length).toBe(3);
     });
   });
@@ -147,7 +147,7 @@ describe('Sidebar', () => {
     });
 
     it('should render the user menu component', () => {
-      expectExists(fixture, 'app-user-menu');
+      expectExists(fixture, 'ui-user-menu');
     });
 
     it('should display user name in the user menu', () => {
@@ -174,9 +174,9 @@ describe('Sidebar', () => {
       fixture.detectChanges();
     });
 
-    it('should emit logout when user menu logout is clicked', () => {
-      const logoutBtn = fixture.debugElement.query(By.css('.user-menu__logout'));
-      logoutBtn.nativeElement.click();
+    it('should emit logout when user menu is clicked', () => {
+      const userMenuBtn = fixture.debugElement.query(By.css('.user-menu'));
+      userMenuBtn.nativeElement.click();
       fixture.detectChanges();
 
       expect(hostComponent.logoutCalled).toBe(true);
@@ -197,7 +197,7 @@ describe('Sidebar', () => {
     });
 
     it('should display environments section with title', () => {
-      const section = query(fixture, 'app-nav-section');
+      const section = query(fixture, 'ui-nav-section');
       expect(section?.properties['title']).toBe('Environments');
     });
   });

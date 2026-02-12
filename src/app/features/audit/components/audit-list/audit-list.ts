@@ -1,13 +1,16 @@
 import { DatePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 
-import { BadgeComponent } from '@/app/shared/ui/badge/badge';
-import { DataTableComponent } from '@/app/shared/ui/data-table/data-table';
-import { UiColDirective } from '@/app/shared/ui/data-table/ui-col.directive';
-import { EmptyStateComponent } from '@/app/shared/ui/empty-state/empty-state';
-import { PageHeaderComponent } from '@/app/shared/ui/page-header/page-header';
-import { ToolbarComponent } from '@/app/shared/ui/toolbar/toolbar';
-import { LabeledSelectComponent } from '@/app/shared/ui/labeled-select/labeled-select';
+import {
+  BadgeComponent,
+  DataTableComponent,
+  UiColDirective,
+  EmptyStateComponent,
+  PageHeaderComponent,
+  ToolbarComponent,
+  LabeledSelectComponent,
+} from '@watt/ui';
+import { AuditBadgeComponent } from '../audit-badge/audit-badge';
 import { SearchStore } from '@/app/shared/store/search.store';
 import { AuditStore } from '@/app/features/audit/store/audit.store';
 import { AUDIT_ACTION_OPTIONS, AUDIT_RESOURCE_OPTIONS } from '../../models/audit.model';
@@ -19,6 +22,7 @@ const capitalize = (str: string): string => str.charAt(0).toUpperCase() + str.sl
 @Component({
   selector: 'app-audit-list',
   imports: [
+    AuditBadgeComponent,
     BadgeComponent,
     DatePipe,
     DataTableComponent,

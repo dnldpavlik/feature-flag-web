@@ -28,8 +28,8 @@ test.describe('Toolbar Layout', () => {
       if (skipIfEmpty(flagCount)) return;
 
       // Get the first toggle's state and label
-      const toggleInput = page.locator('app-toggle input').first();
-      const toggleLabel = page.locator('app-toggle .toggle__label').first();
+      const toggleInput = page.locator('ui-toggle input').first();
+      const toggleLabel = page.locator('ui-toggle .toggle__label').first();
 
       const isChecked = await toggleInput.isChecked();
       const labelText = await toggleLabel.textContent();
@@ -49,9 +49,9 @@ test.describe('Toolbar Layout', () => {
       const flagCount = await flagList.getFlagCount();
       if (skipIfEmpty(flagCount)) return;
 
-      const toggleInput = page.locator('app-toggle input').first();
-      const toggleLabel = page.locator('app-toggle .toggle__label').first();
-      const toggleClickable = page.locator('app-toggle label.toggle').first();
+      const toggleInput = page.locator('ui-toggle input').first();
+      const toggleLabel = page.locator('ui-toggle .toggle__label').first();
+      const toggleClickable = page.locator('ui-toggle label.toggle').first();
 
       // Capture initial state
       const initialChecked = await toggleInput.isChecked();

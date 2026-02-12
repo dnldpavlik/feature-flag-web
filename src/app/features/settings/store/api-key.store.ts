@@ -1,7 +1,7 @@
 import { Injectable, computed, inject, signal } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 
-import { ToastService } from '@/app/shared/ui/toast/toast.service';
+import { ToastService } from '@watt/ui';
 import { ApiKeyApi } from '../api/api-key.api';
 import { ApiKey, CreateApiKeyInput, CreateApiKeyResult } from '../models/settings.model';
 

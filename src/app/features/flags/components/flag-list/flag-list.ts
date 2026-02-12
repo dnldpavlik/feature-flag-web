@@ -2,18 +2,18 @@ import { DatePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
-import { BadgeComponent } from '@/app/shared/ui/badge/badge';
-import { ButtonComponent } from '@/app/shared/ui/button/button';
-import { DataTableComponent } from '@/app/shared/ui/data-table/data-table';
-import { UiColDirective } from '@/app/shared/ui/data-table/ui-col.directive';
-import { EmptyStateComponent } from '@/app/shared/ui/empty-state/empty-state';
-import { PageHeaderComponent } from '@/app/shared/ui/page-header/page-header';
-import { ToggleComponent } from '@/app/shared/ui/toggle/toggle';
-import { ToolbarComponent } from '@/app/shared/ui/toolbar/toolbar';
 import {
+  BadgeComponent,
+  ButtonComponent,
+  DataTableComponent,
+  EmptyStateComponent,
   LabeledSelectComponent,
+  PageHeaderComponent,
   SelectOption,
-} from '@/app/shared/ui/labeled-select/labeled-select';
+  ToggleComponent,
+  ToolbarComponent,
+  UiColDirective,
+} from '@watt/ui';
 import { EnvironmentStore } from '@/app/shared/store/environment.store';
 import { SearchStore } from '@/app/shared/store/search.store';
 import { matchesSearch } from '@/app/shared/utils/search.utils';

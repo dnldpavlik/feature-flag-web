@@ -16,7 +16,7 @@ export class ToggleHelper {
    */
   getToggleLabel(container?: Locator): Locator {
     const base = container ?? this.page;
-    return base.locator('app-toggle label.toggle');
+    return base.locator('ui-toggle label.toggle');
   }
 
   /**
@@ -24,7 +24,7 @@ export class ToggleHelper {
    */
   getToggleInput(container?: Locator): Locator {
     const base = container ?? this.page;
-    return base.locator('app-toggle input');
+    return base.locator('ui-toggle input');
   }
 
   /**

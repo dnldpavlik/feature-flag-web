@@ -68,7 +68,7 @@ test.describe('Responsive Design Tests', () => {
       await page.goto('/flags/new');
 
       const form = page.locator('form, .flag-create__form');
-      const formFields = form.locator('.form-field, app-form-field');
+      const formFields = form.locator('.form-field, ui-form-field');
 
       const fieldCount = await formFields.count();
       if (fieldCount < 2) {
@@ -92,7 +92,7 @@ test.describe('Responsive Design Tests', () => {
     test('should make tables scrollable on mobile', async ({ page }) => {
       await page.goto('/flags');
 
-      const dataTable = page.locator('app-data-table');
+      const dataTable = page.locator('ui-data-table');
       if ((await dataTable.count()) === 0) {
         test.skip();
         return;
@@ -176,7 +176,7 @@ test.describe('Responsive Design Tests', () => {
     test('should show data tables on desktop', async ({ page }) => {
       await page.goto('/flags');
 
-      const dataTable = page.locator('app-data-table');
+      const dataTable = page.locator('ui-data-table');
       if ((await dataTable.count()) > 0) {
         await expect(dataTable.first()).toBeVisible();
 
@@ -189,7 +189,7 @@ test.describe('Responsive Design Tests', () => {
     test('should use multi-column layouts', async ({ page }) => {
       await page.goto('/dashboard');
 
-      const statCards = page.locator('app-stat-card');
+      const statCards = page.locator('ui-stat-card');
       const cardCount = await statCards.count();
 
       if (cardCount >= 2) {
@@ -310,7 +310,7 @@ test.describe('Responsive Design Tests', () => {
     test('should support swipe to scroll tables', async ({ page }) => {
       await page.goto('/flags');
 
-      const dataTable = page.locator('app-data-table');
+      const dataTable = page.locator('ui-data-table');
       if ((await dataTable.count()) === 0) {
         test.skip();
         return;

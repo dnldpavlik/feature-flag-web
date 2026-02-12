@@ -128,7 +128,7 @@ describe('EnvironmentList', () => {
   describe('deleteEnvironment', () => {
     it('should show Delete button when more than one environment exists', async () => {
       await build();
-      const deleteButtons = queryAll(fixture, 'app-button[variant="ghost"]').filter(
+      const deleteButtons = queryAll(fixture, 'ui-button[variant="ghost"]').filter(
         (btn) => btn.nativeElement.textContent.trim() === 'Delete',
       );
       expect(deleteButtons.length).toBeGreaterThan(0);

@@ -1,11 +1,7 @@
 <div class="settings-page">
-  <app-page-header title="Settings" />
+  <ui-page-header title="Settings" />
 
-  <app-tabs
-    [tabs]="tabs"
-    [activeTabId]="activeTab()"
-    (tabChange)="onTabChange($event)"
-  />
+  <ui-tabs [tabs]="tabs" [activeTabId]="activeTab()" (tabChange)="onTabChange($event)" />
 
   <main class="settings-page__content">
     @switch (activeTab()) {

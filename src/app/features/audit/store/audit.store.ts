@@ -1,7 +1,7 @@
 import { Injectable, computed, inject, signal } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 
-import { ToastService } from '@/app/shared/ui/toast/toast.service';
+import { ToastService } from '@watt/ui';
 import { AuditApi } from '../api/audit.api';
 import { AuditAction, AuditEntry, AuditResourceType, LogActionInput } from '../models/audit.model';
 

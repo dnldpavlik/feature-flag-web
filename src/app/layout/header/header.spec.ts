@@ -3,8 +3,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router, provideRouter } from '@angular/router';
 import { By } from '@angular/platform-browser';
 
-import { BreadcrumbItem } from '@/app/shared/ui/breadcrumb/breadcrumb.types';
-import { SearchInputComponent } from '@/app/shared/ui/search-input/search-input';
+import { BreadcrumbItem, SearchInputComponent } from '@watt/ui';
 import { ProjectStore } from '@/app/shared/store/project.store';
 import { SearchStore } from '@/app/shared/store/search.store';
 import { HeaderComponent } from './header';
@@ -60,7 +59,7 @@ describe('Header', () => {
     });
 
     it('should render the breadcrumb navigation trail', () => {
-      expectExists(fixture, 'app-breadcrumb');
+      expectExists(fixture, 'ui-breadcrumb');
     });
 
     it('should render the search input component', () => {
@@ -69,7 +68,7 @@ describe('Header', () => {
     });
 
     it('should render the create flag action button', () => {
-      expectExists(fixture, '.header__right app-button');
+      expectExists(fixture, '.header__right ui-button');
     });
 
     it('should render the mobile menu toggle button', () => {
@@ -96,7 +95,7 @@ describe('Header', () => {
   describe('create flag navigation', () => {
     it('should navigate to /flags/new when create button is clicked', () => {
       const navigateSpy = jest.spyOn(router, 'navigate').mockResolvedValue(true);
-      const createButton = query(fixture, '.header__right app-button');
+      const createButton = query(fixture, '.header__right ui-button');
       createButton?.triggerEventHandler('click');
       expect(navigateSpy).toHaveBeenCalledWith(['/flags/new']);
     });

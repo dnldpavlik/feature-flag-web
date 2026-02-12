@@ -29,10 +29,7 @@
 
     <label class="rule-builder__field">
       <span class="rule-builder__label">Operator</span>
-      <select
-        class="rule-builder__operator-select"
-        (change)="onOperatorChange($event)"
-      >
+      <select class="rule-builder__operator-select" (change)="onOperatorChange($event)">
         @for (op of operatorOptions; track op.value) {
           <option [value]="op.value" [selected]="op.value === selectedOperator()">
             {{ op.label }}
@@ -53,9 +50,7 @@
     </label>
 
     <div class="rule-builder__action">
-      <app-button variant="primary" [disabled]="!canAdd()" (click)="addRule()">
-        Add Rule
-      </app-button>
+      <ui-button variant="primary" [disabled]="!canAdd()" (click)="addRule()"> Add Rule </ui-button>
     </div>
   </div>
 </div>

@@ -47,7 +47,7 @@ describe('UserProfileTabComponent', () => {
     });
 
     it('should have save button', () => {
-      const button = fixture.debugElement.query(By.css('app-button.user-profile-tab__save-btn'));
+      const button = fixture.debugElement.query(By.css('ui-button.user-profile-tab__save-btn'));
       expect(button).toBeTruthy();
     });
 
@@ -55,7 +55,7 @@ describe('UserProfileTabComponent', () => {
       const nameInput = fixture.debugElement.query(By.css('input#profile-name'));
       const emailInput = fixture.debugElement.query(By.css('input#profile-email'));
       const saveButton = fixture.debugElement.query(
-        By.css('app-button.user-profile-tab__save-btn button'),
+        By.css('ui-button.user-profile-tab__save-btn button'),
       );
 
       nameInput.nativeElement.value = 'New Name';
@@ -117,15 +117,13 @@ describe('UserProfileTabComponent', () => {
     });
 
     it('should have change password button', () => {
-      const button = fixture.debugElement.query(
-        By.css('app-button.user-profile-tab__password-btn'),
-      );
+      const button = fixture.debugElement.query(By.css('ui-button.user-profile-tab__password-btn'));
       expect(button).toBeTruthy();
     });
 
     it('should disable change password button when fields are empty', () => {
       const button = fixture.debugElement.query(
-        By.css('app-button.user-profile-tab__password-btn button'),
+        By.css('ui-button.user-profile-tab__password-btn button'),
       );
       expect(button.nativeElement.disabled).toBe(true);
     });
@@ -144,7 +142,7 @@ describe('UserProfileTabComponent', () => {
       fixture.detectChanges();
 
       const button = fixture.debugElement.query(
-        By.css('app-button.user-profile-tab__password-btn button'),
+        By.css('ui-button.user-profile-tab__password-btn button'),
       );
       expect(button.nativeElement.disabled).toBe(false);
     });
@@ -178,7 +176,7 @@ describe('UserProfileTabComponent', () => {
       fixture.detectChanges();
 
       const button = fixture.debugElement.query(
-        By.css('app-button.user-profile-tab__password-btn button'),
+        By.css('ui-button.user-profile-tab__password-btn button'),
       );
       button.nativeElement.click();
       fixture.detectChanges();

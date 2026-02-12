@@ -47,7 +47,7 @@ export class ProjectDetailPage extends BasePage {
 
   /** Stats cards */
   get statCards(): Locator {
-    return this.page.locator('app-stat-card');
+    return this.page.locator('ui-stat-card');
   }
 
   /** Flags count stat */

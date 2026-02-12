@@ -7,9 +7,9 @@
       </p>
     </div>
     @if (!showCreateForm() && !createdSecret()) {
-      <app-button class="api-keys-tab__create-btn" (click)="openCreateForm()">
+      <ui-button class="api-keys-tab__create-btn" (click)="openCreateForm()">
         Create API Key
-      </app-button>
+      </ui-button>
     }
   </header>
 
@@ -23,18 +23,18 @@
       </div>
       <div class="api-keys-tab__secret-value">
         <code>{{ createdSecret() }}</code>
-        <app-button
+        <ui-button
           variant="secondary"
           size="sm"
           class="api-keys-tab__copy-btn"
           (click)="copySecret()"
         >
           Copy
-        </app-button>
+        </ui-button>
       </div>
-      <app-button variant="secondary" class="api-keys-tab__done-btn" (click)="dismissSecret()">
+      <ui-button variant="secondary" class="api-keys-tab__done-btn" (click)="dismissSecret()">
         Done
-      </app-button>
+      </ui-button>
     </div>
   }
 
@@ -73,20 +73,12 @@
       </fieldset>
 
       <div class="api-keys-tab__form-actions">
-        <app-button
-          variant="secondary"
-          class="api-keys-tab__cancel-btn"
-          (click)="closeCreateForm()"
-        >
+        <ui-button variant="secondary" class="api-keys-tab__cancel-btn" (click)="closeCreateForm()">
           Cancel
-        </app-button>
-        <app-button
-          class="api-keys-tab__submit-btn"
-          [disabled]="!canSubmit()"
-          (click)="createKey()"
-        >
+        </ui-button>
+        <ui-button class="api-keys-tab__submit-btn" [disabled]="!canSubmit()" (click)="createKey()">
           Create Key
-        </app-button>
+        </ui-button>
       </div>
     </div>
   }
@@ -97,57 +89,53 @@
         Are you sure you want to revoke this API key? This action cannot be undone.
       </p>
       <div class="api-keys-tab__confirm-actions">
-        <app-button
+        <ui-button
           variant="secondary"
           class="api-keys-tab__cancel-revoke-btn"
           (click)="cancelRevoke()"
         >
           Cancel
-        </app-button>
-        <app-button
-          variant="primary"
-          class="api-keys-tab__confirm-revoke-btn"
-          (click)="revokeKey()"
-        >
+        </ui-button>
+        <ui-button variant="primary" class="api-keys-tab__confirm-revoke-btn" (click)="revokeKey()">
           Revoke Key
-        </app-button>
+        </ui-button>
       </div>
     </div>
   }
 
   @if (hasKeys()) {
-    <app-ui-data-table [items]="apiKeys()" ariaLabel="API keys" emptyText="No API keys.">
-      <ng-template appUiCol="name" header="Name" width="25%" let-key>
+    <ui-data-table [items]="apiKeys()" ariaLabel="API keys" emptyText="No API keys.">
+      <ng-template uiCol="name" header="Name" width="25%" let-key>
         <span class="api-keys-tab__key-name">{{ key.name }}</span>
       </ng-template>
-      <ng-template appUiCol="prefix" header="Key" width="25%" [sortable]="false" let-key>
+      <ng-template uiCol="prefix" header="Key" width="25%" [sortable]="false" let-key>
         <span class="api-keys-tab__key-prefix"
           ><code>{{ key.prefix }}</code></span
         >
       </ng-template>
-      <ng-template appUiCol="scopes" header="Scopes" width="20%" [sortable]="false" let-key>
+      <ng-template uiCol="scopes" header="Scopes" width="20%" [sortable]="false" let-key>
         <span class="api-keys-tab__key-scopes">{{ key.formattedScopes }}</span>
       </ng-template>
-      <ng-template appUiCol="createdAt" header="Created" width="15%" let-key>
+      <ng-template uiCol="createdAt" header="Created" width="15%" let-key>
         {{ key.createdAt | date: 'mediumDate' }}
       </ng-template>
       <ng-template
-        appUiCol="actions"
+        uiCol="actions"
         header="Actions"
         width="15%"
         align="right"
         [sortable]="false"
         let-key
       >
-        <app-button
+        <ui-button
           variant="ghost"
           size="sm"
           class="api-keys-tab__revoke-btn"
           (click)="confirmRevoke(key.id)"
-          >Revoke</app-button
+          >Revoke</ui-button
         >
       </ng-template>
-    </app-ui-data-table>
+    </ui-data-table>
   } @else if (!showCreateForm() && !createdSecret()) {
     <div class="api-keys-tab__empty">
       <p class="api-keys-tab__empty-text">No API keys yet</p>

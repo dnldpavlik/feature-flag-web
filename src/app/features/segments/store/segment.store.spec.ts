@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { throwError } from 'rxjs';
 
 import { AuditStore } from '@/app/features/audit/store/audit.store';
-import { ToastService } from '@/app/shared/ui/toast/toast.service';
+import { ToastService } from '@watt/ui';
 import { SegmentApi } from '../api/segment.api';
 import { CreateSegmentRuleInput } from '../models/segment-rule.model';
 import { SegmentStore } from './segment.store';

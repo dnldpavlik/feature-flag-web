@@ -1,9 +1,7 @@
 @if (segment(); as seg) {
   <div class="segment-detail">
     <header class="segment-detail__header">
-      <a routerLink="/segments" class="segment-detail__back-link">
-        &larr; Back to Segments
-      </a>
+      <a routerLink="/segments" class="segment-detail__back-link"> &larr; Back to Segments </a>
       <div class="segment-detail__title">
         <h1 class="segment-detail__name">{{ seg.name }}</h1>
         <span class="segment-detail__key">{{ seg.key }}</span>
@@ -14,9 +12,7 @@
       <div class="segment-detail__section-header">
         <h2>Details</h2>
         @if (!isEditing()) {
-          <app-button variant="secondary" size="sm" (click)="enterEditMode()">
-            Edit
-          </app-button>
+          <ui-button variant="secondary" size="sm" (click)="enterEditMode()"> Edit </ui-button>
         }
       </div>
 
@@ -53,8 +49,8 @@
           </label>
 
           <div class="segment-detail__actions">
-            <app-button variant="primary" (click)="saveEdit()">Save Changes</app-button>
-            <app-button variant="ghost" (click)="cancelEdit()">Cancel</app-button>
+            <ui-button variant="primary" (click)="saveEdit()">Save Changes</ui-button>
+            <ui-button variant="ghost" (click)="cancelEdit()">Cancel</ui-button>
           </div>
         </div>
       } @else {
@@ -98,8 +94,6 @@
   <div class="segment-detail__not-found">
     <h2>Segment Not Found</h2>
     <p>The requested segment could not be found.</p>
-    <a routerLink="/segments" class="segment-detail__back-link">
-      &larr; Back to Segments
-    </a>
+    <a routerLink="/segments" class="segment-detail__back-link"> &larr; Back to Segments </a>
   </div>
 }

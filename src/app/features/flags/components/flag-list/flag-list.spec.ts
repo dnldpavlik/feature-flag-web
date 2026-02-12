@@ -67,11 +67,11 @@ describe('FlagList', () => {
   });
 
   it('should render environment selector', () => {
-    expectExists(fixture, 'app-labeled-select');
+    expectExists(fixture, 'ui-labeled-select');
   });
 
   it('should show all environments in selector', () => {
-    const selects = queryAll(fixture, 'app-labeled-select');
+    const selects = queryAll(fixture, 'ui-labeled-select');
     // First select is Environment
     const envSelect = selects[0];
     const options = envSelect.queryAll(By.css('option'));

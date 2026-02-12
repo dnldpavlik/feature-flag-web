@@ -2,9 +2,7 @@ import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@a
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 
-import { ButtonComponent } from '@/app/shared/ui/button/button';
-import { FormFieldComponent } from '@/app/shared/ui/form-field/form-field';
-import { SelectFieldComponent, SelectOption } from '@/app/shared/ui/select-field';
+import { ButtonComponent, FormFieldComponent, SelectFieldComponent, SelectOption } from '@watt/ui';
 import { EnvironmentStore } from '@/app/shared/store/environment.store';
 import { ProjectStore } from '@/app/shared/store/project.store';
 import { toKey } from '@/app/shared/utils/url.utils';

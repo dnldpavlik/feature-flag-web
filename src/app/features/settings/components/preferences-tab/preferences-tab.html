@@ -5,7 +5,7 @@
       Choose the environment that will be selected by default when you open the dashboard.
     </p>
 
-    <app-labeled-select
+    <ui-labeled-select
       label="Environment"
       [options]="environmentOptions()"
       [value]="currentDefaultEnvId()"
@@ -69,9 +69,7 @@
         />
         <span class="preferences-tab__option-content">
           <span class="preferences-tab__option-label">None</span>
-          <span class="preferences-tab__option-description">
-            Don't send digest emails
-          </span>
+          <span class="preferences-tab__option-description"> Don't send digest emails </span>
         </span>
       </label>
 

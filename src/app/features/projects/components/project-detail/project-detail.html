@@ -9,29 +9,29 @@
         <p class="text-secondary">Key: {{ project.key }}</p>
       </div>
       <div class="project-detail__actions">
-        <app-button variant="ghost" type="button" (click)="selectProject()">Select</app-button>
+        <ui-button variant="ghost" type="button" (click)="selectProject()">Select</ui-button>
         @if (!project.isDefault) {
-          <app-button variant="ghost" type="button" (click)="makeDefault()">
+          <ui-button variant="ghost" type="button" (click)="makeDefault()">
             Make Default
-          </app-button>
+          </ui-button>
         }
         @if (canDelete()) {
-          <app-button variant="ghost" type="button" (click)="deleteProject()">Delete</app-button>
+          <ui-button variant="ghost" type="button" (click)="deleteProject()">Delete</ui-button>
         }
       </div>
     </header>
 
     <div class="project-detail__grid">
-      <app-card padding="lg">
+      <ui-card padding="lg">
         <h2>Overview</h2>
         <div class="project-detail__row">
           <span class="text-muted">Status</span>
           <div class="project-detail__badges">
             @if (project.isDefault) {
-              <app-badge variant="info">Default</app-badge>
+              <ui-badge variant="info">Default</ui-badge>
             }
             @if (selectedProjectId() === project.id) {
-              <app-badge variant="success">Selected</app-badge>
+              <ui-badge variant="success">Selected</ui-badge>
             }
           </div>
         </div>
@@ -39,9 +39,9 @@
           <span class="text-muted">Description</span>
           <span>{{ project.description || '—' }}</span>
         </div>
-      </app-card>
+      </ui-card>
 
-      <app-card padding="lg">
+      <ui-card padding="lg">
         <h2>Details</h2>
         <div class="project-detail__row">
           <span class="text-muted">Created</span>
@@ -51,16 +51,16 @@
           <span class="text-muted">Last updated</span>
           <span>{{ project.updatedAt | date: 'mediumDate' }}</span>
         </div>
-      </app-card>
+      </ui-card>
     </div>
   </section>
 } @else {
-  <app-empty-state
+  <ui-empty-state
     title="Project not found"
     message="We couldn't find that project. Return to the list to continue."
   >
-    <app-button empty-state-action variant="primary" type="button" (click)="backToList()">
+    <ui-button empty-state-action variant="primary" type="button" (click)="backToList()">
       Back to Projects
-    </app-button>
-  </app-empty-state>
+    </ui-button>
+  </ui-empty-state>
 }

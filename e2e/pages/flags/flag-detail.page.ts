@@ -32,7 +32,7 @@ export class FlagDetailPage extends BasePage {
 
   /** Flag type badge */
   get flagTypeBadge(): Locator {
-    return this.page.locator('app-badge, .badge').first();
+    return this.page.locator('ui-badge, .badge').first();
   }
 
   /** Edit button */
@@ -47,7 +47,7 @@ export class FlagDetailPage extends BasePage {
 
   /** Main toggle for the flag */
   get mainToggle(): Locator {
-    return this.page.locator('.flag-detail__toggle app-toggle input, [data-testid="main-toggle"]');
+    return this.page.locator('.flag-detail__toggle ui-toggle input, [data-testid="main-toggle"]');
   }
 
   /** Environment toggles section */
@@ -62,7 +62,7 @@ export class FlagDetailPage extends BasePage {
     return this.page
       .locator('.flag-detail__env-row')
       .filter({ hasText: envName })
-      .locator('app-toggle input');
+      .locator('ui-toggle input');
   }
 
   /** Environment value input (for non-boolean flags) */
@@ -90,7 +90,7 @@ export class FlagDetailPage extends BasePage {
 
   /** Settings card */
   get settingsCard(): Locator {
-    return this.page.locator('app-card').filter({ hasText: /settings/i });
+    return this.page.locator('ui-card').filter({ hasText: /settings/i });
   }
 
   // ============================================================

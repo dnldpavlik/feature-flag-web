@@ -21,7 +21,7 @@ test.describe('Selection Persistence', () => {
       await flagList.goto();
       await flagList.assertPageLoaded();
 
-      const projectSelector = page.locator('app-breadcrumb select[aria-label="Project"]');
+      const projectSelector = page.locator('ui-breadcrumb select[aria-label="Project"]');
       const options = await projectSelector.locator('option').all();
 
       if (options.length < 2) {
@@ -56,7 +56,7 @@ test.describe('Selection Persistence', () => {
       await flagList.goto();
       await flagList.assertPageLoaded();
 
-      const projectSelector = page.locator('app-breadcrumb select[aria-label="Project"]');
+      const projectSelector = page.locator('ui-breadcrumb select[aria-label="Project"]');
       const options = await projectSelector.locator('option').all();
 
       if (options.length < 2) {
@@ -139,7 +139,7 @@ test.describe('Selection Persistence', () => {
       await flagList.goto();
       await flagList.assertPageLoaded();
 
-      const projectSelector = page.locator('app-breadcrumb select[aria-label="Project"]');
+      const projectSelector = page.locator('ui-breadcrumb select[aria-label="Project"]');
       const options = await projectSelector.locator('option').all();
 
       if (options.length < 2) {

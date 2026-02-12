@@ -102,14 +102,14 @@ describe('EnvironmentDetail', () => {
   it('should show empty state when env is missing', async () => {
     await build('missing_env');
 
-    const empty = fixture.debugElement.query(By.css('app-empty-state'));
+    const empty = fixture.debugElement.query(By.css('ui-empty-state'));
     expect(empty).toBeTruthy();
   });
 
   it('should treat missing route param as empty id', async () => {
     await build();
 
-    const empty = fixture.debugElement.query(By.css('app-empty-state'));
+    const empty = fixture.debugElement.query(By.css('ui-empty-state'));
     expect(empty).toBeTruthy();
 
     const flags = (
@@ -140,7 +140,7 @@ describe('EnvironmentDetail', () => {
 
   describe('inline editing', () => {
     const clickButton = (label: string) => {
-      const buttons = fixture.debugElement.queryAll(By.css('app-button, button'));
+      const buttons = fixture.debugElement.queryAll(By.css('ui-button, button'));
       const target = buttons.find((b) => b.nativeElement.textContent.trim().includes(label));
       target?.triggerEventHandler('click', null);
       target?.nativeElement.click?.();
@@ -150,7 +150,7 @@ describe('EnvironmentDetail', () => {
     it('should show Edit button in detail view', async () => {
       await build('env_staging');
 
-      const buttons = fixture.debugElement.queryAll(By.css('app-button'));
+      const buttons = fixture.debugElement.queryAll(By.css('ui-button'));
       const editBtn = buttons.find((b) => b.nativeElement.textContent.trim().includes('Edit'));
       expect(editBtn).toBeTruthy();
     });

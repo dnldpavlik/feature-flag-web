@@ -38,7 +38,7 @@ test.describe('Project Management Journey', () => {
       await projectList.goto();
 
       // Check for table or empty state
-      const tableOrEmpty = page.locator('app-ui-data-table, app-empty-state');
+      const tableOrEmpty = page.locator('ui-data-table, ui-empty-state');
       await expect(tableOrEmpty.first()).toBeVisible();
     });
   });
@@ -148,7 +148,7 @@ test.describe('Project Management Journey', () => {
       await firstProjectLink.click();
 
       // Project details should be visible (cards with overview info)
-      const detailCard = page.locator('app-card').first();
+      const detailCard = page.locator('ui-card').first();
       await expect(detailCard).toBeVisible();
     });
 

@@ -2,14 +2,16 @@ import { DatePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
-import { BadgeComponent } from '@/app/shared/ui/badge/badge';
-import { ButtonComponent } from '@/app/shared/ui/button/button';
-import { DataTableComponent } from '@/app/shared/ui/data-table/data-table';
-import { UiColDirective } from '@/app/shared/ui/data-table/ui-col.directive';
-import { EmptyStateComponent } from '@/app/shared/ui/empty-state/empty-state';
+import {
+  BadgeComponent,
+  ButtonComponent,
+  DataTableComponent,
+  UiColDirective,
+  EmptyStateComponent,
+  PageHeaderComponent,
+  StatCardComponent,
+} from '@watt/ui';
 import { FlagsEmptyIconComponent } from '@/app/shared/ui/flags-empty-icon/flags-empty-icon';
-import { PageHeaderComponent } from '@/app/shared/ui/page-header/page-header';
-import { StatCardComponent } from '@/app/shared/ui/stat-card/stat-card';
 import { EnvironmentStore } from '@/app/shared/store/environment.store';
 import { ProjectStore } from '@/app/shared/store/project.store';
 import { SearchStore } from '@/app/shared/store/search.store';

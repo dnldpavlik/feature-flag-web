@@ -9,24 +9,24 @@
   <nav class="sidebar__nav">
     <ul class="nav-list">
       @for (item of navItems(); track item.label) {
-        <app-nav-item [label]="item.label" [route]="item.route" [icon]="item.icon" />
+        <ui-nav-item [label]="item.label" [route]="item.route" [icon]="item.icon" />
       }
     </ul>
 
-    <app-nav-section title="Environments">
+    <ui-nav-section title="Environments">
       <ul class="nav-list">
         @for (env of environments(); track env.name) {
-          <app-nav-item [label]="env.name" [route]="env.route" [indicatorColor]="env.color" />
+          <ui-nav-item [label]="env.name" [route]="env.route" [indicatorColor]="env.color" />
         }
       </ul>
-    </app-nav-section>
+    </ui-nav-section>
   </nav>
 
   <div class="sidebar__footer">
-    <app-user-menu
+    <ui-user-menu
       [name]="currentUser().name"
       [email]="currentUser().email"
-      (logoutClick)="logout.emit()"
+      (menuToggle)="logout.emit()"
     />
   </div>
 </aside>

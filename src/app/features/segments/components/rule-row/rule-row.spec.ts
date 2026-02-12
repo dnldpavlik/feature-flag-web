@@ -18,7 +18,7 @@ describe('RuleRowComponent', () => {
   };
 
   const getButtonByText = (text: string) => {
-    const buttons = fixture.debugElement.queryAll(By.css('app-button'));
+    const buttons = fixture.debugElement.queryAll(By.css('ui-button'));
     return buttons.find((btn) => btn.nativeElement.textContent.trim() === text);
   };
 
@@ -277,9 +277,7 @@ describe('RuleRowComponent', () => {
       clickButton('Save');
       fixture.detectChanges();
 
-      expect(updatedSpy).toHaveBeenCalledWith(
-        expect.objectContaining({ attribute: 'country' })
-      );
+      expect(updatedSpy).toHaveBeenCalledWith(expect.objectContaining({ attribute: 'country' }));
     });
 
     it('should update operator when operator select changes', () => {
@@ -294,9 +292,7 @@ describe('RuleRowComponent', () => {
       clickButton('Save');
       fixture.detectChanges();
 
-      expect(updatedSpy).toHaveBeenCalledWith(
-        expect.objectContaining({ operator: 'equals' })
-      );
+      expect(updatedSpy).toHaveBeenCalledWith(expect.objectContaining({ operator: 'equals' }));
     });
 
     it('should emit array value when saving with in operator', () => {
@@ -317,7 +313,7 @@ describe('RuleRowComponent', () => {
       fixture.detectChanges();
 
       expect(updatedSpy).toHaveBeenCalledWith(
-        expect.objectContaining({ value: ['pro', 'enterprise', 'starter'] })
+        expect.objectContaining({ value: ['pro', 'enterprise', 'starter'] }),
       );
     });
   });
