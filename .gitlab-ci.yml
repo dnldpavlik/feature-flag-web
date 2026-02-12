@@ -35,6 +35,7 @@ default:
 install:
   stage: install
   script:
+    - echo "//gitlab.donpavlik.com/api/v4/projects/7/packages/npm/:_authToken=${CI_JOB_TOKEN}" >> .npmrc
     - npm ci
   cache:
     key:
@@ -292,6 +293,7 @@ snyk:summary:
   variables:
     E2E_ENV: "staging"
   before_script:
+    - echo "//gitlab.donpavlik.com/api/v4/projects/7/packages/npm/:_authToken=${CI_JOB_TOKEN}" >> .npmrc
     - npm ci
     - npx playwright install --with-deps chromium
   artifacts:
