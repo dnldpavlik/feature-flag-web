@@ -1,9 +1,4 @@
 /**
- * Generates an ISO 8601 timestamp string for the current moment.
- */
-export const createTimestamp = (): string => new Date().toISOString();
-
-/**
  * Generates a random ID with the given prefix.
  * Format: `{prefix}_{8-char-random-string}`
  *

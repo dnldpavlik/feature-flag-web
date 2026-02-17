@@ -22,12 +22,6 @@
   font-size: 0.8125rem;
 }
 
-.flags-page__actions {
-  display: flex;
-  gap: 0.75rem;
-  flex-shrink: 0;
-}
-
 .flag-cell {
   display: flex;
   flex-direction: column;
@@ -57,11 +51,6 @@
 
 .flag-cell__description {
   font-size: 0.8125rem;
-}
-
-.flag-cell--tags {
-  flex-flow: row wrap;
-  gap: 0.4rem;
 }
 
 .delete-confirmation-overlay {

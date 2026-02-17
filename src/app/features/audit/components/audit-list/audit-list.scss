@@ -26,10 +26,6 @@
   font-size: 0.8125rem;
 }
 
-.audit-cell--action {
-  flex-direction: row;
-}
-
 .audit-cell--resource {
   flex-direction: row;
   align-items: center;
@@ -38,10 +34,6 @@
 
 .audit-cell__name {
   font-weight: 500;
-  font-size: 0.875rem;
-}
-
-.audit-cell--user {
   font-size: 0.875rem;
 }
 
