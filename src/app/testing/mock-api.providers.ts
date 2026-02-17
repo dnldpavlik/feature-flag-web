@@ -32,7 +32,7 @@ import {
 import {
   FlagApi,
   UpdateFlagInput,
-  UpdateEnvironmentValueInput,
+  UpdateEnvironmentValuePayload,
 } from '@/app/features/flags/api/flag.api';
 import { Flag, CreateFlagInput } from '@/app/features/flags/models/flag.model';
 import { EnvironmentFlagValue, FlagTypeMap } from '@/app/features/flags/models/flag-value.model';
@@ -309,7 +309,7 @@ const MOCK_FLAG_API: Partial<FlagApi> = {
   updateEnvironmentValue: (
     flagId: string,
     environmentId: string,
-    updates: UpdateEnvironmentValueInput,
+    updates: UpdateEnvironmentValuePayload,
   ) => {
     const existing = MOCK_FLAGS.find((f) => f.id === flagId);
     if (!existing) {

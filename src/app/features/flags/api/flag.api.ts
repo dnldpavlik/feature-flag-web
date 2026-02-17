@@ -12,7 +12,7 @@ export interface UpdateFlagInput {
   defaultValue?: FlagTypeMap[keyof FlagTypeMap];
 }
 
-export interface UpdateEnvironmentValueInput {
+export interface UpdateEnvironmentValuePayload {
   value?: FlagTypeMap[keyof FlagTypeMap];
   enabled?: boolean;
 }
@@ -55,7 +55,7 @@ export class FlagApi extends CrudApi<Flag, CreateFlagInput, UpdateFlagInput> {
   updateEnvironmentValue(
     flagId: string,
     environmentId: string,
-    updates: UpdateEnvironmentValueInput,
+    updates: UpdateEnvironmentValuePayload,
   ): Observable<Flag> {
     return this.http
       .patch<RawFlag>(`${this.resourceUrl}/${flagId}/environments/${environmentId}`, updates)
