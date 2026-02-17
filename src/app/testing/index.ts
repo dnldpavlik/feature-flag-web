@@ -84,26 +84,3 @@ export {
   MOCK_SEGMENTS,
   MOCK_API_KEYS,
 } from './mock-api.providers';
-
-// Mock factories
-export {
-  mockId,
-  mockTimestamp,
-  type MockItem,
-  createMockItem,
-  type MockFlag,
-  createMockFlag,
-  type MockProject,
-  createMockProject,
-  type MockEnvironment,
-  createMockEnvironment,
-  type MockSegment,
-  type MockSegmentRule,
-  createMockSegmentRule,
-  createMockSegment,
-  type MockAuditLog,
-  createMockAuditLog,
-  type MockApiKey,
-  createMockApiKey,
-  createMockList,
-} from './mock.factories';
