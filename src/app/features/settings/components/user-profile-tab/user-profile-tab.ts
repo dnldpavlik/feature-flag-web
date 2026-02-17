@@ -1,6 +1,14 @@
-import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  effect,
+  inject,
+  signal,
+} from '@angular/core';
 
 import { ButtonComponent } from '@watt/ui';
+import { AuthService } from '@/app/core/auth/auth.service';
 import { UserProfileStore } from '../../store/user-profile.store';
 
 @Component({
@@ -12,17 +20,22 @@ import { UserProfileStore } from '../../store/user-profile.store';
 })
 export class UserProfileTabComponent {
   private readonly userProfileStore = inject(UserProfileStore);
+  private readonly authService = inject(AuthService);
 
   protected readonly userProfile = computed(() => this.userProfileStore.userProfile());
+  protected readonly accountUrl = computed(() => this.authService.getAccountUrl());
 
-  // Profile form state
-  protected readonly profileName = signal(this.userProfileStore.userProfile().name);
-  protected readonly profileEmail = signal(this.userProfileStore.userProfile().email);
+  // Profile form state (synced from store via effect)
+  protected readonly profileName = signal('');
+  protected readonly profileEmail = signal('');
 
-  // Password form state
-  protected readonly currentPassword = signal('');
-  protected readonly newPassword = signal('');
-  protected readonly confirmPassword = signal('');
+  constructor() {
+    effect(() => {
+      const profile = this.userProfileStore.userProfile();
+      this.profileName.set(profile.name);
+      this.profileEmail.set(profile.email);
+    });
+  }
 
   // Computed values
   protected readonly initials = computed(() => {
@@ -32,27 +45,6 @@ export class UserProfileTabComponent {
       return `${parts[0][0]}${parts[1][0]}`.toUpperCase();
     }
     return name.slice(0, 2).toUpperCase();
-  });
-
-  protected readonly passwordsMatch = computed(() => {
-    const newPwd = this.newPassword();
-    const confirmPwd = this.confirmPassword();
-    return !newPwd || !confirmPwd || newPwd === confirmPwd;
-  });
-
-  protected readonly canChangePassword = computed(() => {
-    return (
-      this.currentPassword().length > 0 &&
-      this.newPassword().length > 0 &&
-      this.confirmPassword().length > 0 &&
-      this.passwordsMatch()
-    );
-  });
-
-  protected readonly showPasswordError = computed(() => {
-    return (
-      this.newPassword().length > 0 && this.confirmPassword().length > 0 && !this.passwordsMatch()
-    );
   });
 
   protected onNameInput(event: Event): void {
@@ -65,36 +57,10 @@ export class UserProfileTabComponent {
     this.profileEmail.set(value);
   }
 
-  protected onCurrentPasswordInput(event: Event): void {
-    const value = (event.target as HTMLInputElement).value;
-    this.currentPassword.set(value);
-  }
-
-  protected onNewPasswordInput(event: Event): void {
-    const value = (event.target as HTMLInputElement).value;
-    this.newPassword.set(value);
-  }
-
-  protected onConfirmPasswordInput(event: Event): void {
-    const value = (event.target as HTMLInputElement).value;
-    this.confirmPassword.set(value);
-  }
-
   protected saveProfile(): void {
     this.userProfileStore.updateUserProfile({
       name: this.profileName(),
       email: this.profileEmail(),
     });
-  }
-
-  protected changePassword(): void {
-    if (!this.canChangePassword()) {
-      return;
-    }
-    // In a real app, this would call an API
-    // For now, just clear the form
-    this.currentPassword.set('');
-    this.newPassword.set('');
-    this.confirmPassword.set('');
   }
 }

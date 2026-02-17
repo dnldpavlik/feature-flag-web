@@ -118,103 +118,27 @@ describe('UserProfileTabComponent', () => {
     });
   });
 
-  describe('password change form', () => {
-    it('should render current password input', () => {
-      const input = fixture.debugElement.query(By.css('input#current-password'));
-      expect(input).toBeTruthy();
-      expect(input.nativeElement.type).toBe('password');
+  describe('account security section', () => {
+    it('should render manage account link', () => {
+      const link = fixture.debugElement.query(By.css('.user-profile-tab__account-link'));
+      expect(link).toBeTruthy();
+      expect(link.nativeElement.href).toContain('/realms/homelab/account');
     });
 
-    it('should render new password input', () => {
-      const input = fixture.debugElement.query(By.css('input#new-password'));
-      expect(input).toBeTruthy();
-      expect(input.nativeElement.type).toBe('password');
+    it('should open manage account in new tab', () => {
+      const link = fixture.debugElement.query(By.css('.user-profile-tab__account-link'));
+      expect(link.nativeElement.target).toBe('_blank');
+      expect(link.nativeElement.rel).toContain('noopener');
     });
 
-    it('should render confirm password input', () => {
-      const input = fixture.debugElement.query(By.css('input#confirm-password'));
-      expect(input).toBeTruthy();
-      expect(input.nativeElement.type).toBe('password');
-    });
-
-    it('should have change password button', () => {
-      const button = fixture.debugElement.query(By.css('ui-button.user-profile-tab__password-btn'));
+    it('should have manage account button', () => {
+      const button = fixture.debugElement.query(By.css('ui-button.user-profile-tab__account-btn'));
       expect(button).toBeTruthy();
     });
 
-    it('should disable change password button when fields are empty', () => {
-      const button = fixture.debugElement.query(
-        By.css('ui-button.user-profile-tab__password-btn button'),
-      );
-      expect(button.nativeElement.disabled).toBe(true);
-    });
-
-    it('should enable change password button when all fields are filled', () => {
-      const currentPassword = fixture.debugElement.query(By.css('input#current-password'));
-      const newPassword = fixture.debugElement.query(By.css('input#new-password'));
-      const confirmPassword = fixture.debugElement.query(By.css('input#confirm-password'));
-
-      currentPassword.nativeElement.value = 'oldPassword123';
-      currentPassword.nativeElement.dispatchEvent(new Event('input'));
-      newPassword.nativeElement.value = 'newPassword456';
-      newPassword.nativeElement.dispatchEvent(new Event('input'));
-      confirmPassword.nativeElement.value = 'newPassword456';
-      confirmPassword.nativeElement.dispatchEvent(new Event('input'));
-      fixture.detectChanges();
-
-      const button = fixture.debugElement.query(
-        By.css('ui-button.user-profile-tab__password-btn button'),
-      );
-      expect(button.nativeElement.disabled).toBe(false);
-    });
-
-    it('should show error when passwords do not match', () => {
-      const newPassword = fixture.debugElement.query(By.css('input#new-password'));
-      const confirmPassword = fixture.debugElement.query(By.css('input#confirm-password'));
-
-      newPassword.nativeElement.value = 'newPassword456';
-      newPassword.nativeElement.dispatchEvent(new Event('input'));
-      confirmPassword.nativeElement.value = 'differentPassword';
-      confirmPassword.nativeElement.dispatchEvent(new Event('input'));
-      fixture.detectChanges();
-
-      const error = fixture.debugElement.query(By.css('.user-profile-tab__password-error'));
-      expect(error).toBeTruthy();
-      expect(error.nativeElement.textContent).toContain('Passwords do not match');
-    });
-
-    it('should clear form fields when password change succeeds', () => {
-      const currentPassword = fixture.debugElement.query(By.css('input#current-password'));
-      const newPassword = fixture.debugElement.query(By.css('input#new-password'));
-      const confirmPassword = fixture.debugElement.query(By.css('input#confirm-password'));
-
-      currentPassword.nativeElement.value = 'oldPassword123';
-      currentPassword.nativeElement.dispatchEvent(new Event('input'));
-      newPassword.nativeElement.value = 'newPassword456';
-      newPassword.nativeElement.dispatchEvent(new Event('input'));
-      confirmPassword.nativeElement.value = 'newPassword456';
-      confirmPassword.nativeElement.dispatchEvent(new Event('input'));
-      fixture.detectChanges();
-
-      const button = fixture.debugElement.query(
-        By.css('ui-button.user-profile-tab__password-btn button'),
-      );
-      button.nativeElement.click();
-      fixture.detectChanges();
-
-      expect(component['currentPassword']()).toBe('');
-      expect(component['newPassword']()).toBe('');
-      expect(component['confirmPassword']()).toBe('');
-    });
-
-    it('should not change password when validation fails', () => {
-      // Call changePassword directly without valid input
-      component['changePassword']();
-
-      // Fields should remain empty (unchanged)
-      expect(component['currentPassword']()).toBe('');
-      expect(component['newPassword']()).toBe('');
-      expect(component['confirmPassword']()).toBe('');
+    it('should show account security section title', () => {
+      const content = fixture.nativeElement.textContent;
+      expect(content).toContain('Account Security');
     });
   });
 
@@ -224,9 +148,9 @@ describe('UserProfileTabComponent', () => {
       expect(content).toContain('Profile Information');
     });
 
-    it('should have section title for password', () => {
+    it('should have section title for account security', () => {
       const content = fixture.nativeElement.textContent;
-      expect(content).toContain('Change Password');
+      expect(content).toContain('Account Security');
     });
 
     it('should have label for name', () => {

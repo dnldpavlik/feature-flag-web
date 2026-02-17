@@ -56,6 +56,10 @@ export class AuthService {
     return this.hasRole('admin');
   }
 
+  getAccountUrl(): string {
+    return `${environment.keycloak.url}/realms/${environment.keycloak.realm}/account`;
+  }
+
   private async loadProfile(): Promise<void> {
     try {
       const profile = await this.keycloak.loadUserProfile();

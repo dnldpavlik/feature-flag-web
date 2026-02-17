@@ -293,6 +293,12 @@ describe('AuthService', () => {
     });
   });
 
+  describe('getAccountUrl', () => {
+    it('should return the Keycloak account management URL', () => {
+      expect(service.getAccountUrl()).toBe('http://localhost:8080/realms/homelab/account');
+    });
+  });
+
   describe('AUTH_ROLES', () => {
     it('should define admin and user roles', () => {
       expect(AUTH_ROLES.ADMIN).toBe('admin');

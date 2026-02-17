@@ -69,13 +69,3 @@ export interface ThemePreferences {
   reducedMotion: boolean;
   compactMode: boolean;
 }
-
-/** Combined settings state */
-export interface SettingsState {
-  userProfile: UserProfile;
-  projectPreferences: ProjectPreferences;
-  themePreferences: ThemePreferences;
-  apiKeys: ApiKey[];
-  loading: boolean;
-  error: string | null;
-}
