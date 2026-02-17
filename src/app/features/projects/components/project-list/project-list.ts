@@ -1,5 +1,6 @@
 import { DatePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { NonNullableFormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 
@@ -18,7 +19,7 @@ import {
 import { SearchStore } from '@/app/shared/store/search.store';
 import { ProjectStore } from '@/app/shared/store/project.store';
 import { FlagStore } from '@/app/features/flags/store/flag.store';
-import { hasRequiredFields, getTrimmedValues } from '@/app/shared/utils/form.utils';
+import { getTrimmedValues } from '@/app/shared/utils/form.utils';
 import { textFilter } from '@/app/shared/utils/filter.utils';
 
 @Component({
@@ -68,9 +69,14 @@ export class ProjectListComponent {
     description: [''],
   });
 
-  protected canAdd(): boolean {
-    return hasRequiredFields(this.form, ['name', 'key']);
-  }
+  private readonly formValue = toSignal(this.form.valueChanges, {
+    initialValue: this.form.getRawValue(),
+  });
+
+  protected readonly canAdd = computed(() => {
+    const val = this.formValue();
+    return (val.name?.trim() ?? '').length > 0 && (val.key?.trim() ?? '').length > 0;
+  });
 
   protected addProject(): void {
     if (!this.canAdd()) {

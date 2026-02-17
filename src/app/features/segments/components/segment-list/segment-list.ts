@@ -1,5 +1,6 @@
 import { DatePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { NonNullableFormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 
@@ -52,10 +53,14 @@ export class SegmentListComponent {
     description: [''],
   });
 
-  protected canAdd(): boolean {
-    const { name, key } = this.form.getRawValue();
-    return name.trim().length > 0 && key.trim().length > 0;
-  }
+  private readonly formValue = toSignal(this.form.valueChanges, {
+    initialValue: this.form.getRawValue(),
+  });
+
+  protected readonly canAdd = computed(() => {
+    const val = this.formValue();
+    return (val.name?.trim() ?? '').length > 0 && (val.key?.trim() ?? '').length > 0;
+  });
 
   protected addSegment(): void {
     if (!this.canAdd()) {
