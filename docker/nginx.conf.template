@@ -1,6 +1,9 @@
 # =============================================================================
 # Production Nginx Configuration - Feature Flag UI
 # Security-hardened configuration for serving Angular SPA
+#
+# This is a template file. Environment variables (${KEYCLOAK_URL}) are
+# substituted at container startup via envsubst.
 # =============================================================================
 
 # Hide nginx version in error pages and headers
@@ -18,8 +21,10 @@ server {
     charset utf-8;
 
     # =========================================================================
-    # Security Headers
+    # Security Headers (defined as variables for reuse in location blocks)
     # =========================================================================
+
+    set $csp_policy "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self'; connect-src 'self' ${KEYCLOAK_URL}; frame-ancestors 'self'; form-action 'self'; base-uri 'self';";
 
     # Prevent clickjacking attacks
     add_header X-Frame-Options "SAMEORIGIN" always;
@@ -36,10 +41,8 @@ server {
     # Restrict browser features/APIs
     add_header Permissions-Policy "accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()" always;
 
-    # Content Security Policy - adjust as needed for your app
-    # Note: 'unsafe-inline' for styles is needed for Angular's component styles
-    # TODO: Update connect-src when Rust API is available (e.g., connect-src 'self' https://api.example.com)
-    add_header Content-Security-Policy "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self'; connect-src 'self'; frame-ancestors 'self'; form-action 'self'; base-uri 'self';" always;
+    # Content Security Policy
+    add_header Content-Security-Policy $csp_policy always;
 
     # =========================================================================
     # Connection & Buffer Limits (DoS protection)
@@ -90,9 +93,13 @@ server {
         add_header Cache-Control "public, immutable";
         access_log off;
 
-        # Re-add security headers (add_header in location blocks replaces parent)
+        # Re-add all security headers (add_header in location blocks replaces parent)
         add_header X-Frame-Options "SAMEORIGIN" always;
         add_header X-Content-Type-Options "nosniff" always;
+        add_header X-XSS-Protection "1; mode=block" always;
+        add_header Referrer-Policy "strict-origin-when-cross-origin" always;
+        add_header Permissions-Policy "accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()" always;
+        add_header Content-Security-Policy $csp_policy always;
     }
 
     # Don't cache HTML (SPA entry point)
@@ -100,14 +107,13 @@ server {
         expires -1;
         add_header Cache-Control "no-store, no-cache, must-revalidate, proxy-revalidate";
 
-        # Re-add security headers
+        # Re-add all security headers
         add_header X-Frame-Options "SAMEORIGIN" always;
         add_header X-Content-Type-Options "nosniff" always;
         add_header X-XSS-Protection "1; mode=block" always;
         add_header Referrer-Policy "strict-origin-when-cross-origin" always;
         add_header Permissions-Policy "accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()" always;
-        # TODO: Update connect-src when Rust API is available (e.g., connect-src 'self' https://api.example.com)
-        add_header Content-Security-Policy "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self'; connect-src 'self'; frame-ancestors 'self'; form-action 'self'; base-uri 'self';" always;
+        add_header Content-Security-Policy $csp_policy always;
     }
 
     # =========================================================================

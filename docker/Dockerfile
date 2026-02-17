@@ -13,8 +13,8 @@ LABEL org.opencontainers.image.vendor="Feature Flags"
 # Remove default nginx config
 RUN rm /etc/nginx/conf.d/default.conf
 
-# Copy custom nginx configuration
-COPY docker/nginx.conf /etc/nginx/conf.d/default.conf
+# Copy nginx config template (envsubst processes at startup)
+COPY docker/nginx.conf.template /etc/nginx/templates/default.conf.template
 
 # Copy pre-built Angular app from CI artifacts
 COPY dist/feature-flags-web/browser /usr/share/nginx/html
@@ -25,6 +25,7 @@ RUN addgroup -g 1001 -S nginx-app && \
     chown -R nginx-app:nginx-app /usr/share/nginx/html && \
     chown -R nginx-app:nginx-app /var/cache/nginx && \
     chown -R nginx-app:nginx-app /var/log/nginx && \
+    chown -R nginx-app:nginx-app /etc/nginx/conf.d && \
     mkdir -p /run && \
     touch /run/nginx.pid && \
     chown -R nginx-app:nginx-app /run/nginx.pid
@@ -39,5 +40,6 @@ EXPOSE 80
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
     CMD wget --no-verbose --tries=1 --spider http://localhost/health || exit 1
 
-# Start nginx
-CMD ["nginx", "-g", "daemon off;"]
+# Substitute KEYCLOAK_URL in nginx config template and start nginx
+# Only ${KEYCLOAK_URL} is substituted; nginx variables ($uri etc.) are preserved
+CMD ["/bin/sh", "-c", "envsubst '${KEYCLOAK_URL}' < /etc/nginx/templates/default.conf.template > /etc/nginx/conf.d/default.conf && nginx -g 'daemon off;'"]
