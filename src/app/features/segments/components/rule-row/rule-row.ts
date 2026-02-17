@@ -3,10 +3,11 @@ import { ChangeDetectionStrategy, Component, computed, input, output, signal } f
 import { ButtonComponent } from '@watt/ui';
 import {
   OPERATOR_OPTIONS,
+  RuleOperator,
   SegmentRule,
   UpdateSegmentRuleInput,
 } from '../../models/segment-rule.model';
-import { formatRuleValue, getOperatorLabel } from '../../utils/segment-rule.utils';
+import { formatRuleValue, getOperatorLabel, parseArrayValue } from '../../utils/segment-rule.utils';
 
 @Component({
   selector: 'app-rule-row',
@@ -23,7 +24,7 @@ export class RuleRowComponent {
 
   protected readonly isEditing = signal(false);
   protected readonly editAttribute = signal('');
-  protected readonly editOperator = signal('');
+  protected readonly editOperator = signal<RuleOperator>('equals');
   protected readonly editValue = signal('');
 
   protected readonly operatorOptions = OPERATOR_OPTIONS;
@@ -51,7 +52,7 @@ export class RuleRowComponent {
   }
 
   protected onOperatorChange(event: Event): void {
-    this.editOperator.set((event.target as HTMLSelectElement).value);
+    this.editOperator.set((event.target as HTMLSelectElement).value as RuleOperator);
   }
 
   protected onValueInput(event: Event): void {
@@ -59,14 +60,9 @@ export class RuleRowComponent {
   }
 
   protected saveEdit(): void {
-    const operator = this.editOperator() as SegmentRule['operator'];
+    const operator = this.editOperator();
     const isArrayOperator = operator === 'in' || operator === 'not_in';
-    const value = isArrayOperator
-      ? this.editValue()
-          .split(',')
-          .map((v) => v.trim())
-          .filter((v) => v)
-      : this.editValue();
+    const value = isArrayOperator ? parseArrayValue(this.editValue()) : this.editValue();
 
     this.updated.emit({
       attribute: this.editAttribute(),
