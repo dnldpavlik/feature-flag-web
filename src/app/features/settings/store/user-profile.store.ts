@@ -1,13 +1,13 @@
 import { effect, inject, Injectable, signal } from '@angular/core';
 
 import { AuthService } from '@/app/core/auth/auth.service';
-import { UserProfile } from '../models/settings.model';
+import { SettingsUserProfile } from '../models/settings.model';
 
 @Injectable({ providedIn: 'root' })
 export class UserProfileStore {
   private readonly authService = inject(AuthService);
 
-  private readonly _userProfile = signal<UserProfile>({
+  private readonly _userProfile = signal<SettingsUserProfile>({
     id: '',
     name: '',
     email: '',
@@ -35,7 +35,7 @@ export class UserProfileStore {
     });
   }
 
-  updateUserProfile(updates: Partial<Omit<UserProfile, 'id'>>): void {
+  updateUserProfile(updates: Partial<Omit<SettingsUserProfile, 'id'>>): void {
     this._userProfile.update((profile) => ({
       ...profile,
       ...updates,

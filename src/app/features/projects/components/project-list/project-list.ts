@@ -96,11 +96,6 @@ export class ProjectListComponent {
     void this.projectStore.setDefaultProject(projectId);
   }
 
-  /** @deprecated Use requestDeleteProject instead */
-  protected deleteProject(projectId: string): void {
-    this.requestDeleteProject(projectId);
-  }
-
   /** Request to delete a project - shows confirmation dialog */
   protected requestDeleteProject(projectId: string): void {
     const flags = this.flagStore.getFlagsByProjectId(projectId);
@@ -121,14 +116,11 @@ export class ProjectListComponent {
       return;
     }
 
-    try {
-      await this.projectStore.deleteProject(projectId);
+    const deleted = await this.projectStore.deleteProject(projectId);
+    if (deleted) {
       this.flagStore.removeFlagsByProjectId(projectId);
-    } catch {
-      // Error handling delegated to the store
-    } finally {
-      this.cancelDelete();
     }
+    this.cancelDelete();
   }
 
   protected retry(): void {

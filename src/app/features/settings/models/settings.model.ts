@@ -1,5 +1,5 @@
-/** User profile information */
-export interface UserProfile {
+/** User profile information for the settings display layer */
+export interface SettingsUserProfile {
   id: string;
   name: string;
   email: string;

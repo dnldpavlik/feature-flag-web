@@ -94,14 +94,14 @@ export class ProjectStore extends BaseCrudStore<Project> {
   }
 
   /** Delete a project via API */
-  async deleteProject(projectId: string): Promise<void> {
+  async deleteProject(projectId: string): Promise<boolean> {
     if (this._items().length <= 1) {
-      return;
+      return false;
     }
 
     const project = this.getById(projectId);
     if (!project) {
-      return;
+      return false;
     }
 
     try {
@@ -121,8 +121,9 @@ export class ProjectStore extends BaseCrudStore<Project> {
         resourceName: project.name,
         details: `Deleted project "${project.key}"`,
       });
+      return true;
     } catch {
-      // Error toast handled by error interceptor
+      return false;
     }
   }
 

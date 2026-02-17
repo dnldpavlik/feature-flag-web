@@ -53,9 +53,11 @@ export class ProjectDetailComponent {
     if (!project) {
       return;
     }
-    await this.projectStore.deleteProject(project.id);
-    this.flagStore.removeFlagsByProjectId(project.id);
-    void this.router.navigate(['/projects']);
+    const deleted = await this.projectStore.deleteProject(project.id);
+    if (deleted) {
+      this.flagStore.removeFlagsByProjectId(project.id);
+      void this.router.navigate(['/projects']);
+    }
   }
 
   protected backToList(): void {

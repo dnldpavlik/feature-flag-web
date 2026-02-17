@@ -114,7 +114,7 @@ describe('ProjectList', () => {
     });
 
     it('should delete project and clean up local flags when confirmed', async () => {
-      const deleteProjectSpy = jest.spyOn(store, 'deleteProject').mockResolvedValue();
+      const deleteProjectSpy = jest.spyOn(store, 'deleteProject').mockResolvedValue(true);
       const removeFlagsSpy = jest.spyOn(flagStore, 'removeFlagsByProjectId');
 
       component.requestDeleteProject('proj_default');
@@ -125,7 +125,7 @@ describe('ProjectList', () => {
     });
 
     it('should not clean up flags when project delete fails', async () => {
-      jest.spyOn(store, 'deleteProject').mockRejectedValue(new Error('fail'));
+      jest.spyOn(store, 'deleteProject').mockResolvedValue(false);
       const removeFlagsSpy = jest.spyOn(flagStore, 'removeFlagsByProjectId');
 
       component.requestDeleteProject('proj_default');
@@ -135,18 +135,12 @@ describe('ProjectList', () => {
     });
 
     it('should clear confirmation state after delete', async () => {
-      jest.spyOn(store, 'deleteProject').mockResolvedValue();
+      jest.spyOn(store, 'deleteProject').mockResolvedValue(true);
 
       component.requestDeleteProject('proj_default');
       await component.confirmDelete();
 
       expect(component.projectToDelete()).toBeNull();
-    });
-
-    it('should call requestDeleteProject from deprecated deleteProject method', () => {
-      const requestSpy = jest.spyOn(component, 'requestDeleteProject');
-      component.deleteProject('proj_default');
-      expect(requestSpy).toHaveBeenCalledWith('proj_default');
     });
 
     it('should do nothing when confirmDelete is called without projectToDelete', async () => {

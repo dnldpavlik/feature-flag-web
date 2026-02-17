@@ -72,7 +72,7 @@ describe('ProjectDetail', () => {
 
   it('should delete the project, clean up flags, and navigate back', async () => {
     await build('proj_growth');
-    const deleteSpy = jest.spyOn(store, 'deleteProject').mockResolvedValue();
+    const deleteSpy = jest.spyOn(store, 'deleteProject').mockResolvedValue(true);
     const removeFlagsSpy = jest.spyOn(flagStore, 'removeFlagsByProjectId');
     const navSpy = jest.spyOn(router, 'navigate').mockResolvedValue(true);
 
