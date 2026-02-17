@@ -16,3 +16,9 @@ export interface CreateSegmentInput {
   name: string;
   description: string;
 }
+
+export interface UpdateSegmentInput {
+  name?: string;
+  key?: string;
+  description?: string;
+}
