@@ -450,7 +450,7 @@ describe('EnvironmentStore', () => {
       await store.loadEnvironments();
     });
 
-    it('should show toast when setDefaultEnvironment fails', async () => {
+    it('should not double-toast when setDefaultEnvironment fails', async () => {
       jest.spyOn(toastService, 'error');
       jest
         .spyOn(environmentApi, 'setDefault')
@@ -458,10 +458,10 @@ describe('EnvironmentStore', () => {
 
       await store.setDefaultEnvironment('env_staging');
 
-      expect(toastService.error).toHaveBeenCalledWith('Failed to set default environment');
+      expect(toastService.error).not.toHaveBeenCalled();
     });
 
-    it('should show toast when addEnvironment fails', async () => {
+    it('should not double-toast when addEnvironment fails', async () => {
       jest.spyOn(toastService, 'error');
       jest
         .spyOn(environmentApi, 'create')
@@ -474,10 +474,10 @@ describe('EnvironmentStore', () => {
         order: 10,
       });
 
-      expect(toastService.error).toHaveBeenCalledWith('Failed to create environment');
+      expect(toastService.error).not.toHaveBeenCalled();
     });
 
-    it('should show toast when updateEnvironment fails', async () => {
+    it('should not double-toast when updateEnvironment fails', async () => {
       jest.spyOn(toastService, 'error');
       jest
         .spyOn(environmentApi, 'update')
@@ -485,7 +485,7 @@ describe('EnvironmentStore', () => {
 
       await store.updateEnvironment('env_staging', { name: 'New Name' });
 
-      expect(toastService.error).toHaveBeenCalledWith('Failed to update environment');
+      expect(toastService.error).not.toHaveBeenCalled();
     });
   });
 });

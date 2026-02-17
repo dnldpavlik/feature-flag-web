@@ -71,7 +71,7 @@ export class EnvironmentStore extends BaseCrudStore<Environment> {
       );
       this.toast.success('Default environment updated');
     } catch {
-      this.toast.error('Failed to set default environment');
+      // Error toast handled by errorInterceptor
     }
   }
 
@@ -88,7 +88,7 @@ export class EnvironmentStore extends BaseCrudStore<Environment> {
         details: `Created environment "${created.key}"`,
       });
     } catch {
-      this.toast.error('Failed to create environment');
+      // Error toast handled by errorInterceptor
     }
   }
 
@@ -106,7 +106,7 @@ export class EnvironmentStore extends BaseCrudStore<Environment> {
         details: `Updated environment fields: ${changedFields}`,
       });
     } catch {
-      this.toast.error('Failed to update environment');
+      // Error toast handled by errorInterceptor
     }
   }
 
