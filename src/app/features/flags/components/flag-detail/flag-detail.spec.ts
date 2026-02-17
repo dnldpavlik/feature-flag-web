@@ -453,13 +453,34 @@ describe('FlagDetail', () => {
       expectNotExists(fixture, '.flag-detail__delete-btn');
     });
 
-    it('should delete flag and navigate to /flags', async () => {
+    it('should show confirmation dialog when delete is requested', async () => {
+      await build('flag_new_checkout');
+
+      component.requestDeleteFlag();
+      fixture.detectChanges();
+
+      expectExists(fixture, '.delete-confirmation-overlay');
+    });
+
+    it('should close confirmation dialog on cancel', async () => {
+      await build('flag_new_checkout');
+
+      component.requestDeleteFlag();
+      fixture.detectChanges();
+      component.cancelDelete();
+      fixture.detectChanges();
+
+      expectNotExists(fixture, '.delete-confirmation-overlay');
+    });
+
+    it('should delete flag and navigate to /flags after confirmation', async () => {
       await build('flag_new_checkout');
 
       const navigateSpy = jest.spyOn(router, 'navigate').mockResolvedValue(true);
       const beforeCount = store.flags().length;
 
-      component.deleteFlag();
+      component.requestDeleteFlag();
+      await component.confirmDelete();
       await fixture.whenStable();
 
       expect(store.flags().length).toBe(beforeCount - 1);
@@ -471,7 +492,7 @@ describe('FlagDetail', () => {
       await build('missing_flag');
 
       const deleteSpy = jest.spyOn(store, 'deleteFlag');
-      component.deleteFlag();
+      await component.confirmDelete();
 
       expect(deleteSpy).not.toHaveBeenCalled();
     });

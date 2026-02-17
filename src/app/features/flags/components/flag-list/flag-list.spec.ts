@@ -197,16 +197,47 @@ describe('FlagList', () => {
       expect(deleteButtons.length).toBe(0);
     });
 
-    it('should remove the flag when delete is clicked', async () => {
+    it('should show confirmation dialog when delete is requested', () => {
+      const flagToDelete = flagStore.flags()[0];
+
+      component.requestDeleteFlag(flagToDelete.id);
+      fixture.detectChanges();
+
+      const overlay = fixture.debugElement.query(By.css('.delete-confirmation-overlay'));
+      expect(overlay).toBeTruthy();
+    });
+
+    it('should close confirmation dialog on cancel', () => {
+      component.requestDeleteFlag(flagStore.flags()[0].id);
+      fixture.detectChanges();
+
+      component.cancelDelete();
+      fixture.detectChanges();
+
+      const overlay = fixture.debugElement.query(By.css('.delete-confirmation-overlay'));
+      expect(overlay).toBeFalsy();
+    });
+
+    it('should remove the flag when delete is confirmed', async () => {
       const beforeCount = flagStore.flags().length;
       const flagToDelete = flagStore.flags()[0];
 
-      component.onDeleteFlag(flagToDelete.id);
+      component.requestDeleteFlag(flagToDelete.id);
+      await component.confirmDelete();
       await fixture.whenStable();
       fixture.detectChanges();
 
       expect(flagStore.flags().length).toBe(beforeCount - 1);
       expect(flagStore.getFlagById(flagToDelete.id)).toBeUndefined();
+    });
+
+    it('should not delete when confirmDelete is called without a pending flag', async () => {
+      const beforeCount = flagStore.flags().length;
+
+      await component.confirmDelete();
+      await fixture.whenStable();
+
+      expect(flagStore.flags().length).toBe(beforeCount);
     });
   });
 

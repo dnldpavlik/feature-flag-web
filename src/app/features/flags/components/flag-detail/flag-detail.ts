@@ -174,12 +174,24 @@ export class FlagDetailComponent {
     this.updateEnvironmentValue(envId, value);
   }
 
-  protected deleteFlag(): void {
+  // Delete confirmation state
+  protected readonly showDeleteConfirm = signal(false);
+
+  protected requestDeleteFlag(): void {
+    this.showDeleteConfirm.set(true);
+  }
+
+  protected cancelDelete(): void {
+    this.showDeleteConfirm.set(false);
+  }
+
+  protected async confirmDelete(): Promise<void> {
     const current = this.flag();
     if (!current) {
       return;
     }
-    this.store.deleteFlag(current.id);
+    await this.store.deleteFlag(current.id);
+    this.showDeleteConfirm.set(false);
     void this.router.navigate(['/flags']);
   }
 

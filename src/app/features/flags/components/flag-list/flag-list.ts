@@ -5,6 +5,7 @@ import { RouterLink } from '@angular/router';
 import {
   BadgeComponent,
   ButtonComponent,
+  CardComponent,
   DataTableComponent,
   EmptyStateComponent,
   LabeledSelectComponent,
@@ -30,6 +31,7 @@ import { FlagWithFormattedValue, StatusFilter, TypeFilter } from './flag-list.ty
   selector: 'app-flag-list',
   imports: [
     BadgeComponent,
+    CardComponent,
     DatePipe,
     ButtonComponent,
     DataTableComponent,
@@ -113,7 +115,23 @@ export class FlagListComponent {
     this.flagStore.toggleFlagInEnvironment(flagId, envId, checked);
   }
 
-  protected onDeleteFlag(flagId: string): void {
-    this.flagStore.deleteFlag(flagId);
+  // Delete confirmation state
+  protected readonly flagToDelete = signal<string | null>(null);
+
+  protected requestDeleteFlag(flagId: string): void {
+    this.flagToDelete.set(flagId);
+  }
+
+  protected cancelDelete(): void {
+    this.flagToDelete.set(null);
+  }
+
+  protected async confirmDelete(): Promise<void> {
+    const flagId = this.flagToDelete();
+    if (!flagId) {
+      return;
+    }
+    await this.flagStore.deleteFlag(flagId);
+    this.cancelDelete();
   }
 }

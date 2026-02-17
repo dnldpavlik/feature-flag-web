@@ -63,3 +63,34 @@
   flex-flow: row wrap;
   gap: 0.4rem;
 }
+
+.delete-confirmation-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgb(0 0 0 / 50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.delete-confirmation {
+  max-width: 400px;
+  text-align: center;
+
+  h3 {
+    margin: 0 0 1rem;
+    font-size: 1.25rem;
+  }
+
+  p {
+    margin: 0 0 0.5rem;
+  }
+}
+
+.delete-confirmation__actions {
+  display: flex;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+}
