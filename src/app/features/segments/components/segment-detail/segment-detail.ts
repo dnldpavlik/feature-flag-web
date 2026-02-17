@@ -1,4 +1,11 @@
-import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  WritableSignal,
+  computed,
+  inject,
+  signal,
+} from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { map } from 'rxjs';
@@ -70,16 +77,8 @@ export class SegmentDetailComponent {
     this.isEditing.set(false);
   }
 
-  protected onNameInput(event: Event): void {
-    this.editName.set((event.target as HTMLInputElement).value);
-  }
-
-  protected onKeyInput(event: Event): void {
-    this.editKey.set((event.target as HTMLInputElement).value);
-  }
-
-  protected onDescriptionInput(event: Event): void {
-    this.editDescription.set((event.target as HTMLTextAreaElement).value);
+  protected setFromInput(target: WritableSignal<string>, event: Event): void {
+    target.set((event.target as HTMLInputElement).value);
   }
 
   protected onRuleAdded(input: CreateSegmentRuleInput): void {

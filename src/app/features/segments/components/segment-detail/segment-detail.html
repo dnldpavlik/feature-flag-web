@@ -24,7 +24,7 @@
               type="text"
               class="segment-detail__name-input"
               [value]="editName()"
-              (input)="onNameInput($event)"
+              (input)="setFromInput(editName, $event)"
             />
           </label>
 
@@ -34,7 +34,7 @@
               type="text"
               class="segment-detail__key-input"
               [value]="editKey()"
-              (input)="onKeyInput($event)"
+              (input)="setFromInput(editKey, $event)"
             />
           </label>
 
@@ -44,7 +44,7 @@
               class="segment-detail__description-input"
               rows="3"
               [value]="editDescription()"
-              (input)="onDescriptionInput($event)"
+              (input)="setFromInput(editDescription, $event)"
             ></textarea>
           </label>
 
