@@ -22,7 +22,9 @@ export function textFilter<T extends object>(
   fields: (keyof T & string)[],
   query: string,
 ): (item: T) => boolean {
-  if (!query) return () => true;
+  if (!query) {
+    return () => true;
+  }
 
   const lowerQuery = query.toLowerCase();
   return (item: T) => {
@@ -52,7 +54,9 @@ export function propertyEquals<T extends object>(
   field: keyof T & string,
   value: string,
 ): (item: T) => boolean {
-  if (value === 'all') return () => true;
+  if (value === 'all') {
+    return () => true;
+  }
   return (item: T) => item[field] === value;
 }
 
@@ -93,7 +97,9 @@ export function matchesAll<T>(predicates: ((item: T) => boolean)[]): (item: T) =
  * ```
  */
 export function matchesAny<T>(predicates: ((item: T) => boolean)[]): (item: T) => boolean {
-  if (predicates.length === 0) return () => true;
+  if (predicates.length === 0) {
+    return () => true;
+  }
   return (item: T) => predicates.some((predicate) => predicate(item));
 }
 

@@ -91,9 +91,13 @@ export class FlagStore extends BaseCrudStore<Flag> {
 
   /** Delete a flag via API */
   async deleteFlag(flagId: string): Promise<void> {
-    if (this._items().length <= 1) return;
+    if (this._items().length <= 1) {
+      return;
+    }
     const flag = this.getFlagById(flagId);
-    if (!flag) return;
+    if (!flag) {
+      return;
+    }
 
     try {
       await firstValueFrom(this.api.delete(flagId));
@@ -177,7 +181,9 @@ export class FlagStore extends BaseCrudStore<Flag> {
       );
       this._items.update((flags) =>
         flags.map((flag) => {
-          if (flag.id !== input.flagId) return flag;
+          if (flag.id !== input.flagId) {
+            return flag;
+          }
           const merged = this.mergeFlag(flag, updated);
           return {
             ...merged,
@@ -210,7 +216,9 @@ export class FlagStore extends BaseCrudStore<Flag> {
       );
       this._items.update((flags) =>
         flags.map((flag) => {
-          if (flag.id !== flagId) return flag;
+          if (flag.id !== flagId) {
+            return flag;
+          }
           const merged = this.mergeFlag(flag, updated);
           return {
             ...merged,
@@ -272,7 +280,9 @@ export class FlagStore extends BaseCrudStore<Flag> {
     environmentId: string,
   ): FlagTypeMap[T] | undefined {
     const flag = this.getFlagById(flagId);
-    if (!flag) return undefined;
+    if (!flag) {
+      return undefined;
+    }
     return getEffectiveValue<T>(flag, environmentId);
   }
 }

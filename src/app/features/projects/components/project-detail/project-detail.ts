@@ -34,19 +34,25 @@ export class ProjectDetailComponent {
 
   protected selectProject(): void {
     const project = this.project();
-    if (!project) return;
+    if (!project) {
+      return;
+    }
     this.projectStore.selectProject(project.id);
   }
 
   protected makeDefault(): void {
     const project = this.project();
-    if (!project) return;
+    if (!project) {
+      return;
+    }
     void this.projectStore.setDefaultProject(project.id);
   }
 
   protected async deleteProject(): Promise<void> {
     const project = this.project();
-    if (!project) return;
+    if (!project) {
+      return;
+    }
     await this.projectStore.deleteProject(project.id);
     this.flagStore.removeFlagsByProjectId(project.id);
     void this.router.navigate(['/projects']);

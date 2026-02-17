@@ -9,7 +9,9 @@ import { HighlightPart, Searchable } from './search.types';
  * @returns true if the item matches the query
  */
 export const matchesSearch = (item: Searchable, query: string): boolean => {
-  if (!query) return true;
+  if (!query) {
+    return true;
+  }
 
   const searchableFields = [item.name, item.key, item.description, item.type ?? '', ...item.tags];
 

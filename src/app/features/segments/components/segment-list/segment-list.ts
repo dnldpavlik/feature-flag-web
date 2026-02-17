@@ -58,7 +58,9 @@ export class SegmentListComponent {
   }
 
   protected addSegment(): void {
-    if (!this.canAdd()) return;
+    if (!this.canAdd()) {
+      return;
+    }
 
     const { name, key, description } = this.form.getRawValue();
     this.segmentStore.addSegment({

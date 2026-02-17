@@ -68,7 +68,9 @@ export class EnvironmentListComponent {
   }
 
   protected async addEnvironment(): Promise<void> {
-    if (!this.canAdd()) return;
+    if (!this.canAdd()) {
+      return;
+    }
 
     const { name, key } = getTrimmedValues(this.form, ['name', 'key']);
     const { color } = this.form.getRawValue();
@@ -103,7 +105,9 @@ export class EnvironmentListComponent {
   /** Confirm and execute the delete */
   protected async confirmDelete(): Promise<void> {
     const envId = this.envToDelete();
-    if (!envId) return;
+    if (!envId) {
+      return;
+    }
 
     const deleted = await this.environmentStore.deleteEnvironment(envId);
     if (deleted) {

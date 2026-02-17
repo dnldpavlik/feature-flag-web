@@ -333,7 +333,9 @@ describe('FlagDetail', () => {
 
     (store as FlagStoreInternals)._items.update((flags: Flag[]) =>
       flags.map((flag) => {
-        if (flag.id !== 'flag_new_checkout') return flag;
+        if (flag.id !== 'flag_new_checkout') {
+          return flag;
+        }
         const rest = { ...flag.environmentValues };
         delete rest.env_development;
         return { ...flag, environmentValues: rest };

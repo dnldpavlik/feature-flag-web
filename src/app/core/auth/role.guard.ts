@@ -9,14 +9,18 @@ export const roleGuard: CanActivateFn = (route) => {
   const router = inject(Router);
   const requiredRole = route.data['role'] as string | undefined;
 
-  if (!requiredRole) return true;
+  if (!requiredRole) {
+    return true;
+  }
 
   const clientId = environment.keycloak.clientId;
   const clientRoles = keycloak.resourceAccess?.[clientId]?.roles ?? [];
   const realmRoles = keycloak.realmAccess?.roles ?? [];
   const allRoles = [...realmRoles, ...clientRoles];
 
-  if (allRoles.includes(requiredRole)) return true;
+  if (allRoles.includes(requiredRole)) {
+    return true;
+  }
 
   return router.createUrlTree(['/dashboard']);
 };

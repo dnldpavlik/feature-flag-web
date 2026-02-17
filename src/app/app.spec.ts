@@ -82,7 +82,6 @@ describe('AppComponent', () => {
     });
 
     it('should return empty strings when user profile is null', () => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (authService as Record<string, any>)['_userProfile'].set(null);
       const user = (component as AppComponentInternals).currentUser();
       expect(user.name).toBe('');

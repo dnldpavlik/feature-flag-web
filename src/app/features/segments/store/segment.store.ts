@@ -78,10 +78,14 @@ export class SegmentStore extends BaseCrudStore<Segment> {
 
   /** Delete a segment via API */
   async deleteSegment(segmentId: string): Promise<void> {
-    if (this._items().length <= 1) return;
+    if (this._items().length <= 1) {
+      return;
+    }
 
     const segment = this.getById(segmentId);
-    if (!segment) return;
+    if (!segment) {
+      return;
+    }
 
     try {
       await firstValueFrom(this.api.delete(segmentId));

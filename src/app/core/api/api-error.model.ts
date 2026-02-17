@@ -10,7 +10,9 @@ export interface ApiError {
 }
 
 export function isApiError(value: unknown): value is ApiError {
-  if (typeof value !== 'object' || value === null) return false;
+  if (typeof value !== 'object' || value === null) {
+    return false;
+  }
 
   const obj = value as Record<string, unknown>;
   return typeof obj['error'] === 'string' && typeof obj['message'] === 'string';

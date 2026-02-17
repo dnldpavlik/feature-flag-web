@@ -168,7 +168,9 @@ export abstract class BaseCrudStore<T extends StoreItem> {
 
     this._items.update((items) =>
       items.map((item) => {
-        if (!predicate(item)) return item;
+        if (!predicate(item)) {
+          return item;
+        }
         const updates = updater(item);
         return { ...item, ...updates, updatedAt: stamp };
       }),

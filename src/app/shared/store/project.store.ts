@@ -72,7 +72,9 @@ export class ProjectStore extends BaseCrudStore<Project> {
   /** Set a project as the default via API */
   async setDefaultProject(projectId: string): Promise<void> {
     const project = this.getById(projectId);
-    if (!project) return;
+    if (!project) {
+      return;
+    }
 
     try {
       await firstValueFrom(this.api.setDefault(projectId));
@@ -93,10 +95,14 @@ export class ProjectStore extends BaseCrudStore<Project> {
 
   /** Delete a project via API */
   async deleteProject(projectId: string): Promise<void> {
-    if (this._items().length <= 1) return;
+    if (this._items().length <= 1) {
+      return;
+    }
 
     const project = this.getById(projectId);
-    if (!project) return;
+    if (!project) {
+      return;
+    }
 
     try {
       await firstValueFrom(this.api.delete(projectId));

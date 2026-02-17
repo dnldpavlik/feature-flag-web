@@ -71,7 +71,9 @@ export class ApiKeysTabComponent {
   }
 
   protected async createKey(): Promise<void> {
-    if (!this.canSubmit()) return;
+    if (!this.canSubmit()) {
+      return;
+    }
 
     const result = await this.apiKeyStore.createApiKey({
       name: this.newKeyName().trim(),

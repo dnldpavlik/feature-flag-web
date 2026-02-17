@@ -270,7 +270,9 @@ describe('Store Interfaces', () => {
         filter: _filter.asReadonly(),
         filteredItems: computed(() => {
           const query = _filter().query.toLowerCase();
-          if (!query) return _items();
+          if (!query) {
+            return _items();
+          }
           return _items().filter((item) => item.name.toLowerCase().includes(query));
         }),
         setFilter: (filter: TestFilter) => _filter.set(filter),

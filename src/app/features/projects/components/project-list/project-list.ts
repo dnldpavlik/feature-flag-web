@@ -73,7 +73,9 @@ export class ProjectListComponent {
   }
 
   protected addProject(): void {
-    if (!this.canAdd()) return;
+    if (!this.canAdd()) {
+      return;
+    }
 
     const { name, key, description } = getTrimmedValues(this.form, ['name', 'key', 'description']);
     void this.projectStore.addProject({ name, key, description });
@@ -109,7 +111,9 @@ export class ProjectListComponent {
   /** Confirm and execute the delete */
   protected async confirmDelete(): Promise<void> {
     const projectId = this.projectToDelete();
-    if (!projectId) return;
+    if (!projectId) {
+      return;
+    }
 
     try {
       await this.projectStore.deleteProject(projectId);

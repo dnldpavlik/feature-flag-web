@@ -43,7 +43,9 @@ export class EnvironmentDetailComponent {
   protected readonly selectedEnvironmentId = this.environmentStore.selectedEnvironmentId;
   protected readonly flags = computed(() => {
     const envId = this.environmentId();
-    if (!envId) return [];
+    if (!envId) {
+      return [];
+    }
     return this.flagStore.flags().map((flag) => ({
       ...flag,
       currentEnabled: isEnabledInEnvironment(flag, envId),
@@ -59,7 +61,9 @@ export class EnvironmentDetailComponent {
 
   protected enterEditMode(): void {
     const env = this.environment();
-    if (!env) return;
+    if (!env) {
+      return;
+    }
 
     this.editName.set(env.name);
     this.editKey.set(env.key);
@@ -73,7 +77,9 @@ export class EnvironmentDetailComponent {
 
   protected async saveEdit(): Promise<void> {
     const env = this.environment();
-    if (!env) return;
+    if (!env) {
+      return;
+    }
 
     const updates: UpdateEnvironmentInput = {
       name: this.editName().trim() || env.name,
@@ -99,13 +105,17 @@ export class EnvironmentDetailComponent {
 
   protected selectEnvironment(): void {
     const env = this.environment();
-    if (!env) return;
+    if (!env) {
+      return;
+    }
     this.environmentStore.selectEnvironment(env.id);
   }
 
   protected makeDefault(): void {
     const env = this.environment();
-    if (!env) return;
+    if (!env) {
+      return;
+    }
     void this.environmentStore.setDefaultEnvironment(env.id);
   }
 

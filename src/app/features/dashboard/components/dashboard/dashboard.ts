@@ -68,7 +68,9 @@ export class DashboardComponent {
   });
   protected readonly filteredRecentFlags = computed(() => {
     const query = this.searchQuery();
-    if (!query) return this.recentFlags();
+    if (!query) {
+      return this.recentFlags();
+    }
 
     return this.recentFlags().filter((flag) => matchesSearch(flag, query));
   });

@@ -65,7 +65,9 @@ export class RuleBuilderComponent {
   }
 
   protected addRule(): void {
-    if (!this.canAdd()) return;
+    if (!this.canAdd()) {
+      return;
+    }
 
     const attribute = this.effectiveAttribute().trim();
     const operator = this.selectedOperator();

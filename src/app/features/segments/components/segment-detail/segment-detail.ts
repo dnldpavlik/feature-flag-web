@@ -27,7 +27,9 @@ export class SegmentDetailComponent {
 
   protected readonly segment = computed(() => {
     const id = this.segmentId();
-    if (!id) return undefined;
+    if (!id) {
+      return undefined;
+    }
     return this.segmentStore.getSegmentById(id);
   });
 
@@ -38,7 +40,9 @@ export class SegmentDetailComponent {
 
   protected enterEditMode(): void {
     const seg = this.segment();
-    if (!seg) return;
+    if (!seg) {
+      return;
+    }
 
     this.editName.set(seg.name);
     this.editKey.set(seg.key);
@@ -52,7 +56,9 @@ export class SegmentDetailComponent {
 
   protected saveEdit(): void {
     const id = this.segmentId();
-    if (!id) return;
+    if (!id) {
+      return;
+    }
 
     const updates: UpdateSegmentInput = {
       name: this.editName().trim(),
@@ -78,19 +84,25 @@ export class SegmentDetailComponent {
 
   protected onRuleAdded(input: CreateSegmentRuleInput): void {
     const id = this.segmentId();
-    if (!id) return;
+    if (!id) {
+      return;
+    }
     this.segmentStore.addRule(id, input);
   }
 
   protected onRuleUpdated(ruleId: string, updates: UpdateSegmentRuleInput): void {
     const id = this.segmentId();
-    if (!id) return;
+    if (!id) {
+      return;
+    }
     this.segmentStore.updateRule(id, ruleId, updates);
   }
 
   protected onRuleRemoved(ruleId: string): void {
     const id = this.segmentId();
-    if (!id) return;
+    if (!id) {
+      return;
+    }
     this.segmentStore.removeRule(id, ruleId);
   }
 }

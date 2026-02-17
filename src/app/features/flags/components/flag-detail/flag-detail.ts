@@ -57,7 +57,9 @@ export class FlagDetailComponent {
   // Only return flag if it belongs to the selected project
   protected readonly flag = computed(() => {
     const flag = this.rawFlag();
-    if (!flag) return undefined;
+    if (!flag) {
+      return undefined;
+    }
     return flag.projectId === this.projectStore.selectedProjectId() ? flag : undefined;
   });
 
@@ -81,7 +83,9 @@ export class FlagDetailComponent {
 
   protected readonly environmentRows = computed<FlagEnvironmentRow[]>(() => {
     const flag = this.flag();
-    if (!flag) return [];
+    if (!flag) {
+      return [];
+    }
 
     return this.environments().map((env) => {
       const envValue = flag.environmentValues[env.id];
@@ -114,7 +118,9 @@ export class FlagDetailComponent {
 
   protected saveDetails(): void {
     const current = this.flag();
-    if (!current) return;
+    if (!current) {
+      return;
+    }
 
     const formData = this.form.getRawValue();
     const result = extractDefaultValue(current.type, formData);
@@ -134,7 +140,9 @@ export class FlagDetailComponent {
 
   protected toggleEnvironment(envId: string, enabled: boolean): void {
     const current = this.flag();
-    if (!current) return;
+    if (!current) {
+      return;
+    }
     this.store.toggleFlagInEnvironment(current.id, envId, enabled);
   }
 
@@ -144,7 +152,9 @@ export class FlagDetailComponent {
 
   protected updateEnvironmentValue(envId: string, value: string): void {
     const current = this.flag();
-    if (!current) return;
+    if (!current) {
+      return;
+    }
 
     const parsed = this.parseValue(current.type, value);
     if (parsed === null) {
@@ -166,7 +176,9 @@ export class FlagDetailComponent {
 
   protected deleteFlag(): void {
     const current = this.flag();
-    if (!current) return;
+    if (!current) {
+      return;
+    }
     this.store.deleteFlag(current.id);
     void this.router.navigate(['/flags']);
   }

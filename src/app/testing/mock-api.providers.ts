@@ -312,7 +312,9 @@ const MOCK_FLAG_API: Partial<FlagApi> = {
     updates: UpdateEnvironmentValueInput,
   ) => {
     const existing = MOCK_FLAGS.find((f) => f.id === flagId);
-    if (!existing) return of(existing as unknown as Flag);
+    if (!existing) {
+      return of(existing as unknown as Flag);
+    }
     const existingEnvValue = existing.environmentValues[environmentId];
     return of({
       ...existing,

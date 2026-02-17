@@ -112,10 +112,14 @@ export class EnvironmentStore extends BaseCrudStore<Environment> {
 
   /** Delete an environment via API */
   async deleteEnvironment(envId: string): Promise<boolean> {
-    if (this._items().length <= 1) return false;
+    if (this._items().length <= 1) {
+      return false;
+    }
 
     const env = this.getById(envId);
-    if (!env) return false;
+    if (!env) {
+      return false;
+    }
 
     try {
       await firstValueFrom(this.api.delete(envId));
