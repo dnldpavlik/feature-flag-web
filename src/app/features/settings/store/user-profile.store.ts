@@ -1,13 +1,16 @@
-import { Injectable, signal } from '@angular/core';
+import { effect, inject, Injectable, signal } from '@angular/core';
 
+import { AuthService } from '@/app/core/auth/auth.service';
 import { UserProfile } from '../models/settings.model';
 
 @Injectable({ providedIn: 'root' })
 export class UserProfileStore {
+  private readonly authService = inject(AuthService);
+
   private readonly _userProfile = signal<UserProfile>({
-    id: 'user_1',
-    name: 'John Doe',
-    email: 'john.doe@example.com',
+    id: '',
+    name: '',
+    email: '',
     avatarUrl: null,
   });
 
@@ -17,6 +20,20 @@ export class UserProfileStore {
   readonly userProfile = this._userProfile.asReadonly();
   readonly loading = this._loading.asReadonly();
   readonly error = this._error.asReadonly();
+
+  constructor() {
+    effect(() => {
+      const authProfile = this.authService.userProfile();
+      if (authProfile) {
+        this._userProfile.set({
+          id: authProfile.username,
+          name: authProfile.fullName,
+          email: authProfile.email,
+          avatarUrl: null,
+        });
+      }
+    });
+  }
 
   updateUserProfile(updates: Partial<Omit<UserProfile, 'id'>>): void {
     this._userProfile.update((profile) => ({

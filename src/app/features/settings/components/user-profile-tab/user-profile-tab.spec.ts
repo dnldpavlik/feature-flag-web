@@ -1,5 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { signal } from '@angular/core';
 import { By } from '@angular/platform-browser';
+import Keycloak from 'keycloak-js';
+import { KEYCLOAK_EVENT_SIGNAL, KeycloakEventType, KeycloakEvent } from 'keycloak-angular';
 
 import { UserProfileStore } from '../../store/user-profile.store';
 import { UserProfileTabComponent } from './user-profile-tab';
@@ -10,14 +13,32 @@ describe('UserProfileTabComponent', () => {
   let userProfileStore: UserProfileStore;
 
   beforeEach(async () => {
+    const mockKeycloak: Partial<Keycloak> = {
+      authenticated: false,
+      login: jest.fn().mockResolvedValue(undefined),
+      logout: jest.fn().mockResolvedValue(undefined),
+      loadUserProfile: jest.fn().mockResolvedValue({}),
+      resourceAccess: {},
+      realmAccess: { roles: [] },
+    };
+    const eventSignal = signal<KeycloakEvent>({
+      type: KeycloakEventType.KeycloakAngularNotInitialized,
+    });
+
     await TestBed.configureTestingModule({
       imports: [UserProfileTabComponent],
-      providers: [UserProfileStore],
+      providers: [
+        UserProfileStore,
+        { provide: Keycloak, useValue: mockKeycloak },
+        { provide: KEYCLOAK_EVENT_SIGNAL, useValue: eventSignal },
+      ],
     }).compileComponents();
+
+    userProfileStore = TestBed.inject(UserProfileStore);
+    userProfileStore.updateUserProfile({ name: 'John Doe', email: 'john.doe@example.com' });
 
     fixture = TestBed.createComponent(UserProfileTabComponent);
     component = fixture.componentInstance;
-    userProfileStore = TestBed.inject(UserProfileStore);
     fixture.detectChanges();
   });
 
