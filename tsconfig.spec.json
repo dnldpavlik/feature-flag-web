@@ -6,7 +6,7 @@
     "outDir": "./out-tsc/spec",
     "esModuleInterop": true,
     "types": [
-      "jasmine"
+      "jest"
     ]
   },
   "include": [
