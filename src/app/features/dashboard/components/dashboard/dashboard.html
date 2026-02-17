@@ -79,15 +79,13 @@
         </ui-data-table>
       }
     </section>
-  }
-
-  @if (totalFlags() === 0) {
+  } @else {
     <ui-empty-state
       title="No feature flags yet"
       message="Create your first feature flag to start controlling your application's features."
     >
       <app-flags-empty-icon empty-state-icon />
-      <ui-button empty-state-action variant="primary" icon="plus">
+      <ui-button empty-state-action variant="primary" icon="plus" [routerLink]="['/flags']">
         Create Your First Flag
       </ui-button>
     </ui-empty-state>

@@ -15,6 +15,7 @@ import { ThemeService } from './core/theme/theme.service';
 import { BreadcrumbItem, ToastComponent } from '@watt/ui';
 import { HeaderComponent } from './layout/header/header';
 import { SidebarComponent } from './layout/sidebar/sidebar';
+import { SidebarEnvironment } from './layout/sidebar/sidebar.types';
 import { NAV_ITEMS } from './layout/nav.config';
 import { SearchStore } from './shared/store/search.store';
 import { EnvironmentStore } from './shared/store/environment.store';
@@ -23,12 +24,6 @@ import { FlagStore } from './features/flags/store/flag.store';
 import { SegmentStore } from './features/segments/store/segment.store';
 import { AuditStore } from './features/audit/store/audit.store';
 import { getSectionLabel } from './shared/utils/url.utils';
-
-interface SidebarEnvironment {
-  name: string;
-  color: string;
-  route: string;
-}
 
 @Component({
   selector: 'app-root',
