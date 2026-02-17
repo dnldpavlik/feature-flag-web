@@ -5,7 +5,7 @@ import { map } from 'rxjs';
 
 import { ButtonComponent } from '@watt/ui';
 import { CreateSegmentRuleInput, UpdateSegmentRuleInput } from '../../models/segment-rule.model';
-import { UpdateSegmentInput } from '../../api/segment.api';
+import { UpdateSegmentInput } from '../../models/segment.model';
 import { SegmentStore } from '../../store/segment.store';
 import { RuleBuilderComponent } from '../rule-builder/rule-builder';
 import { RuleRowComponent } from '../rule-row/rule-row';

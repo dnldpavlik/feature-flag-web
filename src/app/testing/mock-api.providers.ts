@@ -36,8 +36,12 @@ import {
 } from '@/app/features/flags/api/flag.api';
 import { Flag, CreateFlagInput } from '@/app/features/flags/models/flag.model';
 import { EnvironmentFlagValue, FlagTypeMap } from '@/app/features/flags/models/flag-value.model';
-import { SegmentApi, UpdateSegmentInput } from '@/app/features/segments/api/segment.api';
-import { Segment, CreateSegmentInput } from '@/app/features/segments/models/segment.model';
+import { SegmentApi } from '@/app/features/segments/api/segment.api';
+import {
+  Segment,
+  CreateSegmentInput,
+  UpdateSegmentInput,
+} from '@/app/features/segments/models/segment.model';
 import {
   CreateSegmentRuleInput,
   SegmentRule,

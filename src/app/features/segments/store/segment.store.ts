@@ -8,8 +8,12 @@ import {
   CreateSegmentRuleInput,
   UpdateSegmentRuleInput,
 } from '@/app/features/segments/models/segment-rule.model';
-import { CreateSegmentInput, Segment } from '@/app/features/segments/models/segment.model';
-import { SegmentApi, UpdateSegmentInput } from '../api/segment.api';
+import {
+  CreateSegmentInput,
+  Segment,
+  UpdateSegmentInput,
+} from '@/app/features/segments/models/segment.model';
+import { SegmentApi } from '../api/segment.api';
 
 @Injectable({ providedIn: 'root' })
 export class SegmentStore extends BaseCrudStore<Segment> {
