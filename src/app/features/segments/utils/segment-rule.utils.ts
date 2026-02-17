@@ -133,7 +133,7 @@ export const validateRuleInput = (input: CreateSegmentRuleInput): RuleValidation
 /**
  * Formats a rule value for display.
  */
-export const formatRuleValue = (operator: RuleOperator, value: string | string[]): string => {
+export const formatRuleValue = (_operator: RuleOperator, value: string | string[]): string => {
   if (Array.isArray(value)) {
     return value.join(', ');
   }

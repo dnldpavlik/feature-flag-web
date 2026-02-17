@@ -128,62 +128,6 @@ a {
 }
 
 // -----------------------------------------------------------------------------
-// Buttons
-// -----------------------------------------------------------------------------
-.btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  padding: 0.5rem 1rem;
-  font-size: 0.875rem;
-  font-weight: 500;
-  line-height: 1.5;
-  border-radius: var(--border-radius);
-  border: 1px solid transparent;
-  cursor: pointer;
-  transition: all var(--transition-fast);
-
-  &:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
-}
-
-.btn-primary {
-  background: var(--accent-primary);
-  color: white;
-  border-color: var(--accent-primary);
-
-  &:hover:not(:disabled) {
-    background: var(--accent-hover);
-    border-color: var(--accent-hover);
-  }
-}
-
-.btn-secondary {
-  background: var(--bg-tertiary);
-  color: var(--text-primary);
-  border-color: var(--border-primary);
-
-  &:hover:not(:disabled) {
-    background: var(--bg-hover);
-    border-color: var(--border-primary);
-  }
-}
-
-.btn-ghost {
-  background: transparent;
-  color: var(--text-secondary);
-  border-color: transparent;
-
-  &:hover:not(:disabled) {
-    background: var(--bg-hover);
-    color: var(--text-primary);
-  }
-}
-
-// -----------------------------------------------------------------------------
 // Forms
 // -----------------------------------------------------------------------------
 .form-input {
@@ -204,55 +148,6 @@ a {
 
   &::placeholder {
     color: var(--text-muted);
-  }
-}
-
-// -----------------------------------------------------------------------------
-// Toggle Switch (Feature Flag style)
-// -----------------------------------------------------------------------------
-.toggle {
-  position: relative;
-  display: inline-block;
-  width: 44px;
-  height: 24px;
-
-  input {
-    opacity: 0;
-    width: 0;
-    height: 0;
-
-    &:checked + .toggle__slider {
-      background-color: var(--color-success);
-    }
-
-    &:checked + .toggle__slider::before {
-      transform: translateX(20px);
-    }
-
-    &:focus + .toggle__slider {
-      box-shadow: 0 0 0 3px rgb(63 185 80 / 30%);
-    }
-  }
-
-  &__slider {
-    position: absolute;
-    cursor: pointer;
-    inset: 0;
-    background-color: var(--bg-active);
-    border-radius: 24px;
-    transition: background-color var(--transition-fast);
-
-    &::before {
-      position: absolute;
-      content: '';
-      height: 18px;
-      width: 18px;
-      left: 3px;
-      bottom: 3px;
-      background-color: white;
-      border-radius: 50%;
-      transition: transform var(--transition-fast);
-    }
   }
 }
 
