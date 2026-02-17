@@ -11,8 +11,8 @@ import { Signal } from '@angular/core';
  */
 export interface StoreItem {
   id: string;
-  createdAt?: Date;
-  updatedAt?: Date;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 /**
@@ -67,24 +67,19 @@ export function expectIdPattern(id: string, prefix: string): void {
 }
 
 /**
- * Assert timestamp is set (either as Date object or ISO string)
+ * Assert timestamp is a valid ISO string
  */
-export function expectTimestamp(date: Date | string | undefined): void {
+export function expectTimestamp(date: string | undefined): void {
   expect(date).toBeDefined();
-  if (typeof date === 'string') {
-    // ISO string timestamp
-    expect(new Date(date).toISOString()).toBe(date);
-  } else {
-    expect(date).toBeInstanceOf(Date);
-  }
+  expect(new Date(date!).toISOString()).toBe(date);
 }
 
 /**
  * Assert createdAt and updatedAt are set
  */
 export function expectTimestamps(item: StoreItem): void {
-  expectTimestamp(item.createdAt as Date | string | undefined);
-  expectTimestamp(item.updatedAt as Date | string | undefined);
+  expectTimestamp(item.createdAt);
+  expectTimestamp(item.updatedAt);
 }
 
 /**

@@ -14,3 +14,5 @@ export interface CreateProjectInput {
   description: string;
   isDefault?: boolean;
 }
+
+export type UpdateProjectInput = Partial<CreateProjectInput>;
