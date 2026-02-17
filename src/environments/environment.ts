@@ -1,12 +1,5 @@
-export interface Environment {
-  production: boolean;
-  apiBaseUrl: string;
-  keycloak: {
-    url: string;
-    realm: string;
-    clientId: string;
-  };
-}
+export type { Environment } from './environment.model';
+import type { Environment } from './environment.model';
 
 export const environment: Environment = {
   production: false,
