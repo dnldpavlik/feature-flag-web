@@ -162,6 +162,26 @@ describe('AuditStore', () => {
     });
   });
 
+  describe('setLoading', () => {
+    it('should set loading state', () => {
+      store.setLoading(true);
+      expect(store.loading()).toBe(true);
+
+      store.setLoading(false);
+      expect(store.loading()).toBe(false);
+    });
+  });
+
+  describe('setError', () => {
+    it('should set error state', () => {
+      store.setError('Test error');
+      expect(store.error()).toBe('Test error');
+
+      store.setError(null);
+      expect(store.error()).toBeNull();
+    });
+  });
+
   describe('error handling', () => {
     let toastService: ToastService;
     let auditApi: AuditApi;

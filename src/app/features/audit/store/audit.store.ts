@@ -53,4 +53,12 @@ export class AuditStore {
   entriesByResourceType(resourceType: AuditResourceType): AuditEntry[] {
     return this._entries().filter((entry) => entry.resourceType === resourceType);
   }
+
+  setLoading(loading: boolean): void {
+    this._loading.set(loading);
+  }
+
+  setError(error: string | null): void {
+    this._error.set(error);
+  }
 }

@@ -4,60 +4,66 @@
     description="Track all changes to flags, environments, projects, and segments."
   />
 
-  <div class="audit-page__toolbar-row">
-    <ui-toolbar>
-      <ng-container toolbar-filters>
-        <ui-labeled-select
-          label="Action"
-          [options]="actionOptions"
-          [value]="actionFilter()"
-          (valueChange)="onActionChange($event)"
-        />
-        <ui-labeled-select
-          label="Resource"
-          [options]="resourceOptions"
-          [value]="resourceFilter()"
-          (valueChange)="onResourceChange($event)"
-        />
-      </ng-container>
-    </ui-toolbar>
-    <span class="audit-page__count text-muted">
-      {{ filteredCount() }} of {{ totalCount() }} entries
-    </span>
-  </div>
-
-  @if (filteredEntries().length === 0) {
-    <ui-empty-state
-      title="No audit entries found"
-      message="Try adjusting your filters or search query."
-    >
-    </ui-empty-state>
+  @if (loading()) {
+    <ui-loading-spinner label="Loading audit entries..." />
+  } @else if (error()) {
+    <ui-error-banner [message]="error()!" (retry)="retry()" />
   } @else {
-    <ui-data-table
-      [items]="filteredEntries()"
-      ariaLabel="Audit log"
-      emptyText="No audit entries match."
-    >
-      <ng-template uiCol="timestamp" header="Timestamp" width="20%" let-entry>
-        <span class="audit-cell audit-cell--timestamp text-muted">{{
-          entry.timestamp | date: 'medium'
-        }}</span>
-      </ng-template>
-      <ng-template uiCol="action" header="Action" width="12%" let-entry>
-        <app-audit-badge [variant]="entry.action">{{ entry.formattedAction }}</app-audit-badge>
-      </ng-template>
-      <ng-template uiCol="resource" header="Resource" width="24%" let-entry>
-        <div class="audit-cell audit-cell--resource">
-          <ui-badge variant="info">{{ entry.formattedResourceType }}</ui-badge>
-          <span class="audit-cell__name">{{ entry.resourceName }}</span>
-        </div>
-      </ng-template>
-      <ng-template uiCol="userName" header="User" width="15%" let-entry>
-        <span>{{ entry.userName }}</span>
-      </ng-template>
-      <ng-template uiCol="details" header="Details" width="29%" [sortable]="false" let-entry>
-        <span class="audit-cell audit-cell--details text-secondary">{{ entry.details }}</span>
-      </ng-template>
-    </ui-data-table>
+    <div class="audit-page__toolbar-row">
+      <ui-toolbar>
+        <ng-container toolbar-filters>
+          <ui-labeled-select
+            label="Action"
+            [options]="actionOptions"
+            [value]="actionFilter()"
+            (valueChange)="onActionChange($event)"
+          />
+          <ui-labeled-select
+            label="Resource"
+            [options]="resourceOptions"
+            [value]="resourceFilter()"
+            (valueChange)="onResourceChange($event)"
+          />
+        </ng-container>
+      </ui-toolbar>
+      <span class="audit-page__count text-muted">
+        {{ filteredCount() }} of {{ totalCount() }} entries
+      </span>
+    </div>
+
+    @if (filteredEntries().length === 0) {
+      <ui-empty-state
+        title="No audit entries found"
+        message="Try adjusting your filters or search query."
+      >
+      </ui-empty-state>
+    } @else {
+      <ui-data-table
+        [items]="filteredEntries()"
+        ariaLabel="Audit log"
+        emptyText="No audit entries match."
+      >
+        <ng-template uiCol="timestamp" header="Timestamp" width="20%" let-entry>
+          <span class="audit-cell audit-cell--timestamp text-muted">{{
+            entry.timestamp | date: 'medium'
+          }}</span>
+        </ng-template>
+        <ng-template uiCol="action" header="Action" width="12%" let-entry>
+          <app-audit-badge [variant]="entry.action">{{ entry.formattedAction }}</app-audit-badge>
+        </ng-template>
+        <ng-template uiCol="resource" header="Resource" width="24%" let-entry>
+          <div class="audit-cell audit-cell--resource">
+            <ui-badge variant="info">{{ entry.formattedResourceType }}</ui-badge>
+            <span class="audit-cell__name">{{ entry.resourceName }}</span>
+          </div>
+        </ng-template>
+        <ng-template uiCol="userName" header="User" width="15%" let-entry>
+          <span>{{ entry.userName }}</span>
+        </ng-template>
+        <ng-template uiCol="details" header="Details" width="29%" [sortable]="false" let-entry>
+          <span class="audit-cell audit-cell--details text-secondary">{{ entry.details }}</span>
+        </ng-template>
+      </ui-data-table>
+    }
   }
 </section>

@@ -6,6 +6,8 @@ import {
   DataTableComponent,
   UiColDirective,
   EmptyStateComponent,
+  ErrorBannerComponent,
+  LoadingSpinnerComponent,
   PageHeaderComponent,
   ToolbarComponent,
   LabeledSelectComponent,
@@ -28,7 +30,9 @@ const capitalize = (str: string): string => str.charAt(0).toUpperCase() + str.sl
     DataTableComponent,
     UiColDirective,
     EmptyStateComponent,
+    ErrorBannerComponent,
     LabeledSelectComponent,
+    LoadingSpinnerComponent,
     PageHeaderComponent,
     ToolbarComponent,
   ],
@@ -40,6 +44,8 @@ export class AuditListComponent {
   private readonly auditStore = inject(AuditStore);
   private readonly searchStore = inject(SearchStore);
 
+  protected readonly loading = this.auditStore.loading;
+  protected readonly error = this.auditStore.error;
   protected readonly actionOptions = AUDIT_ACTION_OPTIONS;
   protected readonly resourceOptions = AUDIT_RESOURCE_OPTIONS;
 
@@ -78,5 +84,9 @@ export class AuditListComponent {
 
   protected onResourceChange(value: string): void {
     this.resourceFilter.set(value as ResourceFilter);
+  }
+
+  retry(): void {
+    void this.auditStore.loadEntries();
   }
 }

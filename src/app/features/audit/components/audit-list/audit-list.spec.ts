@@ -196,6 +196,44 @@ describe('AuditList', () => {
     });
   });
 
+  describe('loading state', () => {
+    it('should show loading spinner when loading', () => {
+      auditStore.setLoading(true);
+      fixture.detectChanges();
+
+      const spinner = query(fixture, 'ui-loading-spinner');
+      expect(spinner).toBeTruthy();
+    });
+
+    it('should hide data table when loading', () => {
+      auditStore.setLoading(true);
+      fixture.detectChanges();
+
+      const table = query(fixture, 'ui-data-table');
+      expect(table).toBeFalsy();
+    });
+  });
+
+  describe('error state', () => {
+    it('should show error banner on error', () => {
+      auditStore.setError('Failed to load audit entries');
+      fixture.detectChanges();
+
+      const banner = query(fixture, 'ui-error-banner');
+      expect(banner).toBeTruthy();
+    });
+
+    it('should retry loading on error banner click', () => {
+      auditStore.setError('Failed to load audit entries');
+      fixture.detectChanges();
+
+      const retrySpy = jest.spyOn(auditStore, 'loadEntries').mockResolvedValue();
+      component.retry();
+
+      expect(retrySpy).toHaveBeenCalled();
+    });
+  });
+
   describe('empty states', () => {
     it('should show empty state when no matches found', () => {
       searchStore.setQuery('zzzz-no-match');
