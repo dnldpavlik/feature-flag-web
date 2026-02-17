@@ -11,12 +11,12 @@ import { MOCK_API_PROVIDERS } from '@/app/testing';
 describe('FlagCreate', () => {
   let fixture: ComponentFixture<FlagCreateComponent>;
   let component: FlagCreateComponent;
-  let store: { addFlag: jest.Mock };
+  let store: { addFlag: jest.Mock<Promise<void>> };
   let projectStore: ProjectStore;
   let router: Router;
 
   beforeEach(async () => {
-    store = { addFlag: jest.fn() };
+    store = { addFlag: jest.fn().mockResolvedValue(undefined) };
 
     await TestBed.configureTestingModule({
       imports: [FlagCreateComponent],
@@ -45,7 +45,7 @@ describe('FlagCreate', () => {
   });
 
   describe('boolean flag creation', () => {
-    it('should add a boolean flag with default value', () => {
+    it('should add a boolean flag with default value', async () => {
       const navigateSpy = jest.spyOn(router, 'navigate').mockResolvedValue(true);
       component.form.patchValue({
         name: 'New Flag',
@@ -56,7 +56,7 @@ describe('FlagCreate', () => {
         tags: 'core, beta',
       });
 
-      component.createFlag();
+      await component.createFlag();
 
       expect(store.addFlag).toHaveBeenCalledWith(
         {
@@ -74,14 +74,14 @@ describe('FlagCreate', () => {
       expect(navigateSpy).toHaveBeenCalledWith(['/flags']);
     });
 
-    it('should default boolean value to false', () => {
+    it('should default boolean value to false', async () => {
       jest.spyOn(router, 'navigate').mockResolvedValue(true);
       component.form.patchValue({
         name: 'Test Flag',
         type: 'boolean',
       });
 
-      component.createFlag();
+      await component.createFlag();
 
       expect(store.addFlag).toHaveBeenCalledWith(
         expect.objectContaining({ defaultValue: false }),
@@ -89,7 +89,7 @@ describe('FlagCreate', () => {
       );
     });
 
-    it('should use the selected project when creating a flag', () => {
+    it('should use the selected project when creating a flag', async () => {
       jest.spyOn(router, 'navigate').mockResolvedValue(true);
       projectStore.selectProject('proj_growth');
       component.form.patchValue({
@@ -97,7 +97,7 @@ describe('FlagCreate', () => {
         type: 'boolean',
       });
 
-      component.createFlag();
+      await component.createFlag();
 
       expect(store.addFlag).toHaveBeenCalledWith(
         expect.objectContaining({ projectId: 'proj_growth' }),
@@ -107,7 +107,7 @@ describe('FlagCreate', () => {
   });
 
   describe('string flag creation', () => {
-    it('should add a string flag with default value', () => {
+    it('should add a string flag with default value', async () => {
       jest.spyOn(router, 'navigate').mockResolvedValue(true);
       component.form.patchValue({
         name: 'String Flag',
@@ -115,7 +115,7 @@ describe('FlagCreate', () => {
         stringValue: 'hello world',
       });
 
-      component.createFlag();
+      await component.createFlag();
 
       expect(store.addFlag).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -128,7 +128,7 @@ describe('FlagCreate', () => {
   });
 
   describe('number flag creation', () => {
-    it('should add a number flag with default value', () => {
+    it('should add a number flag with default value', async () => {
       jest.spyOn(router, 'navigate').mockResolvedValue(true);
       component.form.patchValue({
         name: 'Number Flag',
@@ -136,7 +136,7 @@ describe('FlagCreate', () => {
         numberValue: 42,
       });
 
-      component.createFlag();
+      await component.createFlag();
 
       expect(store.addFlag).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -149,7 +149,7 @@ describe('FlagCreate', () => {
   });
 
   describe('json flag creation', () => {
-    it('should add a json flag with default value', () => {
+    it('should add a json flag with default value', async () => {
       jest.spyOn(router, 'navigate').mockResolvedValue(true);
       component.form.patchValue({
         name: 'JSON Flag',
@@ -157,7 +157,7 @@ describe('FlagCreate', () => {
         jsonValue: '{"key": "value"}',
       });
 
-      component.createFlag();
+      await component.createFlag();
 
       expect(store.addFlag).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -232,14 +232,14 @@ describe('FlagCreate', () => {
     expect(navigateSpy).not.toHaveBeenCalled();
   });
 
-  it('should derive a key when none is provided', () => {
+  it('should derive a key when none is provided', async () => {
     jest.spyOn(router, 'navigate').mockResolvedValue(true);
     component.form.patchValue({
       name: 'My Flag',
       key: '',
     });
 
-    component.createFlag();
+    await component.createFlag();
 
     expect(store.addFlag).toHaveBeenCalledWith(
       expect.objectContaining({ key: 'my-flag' }),
@@ -291,13 +291,13 @@ describe('FlagCreate', () => {
       expect(prodEnv?.enabled).toBe(false);
     });
 
-    it('should pass enabled environments to store', () => {
+    it('should pass enabled environments to store', async () => {
       jest.spyOn(router, 'navigate').mockResolvedValue(true);
       component.form.controls.name.setValue('Test Flag');
       component.toggleEnvironment('env_development', true);
       component.toggleEnvironment('env_production', true);
 
-      component.createFlag();
+      await component.createFlag();
 
       expect(store.addFlag).toHaveBeenCalledWith(expect.any(Object), {
         env_development: true,

@@ -87,7 +87,7 @@ export class FlagCreateComponent {
     this.form.controls.type.setValue(newType);
   }
 
-  protected createFlag(): void {
+  protected async createFlag(): Promise<void> {
     const formData = this.form.getRawValue();
     const trimmedName = formData.name.trim();
     const resolvedKey = formData.key.trim() || toKey(trimmedName);
@@ -112,7 +112,7 @@ export class FlagCreateComponent {
       defaultValue: result.value,
     });
 
-    this.store.addFlag(input, this._enabledEnvironments());
+    await this.store.addFlag(input, this._enabledEnvironments());
     void this.router.navigate(['/flags']);
   }
 
