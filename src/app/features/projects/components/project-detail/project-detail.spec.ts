@@ -83,6 +83,18 @@ describe('ProjectDetail', () => {
     expect(navSpy).toHaveBeenCalledWith(['/projects']);
   });
 
+  it('should not clean up flags or navigate when delete fails', async () => {
+    await build('proj_growth');
+    jest.spyOn(store, 'deleteProject').mockResolvedValue(false);
+    const removeFlagsSpy = jest.spyOn(flagStore, 'removeFlagsByProjectId');
+    const navSpy = jest.spyOn(router, 'navigate').mockResolvedValue(true);
+
+    await fixture.componentInstance.deleteProject();
+
+    expect(removeFlagsSpy).not.toHaveBeenCalled();
+    expect(navSpy).not.toHaveBeenCalled();
+  });
+
   it('should navigate back to list', async () => {
     await build('proj_default');
     const navSpy = jest.spyOn(router, 'navigate').mockResolvedValue(true);

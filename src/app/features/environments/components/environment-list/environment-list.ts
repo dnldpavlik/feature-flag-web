@@ -70,7 +70,7 @@ export class EnvironmentListComponent {
 
   protected readonly canAdd = computed(() => {
     const val = this.formValue();
-    return (val.name?.trim() ?? '').length > 0 && (val.key?.trim() ?? '').length > 0;
+    return String(val.name).trim().length > 0 && String(val.key).trim().length > 0;
   });
 
   protected async addEnvironment(): Promise<void> {
