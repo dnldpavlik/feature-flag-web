@@ -4,13 +4,16 @@ import { signal, Component } from '@angular/core';
 import Keycloak from 'keycloak-js';
 import { KEYCLOAK_EVENT_SIGNAL, KeycloakEventType, KeycloakEvent } from 'keycloak-angular';
 
+import { AuthService } from './auth.service';
 import { roleGuard } from './role.guard';
 
 @Component({ template: '' })
 class DummyComponent {}
 
 describe('roleGuard', () => {
-  function setup(roles: { clientRoles?: string[]; realmRoles?: string[] } = {}) {
+  function setup(
+    roles: { clientRoles?: string[]; realmRoles?: string[]; undefinedRealmAccess?: boolean } = {},
+  ) {
     const mockKeycloak: Partial<Keycloak> = {
       authenticated: true,
       login: jest.fn().mockResolvedValue(undefined),
@@ -22,7 +25,7 @@ describe('roleGuard', () => {
         lastName: 'User',
       }),
       resourceAccess: roles.clientRoles ? { 'feature-flags-ui': { roles: roles.clientRoles } } : {},
-      realmAccess: { roles: roles.realmRoles ?? [] },
+      realmAccess: roles.undefinedRealmAccess ? undefined : { roles: roles.realmRoles ?? [] },
     };
     const eventSignal = signal<KeycloakEvent>({
       type: KeycloakEventType.AuthSuccess,
@@ -49,7 +52,8 @@ describe('roleGuard', () => {
       ],
     });
 
-    // Flush initial effects so AuthService loads roles from mock
+    // Ensure AuthService is created and its constructor effect loads roles
+    TestBed.inject(AuthService);
     TestBed.flushEffects();
 
     return TestBed.inject(Router);
@@ -74,9 +78,7 @@ describe('roleGuard', () => {
   });
 
   it('should allow access when user has role and realmAccess is undefined', async () => {
-    const router = setup({ clientRoles: ['admin'] });
-    const keycloak = TestBed.inject(Keycloak);
-    (keycloak as Partial<Keycloak>).realmAccess = undefined;
+    const router = setup({ clientRoles: ['admin'], undefinedRealmAccess: true });
     await router.navigateByUrl('/admin');
     expect(router.url).toBe('/admin');
   });

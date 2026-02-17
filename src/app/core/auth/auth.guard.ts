@@ -1,12 +1,13 @@
 import { inject } from '@angular/core';
 import { CanActivateFn } from '@angular/router';
-import Keycloak from 'keycloak-js';
+
+import { AuthService } from './auth.service';
 
 export const authGuard: CanActivateFn = async () => {
-  const keycloak = inject(Keycloak);
+  const authService = inject(AuthService);
 
-  if (!keycloak.authenticated) {
-    await keycloak.login();
+  if (!authService.isAuthenticated()) {
+    await authService.login();
     return false;
   }
 

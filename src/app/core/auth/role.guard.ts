@@ -1,11 +1,10 @@
 import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
-import Keycloak from 'keycloak-js';
 
-import { environment } from '@/environments/environment';
+import { AuthService } from './auth.service';
 
 export const roleGuard: CanActivateFn = (route) => {
-  const keycloak = inject(Keycloak);
+  const authService = inject(AuthService);
   const router = inject(Router);
   const requiredRole = route.data['role'] as string | undefined;
 
@@ -13,12 +12,7 @@ export const roleGuard: CanActivateFn = (route) => {
     return true;
   }
 
-  const clientId = environment.keycloak.clientId;
-  const clientRoles = keycloak.resourceAccess?.[clientId]?.roles ?? [];
-  const realmRoles = keycloak.realmAccess?.roles ?? [];
-  const allRoles = [...realmRoles, ...clientRoles];
-
-  if (allRoles.includes(requiredRole)) {
+  if (authService.hasRole(requiredRole)) {
     return true;
   }
 
