@@ -7,7 +7,6 @@ import { FlagType } from '@/app/features/flags/models/flag.model';
 import { query, expectExists, expectNotExists } from '@/app/testing';
 
 @Component({
-  standalone: true,
   imports: [FlagValueInputComponent],
   template: `
     <app-flag-value-input
