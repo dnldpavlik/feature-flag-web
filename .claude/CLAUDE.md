@@ -186,7 +186,7 @@ export abstract class CrudApi<T, C, U> {
   getAll(): Observable<T[]> { return this.http.get<T[]>(this.resourceUrl); }
   getById(id: string): Observable<T> { return this.http.get<T>(`${this.resourceUrl}/${id}`); }
   create(input: C): Observable<T> { return this.http.post<T>(this.resourceUrl, input); }
-  update(id: string, input: U): Observable<T> { return this.http.put<T>(`${this.resourceUrl}/${id}`, input); }
+  update(id: string, input: U): Observable<T> { return this.http.patch<T>(`${this.resourceUrl}/${id}`, input); }
   delete(id: string): Observable<void> { return this.http.delete<void>(`${this.resourceUrl}/${id}`); }
 }
 ```
@@ -244,10 +244,10 @@ private readonly keycloak = inject(Keycloak);
 private readonly keycloakSignal = inject(KEYCLOAK_EVENT_SIGNAL);
 
 // Reactive signals
-readonly isAuthenticated = signal(false);
-readonly userProfile = signal<UserProfile | null>(null);
-readonly roles = signal<string[]>([]);
-readonly token = signal<string | undefined>(undefined);
+readonly isAuthenticated = computed(() => ...);  // Derived from KEYCLOAK_EVENT_SIGNAL
+readonly userProfile = computed(() => ...);      // Private _userProfile signal
+readonly roles = computed(() => ...);            // Private _roles signal
+readonly token = computed(() => this.keycloak.token);
 
 // Convenience methods
 hasRole(role: string): boolean;
@@ -262,10 +262,19 @@ logout(): Promise<void>;
 
 ```typescript
 // authGuard — redirects to Keycloak login if not authenticated
-export const authGuard = createAuthGuard<CanActivateFn>(isAuthenticated);
+export const authGuard: CanActivateFn = async () => {
+  const authService = inject(AuthService);
+  if (!authService.isAuthenticated()) { await authService.login(); return false; }
+  return true;
+};
 
 // roleGuard — checks client roles from route data, redirects to /dashboard
-export const roleGuard = createAuthGuard<CanActivateFn>(hasRequiredRole);
+export const roleGuard: CanActivateFn = (route) => {
+  const authService = inject(AuthService);
+  const requiredRole = route.data['role'] as string | undefined;
+  if (!requiredRole) return true;
+  return authService.hasRole(requiredRole) ? true : inject(Router).createUrlTree(['/dashboard']);
+};
 
 // Route config
 { path: 'environments', canActivate: [authGuard, roleGuard], data: { role: 'admin' } }
@@ -475,32 +484,32 @@ await expect(this.itemRow(name)).toBeVisible({ timeout: 15000 });
 
 22 shared UI components are provided by the `@watt/ui` npm package (private GitLab registry). Components use `ui-*` selector prefix.
 
-**Import pattern:** `import { ButtonComponent } from '@watt/ui/button';`
+**Import pattern:** All imports from root — `import { ButtonComponent, ToastService } from '@watt/ui';` (NO subpath exports)
 
-| Component | Import Path | Selector | Key Features |
-|-----------|------------|----------|-------------|
-| `button` | `@watt/ui/button` | `ui-button` | Variants: primary/secondary/ghost/danger. Sizes: sm/md/lg. Loading state. |
-| `card` | `@watt/ui/card` | `ui-card` | Content projection. Padding variants: none/sm/md/lg. |
-| `badge` | `@watt/ui/badge` | `ui-badge` | Variants: success/warning/error/info. Dismissible. |
-| `data-table` | `@watt/ui/data-table` | `ui-data-table` | Generic `<T>`, sortable columns via `UiColDirective`, content children. |
-| `form-field` | `@watt/ui/form-field` | `ui-form-field` | ControlValueAccessor. Types: text/email/password/number/color/textarea. |
-| `toggle` | `@watt/ui/toggle` | `ui-toggle` | Checked/label/disabled inputs. Emits `toggled` output. |
-| `toast` | `@watt/ui/toast` | `ui-toast` | ToastService: success/error/warning/info. Auto-dismiss. |
-| `empty-state` | `@watt/ui/empty-state` | `ui-empty-state` | Icon + title + message + action slot. Size variants. |
-| `loading-spinner` | `@watt/ui/loading-spinner` | `ui-loading-spinner` | Sizes: sm/md/lg. Optional label. |
-| `search-input` | `@watt/ui/search-input` | `ui-search-input` | Debounced search with clear button. |
-| `select-field` | `@watt/ui/select-field` | `ui-select-field` | Native select with label integration (for forms). |
-| `labeled-select` | `@watt/ui/labeled-select` | `ui-labeled-select` | Compact select (for toolbars/filters). |
-| `tabs` | `@watt/ui/tabs` | `ui-tabs` | Tab navigation component. |
-| `toolbar` | `@watt/ui/toolbar` | `ui-toolbar` | Toolbar container for page actions. |
-| `breadcrumb` | `@watt/ui/breadcrumb` | `ui-breadcrumb` | Route-aware breadcrumb with selectors. |
-| `page-header` | `@watt/ui/page-header` | `ui-page-header` | Page title + description container. |
-| `icon` | `@watt/ui/icon` | `ui-icon` | SVG icon system with `IconName` type. |
-| `nav-item` | `@watt/ui/nav-item` | `ui-nav-item` | Sidebar navigation link. |
-| `nav-section` | `@watt/ui/nav-section` | `ui-nav-section` | Grouped navigation section. |
-| `stat-card` | `@watt/ui/stat-card` | `ui-stat-card` | Dashboard statistics display. |
-| `user-menu` | `@watt/ui/user-menu` | `ui-user-menu` | Profile dropdown in sidebar footer. |
-| `error-banner` | `@watt/ui/error-banner` | `ui-error-banner` | Error display banner. |
+| Component | Selector | Key Features |
+|-----------|----------|-------------|
+| `ButtonComponent` | `ui-button` | Variants: primary/secondary/ghost/danger. Sizes: sm/md/lg. Loading state. |
+| `CardComponent` | `ui-card` | Content projection. Padding variants: none/sm/md/lg. |
+| `BadgeComponent` | `ui-badge` | Variants: success/warning/error/info. Dismissible. |
+| `DataTableComponent` | `ui-data-table` | Generic `<T>`, sortable columns via `UiColDirective`, content children. |
+| `FormFieldComponent` | `ui-form-field` | ControlValueAccessor. Types: text/email/password/number/color/textarea. |
+| `ToggleComponent` | `ui-toggle` | Checked/label/disabled inputs. Emits `toggled` output. |
+| `ToastService` | `ui-toast` | ToastService: success/error/warning/info. Auto-dismiss. |
+| `EmptyStateComponent` | `ui-empty-state` | Icon + title + message + action slot. Size variants. |
+| `LoadingSpinnerComponent` | `ui-loading-spinner` | Sizes: sm/md/lg. Optional label. |
+| `SearchInputComponent` | `ui-search-input` | Debounced search with clear button. |
+| `SelectFieldComponent` | `ui-select-field` | Native select with label integration (for forms). |
+| `LabeledSelectComponent` | `ui-labeled-select` | Compact select (for toolbars/filters). |
+| `TabsComponent` | `ui-tabs` | Tab navigation component. |
+| `ToolbarComponent` | `ui-toolbar` | Toolbar container for page actions. |
+| `BreadcrumbComponent` | `ui-breadcrumb` | Route-aware breadcrumb with selectors. |
+| `PageHeaderComponent` | `ui-page-header` | Page title + description container. |
+| `IconComponent` | `ui-icon` | SVG icon system with `IconName` type. |
+| `NavItemComponent` | `ui-nav-item` | Sidebar navigation link. |
+| `NavSectionComponent` | `ui-nav-section` | Grouped navigation section. |
+| `StatCardComponent` | `ui-stat-card` | Dashboard statistics display. |
+| `UserMenuComponent` | `ui-user-menu` | Profile dropdown in sidebar footer. Emits `menuToggle`. |
+| `ErrorBannerComponent` | `ui-error-banner` | Error display banner with retry. |
 
 ### Local-Only Components
 
