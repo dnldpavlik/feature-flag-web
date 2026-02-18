@@ -116,7 +116,7 @@ export class FlagDetailComponent {
     });
   }
 
-  protected saveDetails(): void {
+  protected async saveDetails(): Promise<void> {
     const current = this.flag();
     if (!current) {
       return;
@@ -130,7 +130,7 @@ export class FlagDetailComponent {
     }
     this.jsonError.set(null);
 
-    this.store.updateFlagDetails(current.id, {
+    await this.store.updateFlagDetails(current.id, {
       name: formData.name.trim() || current.name,
       description: formData.description.trim(),
       tags: parseTags(formData.tags),

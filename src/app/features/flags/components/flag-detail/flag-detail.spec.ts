@@ -79,8 +79,7 @@ describe('FlagDetail', () => {
       tags: 'alpha, beta',
     });
 
-    component.saveDetails();
-    await fixture.whenStable();
+    await component.saveDetails();
 
     const updated = store.getFlagById('flag_new_checkout');
     expect(updated?.name).toBe('Updated Flag');
@@ -93,7 +92,7 @@ describe('FlagDetail', () => {
 
     const original = store.getFlagById('flag_new_checkout');
     setFormField(component, 'name', '  ');
-    component.saveDetails();
+    await component.saveDetails();
 
     const updated = store.getFlagById('flag_new_checkout');
     expect(updated?.name).toBe(original?.name);
@@ -105,8 +104,7 @@ describe('FlagDetail', () => {
     fixture.detectChanges();
 
     setFormField(component, 'jsonValue', '{"limit": 5}');
-    component.saveDetails();
-    await fixture.whenStable();
+    await component.saveDetails();
 
     const updated = store.getFlagById('flag_checkout_guardrails');
     expect(updated?.defaultValue).toEqual({ limit: 5 });
@@ -200,8 +198,7 @@ describe('FlagDetail', () => {
     await build('flag_beta_theme');
 
     setFormField(component, 'stringValue', 'new-default');
-    component.saveDetails();
-    await fixture.whenStable();
+    await component.saveDetails();
 
     const updated = store.getFlagById('flag_beta_theme');
     expect(updated?.defaultValue).toBe('new-default');
@@ -213,8 +210,7 @@ describe('FlagDetail', () => {
     fixture.detectChanges();
 
     setFormField(component, 'numberValue', 9);
-    component.saveDetails();
-    await fixture.whenStable();
+    await component.saveDetails();
 
     const updated = store.getFlagById('flag_search_boost');
     expect(updated?.defaultValue).toBe(9);
@@ -224,8 +220,7 @@ describe('FlagDetail', () => {
     await build('flag_new_checkout');
 
     setFormField(component, 'booleanValue', true);
-    component.saveDetails();
-    await fixture.whenStable();
+    await component.saveDetails();
 
     const updated = store.getFlagById('flag_new_checkout');
     expect(updated?.defaultValue).toBe(true);
@@ -238,7 +233,7 @@ describe('FlagDetail', () => {
 
     const original = store.getFlagById('flag_checkout_guardrails');
     setFormField(component, 'jsonValue', 'invalid json');
-    component.saveDetails();
+    await component.saveDetails();
 
     const updated = store.getFlagById('flag_checkout_guardrails');
     expect(updated?.defaultValue).toEqual(original?.defaultValue);
@@ -251,7 +246,7 @@ describe('FlagDetail', () => {
     fixture.detectChanges();
 
     setFormField(component, 'jsonValue', '[1, 2, 3]');
-    component.saveDetails();
+    await component.saveDetails();
 
     expect(component.jsonError()).toBe('JSON must be an object');
   });
@@ -383,7 +378,7 @@ describe('FlagDetail', () => {
     const toggleSpy = jest.spyOn(store, 'toggleFlagInEnvironment');
     const envSpy = jest.spyOn(store, 'updateEnvironmentValue');
 
-    component.saveDetails();
+    await component.saveDetails();
     component.toggleEnvironment('env_development', true);
     component.updateEnvironmentValue('env_development', 'true');
 
