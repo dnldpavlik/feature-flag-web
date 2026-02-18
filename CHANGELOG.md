@@ -1,3 +1,13 @@
+# [1.1.0](https://gitlab.donpavlik.com:7696/dnldpavlik/feature-flag-web/compare/v1.0.0...v1.1.0) (2026-02-18)
+
+
+### Features
+
+* **docker:** add API reverse proxy to nginx config ([12a66b2](https://gitlab.donpavlik.com:7696/dnldpavlik/feature-flag-web/commit/12a66b21ff2ea62be4b314dc4e2328672d5b087c))
+* **docker:** add runtime Keycloak URL substitution via entrypoint script ([5d37171](https://gitlab.donpavlik.com:7696/dnldpavlik/feature-flag-web/commit/5d37171efb0e82ce976edea4e8405395b5ba21e4))
+
+
+
 # 1.0.0 (2026-02-18)
 
 
