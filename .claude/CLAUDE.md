@@ -72,7 +72,7 @@ src/
 ├── styles.scss                      # Global reset, typography, base styles, scrollbar
 └── environments/
     ├── environment.ts               # Dev config (tracked in git - no secrets)
-    └── environment.prod.ts          # Prod config (gitignored)
+    └── environment.prod.ts          # Prod config (tracked in git - no secrets, needed for CI builds)
 ```
 
 ## Component Patterns
@@ -541,7 +541,7 @@ install → lint (TS + SCSS parallel) → test:unit → build → build:docker �
 ```
 
 - **Cache:** `package-lock.json` as key, `node_modules/` path
-- **Docker:** Kaniko builds (no daemon), tagged by commit SHA + latest
+- **Docker:** Kaniko builds (no daemon), semantic tagging: branch → `sha-<8char>` + `latest`; version tag (`v*`) → `<semver>` + `latest`
 - **Security:** Snyk weekly scans (dependencies, code, IaC) - requires `SNYK_TOKEN`
 - **E2E:** Conditional on `E2E_BASE_URL` being set; smoke → journeys → regression → cross-browser
 
@@ -566,6 +566,16 @@ install → lint (TS + SCSS parallel) → test:unit → build → build:docker �
 - Volume mounts project root, isolates `node_modules`
 - VS Code extensions pre-configured (16 extensions)
 - Auto-starts `ng serve` on port 4200
+
+## Scripts
+
+| Script | Purpose | Usage |
+|--------|---------|-------|
+| `scripts/release.js` | Version bump + changelog + git tag | `node scripts/release.js <patch\|minor\|major\|x.y.z> [--push]` |
+| `scripts/registry-tags.sh` | List GitLab container registry tags | `./scripts/registry-tags.sh [project-id\|all]` |
+| `scripts/patch-watt-ui.cjs` | Postinstall: strip test helpers from @watt/ui bundle | Runs automatically via `npm postinstall` |
+
+**Proxy configuration:** `proxy.conf.mjs` — environment-aware (`DEVCONTAINER` env var → `host.docker.internal` vs `localhost`) for `/api` → backend.
 
 ## File Naming Conventions
 
@@ -610,6 +620,8 @@ npm run build               # Production build
 ## Git Workflow
 
 Conventional commits: `feat:`, `fix:`, `test:`, `refactor:`, `docs:`, `chore:`
+
+**Releases:** `node scripts/release.js <version> [--push]` — bumps `package.json`, generates `CHANGELOG.md` via `conventional-changelog-cli`, commits as `chore(release): vX.Y.Z`, creates git tag. Version tags trigger CI to build Docker images with semantic tags. Current version: **v1.0.0**.
 
 ## DO NOT
 
@@ -658,7 +670,8 @@ Before considering any task complete:
 
 ## Last Analysis
 
-- **Date:** 2026-02-17
-- **Patterns extracted:** 67 design tokens, 22 UI components, 11 stores, 10 utility modules
+- **Date:** 2026-02-18
+- **Version:** v1.0.0
+- **Patterns extracted:** 67 design tokens, 22 UI components, 11 stores, 10 utility modules, 3 scripts
 - **Skills active:** tdd, solid, angular-component, angular-store, code-review, weekly-review, gitlab-ci, docker-security, continuous-learning, session-retrospective, workflow-coach, commit
 - **Run history:** See `docs/LEARNING_LOG.md`

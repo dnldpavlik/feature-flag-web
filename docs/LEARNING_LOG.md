@@ -59,3 +59,49 @@ Entries are append-only — never overwrite or remove previous entries.
 - Patterns extracted: 25+ (store, component, SCSS, utility, auth, testing, CI/CD)
 - Skills created: 0 | Skills updated: 2 (angular-component, code-review/angular.md)
 - Anti-patterns flagged: 6 (undefined tokens, legacy aliases, nested BEM, weak typing, hardcoded values, unused parameter)
+
+---
+
+## Run: 2026-02-18 17:30
+
+**Trigger:** Post-feature: v1.0.0 release (web + API), semantic Docker tagging, release scripts, CI fixes
+
+### Changes Made
+- CLAUDE.md: Updated — 5 sections modified:
+  - Fixed `environment.prod.ts` description: "gitignored" → "tracked in git" (was fixed in commit `21d9a20`)
+  - Updated CI/CD Docker tagging: "commit SHA + latest" → semantic version tagging (sha on branch, semver on tag)
+  - Added new **Scripts** section documenting `release.js`, `registry-tags.sh`, `patch-watt-ui.cjs`
+  - Added proxy config documentation (`proxy.conf.mjs` — environment-aware)
+  - Added release/versioning info to Git Workflow section (v1.0.0, release script usage)
+  - Updated Last Analysis footer (date, version, metrics)
+- Skills: Updated 2 skills (via session retro earlier this session)
+  - `gitlab-ci` — added semantic Docker image tagging pattern with dynamic `$DESTINATIONS`
+  - `docker-security` — updated Kaniko section to reference semantic tagging
+- Template Manifest: Updated — 3 changes:
+  - Fixed `proxy.conf.json` → `proxy.conf.mjs` in project-specific files
+  - Added `scripts/release.js` as template candidate (Infrastructure section)
+  - Added `scripts/registry-tags.sh` and `scripts/patch-watt-ui.cjs` as project-specific
+  - Updated UI Component Library section to reflect @watt/ui migration (external package, not local files)
+
+### Patterns Extracted
+- **Semantic Docker image tagging** — Branch push → `sha-<8char>` + `latest`; version tag (`v*`) → `<semver>` (v prefix stripped) + `latest`. Consistent across web + API projects.
+- **Release script workflow** — `node scripts/release.js <version> [--push]` bumps package.json, generates changelog via `conventional-changelog-cli`, commits, tags. Used in 3 projects (watt-ui, web, API).
+- **Environment-aware proxy** — `proxy.conf.mjs` checks `DEVCONTAINER` env var to switch between `localhost` and `host.docker.internal`.
+- **Postinstall bundle patching** — `patch-watt-ui.cjs` strips leaked test helpers from @watt/ui production bundle to prevent build warnings.
+- **environment.prod.ts tracking** — Tracked in git (no secrets) so CI production builds succeed without file generation.
+
+### Gaps Identified
+1. **Same 6 gaps from 2026-02-17 run remain open** — undefined CSS tokens, spacing token underutilization, legacy radius aliases, nested BEM in 5 files, hardcoded switch in `getSectionLabel`, weak `JsonValidationResult` typing. None were addressed in this release-focused session.
+2. **No CHANGELOG.md in git** — `release.js` generates it but it's not committed yet (the v1.0.0 release committed it, but future releases need to ensure it stays tracked).
+
+### Recommendations
+1. **Address CSS token gaps from previous run** — The 6 undefined CSS custom properties and spacing token underutilization should be fixed in a dedicated session.
+2. **Consider extracting release script as Copier template** — The identical pattern across 3 projects is mature enough for template extraction. Better as a template variable than a standalone skill since it produces a file, not behavioral guidance.
+3. **Automate @watt/ui patch removal** — The `patch-watt-ui.cjs` workaround should be removed once the @watt/ui library is fixed upstream to not leak test helpers.
+
+### Metrics
+- Files analyzed: 220+ (via 3 parallel subagents covering structure/config, source patterns, test/styling)
+- Test coverage: 100% (1242 tests)
+- Patterns extracted: 5 new (semantic tagging, release script, env-aware proxy, postinstall patch, env.prod tracking)
+- Skills created: 0 | Skills updated: 2 (gitlab-ci, docker-security — via session retro)
+- Anti-patterns flagged: 0 new (6 carried forward from previous run)

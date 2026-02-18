@@ -55,6 +55,7 @@ Documents which files are **reusable boilerplate** (can be templated for new pro
 | `.snyk` | As-is | Snyk config |
 | `.husky/pre-commit` | As-is | Lint-staged + typecheck |
 | `.husky/pre-push` | As-is | Coverage + smoke tests |
+| `scripts/release.js` | Template `{{ project_slug }}` | Version bump + changelog + git tag |
 
 ### Core Application Scaffold (High Reuse)
 
@@ -78,31 +79,22 @@ Documents which files are **reusable boilerplate** (can be templated for new pro
 | `src/app/shared/utils/form.utils.ts` | As-is | Form validation helpers |
 | `src/app/shared/utils/id.utils.ts` | As-is | ID generation |
 
-### UI Component Library (High Reuse)
+### UI Component Library (@watt/ui — External Package)
 
-| Component | Reusable | Notes |
-|-----------|----------|-------|
-| `shared/ui/button/` | Yes | Variant/size system |
-| `shared/ui/card/` | Yes | Content projection + padding variants |
-| `shared/ui/badge/` | Yes | Status variant system |
-| `shared/ui/data-table/` | Yes | Generic sortable table |
-| `shared/ui/form-field/` | Yes | ControlValueAccessor |
-| `shared/ui/toggle/` | Yes | Checked/label/disabled |
-| `shared/ui/toast/` | Yes | Service + component |
-| `shared/ui/empty-state/` | Yes | Icon + title + action |
-| `shared/ui/loading-spinner/` | Yes | Size variants |
-| `shared/ui/search-input/` | Yes | Debounced search |
-| `shared/ui/select/` | Yes | Native select wrapper |
-| `shared/ui/tabs/` | Yes | Tab navigation |
-| `shared/ui/toolbar/` | Yes | Page action bar |
-| `shared/ui/breadcrumb/` | Partial | Route-specific selectors need customization |
-| `shared/ui/icon/` | Yes | Icon data needs customization |
-| `shared/ui/error-banner/` | Yes | Error display |
-| `shared/ui/page-header/` | Yes | Page title container |
-| `shared/ui/nav-item/` | Yes | Sidebar nav item |
-| `shared/ui/nav-section/` | Yes | Sidebar nav group |
-| `shared/ui/stat-card/` | Yes | Dashboard stat |
-| `shared/ui/user-menu/` | Yes | Profile dropdown |
+22 shared UI components have been extracted to `@watt/ui` npm package (private GitLab registry, project ID 7). This package is **fully reusable** across Angular projects via `npm install @watt/ui`.
+
+| Aspect | Details |
+|--------|---------|
+| Package | `@watt/ui@0.0.1` |
+| Registry | GitLab project-level npm registry |
+| Auth | `.npmrc` with `GITLAB_TOKEN` env var |
+| Import | Flat: `import { ButtonComponent } from '@watt/ui'` (no subpaths) |
+| Components | 22 total (button, card, badge, data-table, form-field, toggle, toast, etc.) |
+| Selectors | `ui-*` prefix |
+
+**Local-only components** (not in @watt/ui):
+- `shared/ui/logo-icon/` — App-specific branding SVG
+- `shared/ui/flags-empty-icon/` — App-specific empty state SVG
 
 ### Testing Utilities (High Reuse)
 
@@ -143,7 +135,9 @@ Documents which files are **reusable boilerplate** (can be templated for new pro
 | `src/app/layout/nav.config.ts` | App-specific navigation items |
 | `src/app/app.routes.ts` | App-specific route definitions |
 | `src/environments/environment.ts` | App-specific API + Keycloak config |
-| `proxy.conf.json` | App-specific backend proxy |
+| `proxy.conf.mjs` | App-specific backend proxy (environment-aware) |
+| `scripts/registry-tags.sh` | App-specific registry helper (uses GitLab project ID) |
+| `scripts/patch-watt-ui.cjs` | @watt/ui-specific postinstall workaround |
 | `docs/` | Project documentation |
 | `designs/` | UI/UX design artifacts |
 | `shared/ui/logo-icon/` | Brand-specific logo |
