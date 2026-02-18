@@ -55,12 +55,12 @@ export class EnvironmentDetailComponent {
   });
 
   // Edit state signals
-  protected readonly isEditing = signal(false);
+  readonly isEditing = signal(false);
   protected readonly editName = signal('');
   protected readonly editKey = signal('');
   protected readonly editColor = signal('');
 
-  protected enterEditMode(): void {
+  enterEditMode(): void {
     const env = this.environment();
     if (!env) {
       return;
@@ -76,7 +76,7 @@ export class EnvironmentDetailComponent {
     this.isEditing.set(false);
   }
 
-  protected async saveEdit(): Promise<void> {
+  async saveEdit(): Promise<void> {
     const env = this.environment();
     if (!env) {
       return;
@@ -104,7 +104,7 @@ export class EnvironmentDetailComponent {
     this.editColor.set(getInputValue(event));
   }
 
-  protected selectEnvironment(): void {
+  selectEnvironment(): void {
     const env = this.environment();
     if (!env) {
       return;
@@ -112,7 +112,7 @@ export class EnvironmentDetailComponent {
     this.environmentStore.selectEnvironment(env.id);
   }
 
-  protected makeDefault(): void {
+  makeDefault(): void {
     const env = this.environment();
     if (!env) {
       return;
@@ -120,11 +120,11 @@ export class EnvironmentDetailComponent {
     void this.environmentStore.setDefaultEnvironment(env.id);
   }
 
-  protected backToList(): void {
+  backToList(): void {
     void this.router.navigate(['/environments']);
   }
 
-  protected formatValue(value: unknown): string {
+  formatValue(value: unknown): string {
     return formatDisplayValue(value);
   }
 }

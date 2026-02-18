@@ -32,7 +32,7 @@ export class ProjectDetailComponent {
     return project?.id && project.id !== 'proj_default' && project.id !== this.selectedProjectId();
   });
 
-  protected selectProject(): void {
+  selectProject(): void {
     const project = this.project();
     if (!project) {
       return;
@@ -40,7 +40,7 @@ export class ProjectDetailComponent {
     this.projectStore.selectProject(project.id);
   }
 
-  protected makeDefault(): void {
+  makeDefault(): void {
     const project = this.project();
     if (!project) {
       return;
@@ -48,7 +48,7 @@ export class ProjectDetailComponent {
     void this.projectStore.setDefaultProject(project.id);
   }
 
-  protected async deleteProject(): Promise<void> {
+  async deleteProject(): Promise<void> {
     const project = this.project();
     if (!project) {
       return;
@@ -60,7 +60,7 @@ export class ProjectDetailComponent {
     }
   }
 
-  protected backToList(): void {
+  backToList(): void {
     void this.router.navigate(['/projects']);
   }
 }

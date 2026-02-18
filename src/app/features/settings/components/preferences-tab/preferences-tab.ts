@@ -20,20 +20,18 @@ export class PreferencesTabComponent {
     this.preferencesStore.projectPreferences(),
   );
 
-  protected readonly environmentOptions = computed((): SelectOption[] =>
+  readonly environmentOptions = computed((): SelectOption[] =>
     this.environmentStore.environments().map((env) => ({
       value: env.id,
       label: env.name,
     })),
   );
 
-  protected readonly currentDefaultEnvId = computed(
-    () => this.projectPreferences().defaultEnvironmentId,
-  );
+  readonly currentDefaultEnvId = computed(() => this.projectPreferences().defaultEnvironmentId);
 
   protected readonly notifications = computed(() => this.projectPreferences().notifications);
 
-  protected onDefaultEnvironmentChange(value: string): void {
+  onDefaultEnvironmentChange(value: string): void {
     this.preferencesStore.updateProjectPreferences({
       defaultEnvironmentId: value,
     });

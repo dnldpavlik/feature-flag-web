@@ -75,7 +75,7 @@ export class FlagDetailComponent {
     jsonValue: ['{}'],
   });
 
-  protected readonly jsonError = signal<string | null>(null);
+  readonly jsonError = signal<string | null>(null);
 
   private readonly initialized = signal(false);
 
@@ -116,7 +116,7 @@ export class FlagDetailComponent {
     });
   }
 
-  protected async saveDetails(): Promise<void> {
+  async saveDetails(): Promise<void> {
     const current = this.flag();
     if (!current) {
       return;
@@ -138,7 +138,7 @@ export class FlagDetailComponent {
     });
   }
 
-  protected toggleEnvironment(envId: string, enabled: boolean): void {
+  toggleEnvironment(envId: string, enabled: boolean): void {
     const current = this.flag();
     if (!current) {
       return;
@@ -146,11 +146,11 @@ export class FlagDetailComponent {
     this.store.toggleFlagInEnvironment(current.id, envId, enabled);
   }
 
-  protected onEnvironmentToggle(envId: string, checked: boolean): void {
+  onEnvironmentToggle(envId: string, checked: boolean): void {
     this.toggleEnvironment(envId, checked);
   }
 
-  protected updateEnvironmentValue(envId: string, value: string): void {
+  updateEnvironmentValue(envId: string, value: string): void {
     const current = this.flag();
     if (!current) {
       return;
@@ -168,7 +168,7 @@ export class FlagDetailComponent {
     });
   }
 
-  protected onEnvironmentValueChange(envId: string, event: Event): void {
+  onEnvironmentValueChange(envId: string, event: Event): void {
     const value = (event.target as HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement)
       .value;
     this.updateEnvironmentValue(envId, value);
@@ -177,15 +177,15 @@ export class FlagDetailComponent {
   // Delete confirmation state
   protected readonly showDeleteConfirm = signal(false);
 
-  protected requestDeleteFlag(): void {
+  requestDeleteFlag(): void {
     this.showDeleteConfirm.set(true);
   }
 
-  protected cancelDelete(): void {
+  cancelDelete(): void {
     this.showDeleteConfirm.set(false);
   }
 
-  protected async confirmDelete(): Promise<void> {
+  async confirmDelete(): Promise<void> {
     const current = this.flag();
     if (!current) {
       return;
@@ -195,11 +195,11 @@ export class FlagDetailComponent {
     void this.router.navigate(['/flags']);
   }
 
-  protected backToList(): void {
+  backToList(): void {
     void this.router.navigate(['/flags']);
   }
 
-  protected cancelChanges(): void {
+  cancelChanges(): void {
     const current = this.flag();
     if (current) {
       this.form.patchValue({
@@ -234,7 +234,7 @@ export class FlagDetailComponent {
     return parseValueForType(type, rawValue);
   }
 
-  protected formatJsonValue(value: unknown): string {
+  formatJsonValue(value: unknown): string {
     return JSON.stringify(value);
   }
 }

@@ -98,19 +98,19 @@ export class FlagListComponent {
   protected readonly filteredCount = computed(() => this.filteredFlags().length);
   protected readonly totalCount = computed(() => this.flagStore.flagsInSelectedProject().length);
 
-  protected onStatusChange(value: string): void {
+  onStatusChange(value: string): void {
     this.statusFilter.set(value as StatusFilter);
   }
 
-  protected onTypeChange(value: string): void {
+  onTypeChange(value: string): void {
     this.typeFilter.set(value as TypeFilter);
   }
 
-  protected onEnvironmentChange(value: string): void {
+  onEnvironmentChange(value: string): void {
     this.environmentStore.selectEnvironment(value);
   }
 
-  protected onToggleFlag(flagId: string, checked: boolean): void {
+  onToggleFlag(flagId: string, checked: boolean): void {
     const envId = this.environmentStore.selectedEnvironmentId();
     this.flagStore.toggleFlagInEnvironment(flagId, envId, checked);
   }
@@ -118,15 +118,15 @@ export class FlagListComponent {
   // Delete confirmation state
   protected readonly flagToDelete = signal<string | null>(null);
 
-  protected requestDeleteFlag(flagId: string): void {
+  requestDeleteFlag(flagId: string): void {
     this.flagToDelete.set(flagId);
   }
 
-  protected cancelDelete(): void {
+  cancelDelete(): void {
     this.flagToDelete.set(null);
   }
 
-  protected async confirmDelete(): Promise<void> {
+  async confirmDelete(): Promise<void> {
     const flagId = this.flagToDelete();
     if (!flagId) {
       return;

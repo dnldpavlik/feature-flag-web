@@ -42,7 +42,7 @@ export class FlagCreateComponent {
   private readonly router = inject(Router);
   private readonly fb = inject(NonNullableFormBuilder);
 
-  protected readonly form = this.fb.group({
+  readonly form = this.fb.group({
     name: ['', Validators.required],
     key: [''],
     description: [''],
@@ -54,7 +54,7 @@ export class FlagCreateComponent {
     jsonValue: ['{}'],
   });
 
-  protected readonly jsonError = signal<string | null>(null);
+  readonly jsonError = signal<string | null>(null);
 
   // Selected project for display
   protected readonly selectedProject = this.projectStore.selectedProject;
@@ -63,7 +63,7 @@ export class FlagCreateComponent {
   protected readonly environments = this.environmentStore.sortedEnvironments;
   private readonly _enabledEnvironments = signal<Record<string, boolean>>({});
 
-  protected readonly environmentsWithEnabled = computed(() => {
+  readonly environmentsWithEnabled = computed(() => {
     const enabled = this._enabledEnvironments();
     return this.environments().map((env) => ({
       ...env,
@@ -71,23 +71,23 @@ export class FlagCreateComponent {
     }));
   });
 
-  protected toggleEnvironment(envId: string, enabled: boolean): void {
+  toggleEnvironment(envId: string, enabled: boolean): void {
     this._enabledEnvironments.update((current) => ({
       ...current,
       [envId]: enabled,
     }));
   }
 
-  protected onEnvironmentToggle(envId: string, event: Event): void {
+  onEnvironmentToggle(envId: string, event: Event): void {
     const checked = (event.target as HTMLInputElement).checked;
     this.toggleEnvironment(envId, checked);
   }
 
-  protected onTypeChange(newType: FlagType): void {
+  onTypeChange(newType: FlagType): void {
     this.form.controls.type.setValue(newType);
   }
 
-  protected async createFlag(): Promise<void> {
+  async createFlag(): Promise<void> {
     const formData = this.form.getRawValue();
     const trimmedName = formData.name.trim();
     const resolvedKey = formData.key.trim() || toKey(trimmedName);
@@ -116,11 +116,11 @@ export class FlagCreateComponent {
     void this.router.navigate(['/flags']);
   }
 
-  protected cancel(): void {
+  cancel(): void {
     void this.router.navigate(['/flags']);
   }
 
-  protected validateJson(): void {
+  validateJson(): void {
     const jsonValue = this.form.controls.jsonValue.value;
     const result = validateJsonObject(jsonValue);
     this.jsonError.set(result.valid ? null : result.error!);

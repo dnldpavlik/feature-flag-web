@@ -14,7 +14,7 @@ import {
 })
 class TestDetailComponent {
   private readonly route = inject(ActivatedRoute);
-  protected readonly title = signal(this.route.snapshot.paramMap.get('itemId') ?? 'No ID');
+  readonly title = signal(this.route.snapshot.paramMap.get('itemId') ?? 'No ID');
 }
 
 describe('detail-component.helpers', () => {

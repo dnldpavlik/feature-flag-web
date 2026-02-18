@@ -60,10 +60,10 @@ export class ProjectListComponent {
   });
 
   // Delete confirmation state
-  protected readonly projectToDelete = signal<string | null>(null);
-  protected readonly deleteConfirmationFlagCount = signal(0);
+  readonly projectToDelete = signal<string | null>(null);
+  readonly deleteConfirmationFlagCount = signal(0);
 
-  protected readonly form = this.fb.group({
+  readonly form = this.fb.group({
     name: [''],
     key: [''],
     description: [''],
@@ -78,7 +78,7 @@ export class ProjectListComponent {
     return String(val.name).trim().length > 0 && String(val.key).trim().length > 0;
   });
 
-  protected addProject(): void {
+  addProject(): void {
     if (!this.canAdd()) {
       return;
     }
@@ -88,29 +88,29 @@ export class ProjectListComponent {
     this.form.reset();
   }
 
-  protected selectProject(projectId: string): void {
+  selectProject(projectId: string): void {
     this.projectStore.selectProject(projectId);
   }
 
-  protected setDefaultProject(projectId: string): void {
+  setDefaultProject(projectId: string): void {
     void this.projectStore.setDefaultProject(projectId);
   }
 
   /** Request to delete a project - shows confirmation dialog */
-  protected requestDeleteProject(projectId: string): void {
+  requestDeleteProject(projectId: string): void {
     const flags = this.flagStore.getFlagsByProjectId(projectId);
     this.projectToDelete.set(projectId);
     this.deleteConfirmationFlagCount.set(flags.length);
   }
 
   /** Cancel the delete confirmation */
-  protected cancelDelete(): void {
+  cancelDelete(): void {
     this.projectToDelete.set(null);
     this.deleteConfirmationFlagCount.set(0);
   }
 
   /** Confirm and execute the delete */
-  protected async confirmDelete(): Promise<void> {
+  async confirmDelete(): Promise<void> {
     const projectId = this.projectToDelete();
     if (!projectId) {
       return;

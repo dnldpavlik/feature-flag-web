@@ -47,7 +47,7 @@ export class SegmentListComponent {
     return this.segments().filter(textFilter(['name', 'key', 'description'], query));
   });
 
-  protected readonly form = this.fb.group({
+  readonly form = this.fb.group({
     name: [''],
     key: [''],
     description: [''],
@@ -62,7 +62,7 @@ export class SegmentListComponent {
     return String(val.name).trim().length > 0 && String(val.key).trim().length > 0;
   });
 
-  protected addSegment(): void {
+  addSegment(): void {
     if (!this.canAdd()) {
       return;
     }
@@ -77,7 +77,7 @@ export class SegmentListComponent {
     this.form.reset();
   }
 
-  protected deleteSegment(segmentId: string): void {
+  deleteSegment(segmentId: string): void {
     this.segmentStore.deleteSegment(segmentId);
   }
 }

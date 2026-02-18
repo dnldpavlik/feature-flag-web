@@ -55,10 +55,10 @@ export class EnvironmentListComponent {
   });
 
   // Delete confirmation state
-  protected readonly envToDelete = signal<string | null>(null);
-  protected readonly deleteConfirmationFlagCount = signal(0);
+  readonly envToDelete = signal<string | null>(null);
+  readonly deleteConfirmationFlagCount = signal(0);
 
-  protected readonly form = this.fb.group({
+  readonly form = this.fb.group({
     name: [''],
     key: [''],
     color: ['#3b82f6'],
@@ -73,7 +73,7 @@ export class EnvironmentListComponent {
     return String(val.name).trim().length > 0 && String(val.key).trim().length > 0;
   });
 
-  protected async addEnvironment(): Promise<void> {
+  async addEnvironment(): Promise<void> {
     if (!this.canAdd()) {
       return;
     }
@@ -86,30 +86,30 @@ export class EnvironmentListComponent {
     this.form.reset({ name: '', key: '', color: '#3b82f6' });
   }
 
-  protected selectEnvironment(envId: string): void {
+  selectEnvironment(envId: string): void {
     this.environmentStore.selectEnvironment(envId);
     void this.router.navigate(['/environments', envId]);
   }
 
-  protected setDefaultEnvironment(envId: string): void {
+  setDefaultEnvironment(envId: string): void {
     void this.environmentStore.setDefaultEnvironment(envId);
   }
 
   /** Request to delete an environment - shows confirmation dialog */
-  protected requestDeleteEnvironment(envId: string): void {
+  requestDeleteEnvironment(envId: string): void {
     const flagCount = this.flagStore.getFlagCountByEnvironmentId(envId);
     this.envToDelete.set(envId);
     this.deleteConfirmationFlagCount.set(flagCount);
   }
 
   /** Cancel the delete confirmation */
-  protected cancelDelete(): void {
+  cancelDelete(): void {
     this.envToDelete.set(null);
     this.deleteConfirmationFlagCount.set(0);
   }
 
   /** Confirm and execute the delete */
-  protected async confirmDelete(): Promise<void> {
+  async confirmDelete(): Promise<void> {
     const envId = this.envToDelete();
     if (!envId) {
       return;

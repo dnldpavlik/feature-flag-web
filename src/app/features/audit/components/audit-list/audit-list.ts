@@ -77,11 +77,11 @@ export class AuditListComponent {
   protected readonly filteredCount = computed(() => this.filteredEntries().length);
   protected readonly totalCount = computed(() => this.auditStore.entries().length);
 
-  protected onActionChange(value: string): void {
+  onActionChange(value: string): void {
     this.actionFilter.set(value as ActionFilter);
   }
 
-  protected onResourceChange(value: string): void {
+  onResourceChange(value: string): void {
     this.resourceFilter.set(value as ResourceFilter);
   }
 
