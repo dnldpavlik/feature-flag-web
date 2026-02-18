@@ -11,7 +11,7 @@ import { provideRouter, Routes } from '@angular/router';
 /**
  * Common test configuration options
  */
-export interface ComponentTestConfig<T> {
+interface ComponentTestConfig<T> {
   component: Type<T>;
   imports?: Type<unknown>[];
   providers?: Provider[];
@@ -44,36 +44,6 @@ export async function createComponentFixture<T>(
   providers: Provider[] = [],
 ): Promise<ComponentFixture<T>> {
   return setupComponentTest({ component, providers });
-}
-
-/**
- * Trigger change detection and wait for stability
- */
-export async function detectChangesAndWait<T>(fixture: ComponentFixture<T>): Promise<void> {
-  fixture.detectChanges();
-  await fixture.whenStable();
-}
-
-/**
- * Trigger input event on native element
- */
-export function dispatchInputEvent(element: HTMLInputElement, value: string): void {
-  element.value = value;
-  element.dispatchEvent(new Event('input'));
-}
-
-/**
- * Trigger change event on native element
- */
-export function dispatchChangeEvent(element: HTMLElement): void {
-  element.dispatchEvent(new Event('change'));
-}
-
-/**
- * Trigger blur event on native element
- */
-export function dispatchBlurEvent(element: HTMLElement): void {
-  element.dispatchEvent(new Event('blur'));
 }
 
 /**

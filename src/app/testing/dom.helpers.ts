@@ -23,21 +23,6 @@ export function queryAll<T>(fixture: ComponentFixture<T>, selector: string): Deb
 }
 
 /**
- * Get element text content
- */
-export function getText<T>(fixture: ComponentFixture<T>, selector: string): string {
-  const el = query(fixture, selector);
-  return el?.nativeElement.textContent?.trim() ?? '';
-}
-
-/**
- * Check if element exists
- */
-export function exists<T>(fixture: ComponentFixture<T>, selector: string): boolean {
-  return query(fixture, selector) !== null;
-}
-
-/**
  * Get table rows from data table
  */
 export function getTableRows<T>(fixture: ComponentFixture<T>): DebugElement[] {
@@ -73,7 +58,8 @@ export function expectTextContains<T>(
   selector: string,
   text: string,
 ): void {
-  const content = getText(fixture, selector);
+  const el = query(fixture, selector);
+  const content = el?.nativeElement.textContent?.trim() ?? '';
   expect(content).toContain(text);
 }
 
@@ -109,50 +95,4 @@ export function expectNoEmptyState<T>(fixture: ComponentFixture<T>): void {
  */
 export function expectRowCount<T>(fixture: ComponentFixture<T>, expected: number): void {
   expect(getRowCount(fixture)).toBe(expected);
-}
-
-/**
- * Assert element has CSS class
- */
-export function expectHasClass<T>(
-  fixture: ComponentFixture<T>,
-  selector: string,
-  className: string,
-): void {
-  const el = query(fixture, selector);
-  expect(el?.nativeElement.classList.contains(className)).toBe(true);
-}
-
-/**
- * Assert button exists with text
- */
-export function expectButton<T>(fixture: ComponentFixture<T>, text: string): void {
-  const buttons = queryAll(fixture, 'button, ui-button');
-  const found = buttons.some((btn) => btn.nativeElement.textContent?.includes(text));
-  expect(found).toBe(true);
-}
-
-/**
- * Click an element
- */
-export function click<T>(fixture: ComponentFixture<T>, selector: string): void {
-  const el = query(fixture, selector);
-  el?.nativeElement.click();
-  fixture.detectChanges();
-}
-
-/**
- * Set input value
- */
-export function setInputValue<T>(
-  fixture: ComponentFixture<T>,
-  selector: string,
-  value: string,
-): void {
-  const input = query(fixture, selector)?.nativeElement as HTMLInputElement;
-  if (input) {
-    input.value = value;
-    input.dispatchEvent(new Event('input'));
-    fixture.detectChanges();
-  }
 }

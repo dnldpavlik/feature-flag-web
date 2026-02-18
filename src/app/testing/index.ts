@@ -11,8 +11,6 @@
 export {
   query,
   queryAll,
-  getText,
-  exists,
   getTableRows,
   getRowCount,
   expectExists,
@@ -22,43 +20,25 @@ export {
   expectEmptyState,
   expectNoEmptyState,
   expectRowCount,
-  expectHasClass,
-  expectButton,
-  click,
-  setInputValue,
 } from './dom.helpers';
 
 // Store testing helpers
 export {
-  type StoreItem,
-  type CrudTestConfig,
   expectSignal,
   expectHasItems,
   expectEmpty,
   expectItemCount,
-  expectItemExists,
   expectItemNotExists,
-  expectIdPattern,
-  expectTimestamp,
-  expectTimestamps,
   getCountBefore,
   expectItemAdded,
   expectItemRemoved,
   findByKey,
-  findById,
-  expectItemProperty,
-  testStoreCrud,
 } from './store.helpers';
 
 // Component setup helpers
 export {
-  type ComponentTestConfig,
   setupComponentTest,
   createComponentFixture,
-  detectChangesAndWait,
-  dispatchInputEvent,
-  dispatchChangeEvent,
-  dispatchBlurEvent,
   getComponent,
   injectService,
   setFormField,

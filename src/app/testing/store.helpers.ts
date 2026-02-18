@@ -9,7 +9,7 @@ import { Signal } from '@angular/core';
 /**
  * Base interface for store items
  */
-export interface StoreItem {
+interface StoreItem {
   id: string;
   createdAt?: string;
   updatedAt?: string;
@@ -44,42 +44,11 @@ export function expectItemCount<T>(items: Signal<T[]>, expected: number): void {
 }
 
 /**
- * Assert item exists by ID
- */
-export function expectItemExists<T extends StoreItem>(items: Signal<T[]>, id: string): void {
-  const item = items().find((i) => i.id === id);
-  expect(item).toBeDefined();
-}
-
-/**
  * Assert item does not exist by ID
  */
 export function expectItemNotExists<T extends StoreItem>(items: Signal<T[]>, id: string): void {
   const item = items().find((i) => i.id === id);
   expect(item).toBeUndefined();
-}
-
-/**
- * Assert ID matches prefix pattern (e.g., 'flag_xxx', 'env_xxx')
- */
-export function expectIdPattern(id: string, prefix: string): void {
-  expect(id).toMatch(new RegExp(`^${prefix}_`));
-}
-
-/**
- * Assert timestamp is a valid ISO string
- */
-export function expectTimestamp(date: string | undefined): void {
-  expect(date).toBeDefined();
-  expect(new Date(date!).toISOString()).toBe(date);
-}
-
-/**
- * Assert createdAt and updatedAt are set
- */
-export function expectTimestamps(item: StoreItem): void {
-  expectTimestamp(item.createdAt);
-  expectTimestamp(item.updatedAt);
 }
 
 /**
@@ -111,69 +80,4 @@ export function findByKey<T extends { key: string }>(
   key: string,
 ): T | undefined {
   return items().find((i) => i.key === key);
-}
-
-/**
- * Find item by ID
- */
-export function findById<T extends StoreItem>(items: Signal<T[]>, id: string): T | undefined {
-  return items().find((i) => i.id === id);
-}
-
-/**
- * Assert item property value
- */
-export function expectItemProperty<T extends StoreItem, K extends keyof T>(
-  items: Signal<T[]>,
-  id: string,
-  property: K,
-  expected: T[K],
-): void {
-  const item = findById(items, id);
-  expect(item).toBeDefined();
-  expect(item?.[property]).toBe(expected);
-}
-
-/**
- * Create a test for standard store CRUD operations
- * Returns test cases that can be used with it.each or describe blocks
- */
-export interface CrudTestConfig<T extends StoreItem> {
-  getItems: () => Signal<T[]>;
-  addItem: (item: Partial<T>) => void;
-  deleteItem: (id: string) => void;
-  idPrefix: string;
-  createInput: () => Partial<T>;
-}
-
-export function testStoreCrud<T extends StoreItem>(config: CrudTestConfig<T>): void {
-  describe('CRUD operations', () => {
-    it('should have initial items', () => {
-      expectHasItems(config.getItems());
-    });
-
-    it('should add new item', () => {
-      const countBefore = getCountBefore(config.getItems());
-      config.addItem(config.createInput());
-      expectItemAdded(config.getItems(), countBefore);
-    });
-
-    it('should generate ID with correct prefix', () => {
-      config.addItem(config.createInput());
-      const items = config.getItems()();
-      const newest = items[0]; // Assuming prepend
-      expectIdPattern(newest.id, config.idPrefix);
-    });
-
-    it('should delete item by ID', () => {
-      const items = config.getItems()();
-      if (items.length > 1) {
-        const itemToDelete = items[items.length - 1];
-        const countBefore = items.length;
-        config.deleteItem(itemToDelete.id);
-        expectItemRemoved(config.getItems(), countBefore);
-        expectItemNotExists(config.getItems(), itemToDelete.id);
-      }
-    });
-  });
 }
