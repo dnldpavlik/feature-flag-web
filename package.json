@@ -43,6 +43,8 @@
     "update-deps:patch": "npx npm-check-updates -u --target patch && npm install",
     "audit": "npm audit",
     "audit:fix": "npm audit fix",
+    "//-- Release --//": "",
+    "release": "node scripts/release.js",
     "//-- Hooks --//": "",
     "prepare": "husky",
     "postinstall": "node scripts/patch-watt-ui.cjs"
