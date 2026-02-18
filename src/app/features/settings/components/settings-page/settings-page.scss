@@ -8,11 +8,11 @@
   gap: 1.5rem;
   padding: 1.5rem;
   max-width: 900px;
+}
 
-  &__content {
-    background: var(--bg-secondary, #0d0d0b);
-    border: 1px solid var(--border-primary, #535955);
-    border-radius: var(--border-radius, 6px);
-    padding: 1.5rem;
-  }
+.settings-page__content {
+  background: var(--bg-secondary, #0d0d0b);
+  border: 1px solid var(--border-primary, #535955);
+  border-radius: var(--border-radius, 6px);
+  padding: 1.5rem;
 }

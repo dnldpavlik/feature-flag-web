@@ -13,30 +13,30 @@
   justify-content: space-between;
   padding: 0 1.5rem;
   z-index: 50;
+}
 
-  &__left {
+.header__left {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.header__right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.header__menu-btn {
+  display: none;
+
+  @media (width <= 768px) {
     display: flex;
-    align-items: center;
-    gap: 1rem;
   }
+}
 
-  &__right {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-  }
-
-  &__menu-btn {
+.header__search {
+  @media (width <= 768px) {
     display: none;
-
-    @media (width <= 768px) {
-      display: flex;
-    }
-  }
-
-  &__search {
-    @media (width <= 768px) {
-      display: none;
-    }
   }
 }

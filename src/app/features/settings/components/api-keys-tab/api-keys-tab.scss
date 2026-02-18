@@ -6,182 +6,182 @@
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
+}
 
-  &__header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: 1rem;
-  }
+.api-keys-tab__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+}
 
-  &__title,
-  &__form-title,
-  &__secret-title,
-  &__confirm-text,
-  &__empty-text {
-    margin: 0;
-  }
+.api-keys-tab__title,
+.api-keys-tab__form-title,
+.api-keys-tab__secret-title,
+.api-keys-tab__confirm-text,
+.api-keys-tab__empty-text {
+  margin: 0;
+}
 
-  &__title {
-    font-size: 1rem;
-    font-weight: 600;
-    color: var(--text-primary);
-  }
+.api-keys-tab__title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
 
-  &__description,
-  &__empty-description {
-    font-size: 0.875rem;
-    color: var(--text-secondary);
-    margin: 0.25rem 0 0;
-  }
+.api-keys-tab__description,
+.api-keys-tab__empty-description {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  margin: 0.25rem 0 0;
+}
 
-  // Shared panel styles
-  &__secret-display,
-  &__create-form,
-  &__confirm-revoke {
-    padding: 1rem;
-    border-radius: var(--border-radius);
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-  }
+// Shared panel styles
+.api-keys-tab__secret-display,
+.api-keys-tab__create-form,
+.api-keys-tab__confirm-revoke {
+  padding: 1rem;
+  border-radius: var(--border-radius);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
 
-  &__secret-display {
-    background: rgb(16 185 129 / 10%);
-    border: 1px solid var(--success);
-  }
+.api-keys-tab__secret-display {
+  background: rgb(16 185 129 / 10%);
+  border: 1px solid var(--success);
+}
 
-  &__create-form {
-    background: var(--bg-tertiary);
-    border: 1px solid var(--border-primary);
-  }
+.api-keys-tab__create-form {
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-primary);
+}
 
-  &__confirm-revoke {
-    background: rgb(248 81 73 / 10%);
-    border: 1px solid var(--error);
-  }
+.api-keys-tab__confirm-revoke {
+  background: rgb(248 81 73 / 10%);
+  border: 1px solid var(--error);
+}
 
-  &__secret-header {
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
-  }
+.api-keys-tab__secret-header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
 
-  &__secret-title {
-    font-size: 0.875rem;
-    font-weight: 600;
-    color: var(--success);
-  }
+.api-keys-tab__secret-title {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--success);
+}
 
-  &__secret-warning {
-    font-size: 0.75rem;
-    color: var(--text-secondary);
-    margin: 0;
-  }
+.api-keys-tab__secret-warning {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  margin: 0;
+}
 
-  &__secret-value {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.75rem;
-    background: var(--bg-primary);
-    border-radius: var(--border-radius);
+.api-keys-tab__secret-value {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem;
+  background: var(--bg-primary);
+  border-radius: var(--border-radius);
 
-    code {
-      flex: 1;
-      font-family: monospace;
-      font-size: 0.875rem;
-      color: var(--text-primary);
-      word-break: break-all;
-    }
-  }
-
-  &__done-btn {
-    align-self: flex-end;
-  }
-
-  &__form-title,
-  &__confirm-text {
-    font-size: 0.875rem;
-    font-weight: 600;
-    color: var(--text-primary);
-  }
-
-  &__confirm-text {
-    font-weight: 400;
-  }
-
-  &__field {
-    display: flex;
-    flex-direction: column;
-    gap: 0.375rem;
-    border: none;
-    padding: 0;
-    margin: 0;
-  }
-
-  &__label,
-  &__scope-label {
+  code {
+    flex: 1;
+    font-family: monospace;
     font-size: 0.875rem;
     color: var(--text-primary);
+    word-break: break-all;
+  }
+}
+
+.api-keys-tab__done-btn {
+  align-self: flex-end;
+}
+
+.api-keys-tab__form-title,
+.api-keys-tab__confirm-text {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.api-keys-tab__confirm-text {
+  font-weight: 400;
+}
+
+.api-keys-tab__field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+  border: none;
+  padding: 0;
+  margin: 0;
+}
+
+.api-keys-tab__label,
+.api-keys-tab__scope-label {
+  font-size: 0.875rem;
+  color: var(--text-primary);
+}
+
+.api-keys-tab__label {
+  font-weight: 500;
+}
+
+.api-keys-tab__input {
+  padding: 0.625rem 0.75rem;
+  font-size: 0.875rem;
+  color: var(--text-primary);
+  background: var(--bg-primary);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--border-radius);
+  outline: none;
+  transition: border-color var(--transition-fast);
+
+  &:focus {
+    border-color: var(--accent-primary);
   }
 
-  &__label {
-    font-weight: 500;
+  &::placeholder {
+    color: var(--text-tertiary);
   }
+}
 
-  &__input {
-    padding: 0.625rem 0.75rem;
-    font-size: 0.875rem;
-    color: var(--text-primary);
-    background: var(--bg-primary);
-    border: 1px solid var(--border-primary);
-    border-radius: var(--border-radius);
-    outline: none;
-    transition: border-color var(--transition-fast);
+.api-keys-tab__scopes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
 
-    &:focus {
-      border-color: var(--accent-primary);
-    }
+.api-keys-tab__scope {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+}
 
-    &::placeholder {
-      color: var(--text-tertiary);
-    }
-  }
+.api-keys-tab__scope-checkbox {
+  accent-color: var(--accent-primary);
+}
 
-  &__scopes {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.75rem;
-  }
+.api-keys-tab__form-actions,
+.api-keys-tab__confirm-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
 
-  &__scope {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    cursor: pointer;
-  }
+// Empty state
+.api-keys-tab__empty {
+  padding: 2rem;
+  text-align: center;
+}
 
-  &__scope-checkbox {
-    accent-color: var(--accent-primary);
-  }
-
-  &__form-actions,
-  &__confirm-actions {
-    display: flex;
-    justify-content: flex-end;
-    gap: 0.5rem;
-  }
-
-  // Empty state
-  &__empty {
-    padding: 2rem;
-    text-align: center;
-  }
-
-  &__empty-text {
-    font-size: 1rem;
-    font-weight: 500;
-    color: var(--text-primary);
-  }
+.api-keys-tab__empty-text {
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--text-primary);
 }

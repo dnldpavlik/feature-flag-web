@@ -6,114 +6,114 @@
   display: flex;
   flex-direction: column;
   gap: 2rem;
+}
 
-  &__section {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
+.preferences-tab__section {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.preferences-tab__section-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-primary, #f5f2ea);
+  margin: 0;
+}
+
+.preferences-tab__section-description {
+  font-size: 0.875rem;
+  color: var(--text-secondary, #a8a5a0);
+  margin: 0;
+}
+
+.preferences-tab__toggles {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.preferences-tab__toggle {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 1rem;
+  border: 1px solid var(--border-primary, #535955);
+  border-radius: var(--border-radius, 6px);
+  cursor: pointer;
+  transition: all var(--transition-fast, 150ms ease);
+
+  &:hover {
+    background: var(--bg-hover, #535955);
   }
 
-  &__section-title {
-    font-size: 1rem;
-    font-weight: 600;
-    color: var(--text-primary, #f5f2ea);
-    margin: 0;
+  input[type='checkbox'] {
+    margin-top: 0.125rem;
+    accent-color: var(--accent-primary, #8e3d03);
+  }
+}
+
+.preferences-tab__toggle-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.preferences-tab__toggle-label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-primary, #f5f2ea);
+}
+
+.preferences-tab__toggle-description {
+  font-size: 0.75rem;
+  color: var(--text-secondary, #a8a5a0);
+}
+
+.preferences-tab__options {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.preferences-tab__option {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 1rem;
+  border: 1px solid var(--border-primary, #535955);
+  border-radius: var(--border-radius, 6px);
+  cursor: pointer;
+  transition: all var(--transition-fast, 150ms ease);
+
+  &:hover {
+    background: var(--bg-hover, #535955);
   }
 
-  &__section-description {
-    font-size: 0.875rem;
-    color: var(--text-secondary, #a8a5a0);
-    margin: 0;
+  &:has(input:checked) {
+    border-color: var(--accent-primary, #8e3d03);
+    background: rgb(142 61 3 / 10%);
   }
 
-  &__toggles {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
+  input[type='radio'] {
+    margin-top: 0.125rem;
+    accent-color: var(--accent-primary, #8e3d03);
   }
+}
 
-  &__toggle {
-    display: flex;
-    align-items: flex-start;
-    gap: 0.75rem;
-    padding: 1rem;
-    border: 1px solid var(--border-primary, #535955);
-    border-radius: var(--border-radius, 6px);
-    cursor: pointer;
-    transition: all var(--transition-fast, 150ms ease);
+.preferences-tab__option-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
 
-    &:hover {
-      background: var(--bg-hover, #535955);
-    }
+.preferences-tab__option-label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-primary, #f5f2ea);
+}
 
-    input[type='checkbox'] {
-      margin-top: 0.125rem;
-      accent-color: var(--accent-primary, #8e3d03);
-    }
-  }
-
-  &__toggle-content {
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
-  }
-
-  &__toggle-label {
-    font-size: 0.875rem;
-    font-weight: 500;
-    color: var(--text-primary, #f5f2ea);
-  }
-
-  &__toggle-description {
-    font-size: 0.75rem;
-    color: var(--text-secondary, #a8a5a0);
-  }
-
-  &__options {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-  }
-
-  &__option {
-    display: flex;
-    align-items: flex-start;
-    gap: 0.75rem;
-    padding: 1rem;
-    border: 1px solid var(--border-primary, #535955);
-    border-radius: var(--border-radius, 6px);
-    cursor: pointer;
-    transition: all var(--transition-fast, 150ms ease);
-
-    &:hover {
-      background: var(--bg-hover, #535955);
-    }
-
-    &:has(input:checked) {
-      border-color: var(--accent-primary, #8e3d03);
-      background: rgb(142 61 3 / 10%);
-    }
-
-    input[type='radio'] {
-      margin-top: 0.125rem;
-      accent-color: var(--accent-primary, #8e3d03);
-    }
-  }
-
-  &__option-content {
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
-  }
-
-  &__option-label {
-    font-size: 0.875rem;
-    font-weight: 500;
-    color: var(--text-primary, #f5f2ea);
-  }
-
-  &__option-description {
-    font-size: 0.75rem;
-    color: var(--text-secondary, #a8a5a0);
-  }
+.preferences-tab__option-description {
+  font-size: 0.75rem;
+  color: var(--text-secondary, #a8a5a0);
 }
