@@ -67,6 +67,7 @@
     }
   },
   "containerEnv": {
-    "NODE_ENV": "development"
+    "NODE_ENV": "development",
+    "DEVCONTAINER": "true"
   }
 }
