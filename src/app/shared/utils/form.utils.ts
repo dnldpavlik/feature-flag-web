@@ -70,3 +70,13 @@ export function createFormFieldAccessors<T extends object>(form: FormGroup): T {
     },
   });
 }
+
+/**
+ * Extract the value string from a DOM input/select/textarea event.
+ *
+ * Replaces the repeated `(event.target as HTMLInputElement).value` cast pattern.
+ */
+export function getInputValue(event: Event): string {
+  const target = event.target as HTMLInputElement | null;
+  return target?.value ?? '';
+}

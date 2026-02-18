@@ -8,6 +8,7 @@ import {
   RuleOperator,
 } from '../../models/segment-rule.model';
 import { parseArrayValue } from '../../utils/segment-rule.utils';
+import { getInputValue } from '@/app/shared/utils/form.utils';
 
 @Component({
   selector: 'app-rule-builder',
@@ -49,19 +50,19 @@ export class RuleBuilderComponent {
   });
 
   protected onAttributeChange(event: Event): void {
-    this.selectedAttribute.set((event.target as HTMLSelectElement).value);
+    this.selectedAttribute.set(getInputValue(event));
   }
 
   protected onCustomAttributeInput(event: Event): void {
-    this.customAttribute.set((event.target as HTMLInputElement).value);
+    this.customAttribute.set(getInputValue(event));
   }
 
   protected onOperatorChange(event: Event): void {
-    this.selectedOperator.set((event.target as HTMLSelectElement).value as RuleOperator);
+    this.selectedOperator.set(getInputValue(event) as RuleOperator);
   }
 
   protected onValueInput(event: Event): void {
-    this.ruleValue.set((event.target as HTMLInputElement).value);
+    this.ruleValue.set(getInputValue(event));
   }
 
   protected addRule(): void {

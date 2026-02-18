@@ -11,6 +11,7 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import { map } from 'rxjs';
 
 import { ButtonComponent } from '@watt/ui';
+import { getInputValue } from '@/app/shared/utils/form.utils';
 import { CreateSegmentRuleInput, UpdateSegmentRuleInput } from '../../models/segment-rule.model';
 import { UpdateSegmentInput } from '../../models/segment.model';
 import { SegmentStore } from '../../store/segment.store';
@@ -78,7 +79,7 @@ export class SegmentDetailComponent {
   }
 
   protected setFromInput(target: WritableSignal<string>, event: Event): void {
-    target.set((event.target as HTMLInputElement).value);
+    target.set(getInputValue(event));
   }
 
   protected onRuleAdded(input: CreateSegmentRuleInput): void {

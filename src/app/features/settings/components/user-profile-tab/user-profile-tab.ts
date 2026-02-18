@@ -9,6 +9,7 @@ import {
 
 import { ButtonComponent } from '@watt/ui';
 import { AuthService } from '@/app/core/auth/auth.service';
+import { getInputValue } from '@/app/shared/utils/form.utils';
 import { UserProfileStore } from '../../store/user-profile.store';
 
 @Component({
@@ -48,12 +49,12 @@ export class UserProfileTabComponent {
   });
 
   protected onNameInput(event: Event): void {
-    const value = (event.target as HTMLInputElement).value;
+    const value = getInputValue(event);
     this.profileName.set(value);
   }
 
   protected onEmailInput(event: Event): void {
-    const value = (event.target as HTMLInputElement).value;
+    const value = getInputValue(event);
     this.profileEmail.set(value);
   }
 

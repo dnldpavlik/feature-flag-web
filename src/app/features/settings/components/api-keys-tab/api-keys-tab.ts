@@ -2,6 +2,7 @@ import { DatePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 
 import { ButtonComponent, DataTableComponent, UiColDirective } from '@watt/ui';
+import { getInputValue } from '@/app/shared/utils/form.utils';
 import { ApiKeyStore } from '../../store/api-key.store';
 import { API_KEY_SCOPE_OPTIONS, type ApiKeyScope } from '../../models/settings.model';
 
@@ -53,7 +54,7 @@ export class ApiKeysTabComponent {
   }
 
   protected onNameInput(event: Event): void {
-    const value = (event.target as HTMLInputElement).value;
+    const value = getInputValue(event);
     this.newKeyName.set(value);
   }
 

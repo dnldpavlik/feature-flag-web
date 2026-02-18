@@ -12,6 +12,7 @@ import {
   isEnabledInEnvironment,
 } from '@/app/features/flags/utils/flag-value.utils';
 import { formatDisplayValue } from '@/app/features/flags/utils/flag-format.utils';
+import { getInputValue } from '@/app/shared/utils/form.utils';
 
 @Component({
   selector: 'app-environment-detail',
@@ -92,15 +93,15 @@ export class EnvironmentDetailComponent {
   }
 
   protected onNameInput(event: Event): void {
-    this.editName.set((event.target as HTMLInputElement).value);
+    this.editName.set(getInputValue(event));
   }
 
   protected onKeyInput(event: Event): void {
-    this.editKey.set((event.target as HTMLInputElement).value);
+    this.editKey.set(getInputValue(event));
   }
 
   protected onColorInput(event: Event): void {
-    this.editColor.set((event.target as HTMLInputElement).value);
+    this.editColor.set(getInputValue(event));
   }
 
   protected selectEnvironment(): void {

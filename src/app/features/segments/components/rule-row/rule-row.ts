@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, input, output, signal } from '@angular/core';
 
 import { ButtonComponent } from '@watt/ui';
+import { getInputValue } from '@/app/shared/utils/form.utils';
 import {
   OPERATOR_OPTIONS,
   RuleOperator,
@@ -48,15 +49,15 @@ export class RuleRowComponent {
   }
 
   protected onAttributeInput(event: Event): void {
-    this.editAttribute.set((event.target as HTMLInputElement).value);
+    this.editAttribute.set(getInputValue(event));
   }
 
   protected onOperatorChange(event: Event): void {
-    this.editOperator.set((event.target as HTMLSelectElement).value as RuleOperator);
+    this.editOperator.set(getInputValue(event) as RuleOperator);
   }
 
   protected onValueInput(event: Event): void {
-    this.editValue.set((event.target as HTMLInputElement).value);
+    this.editValue.set(getInputValue(event));
   }
 
   protected saveEdit(): void {

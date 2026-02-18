@@ -1,6 +1,11 @@
 import { FormControl, FormGroup } from '@angular/forms';
 
-import { hasRequiredFields, getTrimmedValues, createFormFieldAccessors } from './form.utils';
+import {
+  hasRequiredFields,
+  getTrimmedValues,
+  createFormFieldAccessors,
+  getInputValue,
+} from './form.utils';
 
 describe('form.utils', () => {
   describe('hasRequiredFields', () => {
@@ -175,6 +180,26 @@ describe('form.utils', () => {
 
       form.get('name')?.setValue('Changed');
       expect(accessors.name).toBe('Changed');
+    });
+  });
+
+  describe('getInputValue', () => {
+    it('should extract value from an input event', () => {
+      const event = { target: { value: 'hello' } } as unknown as Event;
+
+      expect(getInputValue(event)).toBe('hello');
+    });
+
+    it('should extract value from a select event', () => {
+      const event = { target: { value: 'option-1' } } as unknown as Event;
+
+      expect(getInputValue(event)).toBe('option-1');
+    });
+
+    it('should return empty string when target is null', () => {
+      const event = { target: null } as unknown as Event;
+
+      expect(getInputValue(event)).toBe('');
     });
   });
 });
