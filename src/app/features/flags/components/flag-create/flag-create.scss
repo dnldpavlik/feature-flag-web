@@ -1,5 +1,9 @@
 @use 'styles/mixins' as *;
 
+:host {
+  display: block;
+}
+
 .flag-create {
   display: flex;
   flex-direction: column;

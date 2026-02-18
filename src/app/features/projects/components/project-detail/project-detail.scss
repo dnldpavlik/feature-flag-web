@@ -1,5 +1,9 @@
 @use 'styles/mixins' as *;
 
+:host {
+  display: block;
+}
+
 .project-detail {
   display: flex;
   flex-direction: column;
