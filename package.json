@@ -44,7 +44,8 @@
     "audit": "npm audit",
     "audit:fix": "npm audit fix",
     "//-- Hooks --//": "",
-    "prepare": "husky"
+    "prepare": "husky",
+    "postinstall": "node scripts/patch-watt-ui.cjs"
   },
   "prettier": {
     "printWidth": 100,
