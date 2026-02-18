@@ -16,7 +16,7 @@
   align-items: flex-start;
   gap: 1rem;
 
-  h1 {
+  .project-detail__heading {
     margin-bottom: 0.25rem;
   }
 }
@@ -44,7 +44,7 @@
 .project-detail__grid {
   @include auto-grid(240px, 1.5rem);
 
-  h2 {
+  .project-detail__section-title {
     font-size: 1rem;
   }
 }

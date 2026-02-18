@@ -16,7 +16,7 @@
   align-items: flex-start;
   gap: 1rem;
 
-  h1 {
+  .environment-detail__heading {
     margin-bottom: 0.25rem;
   }
 }
@@ -44,7 +44,7 @@
 .environment-detail__grid {
   @include auto-grid(240px, 1.5rem);
 
-  h2 {
+  .environment-detail__section-title {
     font-size: 1rem;
   }
 }
@@ -102,11 +102,11 @@
   gap: 1rem;
   flex-wrap: wrap;
 
-  h2 {
+  .environment-detail__flags-title {
     margin-bottom: 0.35rem;
   }
 
-  p {
+  .environment-detail__flags-description {
     margin: 0;
   }
 }

@@ -68,8 +68,10 @@
 
   <ui-card class="env-form" padding="lg">
     <div class="env-form__header">
-      <h2>New Environment</h2>
-      <p class="text-secondary">Add a new release stage for your feature flags.</p>
+      <h2 class="env-form__title">New Environment</h2>
+      <p class="env-form__description text-secondary">
+        Add a new release stage for your feature flags.
+      </p>
     </div>
     <div class="env-form__grid">
       <ui-form-field label="Name" placeholder="Production" [formControl]="form.controls.name" />
@@ -84,16 +86,16 @@
   @if (envToDelete()) {
     <div class="delete-confirmation-overlay" role="dialog" aria-modal="true">
       <ui-card class="delete-confirmation" padding="lg">
-        <h3>Delete Environment?</h3>
+        <h3 class="delete-confirmation__title">Delete Environment?</h3>
         @if (deleteConfirmationFlagCount() > 0) {
-          <p class="delete-confirmation__warning">
+          <p class="delete-confirmation__text delete-confirmation__warning">
             This environment has values in <strong>{{ deleteConfirmationFlagCount() }}</strong>
             flag(s). All environment values will be permanently removed.
           </p>
         } @else {
-          <p>Are you sure you want to delete this environment?</p>
+          <p class="delete-confirmation__text">Are you sure you want to delete this environment?</p>
         }
-        <p class="text-muted">This action cannot be undone.</p>
+        <p class="delete-confirmation__text text-muted">This action cannot be undone.</p>
         <div class="delete-confirmation__actions">
           <ui-button variant="ghost" type="button" (click)="cancelDelete()">Cancel</ui-button>
           <ui-button variant="danger" type="button" (click)="confirmDelete()">

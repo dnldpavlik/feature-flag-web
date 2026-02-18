@@ -71,12 +71,12 @@
   max-width: 400px;
   text-align: center;
 
-  h3 {
+  .delete-confirmation__title {
     margin: 0 0 1rem;
     font-size: 1.25rem;
   }
 
-  p {
+  .delete-confirmation__text {
     margin: 0 0 0.5rem;
   }
 }

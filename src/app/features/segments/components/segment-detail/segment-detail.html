@@ -10,7 +10,7 @@
 
     <section class="segment-detail__section">
       <div class="segment-detail__section-header">
-        <h2>Details</h2>
+        <h2 class="segment-detail__section-title">Details</h2>
         @if (!isEditing()) {
           <ui-button variant="secondary" size="sm" (click)="enterEditMode()"> Edit </ui-button>
         }
@@ -62,7 +62,7 @@
 
     <section class="segment-detail__section">
       <div class="segment-detail__rules-header">
-        <h2>Rules</h2>
+        <h2 class="segment-detail__rules-title">Rules</h2>
         <span class="segment-detail__rule-count">{{ seg.ruleCount }} rules</span>
       </div>
 
@@ -85,15 +85,15 @@
       }
 
       <div class="segment-detail__add-rule">
-        <h3>Add Rule</h3>
+        <h3 class="segment-detail__add-rule-title">Add Rule</h3>
         <app-rule-builder (ruleAdded)="onRuleAdded($event)" />
       </div>
     </section>
   </div>
 } @else {
   <div class="segment-detail__not-found">
-    <h2>Segment Not Found</h2>
-    <p>The requested segment could not be found.</p>
+    <h2 class="segment-detail__not-found-title">Segment Not Found</h2>
+    <p class="segment-detail__not-found-text">The requested segment could not be found.</p>
     <a routerLink="/segments" class="segment-detail__back-link"> &larr; Back to Segments </a>
   </div>
 }

@@ -5,7 +5,7 @@
         <button class="environment-detail__back" type="button" (click)="backToList()">
           Back to Environments
         </button>
-        <h1>{{ env.name }}</h1>
+        <h1 class="environment-detail__heading">{{ env.name }}</h1>
         <p class="text-secondary">Key: {{ env.key }}</p>
       </div>
       <div class="environment-detail__actions">
@@ -23,7 +23,7 @@
 
     <div class="environment-detail__grid">
       <ui-card padding="lg">
-        <h2>Overview</h2>
+        <h2 class="environment-detail__section-title">Overview</h2>
         @if (isEditing()) {
           <div class="environment-detail__edit-form">
             <label class="environment-detail__field">
@@ -86,7 +86,7 @@
       </ui-card>
 
       <ui-card padding="lg">
-        <h2>Details</h2>
+        <h2 class="environment-detail__section-title">Details</h2>
         <div class="environment-detail__row">
           <span class="text-muted">Created</span>
           <span>{{ env.createdAt | date: 'mediumDate' }}</span>
@@ -101,8 +101,10 @@
     <section class="environment-detail__flags">
       <div class="environment-detail__flags-header">
         <div>
-          <h2>Flags in {{ env.name }}</h2>
-          <p class="text-secondary">Current values and status for this environment.</p>
+          <h2 class="environment-detail__flags-title">Flags in {{ env.name }}</h2>
+          <p class="environment-detail__flags-description text-secondary">
+            Current values and status for this environment.
+          </p>
         </div>
         <ui-button variant="ghost" [routerLink]="['/flags']">View All Flags</ui-button>
       </div>

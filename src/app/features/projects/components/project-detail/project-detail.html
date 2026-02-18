@@ -5,7 +5,7 @@
         <button class="project-detail__back" type="button" (click)="backToList()">
           Back to Projects
         </button>
-        <h1>{{ project.name }}</h1>
+        <h1 class="project-detail__heading">{{ project.name }}</h1>
         <p class="text-secondary">Key: {{ project.key }}</p>
       </div>
       <div class="project-detail__actions">
@@ -23,7 +23,7 @@
 
     <div class="project-detail__grid">
       <ui-card padding="lg">
-        <h2>Overview</h2>
+        <h2 class="project-detail__section-title">Overview</h2>
         <div class="project-detail__row">
           <span class="text-muted">Status</span>
           <div class="project-detail__badges">
@@ -42,7 +42,7 @@
       </ui-card>
 
       <ui-card padding="lg">
-        <h2>Details</h2>
+        <h2 class="project-detail__section-title">Details</h2>
         <div class="project-detail__row">
           <span class="text-muted">Created</span>
           <span>{{ project.createdAt | date: 'mediumDate' }}</span>

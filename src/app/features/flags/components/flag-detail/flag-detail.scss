@@ -16,7 +16,7 @@
   align-items: flex-start;
   gap: 1rem;
 
-  h1 {
+  .flag-detail__heading {
     margin-bottom: 0.25rem;
   }
 }
@@ -104,12 +104,12 @@
   max-width: 400px;
   text-align: center;
 
-  h3 {
+  .delete-confirmation__title {
     margin: 0 0 1rem;
     font-size: 1.25rem;
   }
 
-  p {
+  .delete-confirmation__text {
     margin: 0 0 0.5rem;
   }
 }

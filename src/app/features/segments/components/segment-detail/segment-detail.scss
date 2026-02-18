@@ -60,7 +60,7 @@
   align-items: center;
   margin-bottom: 1rem;
 
-  h2 {
+  .segment-detail__section-title {
     margin: 0;
     font-size: 1.1rem;
     font-weight: 600;
@@ -132,7 +132,7 @@
   gap: 1rem;
   margin-bottom: 0.5rem;
 
-  h2 {
+  .segment-detail__rules-title {
     margin: 0;
     font-size: 1.1rem;
     font-weight: 600;
@@ -168,7 +168,7 @@
 }
 
 .segment-detail__add-rule {
-  h3 {
+  .segment-detail__add-rule-title {
     margin: 0 0 1rem;
     font-size: 1rem;
     font-weight: 500;
@@ -180,12 +180,12 @@
   text-align: center;
   padding: 3rem;
 
-  h2 {
+  .segment-detail__not-found-title {
     margin: 0 0 0.5rem;
     color: var(--text-primary);
   }
 
-  p {
+  .segment-detail__not-found-text {
     color: var(--text-muted);
     margin: 0 0 1.5rem;
   }

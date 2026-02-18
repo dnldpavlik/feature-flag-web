@@ -68,8 +68,10 @@
 
   <ui-card class="project-form" padding="lg">
     <div class="project-form__header">
-      <h2>New Project</h2>
-      <p class="text-secondary">Spin up a new workspace for an app or product.</p>
+      <h2 class="project-form__title">New Project</h2>
+      <p class="project-form__description text-secondary">
+        Spin up a new workspace for an app or product.
+      </p>
     </div>
     <div class="project-form__grid">
       <ui-form-field label="Name" placeholder="Accounting App" [formControl]="form.controls.name" />
@@ -90,16 +92,16 @@
   @if (projectToDelete()) {
     <div class="delete-confirmation-overlay" role="dialog" aria-modal="true">
       <ui-card class="delete-confirmation" padding="lg">
-        <h3>Delete Project?</h3>
+        <h3 class="delete-confirmation__title">Delete Project?</h3>
         @if (deleteConfirmationFlagCount() > 0) {
-          <p class="delete-confirmation__warning">
+          <p class="delete-confirmation__text delete-confirmation__warning">
             This project contains <strong>{{ deleteConfirmationFlagCount() }}</strong> flag(s). All
             flags will be permanently deleted.
           </p>
         } @else {
-          <p>Are you sure you want to delete this project?</p>
+          <p class="delete-confirmation__text">Are you sure you want to delete this project?</p>
         }
-        <p class="text-muted">This action cannot be undone.</p>
+        <p class="delete-confirmation__text text-muted">This action cannot be undone.</p>
         <div class="delete-confirmation__actions">
           <ui-button variant="ghost" type="button" (click)="cancelDelete()">Cancel</ui-button>
           <ui-button variant="danger" type="button" (click)="confirmDelete()">
