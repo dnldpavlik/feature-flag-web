@@ -16,6 +16,10 @@ RUN rm /etc/nginx/conf.d/default.conf
 # Copy nginx config template (envsubst processes at startup)
 COPY docker/nginx.conf.template /etc/nginx/templates/default.conf.template
 
+# Copy entrypoint script to substitute Keycloak URL in JS bundle at runtime
+COPY docker/25-substitute-keycloak-url.sh /docker-entrypoint.d/25-substitute-keycloak-url.sh
+RUN chmod +x /docker-entrypoint.d/25-substitute-keycloak-url.sh
+
 # Copy pre-built Angular app from CI artifacts
 COPY dist/feature-flags-web/browser /usr/share/nginx/html
 
@@ -40,6 +44,6 @@ EXPOSE 80
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
     CMD wget --no-verbose --tries=1 --spider http://localhost/health || exit 1
 
-# Substitute environment variables in nginx config template and start nginx
-# Only listed variables are substituted; nginx variables ($uri etc.) are preserved
-CMD ["/bin/sh", "-c", "envsubst '${KEYCLOAK_URL} ${API_URL}' < /etc/nginx/templates/default.conf.template > /etc/nginx/conf.d/default.conf && nginx -g 'daemon off;'"]
+# nginx entrypoint handles:
+#   20-envsubst-on-templates.sh → substitutes ${KEYCLOAK_URL}, ${API_URL} in nginx config
+#   25-substitute-keycloak-url.sh → substitutes placeholder in Angular JS bundle
