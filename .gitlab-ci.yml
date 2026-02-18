@@ -98,8 +98,12 @@ build:
 # -----------------------------------------------------------------------------
 # Docker Image Build (Kaniko)
 # -----------------------------------------------------------------------------
-# Builds the production Docker image using pre-built artifacts from the build job
-# Uses Kaniko for building without Docker daemon (more reliable in GitLab CI)
+# Builds the production Docker image using pre-built artifacts from the build job.
+# Uses Kaniko for building without Docker daemon (more reliable in GitLab CI).
+#
+# Tagging strategy:
+#   Branch push (master): sha-<short-sha> + latest
+#   Version tag (v*):     <version> + latest   (e.g., v1.2.0 → 1.2.0)
 build:docker:
   stage: build
   image:
@@ -111,15 +115,29 @@ build:docker:
   script:
     - mkdir -p /kaniko/.docker
     - echo "{\"auths\":{\"$CI_REGISTRY\":{\"username\":\"$CI_REGISTRY_USER\",\"password\":\"$CI_REGISTRY_PASSWORD\"}}}" > /kaniko/.docker/config.json
+    - |
+      # Build destination flags based on trigger type
+      DESTINATIONS="--destination $CI_REGISTRY_IMAGE:latest"
+      if [ -n "$CI_COMMIT_TAG" ]; then
+        # Version tag push: strip leading 'v' (v1.2.0 → 1.2.0)
+        VERSION=$(echo "$CI_COMMIT_TAG" | sed 's/^v//')
+        DESTINATIONS="$DESTINATIONS --destination $CI_REGISTRY_IMAGE:$VERSION"
+        echo "Tagging image as: $VERSION, latest"
+      else
+        # Branch push: use short SHA
+        SHORT_SHA=$(echo "$CI_COMMIT_SHA" | cut -c1-8)
+        DESTINATIONS="$DESTINATIONS --destination $CI_REGISTRY_IMAGE:sha-$SHORT_SHA"
+        echo "Tagging image as: sha-$SHORT_SHA, latest"
+      fi
     - /kaniko/executor
       --context "$CI_PROJECT_DIR"
       --dockerfile "$CI_PROJECT_DIR/docker/Dockerfile"
-      --destination "$CI_REGISTRY_IMAGE:$CI_COMMIT_SHA"
-      --destination "$CI_REGISTRY_IMAGE:latest"
+      $DESTINATIONS
       --insecure
       --skip-tls-verify
       --skip-tls-verify-pull
   rules:
+    - if: $CI_COMMIT_TAG =~ /^v\d+\.\d+\.\d+/ && $CI_REGISTRY_IMAGE
     - if: ($CI_COMMIT_BRANCH == "main" || $CI_COMMIT_BRANCH == "master") && $CI_REGISTRY_IMAGE
 
 # =============================================================================
