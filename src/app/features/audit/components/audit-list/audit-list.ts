@@ -18,8 +18,7 @@ import { AuditStore } from '@/app/features/audit/store/audit.store';
 import { AUDIT_ACTION_OPTIONS, AUDIT_RESOURCE_OPTIONS } from '../../models/audit.model';
 import { ActionFilter, AuditEntryFormatted, ResourceFilter } from './audit-list.types';
 import { textFilter, propertyEquals, matchesAll } from '@/app/shared/utils/filter.utils';
-
-const capitalize = (str: string): string => str.charAt(0).toUpperCase() + str.slice(1);
+import { capitalize } from '@/app/shared/utils/string.utils';
 
 @Component({
   selector: 'app-audit-list',
