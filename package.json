@@ -31,7 +31,7 @@
     "lint:fix": "eslint src --ext .ts,.html --fix",
     "format": "prettier --write \"src/**/*.{ts,html,scss}\"",
     "format:check": "prettier --check \"src/**/*.{ts,html,scss}\"",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "tsc --build --noEmit",
     "//-- CI/CD --//": "",
     "ci:local": "npm run lint && npm run test:coverage && npm run build",
     "e2e:ci": "E2E_ENV=staging playwright test --project=smoke --project=journeys",
