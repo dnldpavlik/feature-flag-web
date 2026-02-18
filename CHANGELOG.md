@@ -1,3 +1,7 @@
+# [1.2.0](https://gitlab.donpavlik.com:7696/dnldpavlik/feature-flag-web/compare/v1.1.0...v1.2.0) (2026-02-18)
+
+
+
 # [1.1.0](https://gitlab.donpavlik.com:7696/dnldpavlik/feature-flag-web/compare/v1.0.0...v1.1.0) (2026-02-18)
 
 
