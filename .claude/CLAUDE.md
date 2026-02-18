@@ -35,7 +35,7 @@ src/
 ├── app/
 │   ├── core/                        # Singleton services
 │   │   ├── api/                     # HTTP layer: CrudApi<T,C,U>, tokens, interceptors
-│   │   │   ├── crud.api.ts          # Generic CRUD base (GET/POST/PUT/DELETE)
+│   │   │   ├── crud.api.ts          # Generic CRUD base (GET/POST/PATCH/DELETE)
 │   │   │   ├── api.tokens.ts        # API_BASE_URL injection token
 │   │   │   ├── error.interceptor.ts # Global error handling
 │   │   │   └── api-error.model.ts   # Error types
@@ -49,7 +49,7 @@ src/
 │   ├── shared/
 │   │   ├── store/                   # BaseCrudStore<T>, ProjectStore, EnvironmentStore, SearchStore
 │   │   ├── ui/                      # Local-only components (logo-icon, flags-empty-icon); shared UI from @watt/ui
-│   │   └── utils/                   # filter.utils, search.utils, form.utils, id.utils, url.utils
+│   │   └── utils/                   # filter.utils, search.utils, form.utils, id.utils, url.utils, string.utils
 │   ├── testing/                     # Test helpers (store, component, dom, mock factories, mock-api providers)
 │   ├── features/
 │   │   ├── flags/                   # Flag CRUD, detail, create, value input, flag-specific store
@@ -82,7 +82,7 @@ src/
 ```typescript
 @Component({
   selector: 'app-flag-card',
-  imports: [RouterLink, BadgeComponent],  // BadgeComponent from '@watt/ui/badge'
+  imports: [RouterLink, BadgeComponent],  // BadgeComponent from '@watt/ui'
   templateUrl: './flag-card.html',
   styleUrl: './flag-card.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -91,7 +91,7 @@ export class FlagCardComponent {
   readonly flag = input.required<Flag>();
   readonly toggled = output<boolean>();
 
-  protected readonly isEnabled = computed(() =>
+  readonly isEnabled = computed(() =>
     this.flag().environmentValues[this.envId()]?.enabled ?? false
   );
 }
@@ -159,7 +159,7 @@ this._items.update(items => items.map(i => i.id === u.id ? u : i)); // update
 this._items.update(items => items.filter(i => i.id !== id)); // remove
 ```
 
-**Specialized stores** (FlagStore, AuditStore) don't extend BaseCrudStore due to extra complexity.
+**Specialized standalone stores** (AuditStore, ApiKeyStore, PreferencesStore, UserProfileStore, SearchStore) don't extend BaseCrudStore. FlagStore and SegmentStore DO extend it despite extra complexity.
 
 ### Store Interfaces (`shared/store/store.interfaces.ts`)
 
@@ -351,7 +351,14 @@ highlightParts(text: string, query: string): HighlightPart[];  // Structured hig
 ```typescript
 hasRequiredFields(form, fields): boolean;
 getTrimmedValues<T>(form, fields): Record<T, string>;
-createFormFieldAccessors<T>(form): T;   // Proxy-based transparent get/set
+createFormFieldAccessors<T>(form): T;       // Proxy-based transparent get/set
+getInputValue(event: Event): string;        // Safe event.target.value extraction
+```
+
+### String Helpers (`string.utils.ts`)
+
+```typescript
+capitalize(str: string): string;            // Uppercase first letter
 ```
 
 ## Styling Architecture
@@ -375,16 +382,22 @@ Theme switching via `ThemeService` → sets `data-theme` attribute on `<html>`.
 
 ```scss
 .btn { }                    // Block
-.btn__spinner { }           // Element
+.btn__spinner { }           // Element (ALWAYS full class name, never &__spinner)
 .btn--primary { }           // Modifier
 .btn--sm { }
 ```
 
+**BEM Rules:**
+- **Full class names only** — never `&__element` SCSS shorthand (unsearchable in codebase)
+- **No bare element selectors** — never `h1`, `p`, `code` in component SCSS; use BEM classes (`.block__title`, `.block__text`)
+- Nesting only for pseudo-classes (`:hover`, `:focus`), pseudo-elements (`::before`), media queries
+
 ### Component Styling
 
-- `:host` for component root styling
+- `:host { display: block; }` on every component SCSS (mandatory for predictable layout)
 - `host: { '[class]': 'hostClasses()' }` for dynamic classes via computed signals
-- `@use 'styles/mixins' as *;` for shared mixins
+- `@use 'styles/mixins' as *;` for shared mixins (7 components use this)
+- CSS custom properties from `_variables.scss` — never hardcoded colors
 - No inline styles. No ViewEncapsulation overrides.
 
 ### Responsive Breakpoints
@@ -396,7 +409,7 @@ Theme switching via `ThemeService` → sets `data-theme` attribute on `<html>`.
 
 ## Testing
 
-### Unit Tests (Jest + Angular Testing Library)
+### Unit Tests (Jest + TestBed)
 
 **Coverage threshold: 100%** (enforced by `jest.config.js`, blocks merges).
 
@@ -404,6 +417,8 @@ Theme switching via `ThemeService` → sets `data-theme` attribute on `<html>`.
 // jest.config.js
 coverageThreshold: { global: { branches: 100, functions: 100, lines: 100, statements: 100 } }
 ```
+
+Note: `@testing-library/jest-dom` is imported for custom matchers (e.g., `toBeVisible()`), but component rendering uses Angular's `TestBed.createComponent()` wrapped in test helpers, not Testing Library's `render()`.
 
 **Test structure:**
 ```typescript
@@ -420,11 +435,11 @@ describe('FlagStore', () => {
 ```
 
 **Testing helpers** (`src/app/testing/`):
-- `store.helpers.ts` - `getCountBefore()`, `expectItemAdded()`, `expectItemRemoved()`
-- `component.helpers.ts` - Component rendering utilities
-- `dom.helpers.ts` - DOM query helpers
-- `mock.factories.ts` - `createMockFlag()`, `createMockProject()`, etc.
-- `mock-api.providers.ts` - Mock API providers with seed data
+- `store.helpers.ts` - `expectSignal()`, `expectHasItems()`, `expectItemAdded()`, `expectItemRemoved()`, `findByKey()`
+- `component.helpers.ts` - `setupComponentTest()`, `setFormField()`, `setFormFields()`
+- `dom.helpers.ts` - `query()`, `queryAll()`, `expectHeading()`, `expectEmptyState()`, `expectRowCount()`
+- `detail-component.helpers.ts` - `setupDetailComponentTest()` with mock `ActivatedRoute`/`Location`
+- `mock-api.providers.ts` - Mock API + Keycloak providers with seed data (5 flags, 3 environments, 2 projects, 2 segments, 10 audit entries, 2 API keys)
 
 **Mock API providers** (`mock-api.providers.ts`) include Keycloak mocks:
 - `Keycloak` mock with `authenticated: true`, `loadUserProfile()`, `resourceAccess`
@@ -584,7 +599,7 @@ npm run e2e:journeys        # User workflow tests
 
 # Code Quality
 npm run lint                # ESLint (TS + SCSS)
-npm run typecheck           # tsc --noEmit
+npm run typecheck           # tsc --build --noEmit (validates project references including specs)
 npm run format              # Prettier
 npm run ci:local            # lint + coverage + build (pre-merge check)
 
@@ -610,6 +625,12 @@ Conventional commits: `feat:`, `fix:`, `test:`, `refactor:`, `docs:`, `chore:`
 - Skip tests or write tests after implementation
 - Use inline styles (use SCSS with BEM)
 - Use `CommonModule` (import specific directives/pipes)
+- Use `&__element` nesting in SCSS (write full `.block__element` class names)
+- Use bare element selectors (`h1`, `p`, `code`) in component SCSS
+- Use `protected` on members accessed in spec files (Jest can't access `protected` — use `readonly` or no modifier)
+- Use `@watt/ui/button` subpath imports (use flat `@watt/ui` only)
+- Use hardcoded colors in SCSS (use CSS custom properties from `_variables.scss`)
+- Use `tsc --noEmit` without `--build` (project references won't be validated)
 
 ## Quality Checklist
 
@@ -620,5 +641,24 @@ Before considering any task complete:
 - [ ] No TypeScript errors (`npm run typecheck`)
 - [ ] No linting errors (`npm run lint`)
 - [ ] Code formatted (`npm run format`)
-- [ ] BEM naming for all SCSS
+- [ ] BEM naming for all SCSS (flat class names, no bare selectors)
+- [ ] `:host { display: block; }` in component SCSS
 - [ ] Follows all patterns in this file
+
+## Skills Reference
+
+- `tdd` — enforced via Jest 30 + TestBed, 100% coverage threshold
+- `solid` — ISP in store interfaces, DI via `inject()`, pure utility functions
+- `angular-component` — all components follow this skill's template (OnPush, signals, BEM)
+- `angular-store` — stores follow BaseCrudStore or standalone signal pattern
+- `code-review` + `weekly-review` — project standards are audit-ready
+- `gitlab-ci` — pipeline follows the skill's 7-stage order
+- `docker-security` — production nginx follows multi-stage hardening pattern
+- `continuous-learning` — run after major features to update this file
+
+## Last Analysis
+
+- **Date:** 2026-02-17
+- **Patterns extracted:** 67 design tokens, 22 UI components, 11 stores, 10 utility modules
+- **Skills active:** tdd, solid, angular-component, angular-store, code-review, weekly-review, gitlab-ci, docker-security, continuous-learning, session-retrospective, workflow-coach, commit
+- **Run history:** See `docs/LEARNING_LOG.md`
