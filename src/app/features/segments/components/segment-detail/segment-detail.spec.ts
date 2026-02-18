@@ -299,21 +299,25 @@ describe('SegmentDetailComponent', () => {
     });
 
     it('should return undefined segment when segmentId is null', () => {
-      expect((nullComponent as never)['segment']()).toBeUndefined();
+      expect((nullComponent as unknown as { segment: () => unknown }).segment()).toBeUndefined();
     });
 
     it('should return early from enterEditMode when segmentId is null', () => {
-      (nullComponent as never)['enterEditMode']();
-      expect((nullComponent as never)['isEditing']()).toBe(false);
+      (nullComponent as unknown as { enterEditMode: () => void }).enterEditMode();
+      expect((nullComponent as unknown as { isEditing: () => boolean }).isEditing()).toBe(false);
     });
 
     it('should return early from saveEdit when segmentId is null', () => {
-      expect(() => (nullComponent as never)['saveEdit']()).not.toThrow();
+      expect(() => (nullComponent as unknown as { saveEdit: () => void }).saveEdit()).not.toThrow();
     });
 
     it('should return early from onRuleAdded when segmentId is null', () => {
       expect(() =>
-        (nullComponent as never)['onRuleAdded']({
+        (
+          nullComponent as unknown as {
+            onRuleAdded: (input: { attribute: string; operator: string; value: string }) => void;
+          }
+        ).onRuleAdded({
           attribute: 'email',
           operator: 'contains',
           value: 'test',
@@ -323,12 +327,20 @@ describe('SegmentDetailComponent', () => {
 
     it('should return early from onRuleUpdated when segmentId is null', () => {
       expect(() =>
-        (nullComponent as never)['onRuleUpdated']('rule_1', { value: 'test' }),
+        (
+          nullComponent as unknown as {
+            onRuleUpdated: (ruleId: string, updates: { value: string }) => void;
+          }
+        ).onRuleUpdated('rule_1', { value: 'test' }),
       ).not.toThrow();
     });
 
     it('should return early from onRuleRemoved when segmentId is null', () => {
-      expect(() => (nullComponent as never)['onRuleRemoved']('rule_1')).not.toThrow();
+      expect(() =>
+        (nullComponent as unknown as { onRuleRemoved: (ruleId: string) => void }).onRuleRemoved(
+          'rule_1',
+        ),
+      ).not.toThrow();
     });
   });
 });

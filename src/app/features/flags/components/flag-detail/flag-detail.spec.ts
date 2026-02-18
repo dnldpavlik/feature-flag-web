@@ -22,11 +22,11 @@ import {
   MOCK_API_PROVIDERS,
 } from '@/app/testing';
 
-type FlagDetailInternals = FlagDetailComponent & {
+interface FlagDetailInternals {
   setDefaultValueFields(flag: Flag): void;
   environmentRows(): { id: string; enabled: boolean; value: Flag['defaultValue'] }[];
   flagId(): string;
-};
+}
 
 type FlagStoreInternals = FlagStore & {
   _items: { update: (updater: (flags: Flag[]) => Flag[]) => void };
@@ -136,16 +136,16 @@ describe('FlagDetail', () => {
     const numberFlag = store.getFlagById('flag_search_boost');
     const jsonFlag = store.getFlagById('flag_checkout_guardrails');
 
-    (component as FlagDetailInternals).setDefaultValueFields(booleanFlag as Flag);
+    (component as unknown as FlagDetailInternals).setDefaultValueFields(booleanFlag as Flag);
     expect(getFormField(component, 'booleanValue')).toBe(false);
 
-    (component as FlagDetailInternals).setDefaultValueFields(stringFlag as Flag);
+    (component as unknown as FlagDetailInternals).setDefaultValueFields(stringFlag as Flag);
     expect(getFormField(component, 'stringValue')).toBe('default');
 
-    (component as FlagDetailInternals).setDefaultValueFields(numberFlag as Flag);
+    (component as unknown as FlagDetailInternals).setDefaultValueFields(numberFlag as Flag);
     expect(getFormField(component, 'numberValue')).toBe(1);
 
-    (component as FlagDetailInternals).setDefaultValueFields(jsonFlag as Flag);
+    (component as unknown as FlagDetailInternals).setDefaultValueFields(jsonFlag as Flag);
     expect(getFormField(component, 'jsonValue')).toBe(
       JSON.stringify(jsonFlag?.defaultValue ?? {}, null, 2),
     );
@@ -184,13 +184,13 @@ describe('FlagDetail', () => {
       type: 'json',
     };
 
-    (component as FlagDetailInternals).setDefaultValueFields(fallbackString);
+    (component as unknown as FlagDetailInternals).setDefaultValueFields(fallbackString);
     expect(getFormField(component, 'stringValue')).toBe('');
 
-    (component as FlagDetailInternals).setDefaultValueFields(fallbackNumber);
+    (component as unknown as FlagDetailInternals).setDefaultValueFields(fallbackNumber);
     expect(getFormField(component, 'numberValue')).toBe(0);
 
-    (component as FlagDetailInternals).setDefaultValueFields(fallbackJson);
+    (component as unknown as FlagDetailInternals).setDefaultValueFields(fallbackJson);
     expect(getFormField(component, 'jsonValue')).toBe('{}');
   });
 
@@ -260,7 +260,7 @@ describe('FlagDetail', () => {
   it('should return an empty environment list when flag is missing', async () => {
     await build('missing_flag');
 
-    const rows = (component as FlagDetailInternals).environmentRows();
+    const rows = (component as unknown as FlagDetailInternals).environmentRows();
     expect(rows).toEqual([]);
   });
 
@@ -332,13 +332,16 @@ describe('FlagDetail', () => {
           return flag;
         }
         const rest = { ...flag.environmentValues };
-        delete rest.env_development;
+        delete rest['env_development'];
         return { ...flag, environmentValues: rest };
       }),
     );
 
-    const rows = (component as FlagDetailInternals).environmentRows();
-    const row = rows.find((item) => item.id === 'env_development');
+    const rows = (component as unknown as FlagDetailInternals).environmentRows();
+    const row = rows.find(
+      (item: { id: string; enabled: boolean; value: Flag['defaultValue'] }) =>
+        item.id === 'env_development',
+    );
     expect(row?.enabled).toBe(false);
     expect(row?.value).toBe(false);
   });
@@ -390,7 +393,7 @@ describe('FlagDetail', () => {
   it('should default the flag id when the route param is missing', async () => {
     await build();
 
-    expect((component as FlagDetailInternals).flagId()).toBe('');
+    expect((component as unknown as FlagDetailInternals).flagId()).toBe('');
   });
 
   it('should discard edits and navigate back on cancel', async () => {

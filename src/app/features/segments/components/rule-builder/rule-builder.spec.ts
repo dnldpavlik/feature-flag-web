@@ -266,7 +266,7 @@ describe('RuleBuilderComponent', () => {
       component.ruleAdded.subscribe(addedSpy);
 
       // Directly invoke addRule when form is empty (canAdd() returns false)
-      (component as never)['addRule']();
+      (component as unknown as { addRule: () => void }).addRule();
 
       expect(addedSpy).not.toHaveBeenCalled();
     });

@@ -5,7 +5,7 @@
  */
 
 import { Location } from '@angular/common';
-import { Type, Provider } from '@angular/core';
+import { EnvironmentProviders, Type, Provider } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router, convertToParamMap, provideRouter } from '@angular/router';
 
@@ -17,7 +17,7 @@ import { injectService } from './component.helpers';
 export interface DetailComponentConfig<T> {
   component: Type<T>;
   paramName: string;
-  providers?: Provider[];
+  providers?: (Provider | EnvironmentProviders)[];
 }
 
 /**

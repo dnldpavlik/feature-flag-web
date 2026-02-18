@@ -1,5 +1,7 @@
 import { HighlightPart, Searchable } from './search.types';
 
+export type { Searchable, HighlightPart };
+
 /**
  * Checks if an item matches a search query.
  * Searches through name, key, description, type (if present), and tags.

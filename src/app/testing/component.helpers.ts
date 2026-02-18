@@ -6,6 +6,7 @@
 
 import { Type, Provider } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormGroup } from '@angular/forms';
 import { provideRouter, Routes } from '@angular/router';
 
 /**
@@ -61,15 +62,18 @@ export function injectService<T>(token: Type<T>): T {
 }
 
 /**
- * Interface for components with a form property
+ * Internal accessor to get the FormGroup from a component.
+ * Supports components where `form` may be protected or private,
+ * which is common in Angular components using OnPush + encapsulation.
  */
-interface ComponentWithForm {
-  form: { get: (field: string) => { value: unknown; setValue: (v: unknown) => void } | null };
+function getForm(component: unknown): FormGroup {
+  return (component as { form: FormGroup }).form;
 }
 
 /**
  * Set a form field value on a component.
- * Works with components that have a `form` property (FormGroup).
+ * Works with components that have a `form` property (FormGroup),
+ * including components where `form` is protected.
  *
  * @example
  * ```typescript
@@ -77,12 +81,8 @@ interface ComponentWithForm {
  * setFormField(component, 'key', 'test-key');
  * ```
  */
-export function setFormField<T extends ComponentWithForm>(
-  component: T,
-  field: string,
-  value: unknown,
-): void {
-  component.form.get(field)?.setValue(value);
+export function setFormField(component: unknown, field: string, value: unknown): void {
+  getForm(component).get(field)?.setValue(value);
 }
 
 /**
@@ -93,8 +93,8 @@ export function setFormField<T extends ComponentWithForm>(
  * const name = getFormField(component, 'name');
  * ```
  */
-export function getFormField<T extends ComponentWithForm>(component: T, field: string): unknown {
-  return component.form.get(field)?.value;
+export function getFormField(component: unknown, field: string): unknown {
+  return getForm(component).get(field)?.value;
 }
 
 /**
@@ -105,10 +105,7 @@ export function getFormField<T extends ComponentWithForm>(component: T, field: s
  * setFormFields(component, { name: 'Test', key: 'test-key', description: 'desc' });
  * ```
  */
-export function setFormFields<T extends ComponentWithForm>(
-  component: T,
-  values: Record<string, unknown>,
-): void {
+export function setFormFields(component: unknown, values: Record<string, unknown>): void {
   for (const [field, value] of Object.entries(values)) {
     setFormField(component, field, value);
   }

@@ -125,6 +125,7 @@ describe('flag-value.utils', () => {
   describe('getEffectiveValue', () => {
     const mockFlag: Flag = {
       id: 'flag_1',
+      projectId: 'proj_test',
       key: 'test-flag',
       name: 'Test Flag',
       description: 'Test description',
@@ -173,6 +174,7 @@ describe('flag-value.utils', () => {
   describe('isEnabledInEnvironment', () => {
     const mockFlag: Flag = {
       id: 'flag_1',
+      projectId: 'proj_test',
       key: 'test-flag',
       name: 'Test Flag',
       description: 'Test',
@@ -278,6 +280,7 @@ describe('flag-value.utils', () => {
   describe('updateFlagEnvironmentValue', () => {
     const mockFlag: Flag = {
       id: 'flag_1',
+      projectId: 'proj_test',
       key: 'test-flag',
       name: 'Test Flag',
       description: 'Test',
