@@ -76,7 +76,7 @@ console.log(`Updated ${PKG_PATH}`);
 
 // Generate changelog
 console.log('\nGenerating changelog...');
-run('npx conventional-changelog -p angular -i CHANGELOG.md -s');
+run('npx conventional-changelog-cli -p angular -i CHANGELOG.md -s');
 console.log('Updated CHANGELOG.md');
 
 // Commit and tag
