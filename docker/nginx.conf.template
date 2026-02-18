@@ -2,8 +2,8 @@
 # Production Nginx Configuration - Feature Flag UI
 # Security-hardened configuration for serving Angular SPA
 #
-# This is a template file. Environment variables (${KEYCLOAK_URL}) are
-# substituted at container startup via envsubst.
+# This is a template file. Environment variables (${KEYCLOAK_URL}, ${API_URL})
+# are substituted at container startup via envsubst.
 # =============================================================================
 
 # Hide nginx version in error pages and headers
@@ -114,6 +114,29 @@ server {
         add_header Referrer-Policy "strict-origin-when-cross-origin" always;
         add_header Permissions-Policy "accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()" always;
         add_header Content-Security-Policy $csp_policy always;
+    }
+
+    # =========================================================================
+    # API Reverse Proxy
+    # =========================================================================
+
+    location /api/ {
+        proxy_pass ${API_URL};
+        proxy_http_version 1.1;
+
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header Connection "";
+
+        # API requests need larger body size than static assets
+        client_max_body_size 1m;
+
+        # Timeouts for API responses
+        proxy_connect_timeout 10s;
+        proxy_send_timeout 30s;
+        proxy_read_timeout 30s;
     }
 
     # =========================================================================

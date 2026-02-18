@@ -40,6 +40,6 @@ EXPOSE 80
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
     CMD wget --no-verbose --tries=1 --spider http://localhost/health || exit 1
 
-# Substitute KEYCLOAK_URL in nginx config template and start nginx
-# Only ${KEYCLOAK_URL} is substituted; nginx variables ($uri etc.) are preserved
-CMD ["/bin/sh", "-c", "envsubst '${KEYCLOAK_URL}' < /etc/nginx/templates/default.conf.template > /etc/nginx/conf.d/default.conf && nginx -g 'daemon off;'"]
+# Substitute environment variables in nginx config template and start nginx
+# Only listed variables are substituted; nginx variables ($uri etc.) are preserved
+CMD ["/bin/sh", "-c", "envsubst '${KEYCLOAK_URL} ${API_URL}' < /etc/nginx/templates/default.conf.template > /etc/nginx/conf.d/default.conf && nginx -g 'daemon off;'"]
