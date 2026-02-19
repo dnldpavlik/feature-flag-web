@@ -175,8 +175,8 @@ describe('Sidebar', () => {
     });
 
     it('should emit logout when user menu is clicked', () => {
-      const userMenuBtn = fixture.debugElement.query(By.css('.user-menu'));
-      userMenuBtn.nativeElement.click();
+      const userMenu = fixture.debugElement.query(By.css('ui-user-menu'));
+      userMenu.triggerEventHandler('menuToggle');
       fixture.detectChanges();
 
       expect(hostComponent.logoutCalled).toBe(true);

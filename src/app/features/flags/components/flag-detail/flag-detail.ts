@@ -7,7 +7,7 @@ import {
   inject,
   signal,
 } from '@angular/core';
-import { NonNullableFormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, NonNullableFormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import {
@@ -35,6 +35,7 @@ import { FlagEnvironmentRow } from './flag-detail.types';
     EmptyStateComponent,
     FlagValueInputComponent,
     FormFieldComponent,
+    FormsModule,
     ReactiveFormsModule,
     ToggleComponent,
   ],

@@ -14,8 +14,8 @@
       class="header__search"
       placeholder="Search..."
       shortcutHint="/"
-      [value]="searchValue()"
-      (valueChange)="updateSearch($event)"
+      [ngModel]="searchValue()"
+      (ngModelChange)="updateSearch($event)"
       (searchSubmit)="updateSearch($event)"
     />
     <ui-button variant="primary" icon="plus" (click)="onCreateFlagClick()">Create Flag</ui-button>

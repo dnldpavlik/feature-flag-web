@@ -61,9 +61,9 @@
       </ng-template>
       <ng-template uiCol="status" header="Status" width="14%" [sortable]="false" let-flag>
         <ui-toggle
-          [checked]="flag.currentEnabled"
+          [ngModel]="flag.currentEnabled"
           [label]="flag.currentEnabled ? 'Enabled' : 'Disabled'"
-          (toggled)="onToggleFlag(flag.id, $event)"
+          (ngModelChange)="onToggleFlag(flag.id, $event)"
         />
       </ng-template>
       <ng-template uiCol="value" header="Value" width="16%" [sortable]="false" let-flag>

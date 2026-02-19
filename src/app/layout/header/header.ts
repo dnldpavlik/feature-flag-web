@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, input, output, inject } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 
 import {
@@ -12,7 +13,7 @@ import { SearchStore } from '@/app/shared/store/search.store';
 
 @Component({
   selector: 'app-header',
-  imports: [BreadcrumbComponent, ButtonComponent, SearchInputComponent],
+  imports: [FormsModule, BreadcrumbComponent, ButtonComponent, SearchInputComponent],
   templateUrl: './header.html',
   styleUrl: './header.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

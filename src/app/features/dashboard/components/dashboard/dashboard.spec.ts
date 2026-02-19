@@ -62,7 +62,7 @@ describe('Dashboard', () => {
     const inactiveFlags = totalFlags - activeFlags;
     const totalEnvironments = environmentStore.environments().length;
 
-    const cards = queryAll(fixture, '.stat-card');
+    const cards = queryAll(fixture, 'ui-stat-card');
     const stats = cards.map((card) => ({
       value: card.query(By.css('.stat-card__value')).nativeElement.textContent.trim(),
       label: card.query(By.css('.stat-card__label')).nativeElement.textContent.trim(),
@@ -135,7 +135,7 @@ describe('Dashboard', () => {
     fixture.detectChanges();
 
     const activeFlags = flagStore.enabledFlagsInCurrentEnvironment().length;
-    const activeCard = queryAll(fixture, '.stat-card').find(
+    const activeCard = queryAll(fixture, 'ui-stat-card').find(
       (card) =>
         card.query(By.css('.stat-card__label')).nativeElement.textContent.trim() === 'Active',
     );

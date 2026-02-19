@@ -1,5 +1,6 @@
 import { DatePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 
 import {
@@ -37,6 +38,7 @@ import { FlagWithFormattedValue, StatusFilter, TypeFilter } from './flag-list.ty
     DataTableComponent,
     UiColDirective,
     EmptyStateComponent,
+    FormsModule,
     LabeledSelectComponent,
     PageHeaderComponent,
     RouterLink,

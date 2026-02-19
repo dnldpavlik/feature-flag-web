@@ -65,8 +65,7 @@
     "//H----------//": "",
     "//-- Hooks --//": "",
     "//----------H//": "",
-    "prepare": "husky",
-    "postinstall": "node scripts/patch-watt-ui.cjs"
+    "prepare": "husky"
   },
   "prettier": {
     "printWidth": 100,
@@ -103,7 +102,7 @@
     "@angular/forms": "^21.1.2",
     "@angular/platform-browser": "^21.1.2",
     "@angular/router": "^21.1.2",
-    "@watt/ui": "^0.0.1",
+    "@watt/ui": "^0.2.1",
     "keycloak-angular": "^21.0.0",
     "keycloak-js": "^26.2.3",
     "rxjs": "~7.8.2",

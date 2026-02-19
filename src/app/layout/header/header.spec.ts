@@ -133,19 +133,17 @@ describe('Header', () => {
   describe('search functionality', () => {
     it('should update search store when search input value changes', () => {
       const input = fixture.debugElement.query(By.directive(SearchInputComponent));
-      const searchInput = input.componentInstance as SearchInputComponent;
 
-      searchInput.valueChange.emit('flags');
+      input.triggerEventHandler('ngModelChange', 'flags');
 
       expect(searchStore.query()).toBe('flags');
     });
 
     it('should clear search store when empty value is emitted', () => {
       const input = fixture.debugElement.query(By.directive(SearchInputComponent));
-      const searchInput = input.componentInstance as SearchInputComponent;
 
-      searchInput.valueChange.emit('initial');
-      searchInput.valueChange.emit('');
+      input.triggerEventHandler('ngModelChange', 'initial');
+      input.triggerEventHandler('ngModelChange', '');
 
       expect(searchStore.query()).toBe('');
     });

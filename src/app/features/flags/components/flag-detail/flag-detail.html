@@ -70,7 +70,10 @@
               <span class="flag-detail__env-dot" [style.--env-color]="env.color"></span>
               <span>{{ env.name }}</span>
             </div>
-            <ui-toggle [checked]="env.enabled" (toggled)="onEnvironmentToggle(env.id, $event)" />
+            <ui-toggle
+              [ngModel]="env.enabled"
+              (ngModelChange)="onEnvironmentToggle(env.id, $event)"
+            />
             <div>
               @switch (current.type) {
                 @case ('boolean') {
