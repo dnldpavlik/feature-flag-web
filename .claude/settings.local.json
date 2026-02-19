@@ -17,7 +17,9 @@
       "Bash(npx playwright test:*)",
       "WebSearch",
       "WebFetch(domain:www.npmjs.com)",
-      "Bash(npm install:*)"
+      "Bash(npm install:*)",
+      "Bash(depmanager:*)",
+      "Bash(npm audit:*)"
     ]
   }
 }
