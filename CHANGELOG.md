@@ -1,3 +1,12 @@
+# [1.3.0](https://gitlab.donpavlik.com:7696/dnldpavlik/feature-flag-web/compare/v1.2.0...v1.3.0) (2026-02-19)
+
+
+### Bug Fixes
+
+* **docker:** increase nginx header buffers for JWT authentication ([c10ee51](https://gitlab.donpavlik.com:7696/dnldpavlik/feature-flag-web/commit/c10ee5194fd75d5e82aff745b7a3c9a3918fa704))
+
+
+
 # [1.2.0](https://gitlab.donpavlik.com:7696/dnldpavlik/feature-flag-web/compare/v1.1.0...v1.2.0) (2026-02-18)
 
 
