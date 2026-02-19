@@ -17,13 +17,13 @@
 .user-profile-tab__section-title {
   font-size: 1rem;
   font-weight: 600;
-  color: var(--text-primary, #f5f2ea);
+  color: var(--watt-text-primary, #f5f2ea);
   margin: 0;
 }
 
 .user-profile-tab__section-description {
   font-size: 0.875rem;
-  color: var(--text-secondary, #a8a5a0);
+  color: var(--watt-text-secondary, #a8a5a0);
   margin: 0;
 }
 
@@ -37,7 +37,7 @@
   width: 80px;
   height: 80px;
   border-radius: 50%;
-  background: var(--bg-tertiary, #1a1a18);
+  background: var(--watt-bg-tertiary, #1a1a18);
   border: 2px solid var(--border-primary, #535955);
   display: flex;
   align-items: center;
@@ -55,7 +55,7 @@
 .user-profile-tab__avatar-initials {
   font-size: 1.5rem;
   font-weight: 600;
-  color: var(--text-primary, #f5f2ea);
+  color: var(--watt-text-primary, #f5f2ea);
 }
 
 .user-profile-tab__form {
@@ -74,21 +74,21 @@
 .user-profile-tab__label {
   font-size: 0.875rem;
   font-weight: 500;
-  color: var(--text-primary, #f5f2ea);
+  color: var(--watt-text-primary, #f5f2ea);
 }
 
 .user-profile-tab__input {
   padding: 0.625rem 0.75rem;
   font-size: 0.875rem;
-  color: var(--text-primary, #f5f2ea);
+  color: var(--watt-text-primary, #f5f2ea);
   background: var(--bg-primary, #040403);
   border: 1px solid var(--border-primary, #535955);
   border-radius: var(--border-radius, 6px);
   outline: none;
-  transition: border-color var(--transition-fast, 150ms ease);
+  transition: border-color var(--watt-transition-fast, 150ms ease);
 
   &:focus {
-    border-color: var(--accent-primary, #8e3d03);
+    border-color: var(--watt-accent-primary, #8e3d03);
   }
 
   &::placeholder {
@@ -103,14 +103,14 @@
   font-size: 0.875rem;
   font-weight: 500;
   color: white;
-  background: var(--accent-primary, #8e3d03);
+  background: var(--watt-accent-primary, #8e3d03);
   border: none;
   border-radius: var(--border-radius, 6px);
   cursor: pointer;
-  transition: all var(--transition-fast, 150ms ease);
+  transition: all var(--watt-transition-fast, 150ms ease);
 
   &:hover:not(:disabled) {
-    background: var(--accent-hover, #7a3402);
+    background: var(--watt-accent-hover, #7a3402);
   }
 
   &:disabled {

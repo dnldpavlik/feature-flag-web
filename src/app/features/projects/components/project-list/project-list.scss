@@ -25,7 +25,7 @@
 
 .project-link {
   font-weight: 600;
-  color: var(--text-primary);
+  color: var(--watt-text-primary);
 
   &:hover {
     text-decoration: underline;
@@ -93,7 +93,7 @@
 }
 
 .delete-confirmation__warning {
-  color: var(--color-danger);
+  color: var(--watt-color-danger);
   font-weight: 500;
 }
 

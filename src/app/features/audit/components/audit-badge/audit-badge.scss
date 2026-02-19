@@ -13,12 +13,12 @@
 // Standard variants (for consistency with @watt/ui badge)
 :host(.badge--success) {
   background: rgb(63 185 80 / 15%);
-  color: var(--color-success);
+  color: var(--watt-color-success);
 }
 
 :host(.badge--warning) {
   background: rgb(210 153 34 / 15%);
-  color: var(--color-warning);
+  color: var(--watt-color-warning);
 }
 
 :host(.badge--error) {
@@ -28,7 +28,7 @@
 
 :host(.badge--info) {
   background: rgb(88 166 255 / 15%);
-  color: var(--color-info);
+  color: var(--watt-color-info);
 }
 
 // Audit action variants

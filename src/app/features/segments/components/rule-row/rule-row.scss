@@ -27,18 +27,18 @@
 
 .rule-row__attribute {
   font-weight: 600;
-  color: var(--text-primary);
+  color: var(--watt-text-primary);
 }
 
 .rule-row__operator {
-  color: var(--text-muted);
+  color: var(--watt-text-muted);
   font-style: italic;
 }
 
 .rule-row__value {
-  color: var(--text-secondary);
+  color: var(--watt-text-secondary);
   font-family: monospace;
-  background: var(--bg-secondary);
+  background: var(--watt-bg-secondary);
   padding: 0.125rem 0.5rem;
   border-radius: var(--border-radius-sm);
 }
@@ -63,8 +63,8 @@
   font-size: 0.9rem;
   border: 1px solid var(--border-primary);
   border-radius: var(--border-radius-sm);
-  background: var(--bg-input);
-  color: var(--text-primary);
+  background: var(--watt-bg-input);
+  color: var(--watt-text-primary);
 
   &:focus {
     outline: none;

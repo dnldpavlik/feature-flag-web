@@ -17,13 +17,13 @@
 .theme-tab__section-title {
   font-size: 1rem;
   font-weight: 600;
-  color: var(--text-primary, #f5f2ea);
+  color: var(--watt-text-primary, #f5f2ea);
   margin: 0;
 }
 
 .theme-tab__section-description {
   font-size: 0.875rem;
-  color: var(--text-secondary, #a8a5a0);
+  color: var(--watt-text-secondary, #a8a5a0);
   margin: 0;
 }
 
@@ -41,20 +41,20 @@
   border: 1px solid var(--border-primary, #535955);
   border-radius: var(--border-radius, 6px);
   cursor: pointer;
-  transition: all var(--transition-fast, 150ms ease);
+  transition: all var(--watt-transition-fast, 150ms ease);
 
   &:hover {
-    background: var(--bg-hover, #535955);
+    background: var(--watt-bg-hover, #535955);
   }
 
   &:has(input:checked) {
-    border-color: var(--accent-primary, #8e3d03);
+    border-color: var(--watt-accent-primary, #8e3d03);
     background: rgb(142 61 3 / 10%);
   }
 
   input[type='radio'] {
     margin-top: 0.125rem;
-    accent-color: var(--accent-primary, #8e3d03);
+    accent-color: var(--watt-accent-primary, #8e3d03);
   }
 }
 
@@ -67,12 +67,12 @@
 .theme-tab__option-label {
   font-size: 0.875rem;
   font-weight: 500;
-  color: var(--text-primary, #f5f2ea);
+  color: var(--watt-text-primary, #f5f2ea);
 }
 
 .theme-tab__option-description {
   font-size: 0.75rem;
-  color: var(--text-secondary, #a8a5a0);
+  color: var(--watt-text-secondary, #a8a5a0);
 }
 
 .theme-tab__toggles {
@@ -89,15 +89,15 @@
   border: 1px solid var(--border-primary, #535955);
   border-radius: var(--border-radius, 6px);
   cursor: pointer;
-  transition: all var(--transition-fast, 150ms ease);
+  transition: all var(--watt-transition-fast, 150ms ease);
 
   &:hover {
-    background: var(--bg-hover, #535955);
+    background: var(--watt-bg-hover, #535955);
   }
 
   input[type='checkbox'] {
     margin-top: 0.125rem;
-    accent-color: var(--accent-primary, #8e3d03);
+    accent-color: var(--watt-accent-primary, #8e3d03);
   }
 }
 
@@ -110,10 +110,10 @@
 .theme-tab__toggle-label {
   font-size: 0.875rem;
   font-weight: 500;
-  color: var(--text-primary, #f5f2ea);
+  color: var(--watt-text-primary, #f5f2ea);
 }
 
 .theme-tab__toggle-description {
   font-size: 0.75rem;
-  color: var(--text-secondary, #a8a5a0);
+  color: var(--watt-text-secondary, #a8a5a0);
 }

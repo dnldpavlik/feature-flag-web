@@ -26,13 +26,13 @@
 .api-keys-tab__title {
   font-size: 1rem;
   font-weight: 600;
-  color: var(--text-primary);
+  color: var(--watt-text-primary);
 }
 
 .api-keys-tab__description,
 .api-keys-tab__empty-description {
   font-size: 0.875rem;
-  color: var(--text-secondary);
+  color: var(--watt-text-secondary);
   margin: 0.25rem 0 0;
 }
 
@@ -53,7 +53,7 @@
 }
 
 .api-keys-tab__create-form {
-  background: var(--bg-tertiary);
+  background: var(--watt-bg-tertiary);
   border: 1px solid var(--border-primary);
 }
 
@@ -76,7 +76,7 @@
 
 .api-keys-tab__secret-warning {
   font-size: 0.75rem;
-  color: var(--text-secondary);
+  color: var(--watt-text-secondary);
   margin: 0;
 }
 
@@ -92,7 +92,7 @@
     flex: 1;
     font-family: monospace;
     font-size: 0.875rem;
-    color: var(--text-primary);
+    color: var(--watt-text-primary);
     word-break: break-all;
   }
 }
@@ -105,7 +105,7 @@
 .api-keys-tab__confirm-text {
   font-size: 0.875rem;
   font-weight: 600;
-  color: var(--text-primary);
+  color: var(--watt-text-primary);
 }
 
 .api-keys-tab__confirm-text {
@@ -124,7 +124,7 @@
 .api-keys-tab__label,
 .api-keys-tab__scope-label {
   font-size: 0.875rem;
-  color: var(--text-primary);
+  color: var(--watt-text-primary);
 }
 
 .api-keys-tab__label {
@@ -134,15 +134,15 @@
 .api-keys-tab__input {
   padding: 0.625rem 0.75rem;
   font-size: 0.875rem;
-  color: var(--text-primary);
+  color: var(--watt-text-primary);
   background: var(--bg-primary);
   border: 1px solid var(--border-primary);
   border-radius: var(--border-radius);
   outline: none;
-  transition: border-color var(--transition-fast);
+  transition: border-color var(--watt-transition-fast);
 
   &:focus {
-    border-color: var(--accent-primary);
+    border-color: var(--watt-accent-primary);
   }
 
   &::placeholder {
@@ -164,7 +164,7 @@
 }
 
 .api-keys-tab__scope-checkbox {
-  accent-color: var(--accent-primary);
+  accent-color: var(--watt-accent-primary);
 }
 
 .api-keys-tab__form-actions,
@@ -183,5 +183,5 @@
 .api-keys-tab__empty-text {
   font-size: 1rem;
   font-weight: 500;
-  color: var(--text-primary);
+  color: var(--watt-text-primary);
 }

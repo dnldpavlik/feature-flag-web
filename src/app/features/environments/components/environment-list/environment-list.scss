@@ -33,11 +33,11 @@
   width: 10px;
   height: 10px;
   border-radius: 50%;
-  background: var(--env-color, var(--text-muted));
+  background: var(--env-color, var(--watt-text-muted));
 }
 
 .env-link {
-  color: var(--text-primary);
+  color: var(--watt-text-primary);
 
   &:hover {
     text-decoration: underline;
@@ -93,7 +93,7 @@
 }
 
 .delete-confirmation__warning {
-  color: var(--color-danger);
+  color: var(--watt-color-danger);
   font-weight: 500;
 }
 

@@ -12,12 +12,12 @@
 
 .dashboard-env {
   font-weight: 600;
-  color: var(--text-primary);
+  color: var(--watt-text-primary);
 }
 
 .dashboard-divider {
   margin: 0 0.35rem;
-  color: var(--text-muted);
+  color: var(--watt-text-muted);
 }
 
 .stats-grid {
@@ -60,12 +60,12 @@
 .recent-flags__highlight {
   padding: 0 0.15rem;
   border-radius: 4px;
-  background: color-mix(in srgb, var(--accent-primary, #8e3d03) 25%, transparent);
-  color: var(--text-primary, #f5f2ea);
+  background: color-mix(in srgb, var(--watt-accent-primary, #8e3d03) 25%, transparent);
+  color: var(--watt-text-primary, #f5f2ea);
 }
 
 .recent-flags__link {
-  color: var(--text-primary);
+  color: var(--watt-text-primary);
   font-weight: 600;
 
   &:hover {

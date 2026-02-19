@@ -15,12 +15,12 @@
 }
 
 .segment-detail__back-link {
-  color: var(--text-muted);
+  color: var(--watt-text-muted);
   text-decoration: none;
   font-size: 0.9rem;
 
   &:hover {
-    color: var(--text-primary);
+    color: var(--watt-text-primary);
   }
 }
 
@@ -35,14 +35,14 @@
   margin: 0;
   font-size: 1.75rem;
   font-weight: 600;
-  color: var(--text-primary);
+  color: var(--watt-text-primary);
 }
 
 .segment-detail__key {
   font-family: monospace;
   font-size: 0.9rem;
-  color: var(--text-muted);
-  background: var(--bg-secondary);
+  color: var(--watt-text-muted);
+  background: var(--watt-bg-secondary);
   padding: 0.25rem 0.5rem;
   border-radius: var(--border-radius-sm);
 }
@@ -68,7 +68,7 @@
 }
 
 .segment-detail__info {
-  color: var(--text-secondary);
+  color: var(--watt-text-secondary);
 }
 
 .segment-detail__description {
@@ -94,7 +94,7 @@
 
 .segment-detail__label {
   font-size: 0.85rem;
-  color: var(--text-muted);
+  color: var(--watt-text-muted);
 }
 
 .segment-detail__name-input,
@@ -104,8 +104,8 @@
   font-size: 0.9rem;
   border: 1px solid var(--border-primary);
   border-radius: var(--border-radius-sm);
-  background: var(--bg-input);
-  color: var(--text-primary);
+  background: var(--watt-bg-input);
+  color: var(--watt-text-primary);
 
   &:focus {
     outline: none;
@@ -141,16 +141,16 @@
 
 .segment-detail__rule-count {
   font-size: 0.85rem;
-  color: var(--text-muted);
+  color: var(--watt-text-muted);
 }
 
 .segment-detail__rules-hint {
   margin: 0 0 1.5rem;
   font-size: 0.9rem;
-  color: var(--text-muted);
+  color: var(--watt-text-muted);
 
   strong {
-    color: var(--text-secondary);
+    color: var(--watt-text-secondary);
   }
 }
 
@@ -162,7 +162,7 @@
 }
 
 .segment-detail__no-rules {
-  color: var(--text-muted);
+  color: var(--watt-text-muted);
   font-style: italic;
   margin: 1rem 0 1.5rem;
 }
@@ -172,7 +172,7 @@
     margin: 0 0 1rem;
     font-size: 1rem;
     font-weight: 500;
-    color: var(--text-secondary);
+    color: var(--watt-text-secondary);
   }
 }
 
@@ -182,11 +182,11 @@
 
   .segment-detail__not-found-title {
     margin: 0 0 0.5rem;
-    color: var(--text-primary);
+    color: var(--watt-text-primary);
   }
 
   .segment-detail__not-found-text {
-    color: var(--text-muted);
+    color: var(--watt-text-muted);
     margin: 0 0 1.5rem;
   }
 }
