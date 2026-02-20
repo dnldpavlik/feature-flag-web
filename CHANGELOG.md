@@ -1,3 +1,12 @@
+## [1.3.2](https://gitlab.donpavlik.com:7696/dnldpavlik/feature-flag-web/compare/v1.3.1...v1.3.2) (2026-02-20)
+
+
+### Bug Fixes
+
+* **docker:** simplify Keycloak proxy and CSP for production container ([7774f17](https://gitlab.donpavlik.com:7696/dnldpavlik/feature-flag-web/commit/7774f17dd1da3e074b259cf8265603dd6828ece4))
+
+
+
 ## [1.3.1](https://gitlab.donpavlik.com:7696/dnldpavlik/feature-flag-web/compare/v1.3.0...v1.3.1) (2026-02-20)
 
 
