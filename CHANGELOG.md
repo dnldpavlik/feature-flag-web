@@ -1,3 +1,12 @@
+## [1.3.1](https://gitlab.donpavlik.com:7696/dnldpavlik/feature-flag-web/compare/v1.3.0...v1.3.1) (2026-02-20)
+
+
+### Features
+
+* **docker:** add Keycloak reverse proxy to nginx config ([899ff3f](https://gitlab.donpavlik.com:7696/dnldpavlik/feature-flag-web/commit/899ff3f5ac6075d3847ec60d346818ed23909b3b))
+
+
+
 # [1.3.0](https://gitlab.donpavlik.com:7696/dnldpavlik/feature-flag-web/compare/v1.2.0...v1.3.0) (2026-02-19)
 
 
